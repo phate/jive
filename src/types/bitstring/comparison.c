@@ -415,81 +415,71 @@ ule_op::copy() const
 }
 
 jive::oport *
-jive_bitequal(jive::oport * op1, jive::oport * op2)
+jive_bitequal(size_t nbits, jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->region();
-	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
-	return jive::create_normalized(region, jive::bits::eq_op(type), {op1, op2})[0];
+	jive::bits::type type(nbits);
+	return jive::create_normalized(op1->region(), jive::bits::eq_op(type), {op1, op2})[0];
 }
 
 jive::oport *
-jive_bitnotequal(jive::oport * op1, jive::oport * op2)
+jive_bitnotequal(size_t nbits, jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->region();
-	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
-	return jive::create_normalized(region, jive::bits::ne_op(type), {op1, op2})[0];
+	jive::bits::type type(nbits);
+	return jive::create_normalized(op1->region(), jive::bits::ne_op(type), {op1, op2})[0];
 }
 
 jive::oport *
-jive_bitsgreater(jive::oport * op1, jive::oport * op2)
+jive_bitsgreater(size_t nbits, jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->region();
-	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
-	return jive::create_normalized(region, jive::bits::sgt_op(type), {op1, op2})[0];
+	jive::bits::type type(nbits);
+	return jive::create_normalized(op1->region(), jive::bits::sgt_op(type), {op1, op2})[0];
 }
 
 jive::oport *
-jive_bitsgreatereq(jive::oport * op1, jive::oport * op2)
+jive_bitsgreatereq(size_t nbits, jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->region();
-	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
-	return jive::create_normalized(region, jive::bits::sge_op(type), {op1, op2})[0];
+	jive::bits::type type(nbits);
+	return jive::create_normalized(op1->region(), jive::bits::sge_op(type), {op1, op2})[0];
 }
 
 jive::oport *
-jive_bitsless(jive::oport * op1, jive::oport * op2)
+jive_bitsless(size_t nbits, jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->region();
-	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
-	return jive::create_normalized(region, jive::bits::slt_op(type), {op1, op2})[0];
+	jive::bits::type type(nbits);
+	return jive::create_normalized(op1->region(), jive::bits::slt_op(type), {op1, op2})[0];
 }
 
 jive::oport *
-jive_bitslesseq(jive::oport * op1, jive::oport * op2)
+jive_bitslesseq(size_t nbits, jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->region();
-	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
-	return jive::create_normalized(region, jive::bits::sle_op(type), {op1, op2})[0];
+	jive::bits::type type(nbits);
+	return jive::create_normalized(op1->region(), jive::bits::sle_op(type), {op1, op2})[0];
 }
 
 jive::oport *
-jive_bitugreater(jive::oport * op1, jive::oport * op2)
+jive_bitugreater(size_t nbits, jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->region();
-	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
-	return jive::create_normalized(region, jive::bits::ugt_op(type), {op1, op2})[0];
+	jive::bits::type type(nbits);
+	return jive::create_normalized(op1->region(), jive::bits::ugt_op(type), {op1, op2})[0];
 }
 
 jive::oport *
-jive_bitugreatereq(jive::oport * op1, jive::oport * op2)
+jive_bitugreatereq(size_t nbits, jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->region();
-	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
-	return jive::create_normalized(region, jive::bits::uge_op(type), {op1, op2})[0];
+	jive::bits::type type(nbits);
+	return jive::create_normalized(op1->region(), jive::bits::uge_op(type), {op1, op2})[0];
 }
 
 jive::oport *
-jive_bituless(jive::oport * op1, jive::oport * op2)
+jive_bituless(size_t nbits, jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->region();
-	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
-	return jive::create_normalized(region, jive::bits::ult_op(type), {op1, op2})[0];
+	jive::bits::type type(nbits);
+	return jive::create_normalized(op1->region(), jive::bits::ult_op(type), {op1, op2})[0];
 }
 
 jive::oport *
-jive_bitulesseq(jive::oport * op1, jive::oport * op2)
+jive_bitulesseq(size_t nbits, jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->region();
-	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
-	return jive::create_normalized(region, jive::bits::ule_op(type), {op1, op2})[0];
+	jive::bits::type type(nbits);
+	return jive::create_normalized(op1->region(), jive::bits::ule_op(type), {op1, op2})[0];
 }

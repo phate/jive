@@ -517,10 +517,10 @@ static int types_bitstring_comparison_test_bitequal(void)
 	auto c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
 	auto c2 = jive_bitconstant_undefined(graph.root(), 32);
 
-	auto equal0 = dynamic_cast<jive::output*>(jive_bitequal(s0, s1));
-	auto equal1 = jive_bitequal(c0, c0);
-	auto equal2 = jive_bitequal(c0, c1);
-	auto equal3 = dynamic_cast<jive::output*>(jive_bitequal(c0, c2));
+	auto equal0 = jive_bitequal(32, s0, s1);
+	auto equal1 = jive_bitequal(32, c0, c0);
+	auto equal2 = jive_bitequal(32, c0, c1);
+	auto equal3 = jive_bitequal(32, c0, c2);
 
 	graph.export_port(equal0, "dummy");
 	graph.export_port(equal1, "dummy");
@@ -550,10 +550,10 @@ static int types_bitstring_comparison_test_bitnotequal(void)
 	auto c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
 	auto c2 = jive_bitconstant_undefined(graph.root(), 32);
 
-	auto nequal0 = dynamic_cast<jive::output*>(jive_bitnotequal(s0, s1));
-	auto nequal1 = jive_bitnotequal(c0, c0);
-	auto nequal2 = jive_bitnotequal(c0, c1);
-	auto nequal3 = dynamic_cast<jive::output*>(jive_bitnotequal(c0, c2));
+	auto nequal0 = jive_bitnotequal(32, s0, s1);
+	auto nequal1 = jive_bitnotequal(32, c0, c0);
+	auto nequal2 = jive_bitnotequal(32, c0, c1);
+	auto nequal3 = jive_bitnotequal(32, c0, c2);
 
 	graph.export_port(nequal0, "dummy");
 	graph.export_port(nequal1, "dummy");
@@ -584,11 +584,11 @@ static int types_bitstring_comparison_test_bitsgreater(void)
 	auto c2 = jive_bitconstant_signed(graph.root(), 32, 0x7fffffffL);
 	auto c3 = jive_bitconstant_signed(graph.root(), 32, (-0x7fffffffL-1));
 
-	auto sgreater0 = dynamic_cast<jive::output*>(jive_bitsgreater(s0, s1));
-	auto sgreater1 = jive_bitsgreater(c0, c1);
-	auto sgreater2 = jive_bitsgreater(c1, c0);
-	auto sgreater3 = jive_bitsgreater(s0, c2);
-	auto sgreater4 = jive_bitsgreater(c3, s1);
+	auto sgreater0 = jive_bitsgreater(32, s0, s1);
+	auto sgreater1 = jive_bitsgreater(32, c0, c1);
+	auto sgreater2 = jive_bitsgreater(32, c1, c0);
+	auto sgreater3 = jive_bitsgreater(32, s0, c2);
+	auto sgreater4 = jive_bitsgreater(32, c3, s1);
 
 	graph.export_port(sgreater0, "dummy");
 	graph.export_port(sgreater1, "dummy");
@@ -621,12 +621,12 @@ static int types_bitstring_comparison_test_bitsgreatereq(void)
 	auto c2 = jive_bitconstant_signed(graph.root(), 32, 0x7fffffffL);
 	auto c3 = jive_bitconstant_signed(graph.root(), 32, (-0x7fffffffL-1));
 
-	auto sgreatereq0 = dynamic_cast<jive::output*>(jive_bitsgreatereq(s0, s1));
-	auto sgreatereq1 = jive_bitsgreatereq(c0, c1);
-	auto sgreatereq2 = jive_bitsgreatereq(c1, c0);
-	auto sgreatereq3 = jive_bitsgreatereq(c0, c0);
-	auto sgreatereq4 = jive_bitsgreatereq(c2, s0);
-	auto sgreatereq5 = jive_bitsgreatereq(s1, c3);
+	auto sgreatereq0 = jive_bitsgreatereq(32, s0, s1);
+	auto sgreatereq1 = jive_bitsgreatereq(32, c0, c1);
+	auto sgreatereq2 = jive_bitsgreatereq(32, c1, c0);
+	auto sgreatereq3 = jive_bitsgreatereq(32, c0, c0);
+	auto sgreatereq4 = jive_bitsgreatereq(32, c2, s0);
+	auto sgreatereq5 = jive_bitsgreatereq(32, s1, c3);
 
 	graph.export_port(sgreatereq0, "dummy");
 	graph.export_port(sgreatereq1, "dummy");
@@ -661,11 +661,11 @@ static int types_bitstring_comparison_test_bitsless(void)
 	auto c2 = jive_bitconstant_signed(graph.root(), 32, 0x7fffffffL);
 	auto c3 = jive_bitconstant_signed(graph.root(), 32, (-0x7fffffffL-1));
 
-	auto sless0 = dynamic_cast<jive::output*>(jive_bitsless(s0, s1));
-	auto sless1 = jive_bitsless(c0, c1);
-	auto sless2 = jive_bitsless(c1, c0);
-	auto sless3 = jive_bitsless(c2, s0);
-	auto sless4 = jive_bitsless(s1, c3);
+	auto sless0 = jive_bitsless(32, s0, s1);
+	auto sless1 = jive_bitsless(32, c0, c1);
+	auto sless2 = jive_bitsless(32, c1, c0);
+	auto sless3 = jive_bitsless(32, c2, s0);
+	auto sless4 = jive_bitsless(32, s1, c3);
 
 	graph.export_port(sless0, "dummy");
 	graph.export_port(sless1, "dummy");
@@ -698,12 +698,12 @@ static int types_bitstring_comparison_test_bitslesseq(void)
 	auto c2 = jive_bitconstant_signed(graph.root(), 32, 0x7fffffffL);
 	auto c3 = jive_bitconstant_signed(graph.root(), 32, (-0x7fffffffL-1));
 
-	auto slesseq0 = dynamic_cast<jive::output*>(jive_bitslesseq(s0, s1));
-	auto slesseq1 = jive_bitslesseq(c0, c1);
-	auto slesseq2 = jive_bitslesseq(c0, c0);
-	auto slesseq3 = jive_bitslesseq(c1, c0);
-	auto slesseq4 = jive_bitslesseq(s0, c2);
-	auto slesseq5 = jive_bitslesseq(c3, s1);
+	auto slesseq0 = jive_bitslesseq(32, s0, s1);
+	auto slesseq1 = jive_bitslesseq(32, c0, c1);
+	auto slesseq2 = jive_bitslesseq(32, c0, c0);
+	auto slesseq3 = jive_bitslesseq(32, c1, c0);
+	auto slesseq4 = jive_bitslesseq(32, s0, c2);
+	auto slesseq5 = jive_bitslesseq(32, c3, s1);
 
 	graph.export_port(slesseq0, "dummy");
 	graph.export_port(slesseq1, "dummy");
@@ -738,11 +738,11 @@ static int types_bitstring_comparison_test_bitugreater(void)
 	auto c2 = jive_bitconstant_unsigned(graph.root(), 32, (0xffffffffUL));
 	auto c3 = jive_bitconstant_unsigned(graph.root(), 32, 0);
 
-	auto ugreater0 = dynamic_cast<jive::output*>(jive_bitugreater(s0, s1));
-	auto ugreater1 = jive_bitugreater(c0, c1);
-	auto ugreater2 = jive_bitugreater(c1, c0);
-	auto ugreater3 = jive_bitugreater(s0, c2);
-	auto ugreater4 = jive_bitugreater(c3, s1);
+	auto ugreater0 = jive_bitugreater(32, s0, s1);
+	auto ugreater1 = jive_bitugreater(32, c0, c1);
+	auto ugreater2 = jive_bitugreater(32, c1, c0);
+	auto ugreater3 = jive_bitugreater(32, s0, c2);
+	auto ugreater4 = jive_bitugreater(32, c3, s1);
 
 	graph.export_port(ugreater0, "dummy");
 	graph.export_port(ugreater1, "dummy");
@@ -775,12 +775,12 @@ static int types_bitstring_comparison_test_bitugreatereq(void)
 	auto c2 = jive_bitconstant_signed(graph.root(), 32, (0xffffffffUL));
 	auto c3 = jive_bitconstant_signed(graph.root(), 32, 0);
 
-	auto ugreatereq0 = dynamic_cast<jive::output*>(jive_bitugreatereq(s0, s1));
-	auto ugreatereq1 = jive_bitugreatereq(c0, c1);
-	auto ugreatereq2 = jive_bitugreatereq(c1, c0);
-	auto ugreatereq3 = jive_bitugreatereq(c0, c0);
-	auto ugreatereq4 = jive_bitugreatereq(c2, s0);
-	auto ugreatereq5 = jive_bitugreatereq(s1, c3);
+	auto ugreatereq0 = jive_bitugreatereq(32, s0, s1);
+	auto ugreatereq1 = jive_bitugreatereq(32, c0, c1);
+	auto ugreatereq2 = jive_bitugreatereq(32, c1, c0);
+	auto ugreatereq3 = jive_bitugreatereq(32, c0, c0);
+	auto ugreatereq4 = jive_bitugreatereq(32, c2, s0);
+	auto ugreatereq5 = jive_bitugreatereq(32, s1, c3);
 
 	graph.export_port(ugreatereq0, "dummy");
 	graph.export_port(ugreatereq1, "dummy");
@@ -815,11 +815,11 @@ static int types_bitstring_comparison_test_bituless(void)
 	auto c2 = jive_bitconstant_signed(graph.root(), 32, (0xffffffffUL));
 	auto c3 = jive_bitconstant_signed(graph.root(), 32, 0);
 
-	auto uless0 = dynamic_cast<jive::output*>(jive_bituless(s0, s1));
-	auto uless1 = jive_bituless(c0, c1);
-	auto uless2 = jive_bituless(c1, c0);
-	auto uless3 = jive_bituless(c2, s0);
-	auto uless4 = jive_bituless(s1, c3);
+	auto uless0 = jive_bituless(32, s0, s1);
+	auto uless1 = jive_bituless(32, c0, c1);
+	auto uless2 = jive_bituless(32, c1, c0);
+	auto uless3 = jive_bituless(32, c2, s0);
+	auto uless4 = jive_bituless(32, s1, c3);
 
 	graph.export_port(uless0, "dummy");
 	graph.export_port(uless1, "dummy");
@@ -852,12 +852,12 @@ static int types_bitstring_comparison_test_bitulesseq(void)
 	auto c2 = jive_bitconstant_signed(graph.root(), 32, (0xffffffffUL));
 	auto c3 = jive_bitconstant_signed(graph.root(), 32, 0);
 
-	auto ulesseq0 = dynamic_cast<jive::output*>(jive_bitulesseq(s0, s1));
-	auto ulesseq1 = jive_bitulesseq(c0, c1);
-	auto ulesseq2 = jive_bitulesseq(c0, c0);
-	auto ulesseq3 = jive_bitulesseq(c1, c0);
-	auto ulesseq4 = jive_bitulesseq(s0, c2);
-	auto ulesseq5 = jive_bitulesseq(c3, s1);
+	auto ulesseq0 = jive_bitulesseq(32, s0, s1);
+	auto ulesseq1 = jive_bitulesseq(32, c0, c1);
+	auto ulesseq2 = jive_bitulesseq(32, c0, c0);
+	auto ulesseq3 = jive_bitulesseq(32, c1, c0);
+	auto ulesseq4 = jive_bitulesseq(32, s0, c2);
+	auto ulesseq5 = jive_bitulesseq(32, c3, s1);
 
 	graph.export_port(ulesseq0, "dummy");
 	graph.export_port(ulesseq1, "dummy");

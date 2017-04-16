@@ -276,33 +276,33 @@ public:
 }
 
 jive::oport *
-jive_bitequal(jive::oport * operand1, jive::oport * operand2);
+jive_bitequal(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 jive::oport *
-jive_bitnotequal(jive::oport * operand1, jive::oport * operand2);
+jive_bitnotequal(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 jive::oport *
-jive_bitsgreater(jive::oport * operand1, jive::oport * operand2);
+jive_bitsgreater(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 jive::oport *
-jive_bitsgreatereq(jive::oport * operand1, jive::oport * operand2);
+jive_bitsgreatereq(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 jive::oport *
-jive_bitsless(jive::oport * operand1, jive::oport * operand2);
+jive_bitsless(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 jive::oport *
-jive_bitslesseq(jive::oport * operand1, jive::oport * operand2);
+jive_bitslesseq(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 jive::oport *
-jive_bitugreater(jive::oport * operand1, jive::oport * operand2);
+jive_bitugreater(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 jive::oport *
-jive_bitugreatereq(jive::oport * operand1, jive::oport * operand2);
+jive_bitugreatereq(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 jive::oport *
-jive_bituless(jive::oport * operand1, jive::oport * operand2);
+jive_bituless(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 jive::oport *
-jive_bitulesseq(jive::oport * operand1, jive::oport * operand2);
+jive_bitulesseq(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 #endif

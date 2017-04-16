@@ -57,7 +57,7 @@ fib(size_t n)
 
 	auto new_k = jive_bitsum(32, {one, lv_k->value()});
 
-	auto cmp = jive_bitulesseq(new_k, lv_n->value());
+	auto cmp = jive_bitulesseq(32, new_k, lv_n->value());
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
 	lv_k->set_value(new_k);
@@ -66,7 +66,7 @@ fib(size_t n)
 	lv_n->set_value(lv_n->value());
 	tb.end(predicate);
 
-	cmp = jive_bitulesseq(k, n);
+	cmp = jive_bitulesseq(32, k, n);
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
 	jive::gamma_builder gb;
@@ -169,7 +169,7 @@ unsigned int fib(unsigned int n){
 
 	auto result = jive_bitsum(32, {tmp, tmp2});
 
-	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, jive_bituless(n, two));
+	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, jive_bituless(32, n, two));
 
 	jive::gamma_builder gb;
 	gb.begin(predicate);
