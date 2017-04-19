@@ -95,8 +95,11 @@ public:
 	void
 	divert_origin(jive::oport * new_origin);
 
-	virtual const jive::base::type &
-	type() const noexcept = 0;
+	inline const jive::base::type &
+	type() const noexcept
+	{
+		return *type_;
+	}
 
 	virtual jive::region *
 	region() const noexcept = 0;
@@ -123,6 +126,7 @@ private:
 	size_t index_;
 	jive::gate * gate_;
 	jive::oport * origin_;
+	std::unique_ptr<jive::base::type> type_;
 	const struct jive_resource_class * rescls_;
 };
 

@@ -39,7 +39,6 @@ structural_input::structural_input(
 	const jive::base::type & type)
 	: iport(index, origin, node->region(), type)
 	, node_(node)
-	, type_(type.copy())
 {
 	arguments.first = arguments.last = nullptr;
 	node->graph()->on_iport_create(this);
@@ -52,7 +51,6 @@ structural_input::structural_input(
 	jive::gate * gate)
 	: iport(index, origin, node->region(), gate)
 	, node_(node)
-	, type_(gate->type().copy())
 {
 	arguments.first = arguments.last = nullptr;
 
@@ -72,16 +70,9 @@ structural_input::structural_input(
 	const struct jive_resource_class * rescls)
 	: iport(index, origin, node->region(), rescls)
 	, node_(node)
-	, type_(jive_resource_class_get_type(rescls)->copy())
 {
 	arguments.first = arguments.last = nullptr;
 	node->graph()->on_iport_create(this);
-}
-
-const jive::base::type &
-structural_input::type() const noexcept
-{
-	return *type_;
 }
 
 jive::region *

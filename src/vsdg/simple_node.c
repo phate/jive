@@ -40,7 +40,6 @@ input::input(
 	const jive::base::type & type)
 	: iport(index, origin, node->region(), type)
 	, node_(node)
-	, type_(type.copy())
 {}
 
 input::input(
@@ -50,7 +49,6 @@ input::input(
 	jive::gate * gate)
 	: iport(index, origin, node->region(), gate)
 	, node_(node)
-	, type_(gate->type().copy())
 {
 	for (size_t n = 0; n < index; n++) {
 		jive::input * other = dynamic_cast<jive::input*>(node->input(n));
@@ -66,14 +64,7 @@ input::input(
 	const struct jive_resource_class * rescls)
 	: iport(index, origin, node->region(), rescls)
 	, node_(node)
-	, type_(jive_resource_class_get_type(rescls)->copy())
 {}
-
-const jive::base::type &
-input::type() const noexcept
-{
-	return *type_;
-}
 
 jive::region *
 input::region() const noexcept

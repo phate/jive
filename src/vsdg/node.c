@@ -39,6 +39,7 @@ iport::iport(
 	: index_(index)
 	, gate_(nullptr)
 	, origin_(origin)
+	, type_(type.copy())
 	, rescls_(&jive_root_resource_class)
 {
 	gate_iport_list.prev = gate_iport_list.next = nullptr;
@@ -60,6 +61,7 @@ iport::iport(
 	: index_(index)
 	, gate_(gate)
 	, origin_(origin)
+	, type_(gate->type().copy())
 	, rescls_(gate->rescls())
 {
 	gate_iport_list.prev = gate_iport_list.next = nullptr;
@@ -83,6 +85,7 @@ iport::iport(
 	: index_(index)
 	, gate_(nullptr)
 	, origin_(origin)
+	, type_(jive_resource_class_get_type(rescls)->copy())
 	, rescls_(rescls)
 {
 	gate_iport_list.prev = gate_iport_list.next = nullptr;
