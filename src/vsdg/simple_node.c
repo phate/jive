@@ -38,7 +38,7 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	const jive::base::type & type)
-	: iport(node->region(), type, index, origin)
+	: iport(index, origin, node->region(), type)
 	, node_(node)
 	, type_(type.copy())
 {}
@@ -48,7 +48,7 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	jive::gate * gate)
-	: iport(node->region(), gate->type(), index, origin, gate)
+	: iport(index, origin, node->region(), gate)
 	, node_(node)
 	, type_(gate->type().copy())
 {
@@ -63,11 +63,10 @@ input::input(
 	jive::node * node,
 	size_t index,
 	jive::oport * origin,
-	const jive::base::type & type,
 	const struct jive_resource_class * rescls)
-	: iport(node->region(), type, index, origin, rescls)
+	: iport(index, origin, node->region(), rescls)
 	, node_(node)
-	, type_(type.copy())
+	, type_(jive_resource_class_get_type(rescls)->copy())
 {}
 
 const jive::base::type &
@@ -180,8 +179,13 @@ simple_node::simple_node(
 			operation().narguments(), ", received ", operands.size(), " arguments."));
 
 	for (size_t n = 0; n < operation().narguments(); n++) {
-		inputs_.emplace_back(std::unique_ptr<jive::input>(new jive::input(
-			this, n, operands[n], operation().argument_type(n), operation().argument_cls(n))));
+		if (operation().argument_cls(n) != &jive_root_resource_class) {
+			inputs_.emplace_back(std::unique_ptr<jive::input>(new jive::input(
+				this, n, operands[n], operation().argument_cls(n))));
+		} else {
+			inputs_.emplace_back(std::unique_ptr<jive::input>(new jive::input(
+				this, n, operands[n], operation().argument_type(n))));
+		}
 	}
 
 	for (size_t n = 0; n < operation().nresults(); n++) {
@@ -282,8 +286,8 @@ simple_node::add_input(const struct jive_resource_class * rescls, jive::oport * 
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
-	inputs_.emplace_back(std::unique_ptr<jive::input>(
-		new jive::input(this, ninputs(), origin, *jive_resource_class_get_type(rescls), rescls)));
+	inputs_.emplace_back(std::unique_ptr<jive::input>(new jive::input(this, ninputs(), origin,
+		rescls)));
 	auto input = this->input(ninputs()-1);
 
 	recompute_depth();

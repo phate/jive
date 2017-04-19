@@ -122,7 +122,7 @@ result::result(
 	jive::oport * origin,
 	jive::structural_output * output,
 	const jive::base::type & type)
-	: iport(region, type, index, origin)
+	: iport(index, origin, region, type)
 	, region_(region)
 	, output_(output)
 	, type_(type.copy())
@@ -139,7 +139,7 @@ result::result(
 	jive::oport * origin,
 	jive::structural_output * output,
 	jive::gate * gate)
-	: iport(region, gate->type(), index, origin, gate)
+	: iport(index, origin, region, gate)
 	, region_(region)
 	, output_(output)
 	, type_(gate->type().copy())

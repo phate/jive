@@ -41,23 +41,21 @@ public:
 	~iport() noexcept;
 
 	iport(
-		const jive::region * region,
-		const jive::base::type & type,
-		size_t index,
-		jive::oport * origin);
-
-	iport(
-		const jive::region * region,
-		const jive::base::type & type,
 		size_t index,
 		jive::oport * origin,
+		const jive::region * region,
+		const jive::base::type & type);
+
+	iport(
+		size_t index,
+		jive::oport * origin,
+		const jive::region * region,
 		jive::gate * gate);
 
 	iport(
-		const jive::region * region,
-		const jive::base::type & type,
 		size_t index,
 		jive::oport * origin,
+		const jive::region * region,
 		const struct jive_resource_class * rescls);
 
 	iport(const iport &) = delete;

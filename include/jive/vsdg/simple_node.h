@@ -35,7 +35,6 @@ public:
 		jive::node * node,
 		size_t index,
 		jive::oport * origin,
-		const jive::base::type & type,
 		const struct jive_resource_class * rescls);
 
 public:

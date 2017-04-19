@@ -32,10 +32,10 @@ iport::~iport() noexcept
 }
 
 iport::iport(
-	const jive::region * region,
-	const jive::base::type & type,
 	size_t index,
-	jive::oport * origin)
+	jive::oport * origin,
+	const jive::region * region,
+	const jive::base::type & type)
 	: index_(index)
 	, gate_(nullptr)
 	, origin_(origin)
@@ -53,10 +53,9 @@ iport::iport(
 }
 
 iport::iport(
-	const jive::region * region,
-	const jive::base::type & type,
 	size_t index,
 	jive::oport * origin,
+	const jive::region * region,
 	jive::gate * gate)
 	: index_(index)
 	, gate_(gate)
@@ -68,8 +67,8 @@ iport::iport(
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
 
-	if (type != origin->type())
-		throw jive::type_error(type.debug_string(), origin->type().debug_string());
+	if (gate->type() != origin->type())
+		throw jive::type_error(gate->type().debug_string(), origin->type().debug_string());
 
 	JIVE_LIST_PUSH_BACK(gate->iports, this, gate_iport_list);
 
@@ -77,10 +76,9 @@ iport::iport(
 }
 
 iport::iport(
-	const jive::region * region,
-	const jive::base::type & type,
 	size_t index,
 	jive::oport * origin,
+	const jive::region * region,
 	const struct jive_resource_class * rescls)
 	: index_(index)
 	, gate_(nullptr)
@@ -92,8 +90,9 @@ iport::iport(
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
 
-	if (type != origin->type())
-		throw jive::type_error(type.debug_string(), origin->type().debug_string());
+	auto type = jive_resource_class_get_type(rescls);
+	if (*type != origin->type())
+		throw jive::type_error(type->debug_string(), origin->type().debug_string());
 
 	origin->add_user(this);
 }

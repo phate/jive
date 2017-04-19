@@ -37,7 +37,7 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	const jive::base::type & type)
-	: iport(node->region(), type, index, origin)
+	: iport(index, origin, node->region(), type)
 	, node_(node)
 	, type_(type.copy())
 {
@@ -50,7 +50,7 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	jive::gate * gate)
-	: iport(node->region(), gate->type(), index, origin, gate)
+	: iport(index, origin, node->region(), gate)
 	, node_(node)
 	, type_(gate->type().copy())
 {
@@ -70,7 +70,7 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	const struct jive_resource_class * rescls)
-	: iport(node->region(), *jive_resource_class_get_type(rescls), index, origin, rescls)
+	: iport(index, origin, node->region(), rescls)
 	, node_(node)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
