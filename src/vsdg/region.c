@@ -123,7 +123,6 @@ result::result(
 	jive::structural_output * output,
 	const jive::base::type & type)
 	: iport(index, origin, region, type)
-	, region_(region)
 	, output_(output)
 {
 	output_result_list.prev = output_result_list.next = nullptr;
@@ -139,7 +138,6 @@ result::result(
 	jive::structural_output * output,
 	jive::gate * gate)
 	: iport(index, origin, region, gate)
-	, region_(region)
 	, output_(output)
 {
 	output_result_list.prev = output_result_list.next = nullptr;
@@ -152,12 +150,6 @@ result::result(
 		if (!other->gate()) continue;
 		jive_gate_interference_add(region->graph(), gate, other->gate());
 	}
-}
-
-jive::region *
-result::region() const noexcept
-{
-	return region_;
 }
 
 jive::node *

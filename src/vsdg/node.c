@@ -34,11 +34,12 @@ iport::~iport() noexcept
 iport::iport(
 	size_t index,
 	jive::oport * origin,
-	const jive::region * region,
+	jive::region * region,
 	const jive::base::type & type)
 	: index_(index)
 	, gate_(nullptr)
 	, origin_(origin)
+	, region_(region)
 	, type_(type.copy())
 	, rescls_(&jive_root_resource_class)
 {
@@ -56,11 +57,12 @@ iport::iport(
 iport::iport(
 	size_t index,
 	jive::oport * origin,
-	const jive::region * region,
+	jive::region * region,
 	jive::gate * gate)
 	: index_(index)
 	, gate_(gate)
 	, origin_(origin)
+	, region_(region)
 	, type_(gate->type().copy())
 	, rescls_(gate->rescls())
 {
@@ -80,11 +82,12 @@ iport::iport(
 iport::iport(
 	size_t index,
 	jive::oport * origin,
-	const jive::region * region,
+	jive::region * region,
 	const struct jive_resource_class * rescls)
 	: index_(index)
 	, gate_(nullptr)
 	, origin_(origin)
+	, region_(region)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 	, rescls_(rescls)
 {

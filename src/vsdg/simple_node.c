@@ -66,12 +66,6 @@ input::input(
 	, node_(node)
 {}
 
-jive::region *
-input::region() const noexcept
-{
-	return node()->region();
-}
-
 jive::node *
 input::node() const noexcept
 {

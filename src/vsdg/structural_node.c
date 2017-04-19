@@ -75,12 +75,6 @@ structural_input::structural_input(
 	node->graph()->on_iport_create(this);
 }
 
-jive::region *
-structural_input::region() const noexcept
-{
-	return node()->region();
-}
-
 jive::node *
 structural_input::node() const noexcept
 {

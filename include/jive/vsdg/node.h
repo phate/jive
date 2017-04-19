@@ -43,19 +43,19 @@ public:
 	iport(
 		size_t index,
 		jive::oport * origin,
-		const jive::region * region,
+		jive::region * region,
 		const jive::base::type & type);
 
 	iport(
 		size_t index,
 		jive::oport * origin,
-		const jive::region * region,
+		jive::region * region,
 		jive::gate * gate);
 
 	iport(
 		size_t index,
 		jive::oport * origin,
-		const jive::region * region,
+		jive::region * region,
 		const struct jive_resource_class * rescls);
 
 	iport(const iport &) = delete;
@@ -101,8 +101,11 @@ public:
 		return *type_;
 	}
 
-	virtual jive::region *
-	region() const noexcept = 0;
+	inline jive::region *
+	region() const noexcept
+	{
+		return region_;
+	}
 
 	virtual jive::node *
 	node() const noexcept = 0;
@@ -126,6 +129,7 @@ private:
 	size_t index_;
 	jive::gate * gate_;
 	jive::oport * origin_;
+	jive::region * region_;
 	std::unique_ptr<jive::base::type> type_;
 	const struct jive_resource_class * rescls_;
 };

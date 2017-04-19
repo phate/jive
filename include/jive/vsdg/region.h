@@ -112,9 +112,6 @@ public:
 	result &
 	operator=(const result &&) = delete;
 
-	virtual jive::region *
-	region() const noexcept override;
-
 	virtual jive::node *
 	node() const noexcept override;
 
@@ -130,7 +127,6 @@ public:
 	} output_result_list;
 
 private:
-	jive::region * region_;
 	jive::structural_output * output_;
 };
 
