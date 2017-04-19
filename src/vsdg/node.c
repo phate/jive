@@ -192,13 +192,29 @@ oport::add_user(jive::iport * user)
 
 gate::gate(
 	jive::graph * graph,
-	const char name[],
-	const jive::base::type & type,
+	const std::string & name,
+	const jive::base::type & type)
+	: name_(name)
+	, graph_(graph)
+	, rescls_(&jive_root_resource_class)
+	, type_(type.copy())
+{
+	iports.first = iports.last = nullptr;
+	oports.first = oports.last = nullptr;
+	may_spill = true;
+	graph_gate_list.prev = graph_gate_list.next = nullptr;
+
+	JIVE_LIST_PUSH_BACK(graph->gates, this, graph_gate_list);
+}
+
+gate::gate(
+	jive::graph * graph,
+	const std::string & name,
 	const struct jive_resource_class * rescls)
 	: name_(name)
 	, graph_(graph)
 	, rescls_(rescls)
-	, type_(type.copy())
+	, type_(jive_resource_class_get_type(rescls)->copy())
 {
 	iports.first = iports.last = nullptr;
 	oports.first = oports.last = nullptr;

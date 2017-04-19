@@ -85,12 +85,15 @@ graph::has_active_traversers() const noexcept
 }
 
 jive::gate *
-graph::create_gate(
-	const jive::base::type & type,
-	const std::string & name,
-	const jive_resource_class * rescls)
+graph::create_gate(const std::string & name, const jive::base::type & type)
 {
-	return new jive::gate(this, name.c_str(), type, rescls);
+	return new jive::gate(this, name, type);
+}
+
+jive::gate *
+graph::create_gate(const std::string & name, const jive_resource_class * rescls)
+{
+	return new jive::gate(this, name, rescls);
 }
 
 }

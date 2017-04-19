@@ -385,7 +385,7 @@ simple_node::copy(jive::region * region, jive::substitution_map & smap) const
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {
-				target_gate = region->graph()->create_gate(gate->type(), gate->name(), gate->rescls());
+				target_gate = region->graph()->create_gate(gate);
 				smap.insert(gate, target_gate);
 			}
 		} else {
@@ -399,7 +399,7 @@ simple_node::copy(jive::region * region, jive::substitution_map & smap) const
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {
-				target_gate = region->graph()->create_gate(gate->type(), gate->name(), gate->rescls());
+				target_gate = region->graph()->create_gate(gate);
 				smap.insert(gate, target_gate);
 			}
 

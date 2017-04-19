@@ -249,11 +249,14 @@ public:
 
 	gate(
 		jive::graph * graph,
-		const char name[],
-		const jive::base::type & type,
-		const struct jive_resource_class * rescls = &jive_root_resource_class);
+		const std::string & name,
+		const jive::base::type & type);
 
-public:
+	gate(
+		jive::graph * graph,
+		const std::string & name,
+		const struct jive_resource_class * rescls);
+
 	const jive::base::type &
 	type() const noexcept
 	{

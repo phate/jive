@@ -391,7 +391,7 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 			auto gate = input(n)->gate();
 			auto new_gate = smap.lookup(gate);
 			if (!new_gate) {
-				new_gate = graph()->create_gate(gate->type(), gate->name(), gate->rescls());
+				new_gate = graph()->create_gate(gate);
 				smap.insert(gate, new_gate);
 			}
 
@@ -411,7 +411,7 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 			auto gate = output(n)->gate();
 			auto new_gate = smap.lookup(gate);
 			if (!new_gate) {
-				new_gate = graph()->create_gate(gate->type(), gate->name(), gate->rescls());
+				new_gate = graph()->create_gate(gate);
 				smap.insert(gate, new_gate);
 			}
 

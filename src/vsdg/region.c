@@ -339,7 +339,7 @@ region::copy(region * target, substitution_map & smap) const
 			auto gate = argument(n)->gate();
 			auto new_gate = smap.lookup(gate);
 			if (!new_gate) {
-				new_gate = graph()->create_gate(gate->type(), gate->name(), gate->rescls());
+				new_gate = graph()->create_gate(gate);
 				smap.insert(gate, new_gate);
 			}
 
@@ -360,7 +360,7 @@ region::copy(region * target, substitution_map & smap) const
 			auto gate = result(n)->gate();
 			auto new_gate = smap.lookup(gate);
 			if (!new_gate) {
-				new_gate = graph()->create_gate(gate->type(), gate->name(), gate->rescls());
+				new_gate = graph()->create_gate(gate);
 				smap.insert(gate, new_gate);
 			}
 
