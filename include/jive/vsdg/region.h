@@ -209,8 +209,8 @@ public:
 		\brief Copy a region with substitutions
 		\param target Target region to create nodes in
 		\param substitution Operand and gate substitutions
-		\param copy_top Copy top node of region
-		\param copy_bottom Copy bottom node of region
+		\param copy_arguments Copy region arguments
+		\param copy_results Copy region results
 
 		Copies all nodes of the specified region and its
 		subregions into the target region. Substitutions
@@ -218,7 +218,11 @@ public:
 		map will be updated as nodes are copied.
 	*/
 	void
-	copy(region * target, substitution_map & smap) const;
+	copy(
+		region * target,
+		substitution_map & smap,
+		bool copy_arguments,
+		bool copy_results) const;
 
 	void
 	prune(bool recursive);

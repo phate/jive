@@ -291,66 +291,39 @@ region::remove_node(jive::node * node)
 }
 
 void
-region::copy(region * target, substitution_map & smap) const
+region::copy(
+	region * target,
+	substitution_map & smap,
+	bool copy_arguments,
+	bool copy_results) const
 {
-	std::function<void (
-		const region*,
-		region*,
-		std::vector<std::vector<const jive::node*>>&,
-		substitution_map&
-	)>
-	pre_copy_region = [&] (
-		const region * source,
-		region * target,
-		std::vector<std::vector<const jive::node*>> & context,
-		substitution_map & smap)
-	{
-		for (const auto & node : source->nodes) {
-			if (node.depth() >= context.size())
-				context.resize(node.depth()+1);
-			context[node.depth()].push_back(&node);
-		}
-	};
-
 	smap.insert(this, target);
+
+	/* order nodes top-down */
 	std::vector<std::vector<const jive::node*>> context;
-	pre_copy_region(this, target, context, smap);
-
-	/* copy arguments */
-	for (size_t n = 0; n < narguments(); n++) {
-		jive::argument * new_argument;
-		if (argument(n)->gate()) {
-			auto gate = argument(n)->gate();
-			auto new_gate = smap.lookup(gate);
-			if (!new_gate) {
-				new_gate = graph()->create_gate(gate);
-				smap.insert(gate, new_gate);
-			}
-
-			new_argument = target->add_argument(smap.lookup(argument(n)->input()), gate);
-		} else {
-			new_argument = target->add_argument(smap.lookup(argument(n)->input()), argument(n)->type());
-		}
-		smap.insert(argument(n), new_argument);
+	for (const auto & node : nodes) {
+		if (node.depth() >= context.size())
+			context.resize(node.depth()+1);
+		context[node.depth()].push_back(&node);
 	}
 
-	/* copy results */
-	for (size_t n = 0; n < nresults(); n++) {
-		auto origin = smap.lookup(result(n)->origin());
-		if (!origin) origin = result(n)->origin();
+	/* copy arguments */
+	if (copy_arguments) {
+		for (size_t n = 0; n < narguments(); n++) {
+			jive::argument * new_argument;
+			if (argument(n)->gate()) {
+				auto gate = argument(n)->gate();
+				auto new_gate = smap.lookup(gate);
+				if (!new_gate) {
+					new_gate = graph()->create_gate(gate);
+					smap.insert(gate, new_gate);
+				}
 
-		auto output = dynamic_cast<jive::structural_output*>(smap.lookup(result(n)->output()));
-		if (result(n)->gate()) {
-			auto gate = result(n)->gate();
-			auto new_gate = smap.lookup(gate);
-			if (!new_gate) {
-				new_gate = graph()->create_gate(gate);
-				smap.insert(gate, new_gate);
+				new_argument = target->add_argument(smap.lookup(argument(n)->input()), gate);
+			} else {
+				new_argument = target->add_argument(smap.lookup(argument(n)->input()), argument(n)->type());
 			}
-
-			target->add_result(origin, output, gate);
-		} else {
-			target->add_result(origin, output, result(n)->type());
+			smap.insert(argument(n), new_argument);
 		}
 	}
 
@@ -359,6 +332,28 @@ region::copy(region * target, substitution_map & smap) const
 		for (const auto node : context[n]) {
 			target = smap.lookup(node->region());
 			node->copy(target, smap);
+		}
+	}
+
+	/* copy results */
+	if (copy_results) {
+		for (size_t n = 0; n < nresults(); n++) {
+			auto origin = smap.lookup(result(n)->origin());
+			if (!origin) origin = result(n)->origin();
+
+			auto output = dynamic_cast<jive::structural_output*>(smap.lookup(result(n)->output()));
+			if (result(n)->gate()) {
+				auto gate = result(n)->gate();
+				auto new_gate = smap.lookup(gate);
+				if (!new_gate) {
+					new_gate = graph()->create_gate(gate);
+					smap.insert(gate, new_gate);
+				}
+
+				target->add_result(origin, output, gate);
+			} else {
+				target->add_result(origin, output, result(n)->type());
+			}
 		}
 	}
 }

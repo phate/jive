@@ -4,6 +4,7 @@ TESTS+=\
 	vsdg/test-cse \
 	vsdg/test-gamma \
 	vsdg/test-graph \
+	vsdg/test-nodes \
 	vsdg/test-phi \
 	vsdg/test-rescls-count \
 	vsdg/test-statesplit \

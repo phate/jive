@@ -401,8 +401,10 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 			}
 
 			new_output = new_node->add_output(new_gate);
-		} else {
+		} else if (output(n)->rescls() != &jive_root_resource_class) {
 			new_output = new_node->add_output(output(n)->rescls());
+		} else {
+			new_output = new_node->add_output(&output(n)->type());
 		}
 		smap.insert(output(n), new_output);
 	}
@@ -411,7 +413,7 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 	for (size_t n = 0; n < nsubregions(); n++) {
 		new_node->subregions_.emplace_back(std::unique_ptr<jive::region>(new jive::region(new_node)));
 		auto new_subregion = new_node->subregions_.back().get();
-		subregion(n)->copy(new_subregion, smap);
+		subregion(n)->copy(new_subregion, smap, true, true);
 	}
 
 	return new_node;

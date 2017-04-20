@@ -41,7 +41,7 @@ graph::copy() const
 {
 	jive::substitution_map smap;
 	std::unique_ptr<jive::graph> graph(new jive::graph());
-	root()->copy(graph->root(), smap);
+	root()->copy(graph->root(), smap, true, true);
 	return graph;
 }
 
