@@ -33,36 +33,37 @@ gamma_normal_form::gamma_normal_form(
 }
 
 bool
-gamma_normal_form::normalize_node(jive::node * node) const
+gamma_normal_form::normalize_node(jive::node * node_) const
 {
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_op*>(&node_->operation()));
+	auto node = static_cast<const jive::structural_node*>(node_);
+
 	if (!get_mutable())
 		return true;
 
-	/* FIXME: predicate reduction is broken */
 	bool was_normalized = true;
 	if (get_predicate_reduction()) {
-		auto predicate = dynamic_cast<jive::output*>(node->input(node->ninputs()-1)->origin());
-		if (predicate) {
-			if (auto op = dynamic_cast<const jive::ctl::constant_op*>(&predicate->node()->operation())) {
-				size_t nalts = op->value().nalternatives();
-				jive::node * tail = dynamic_cast<jive::output*>(node->input(nalts)->origin())->node();
-				jive::node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
+		auto constant = node->input(0)->origin()->node();
+		if (constant && dynamic_cast<const jive::ctl::constant_op*>(&constant->operation())) {
+			auto op = static_cast<const jive::ctl::constant_op*>(&constant->operation());
+			size_t alternative = op->value().alternative();
 
-				jive::substitution_map map;
-				for (size_t n = 1; n < head->noutputs(); n++)
-					map.insert(head->output(n), dynamic_cast<jive::output*>(head->input(n-1)->origin()));
+			jive::substitution_map smap;
+			JIVE_DEBUG_ASSERT(node->subregion(alternative)->narguments() == node->ninputs()-1);
+			for (size_t n = 1; n < node->ninputs(); n++)
+				smap.insert(node->subregion(alternative)->argument(n-1), node->input(n)->origin());
 
-				tail->region()->copy(node->region(), map, true, true);
+			node->subregion(alternative)->copy(node->region(), smap, false, false);
 
-				for (size_t n = 1; n < node->noutputs(); n++) {
-					jive::output * original = dynamic_cast<jive::output*>(tail->input(n)->origin());
-					node->output(n)->replace(map.lookup(original));
-				}
-				was_normalized = false;
+			JIVE_DEBUG_ASSERT(node->subregion(alternative)->nresults() == node->noutputs());
+			for (size_t n = 0; n < node->noutputs(); n++) {
+				auto result = node->subregion(alternative)->result(n);
+				node->output(n)->replace(smap.lookup(result->origin()));
 			}
+			was_normalized = false;
 		}
 	}
-
+#if 0
 	/* FIXME: invariant reduction is broken */
 	if (get_invariant_reduction()) {
 		size_t nalternatives = node->ninputs()-1;
@@ -84,6 +85,7 @@ gamma_normal_form::normalize_node(jive::node * node) const
 			}
 		}
 	}
+#endif
 
 	return was_normalized;
 }
@@ -97,8 +99,8 @@ gamma_normal_form::operands_are_normalized(
 		return true;
 	
 	if (get_predicate_reduction()) {
-		jive::output * predicate = dynamic_cast<jive::output*>(arguments[arguments.size()-1]);
-		if (predicate && dynamic_cast<const jive::ctl::constant_op*>(&predicate->node()->operation()))
+		auto constant  = arguments[0]->node();
+		if (constant && dynamic_cast<const jive::ctl::constant_op*>(&constant->operation()))
 			return false;
 	}
 	

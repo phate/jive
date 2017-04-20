@@ -13,8 +13,8 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/simple_node.h>
 
-static int
-test_main(void)
+static void
+test_gamma(void)
 {
 	jive::graph graph;
 
@@ -26,7 +26,6 @@ test_main(void)
 	auto v1 = graph.import(bits32, "");
 	auto v2 = graph.import(bits32, "");
 
-	//create normal gamma
 	auto pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 
 	jive::gamma_builder gb;
@@ -38,16 +37,50 @@ test_main(void)
 	auto gamma = gb.end();
 
 	graph.export_port(gamma->output(0), "dummy");
-	assert(gamma && gamma->operation() == jive::gamma_op(3));
-
 	jive::view(graph.root(), stdout);
-#if 0
-	//predicate reduction
-	pred = jive_control_constant(graph.root(), 3, 1);
-	result = jive_gamma(pred, {&bits32}, {{v0}, {v1}, {v2}});
-	jive_graph_export(&graph, result[0]);
-	assert(result[0] == v1);
 
+	assert(gamma && gamma->operation() == jive::gamma_op(3));
+}
+
+static void
+test_predicate_reduction(void)
+{
+	jive::graph graph;
+
+	jive::bits::type bits2(2);
+	jive::bits::type bits32(32);
+
+	auto v0 = graph.import(bits32, "");
+	auto v1 = graph.import(bits32, "");
+	auto v2 = graph.import(bits32, "");
+
+	auto pred = jive_control_constant(graph.root(), 3, 1);
+
+	jive::gamma_builder gb;
+	gb.begin(pred);
+	auto ev0 = gb.add_entryvar(v0);
+	auto ev1 = gb.add_entryvar(v1);
+	auto ev2 = gb.add_entryvar(v2);
+	gb.add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
+	auto gamma = gb.end();
+
+	auto r = graph.export_port(gamma->output(0), "");
+
+	graph.normalize();
+	jive::view(graph.root(), stdout);
+	assert(r->origin() == v1);
+
+	graph.prune();
+	assert(graph.root()->nodes.size() == 0);
+}
+
+static int
+test_main(void)
+{
+	test_gamma();
+	test_predicate_reduction();
+
+#if 0
 	//invariant variable reduction
 	pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 	result = jive_gamma(pred, {&bits32, &bits32}, {{v0, v0}, {v0, v1}, {v0, v2}});
