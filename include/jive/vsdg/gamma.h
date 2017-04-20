@@ -28,12 +28,6 @@ public:
 	{
 	}
 
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const base::type &
-	argument_type(size_t index) const noexcept override;
-
 	inline size_t
 	nalternatives() const noexcept
 	{

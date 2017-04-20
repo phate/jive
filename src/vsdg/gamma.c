@@ -26,19 +26,6 @@ gamma_op::~gamma_op() noexcept
 {
 }
 
-size_t
-gamma_op::narguments() const noexcept
-{
-	return 1;
-}
-
-const base::type &
-gamma_op::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return predicate_type_;
-}
-
 std::string
 gamma_op::debug_string() const
 {
