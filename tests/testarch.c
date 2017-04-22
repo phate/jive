@@ -555,13 +555,9 @@ public:
 		jive::oport * o = subroutine.builder_state->arguments[index].output;
 	
 		if (index >= 2) {
-			const jive::base::type * in_type = &o->type();
-			const jive::base::type * out_type =
-				jive_resource_class_get_type(&jive_testarch_regcls_gpr.base);
-			jive::node * node = jive_splitnode_create(subroutine.region,
-				in_type, o, o->gate()->rescls(),
-				out_type, &jive_testarch_regcls_gpr.base);
-			o = dynamic_cast<jive::output*>(node->output(0));
+			auto node = jive_splitnode_create(subroutine.region, o, o->gate()->rescls(),
+				&jive_testarch_regcls_gpr.base);
+			o = node->output(0);
 		}
 		return o;
 	}

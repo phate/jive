@@ -143,12 +143,8 @@ public:
 		size_t index) override
 	{
 		auto o = subroutine.builder_state->arguments[index].output;
-	
-		const jive::base::type * in_type = &o->type();
-		const jive::base::type * out_type = jive_resource_class_get_type(&jive_i386_regcls_gpr.base);
-		jive::node * node = jive_splitnode_create(subroutine.region,
-			in_type, o, o->gate()->rescls(),
-			out_type, &jive_i386_regcls_gpr.base);
+		auto node = jive_splitnode_create(subroutine.region, o, o->gate()->rescls(),
+			&jive_i386_regcls_gpr.base);
 		return node->output(0);
 	}
 

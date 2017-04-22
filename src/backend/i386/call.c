@@ -73,19 +73,16 @@ jive_i386_call_node_substitute(
 		jive::output * value = dynamic_cast<jive::output*>(node->input(n+1)->origin());
 		
 		const jive_resource_class * value_cls = value->rescls();
-		const jive::base::type * value_type = &value->type();
 		if (value_cls == &jive_root_resource_class) {
 			/* FIXME: assumes  int32 */
 			value_cls = &jive_i386_regcls_gpr.base;
 		}
 		
 		const jive_resource_class * slot_cls = jive_callslot_class_get(4, 4, offset);
-		const jive::base::type * slot_type = jive_resource_class_get_type(slot_cls);
 		
 		offset += 4;
 		
-		jive::node * split = jive_splitnode_create(node->region(), value_type, value, value_cls,
-			slot_type, slot_cls);
+		jive::node * split = jive_splitnode_create(node->region(), value, value_cls, slot_cls);
 		
 		call_instr->add_input(slot_cls, split->output(0));
 	}

@@ -76,10 +76,8 @@ private:
 
 jive::node *
 jive_splitnode_create(struct jive::region * region,
-	const jive::base::type * in_type,
 	jive::oport * in_origin,
 	const struct jive_resource_class * in_class,
-	const jive::base::type * out_type,
 	const struct jive_resource_class * out_class);
 
 #endif
