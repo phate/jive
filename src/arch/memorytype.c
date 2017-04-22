@@ -27,10 +27,10 @@ type::operator==(const jive::base::type & other) const noexcept
 	return dynamic_cast<const jive::mem::type*>(&other) != nullptr;
 }
 
-jive::mem::type *
+std::unique_ptr<base::type>
 type::copy() const
 {
-	return new jive::mem::type();
+	return std::unique_ptr<base::type>(new type(*this));
 }
 
 const type type::instance_;

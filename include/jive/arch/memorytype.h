@@ -22,7 +22,8 @@ public:
 
 	virtual bool operator==(const jive::base::type & other) const noexcept override;
 
-	virtual jive::mem::type * copy() const override;
+	virtual std::unique_ptr<base::type>
+	copy() const override;
 
 	inline static const type & instance() { return instance_; }
 

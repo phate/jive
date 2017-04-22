@@ -42,13 +42,17 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const jive::value::type & type() const noexcept { return *type_; }
+	inline const jive::value::type &
+	type() const noexcept
+	{
+		return *static_cast<const value::type*>(type_.get());
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	std::unique_ptr<jive::value::type> type_;
+	std::unique_ptr<base::type> type_;
 };
 
 class memlayout_mapper;

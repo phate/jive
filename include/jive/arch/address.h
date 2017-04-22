@@ -156,7 +156,10 @@ public:
 	debug_string() const override;
 
 	inline const jive::value::type &
-	element_type() const noexcept { return *element_type_; }
+	element_type() const noexcept
+	{
+		return *static_cast<const value::type*>(element_type_.get());
+	}
 
 	inline const jive::bits::type &
 	index_type() const noexcept { return index_type_; }
@@ -165,7 +168,7 @@ public:
 	copy() const override;
 
 private:
-	std::unique_ptr<jive::value::type> element_type_;
+	std::unique_ptr<base::type> element_type_;
 	jive::bits::type index_type_;
 };
 
@@ -197,7 +200,10 @@ public:
 	debug_string() const override;
 
 	inline const jive::value::type &
-	element_type() const noexcept { return *element_type_; }
+	element_type() const noexcept
+	{
+		return *static_cast<const value::type*>(element_type_.get());
+	}
 
 	inline const jive::bits::type &
 	index_type() const noexcept { return index_type_; }
@@ -206,7 +212,7 @@ public:
 	copy() const override;
 
 private:
-	std::unique_ptr<jive::value::type> element_type_;
+	std::unique_ptr<base::type> element_type_;
 	jive::bits::type index_type_;
 };
 

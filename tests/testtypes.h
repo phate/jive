@@ -30,8 +30,8 @@ public:
 	virtual bool
 	operator==(const jive::base::type & other) const noexcept override;
 
-	virtual
-	valuetype * copy() const override;
+	virtual std::unique_ptr<base::type>
+	copy() const override;
 };
 
 /* test state type */
@@ -52,8 +52,8 @@ public:
 	virtual bool
 	operator==(const jive::base::type & other) const noexcept override;
 
-	virtual
-	statetype * copy() const override;
+	virtual std::unique_ptr<base::type>
+	copy() const override;
 };
 
 }}

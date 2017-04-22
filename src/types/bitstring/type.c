@@ -34,10 +34,10 @@ type::operator==(const jive::base::type & _other) const noexcept
 	return other != nullptr && this->nbits() == other->nbits();
 }
 
-jive::bits::type *
+std::unique_ptr<base::type>
 type::copy() const
 {
-	return new jive::bits::type(this->nbits());
+	return std::unique_ptr<base::type>(new type(*this));
 }
 
 }

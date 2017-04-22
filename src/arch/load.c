@@ -44,14 +44,14 @@ load_op::operator==(const operation & other) const noexcept
 		op &&
 		op->address_type() == address_type() &&
 		op->data_type() == data_type() &&
-		detail::ptr_container_equals(op->state_types(), state_types())
+		detail::ptr_container_equals(op->state_types_, state_types_)
 	);
 }
 
 size_t
 load_op::narguments() const noexcept
 {
-	return 1 + state_types().size();
+	return 1 + state_types_.size();
 }
 
 const jive::base::type &
@@ -60,7 +60,7 @@ load_op::argument_type(size_t index) const noexcept
 	if (index == 0) {
 		return address_type();
 	} else {
-		return *state_types()[index - 1];
+		return *state_types_[index - 1];
 	}
 }
 
@@ -146,7 +146,7 @@ jive_load_by_address_create(jive::oport * address,
 	auto graph = address->region()->graph();
 	const auto nf = graph->node_normal_form(typeid(jive::load_op));
 	
-	std::vector<std::unique_ptr<jive::state::type>> state_types;
+	std::vector<std::unique_ptr<jive::base::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
 		state_types.emplace_back(
 			dynamic_cast<const jive::state::type &>(states[n]->type()).copy());
@@ -165,7 +165,7 @@ jive_load_by_bitstring_create(jive::oport * address, size_t nbits,
 	auto graph = address->region()->graph();
 	const auto nf = graph->node_normal_form(typeid(jive::load_op));
 	
-	std::vector<std::unique_ptr<jive::state::type>> state_types;
+	std::vector<std::unique_ptr<jive::base::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
 		state_types.emplace_back(
 			dynamic_cast<const jive::state::type &>(states[n]->type()).copy());

@@ -60,8 +60,7 @@ public:
 	virtual bool
 	operator==(const jive::base::type & other) const noexcept override;
 
-	virtual
-	jive::fct::type *
+	virtual std::unique_ptr<base::type>
 	copy() const override;
 
 	jive::fct::type &

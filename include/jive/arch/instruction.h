@@ -7,6 +7,7 @@
 #ifndef JIVE_ARCH_INSTRUCTION_H
 #define JIVE_ARCH_INSTRUCTION_H
 
+#include <algorithm>
 #include <string.h>
 
 #include <jive/arch/immediate-node.h>
@@ -30,12 +31,17 @@ public:
 	inline
 	instruction_op(
 		const jive_instruction_class * icls,
-		const std::vector<std::unique_ptr<jive::state::type>> & istates,
-		const std::vector<std::unique_ptr<jive::state::type>> & ostates)
+		const std::vector<const jive::state::type*> & istates,
+		const std::vector<const jive::state::type*> & ostates)
 		: icls_(icls)
-		, istates_(detail::unique_ptr_vector_copy(istates))
-		, ostates_(detail::unique_ptr_vector_copy(ostates))
-	{}
+		, istates_(istates.size())
+		, ostates_(ostates.size())
+	{
+		std::transform(istates.begin(), istates.end(), istates_.begin(),
+			[](const auto & t){ return t->copy(); });
+		std::transform(ostates.begin(), ostates.end(), ostates_.begin(),
+			[](const auto & t){ return t->copy(); });
+	}
 
 	inline
 	instruction_op(const instruction_op & other)
@@ -72,25 +78,13 @@ public:
 		return icls_;
 	}
 
-	inline const std::vector<std::unique_ptr<jive::state::type>> &
-	istates() const noexcept
-	{
-		return istates_;
-	}
-
-	inline const std::vector<std::unique_ptr<jive::state::type>> &
-	ostates() const noexcept
-	{
-		return ostates_;
-	}
-
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
 	const jive_instruction_class * icls_;
-	std::vector<std::unique_ptr<jive::state::type>> istates_;
-	std::vector<std::unique_ptr<jive::state::type>> ostates_;
+	std::vector<std::unique_ptr<base::type>> istates_;
+	std::vector<std::unique_ptr<base::type>> ostates_;
 };
 
 }

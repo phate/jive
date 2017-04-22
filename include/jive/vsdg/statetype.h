@@ -62,7 +62,7 @@ public:
 	copy() const override;
 
 private:
-	std::unique_ptr<type> state_type_;
+	std::unique_ptr<base::type> state_type_;
 	size_t narguments_;
 	size_t nresults_;
 };

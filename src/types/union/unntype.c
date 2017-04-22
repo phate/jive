@@ -31,10 +31,10 @@ type::operator==(const jive::base::type & _other) const noexcept
 	return other != nullptr && this->declaration() == other->declaration();
 }
 
-jive::unn::type *
+std::unique_ptr<base::type>
 type::copy() const
 {
-	return new jive::unn::type(this->declaration());
+	return std::unique_ptr<base::type>(new type(*this));
 }
 
 }

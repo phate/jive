@@ -7,6 +7,7 @@
 #ifndef JIVE_ARCH_LOAD_H
 #define JIVE_ARCH_LOAD_H
 
+#include <algorithm>
 #include <memory>
 
 #include <jive/util/ptr-collection.h>
@@ -28,17 +29,21 @@ public:
 		const Types & state_types,
 		const jive::value::type & data_type)
 		: address_type_(address_type.copy())
-		, state_types_(detail::unique_ptr_vector_copy(state_types))
+		, state_types_(state_types.size())
 		, data_type_(data_type.copy())
 	{
+		std::transform(state_types.begin(), state_types.end(), state_types_.begin(),
+			[](const auto & t){ return t->copy(); });
 	}
 
 	inline
 	load_op(const load_op & other)
 		: address_type_(other.address_type_->copy())
-		, state_types_(detail::unique_ptr_vector_copy(other.state_types_))
+		, state_types_(other.state_types_.size())
 		, data_type_(other.data_type_->copy())
 	{
+		std::transform(other.state_types_.begin(), other.state_types_.end(), state_types_.begin(),
+			[](const auto & t){ return t->copy(); });
 	}
 
 	inline
@@ -62,21 +67,24 @@ public:
 	debug_string() const override;
 
 	inline const jive::value::type &
-	address_type() const noexcept { return *address_type_; }
-
-	inline const std::vector<std::unique_ptr<jive::state::type>> &
-	state_types() const noexcept { return state_types_; }
+	address_type() const noexcept
+	{
+		return *static_cast<const value::type*>(address_type_.get());
+	}
 
 	inline const jive::value::type &
-	data_type() const noexcept { return *data_type_; }
+	data_type() const noexcept
+	{
+		return *static_cast<const value::type*>(data_type_.get());
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	std::unique_ptr<jive::value::type> address_type_;
-	std::vector<std::unique_ptr<jive::state::type>> state_types_;
-	std::unique_ptr<jive::value::type> data_type_;
+	std::unique_ptr<base::type> address_type_;
+	std::vector<std::unique_ptr<base::type>> state_types_;
+	std::unique_ptr<base::type> data_type_;
 };
 
 }

@@ -43,10 +43,10 @@ type::operator==(const jive::base::type & other) const noexcept
 	return type && type->nalternatives_ == nalternatives_;
 }
 
-jive::ctl::type *
+std::unique_ptr<base::type>
 type::copy() const
 {
-	return new jive::ctl::type(nalternatives_);
+	return std::unique_ptr<base::type>(new type(*this));
 }
 
 /* value_repr */

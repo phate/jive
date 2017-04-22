@@ -89,7 +89,7 @@ fctliteral::fctliteral(
 }
 
 fctliteral::fctliteral(const fctliteral & other)
-	: type_(std::move(other.type_->copy()))
+	: type_(other.type_->copy())
 {
 	for (size_t n = 0; n < other.arguments_.size(); n++)
 		arguments_.emplace_back(other.arguments_[n]->copy());
@@ -109,7 +109,7 @@ fctliteral::operator=(const fctliteral & other)
 	for (size_t n = 0; n < other.results_.size(); n++)
 		results_.emplace_back(other.results_[n]->copy());
 
-	type_ = std::move(std::unique_ptr<fct::type>(new fct::type(*other.type_)));
+	type_ = std::move(other.type_->copy());
 	return *this;
 }
 

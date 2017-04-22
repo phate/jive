@@ -85,10 +85,10 @@ type::operator==(const jive::base::type & _other) const noexcept
 	return true;
 }
 
-jive::fct::type *
+std::unique_ptr<base::type>
 type::copy() const
 {
- return new jive::fct::type(*this);
+ return std::unique_ptr<base::type>(new type(*this));
 }
 
 jive::fct::type &

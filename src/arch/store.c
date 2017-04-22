@@ -50,14 +50,14 @@ store_op::operator==(const operation & other) const noexcept
 		op &&
 		op->address_type() == address_type() &&
 		op->data_type() == data_type() &&
-		detail::ptr_container_equals(op->state_types(), state_types())
+		detail::ptr_container_equals(op->state_types_, state_types_)
 	);
 }
 
 size_t
 store_op::narguments() const noexcept
 {
-	return 2 + state_types().size();
+	return 2 + state_types_.size();
 }
 
 const jive::base::type &
@@ -68,20 +68,20 @@ store_op::argument_type(size_t index) const noexcept
 	} else if (index == 1) {
 		return data_type();
 	} else {
-		return *state_types()[index - 2];
+		return *state_types_[index - 2];
 	}
 }
 
 size_t
 store_op::nresults() const noexcept
 {
-	return state_types().size();
+	return state_types_.size();
 }
 
 const jive::base::type &
 store_op::result_type(size_t index) const noexcept
 {
-	return *state_types()[index];
+	return *state_types_[index];
 }
 std::string
 store_op::debug_string() const
@@ -107,7 +107,7 @@ jive_store_by_address_create(jive::oport* address,
 	jive::graph * graph = address->region()->graph();
 	const auto nf = graph->node_normal_form(typeid(jive::store_op));
 	
-	std::vector<std::unique_ptr<jive::state::type>> state_types;
+	std::vector<std::unique_ptr<jive::base::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
 		state_types.emplace_back(
 			dynamic_cast<const jive::state::type &>(istates[n]->type()).copy());
@@ -126,7 +126,7 @@ jive_store_by_bitstring_create(jive::oport * address, size_t nbits,
 	jive::graph * graph = address->region()->graph();
 	const auto nf = graph->node_normal_form(typeid(jive::store_op));
 
-	std::vector<std::unique_ptr<jive::state::type>> state_types;
+	std::vector<std::unique_ptr<jive::base::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
 		state_types.emplace_back(
 			dynamic_cast<const jive::state::type &>(istates[n]->type()).copy());

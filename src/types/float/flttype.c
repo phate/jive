@@ -17,10 +17,10 @@ namespace flt {
 
 type::~type() noexcept {}
 
-jive::flt::type *
+std::unique_ptr<base::type>
 type::copy() const
 {
-	return new jive::flt::type();
+	return std::unique_ptr<base::type>(new type(*this));
 }
 
 std::string

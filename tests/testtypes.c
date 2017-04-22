@@ -25,10 +25,10 @@ valuetype::operator==(const jive::base::type & other) const noexcept
 	return dynamic_cast<const valuetype*>(&other) != nullptr;
 }
 
-valuetype *
+std::unique_ptr<base::type>
 valuetype::copy() const
 {
-	return new valuetype();
+	return std::unique_ptr<base::type>(new valuetype(*this));
 }
 
 /* test state type */
@@ -48,10 +48,10 @@ statetype::operator==(const jive::base::type & other) const noexcept
 	return dynamic_cast<const statetype*>(&other) != nullptr;
 }
 
-statetype *
+std::unique_ptr<base::type>
 statetype::copy() const
 {
-	return new statetype();
+	return std::unique_ptr<base::type>(new statetype(*this));
 }
 
 }}

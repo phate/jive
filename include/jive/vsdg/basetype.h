@@ -7,6 +7,7 @@
 #ifndef JIVE_VSDG_BASETYPE_H
 #define JIVE_VSDG_BASETYPE_H
 
+#include <memory>
 #include <string>
 
 namespace jive {
@@ -32,7 +33,7 @@ public:
 		return !(*this == other);
 	}
 
-	virtual jive::base::type *
+	virtual std::unique_ptr<type>
 	copy() const = 0;
 
 	virtual std::string
@@ -53,10 +54,6 @@ protected:
 	type() noexcept
 		: jive::base::type()
 	{}
-
-public:
-	virtual jive::value::type *
-	copy() const override = 0;
 };
 
 } //value namespace
@@ -73,10 +70,6 @@ protected:
 	type() noexcept
 		: jive::base::type()
 	{}
-
-public:
-	virtual jive::state::type *
-	copy() const override = 0;
 };
 
 }	//state namespace

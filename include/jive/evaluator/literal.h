@@ -147,7 +147,7 @@ public:
 	}
 
 private:
-	std::unique_ptr<jive::fct::type> type_;
+	std::unique_ptr<base::type> type_;
 	std::vector<std::unique_ptr<const literal>> arguments_;
 	std::vector<std::unique_ptr<const literal>> results_;
 };

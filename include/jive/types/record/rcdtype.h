@@ -10,6 +10,7 @@
 #include <jive/common.h>
 #include <jive/vsdg/basetype.h>
 
+#include <algorithm>
 #include <memory>
 #include <vector>
 
@@ -22,9 +23,10 @@ class declaration final {
 public:
 	inline
 	declaration(const std::vector<const value::type*> & types)
+	: types_(types.size())
 	{
-		for (auto type : types)
-			types_.emplace_back(std::unique_ptr<value::type>(type->copy()));
+		std::transform(types.begin(), types.end(), types_.begin(),
+			[](const auto & t){ return t->copy(); });
 	}
 
 	declaration(const declaration & other) = delete;
@@ -42,11 +44,11 @@ public:
 	element(size_t index) const noexcept
 	{
 		JIVE_DEBUG_ASSERT(index < nelements());
-		return *types_[index];
+		return *static_cast<const value::type*>(types_[index].get());
 	}
 
 private:
-	std::vector<std::unique_ptr<value::type>> types_;
+	std::vector<std::unique_ptr<base::type>> types_;
 };
 
 /* type */
@@ -71,7 +73,8 @@ public:
 
 	virtual bool operator==(const jive::base::type & type) const noexcept override;
 
-	virtual jive::rcd::type * copy() const override;
+	virtual std::unique_ptr<base::type>
+	copy() const override;
 
 private:
 	std::shared_ptr<const rcd::declaration> decl_;
