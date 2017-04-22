@@ -5,6 +5,7 @@
 
 #include "test-registry.h"
 #include "testnodes.h"
+#include "testtypes.h"
 
 #include <jive/types/bitstring/type.h>
 #include <jive/view.h>
@@ -74,22 +75,38 @@ test_predicate_reduction(void)
 	assert(graph.root()->nodes.size() == 0);
 }
 
+static void
+test_invariant_reduction(void)
+{
+	jive::graph graph;
+
+	jive::test::valuetype vtype;
+
+	auto pred = graph.import(jive::ctl::boolean, "");
+	auto v = graph.import(vtype, "");
+
+	jive::gamma_builder gb;
+	gb.begin(pred);
+	auto ev = gb.add_entryvar(v);
+	gb.add_exitvar({ev->argument(0), ev->argument(1)});
+	auto gamma = gb.end();
+
+	auto r = graph.export_port(gamma->output(0), "");
+
+	graph.normalize();
+	jive::view(graph.root(), stdout);
+	assert(r->origin() == v);
+
+	graph.prune();
+	assert(graph.root()->nodes.size() == 0);
+}
+
 static int
 test_main(void)
 {
 	test_gamma();
 	test_predicate_reduction();
-
-#if 0
-	//invariant variable reduction
-	pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
-	result = jive_gamma(pred, {&bits32, &bits32}, {{v0, v0}, {v0, v1}, {v0, v2}});
-	jive_graph_export(&graph, result[0]);
-	jive_graph_export(&graph, result[1]);
-	assert(result[0] == v0);
-	assert(result[1]->node()->operation() == jive::gamma_op(3));
-#endif
-//	jive_view(&graph, stdout);
+	test_invariant_reduction();
 
 	return 0;
 }

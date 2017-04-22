@@ -36,7 +36,7 @@ bool
 gamma_normal_form::normalize_node(jive::node * node_) const
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_op*>(&node_->operation()));
-	auto node = static_cast<const jive::structural_node*>(node_);
+	auto node = static_cast<jive::structural_node*>(node_);
 
 	if (!get_mutable())
 		return true;
@@ -63,29 +63,27 @@ gamma_normal_form::normalize_node(jive::node * node_) const
 			was_normalized = false;
 		}
 	}
-#if 0
-	/* FIXME: invariant reduction is broken */
+
 	if (get_invariant_reduction()) {
-		size_t nalternatives = node->ninputs()-1;
-		for (size_t v = node->noutputs(); v > 0; --v) {
+		jive::gamma gamma(node);
+		for (auto it = gamma.begin_exitvar(); it != gamma.end_exitvar(); it++) {
+			auto argument = dynamic_cast<const jive::argument*>(it->result(0)->origin());
+			if (!argument) continue;
+
 			size_t n;
-			jive::node * tmp = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
-			jive::output * value = dynamic_cast<jive::output*>(tmp->input(v-1)->origin());
-			for (n = 1; n < nalternatives; n++) {
-				jive::node * tail_node = dynamic_cast<jive::output*>(node->input(n)->origin())->node();
-				if (value != dynamic_cast<jive::output*>(tail_node->input(v-1)->origin()))
+			size_t index = argument->index();
+			for (n = 1; n < it->nresults(); n++) {
+				auto argument = dynamic_cast<const jive::argument*>(it->result(n)->origin());
+				if (!argument && argument->index() != index)
 					break;
 			}
-			if (n == nalternatives) {
-				node->output(v-1)->replace(tmp->input(v-1)->origin());
-				delete node->output(v-1);
-				for (size_t n = 0; n < nalternatives; n++)
-					dynamic_cast<jive::output*>(node->input(n)->origin())->node()->remove_input(v-1);
+
+			if (n == it->nresults()) {
+				it->output()->replace(argument->input()->origin());
 				was_normalized = false;
 			}
 		}
 	}
-#endif
 
 	return was_normalized;
 }
@@ -104,22 +102,6 @@ gamma_normal_form::operands_are_normalized(
 			return false;
 	}
 	
-	if (get_invariant_reduction()) {
-		size_t nalternatives = arguments.size()-1;
-		auto arg0 = dynamic_cast<jive::output*>(arguments[0]);
-		for (size_t v = 0; v < arg0->node()->ninputs(); v++) {
-			size_t n;
-			jive::output * value = dynamic_cast<jive::output*>(arg0->node()->input(v)->origin());
-			for (n = 1; n < nalternatives; n++) {
-				auto argn = dynamic_cast<jive::output*>(arguments[n]);
-				if (value != argn->node()->input(v)->origin())
-					break;
-			}
-			if (n == nalternatives)
-				return false;
-		}
-	}
-
 	return true;
 }
 
