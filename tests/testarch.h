@@ -83,27 +83,6 @@ DECLARE_TESTARCH_INSTRUCTION(ret);
 
 }}
 
-extern const jive_instruction_class jive_testarch_instr_nop;
-extern const jive_instruction_class jive_testarch_instr_add;
-extern const jive_instruction_class jive_testarch_instr_load_disp;
-extern const jive_instruction_class jive_testarch_instr_store_disp;
-
-extern const jive_instruction_class jive_testarch_instr_spill_gpr;
-extern const jive_instruction_class jive_testarch_instr_restore_gpr;
-extern const jive_instruction_class jive_testarch_instr_move_gpr;
-
-extern const jive_instruction_class jive_testarch_instr_setr0;
-extern const jive_instruction_class jive_testarch_instr_setr1;
-extern const jive_instruction_class jive_testarch_instr_setr2;
-extern const jive_instruction_class jive_testarch_instr_setr3;
-
-extern const jive_instruction_class jive_testarch_instr_add_gpr;
-extern const jive_instruction_class jive_testarch_instr_sub_gpr;
-
-extern const jive_instruction_class jive_testarch_instr_jump;
-extern const jive_instruction_class jive_testarch_instr_jumpz;
-extern const jive_instruction_class jive_testarch_instr_jumpnz;
-
 jive_subroutine
 jive_testarch_subroutine_begin(jive::graph * graph,
 	size_t nparameters, const jive_argument_type parameter_types[],
