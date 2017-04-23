@@ -24,7 +24,6 @@ struct jive_section;
 
 typedef struct jive_asmgen_imm jive_asmgen_imm;
 typedef struct jive_codegen_imm jive_codegen_imm;
-typedef struct jive_instruction_class jive_instruction_class;
 
 /* immediates, as represented during code generation */
 
