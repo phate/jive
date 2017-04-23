@@ -149,36 +149,3 @@ jive_instruction_node_create(
 	jive::instruction_op op(icls, itypes, otypes);
 	return region->add_simple_node(op, arguments);
 }
-
-static void
-jive_encode_PSEUDO_NOP(const jive_instruction_class * icls,
-	jive_section * target,
-	const jive_register_name * inputs[],
-	const jive_register_name * outputs[],
-	const jive_codegen_imm immediates[],
-	jive_instruction_encoding_flags * flags)
-{
-}
-
-static void
-jive_write_asm_PSEUDO_NOP(const jive_instruction_class * icls,
-	jive_buffer * target,
-	const jive_register_name * inputs[],
-	const jive_register_name * outputs[],
-	const jive_asmgen_imm immediates[],
-	jive_instruction_encoding_flags * flags)
-{
-}
-
-const jive_instruction_class JIVE_PSEUDO_NOP = {
-	name : "PSEUDO_NOP",
-	mnemonic : "",
-	encode : jive_encode_PSEUDO_NOP,
-	write_asm : jive_write_asm_PSEUDO_NOP,
-	inregs : 0,
-	outregs : 0,
-	flags : jive_instruction_flags_none,
-	ninputs : 0,
-	noutputs : 0,
-	nimmediates : 0
-};

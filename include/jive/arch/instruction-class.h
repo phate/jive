@@ -199,6 +199,4 @@ struct jive_instruction_class {
 	const jive_instruction_class * inverse_jump;
 };
 
-extern const jive_instruction_class JIVE_PSEUDO_NOP;
-
 #endif
