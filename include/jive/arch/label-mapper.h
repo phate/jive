@@ -26,14 +26,14 @@ struct jive_label_name_mapper {
 	const jive_label_name_mapper_class * class_;
 };
 
-JIVE_EXPORTED_INLINE void
+static inline void
 jive_label_name_mapper_destroy(jive_label_name_mapper * self)
 {
 	self->class_->destroy(self);
 }
 
 
-JIVE_EXPORTED_INLINE const char *
+static inline const char *
 jive_label_name_mapper_map_named_symbol(
 	jive_label_name_mapper * self,
 	const jive_linker_symbol * symbol)
@@ -41,7 +41,7 @@ jive_label_name_mapper_map_named_symbol(
 	return self->class_->map_named_symbol(self, symbol);
 }
 
-JIVE_EXPORTED_INLINE const char *
+static inline const char *
 jive_label_name_mapper_map_anon_symbol(
 	jive_label_name_mapper * self,
 	const void * symbol)
@@ -76,13 +76,13 @@ struct jive_label_symbol_mapper {
 	const jive_label_symbol_mapper_class * class_;
 };
 
-JIVE_EXPORTED_INLINE void
+static inline void
 jive_label_symbol_mapper_destroy(jive_label_symbol_mapper * self)
 {
 	self->class_->destroy(self);
 }
 
-JIVE_EXPORTED_INLINE const struct jive_linker_symbol *
+static inline const struct jive_linker_symbol *
 jive_label_symbol_mapper_map_label_external(
 	jive_label_symbol_mapper * self,
 	const jive_label_external * label)

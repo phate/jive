@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-JIVE_EXPORTED_INLINE uint32_t
+static inline uint32_t
 jive_float_raw_mantissa(float f)
 {
 	union {
@@ -22,7 +22,7 @@ jive_float_raw_mantissa(float f)
 	return (u.int_value & 0x007FFFFF);
 }
 
-JIVE_EXPORTED_INLINE uint8_t
+static inline uint8_t
 jive_float_raw_exponent(float f)
 {
 	union {
@@ -33,7 +33,7 @@ jive_float_raw_exponent(float f)
 	return ((u.int_value & 0x7F800000) >> 23);
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_float_is_signed(float f)
 {
 	union {
@@ -44,7 +44,7 @@ jive_float_is_signed(float f)
 	return (u.int_value >> 31);
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_float_is_normalized(float f)
 {
 	uint8_t e = jive_float_raw_exponent(f);
@@ -54,7 +54,7 @@ jive_float_is_normalized(float f)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_float_is_zero(float f)
 {
 	if (jive_float_raw_exponent(f) == 0 && jive_float_raw_mantissa(f) == 0)
@@ -63,7 +63,7 @@ jive_float_is_zero(float f)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_float_is_signed_zero(float f)
 {
 	if (jive_float_is_zero(f) && jive_float_is_signed(f))
@@ -72,7 +72,7 @@ jive_float_is_signed_zero(float f)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_float_is_unsigned_zero(float f)
 {
 	if (jive_float_is_zero(f) && !jive_float_is_signed(f))
@@ -81,7 +81,7 @@ jive_float_is_unsigned_zero(float f)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_float_is_infinity(float f)
 {
 	if (jive_float_raw_exponent(f) == 255 && jive_float_raw_mantissa(f) == 0)
@@ -90,7 +90,7 @@ jive_float_is_infinity(float f)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_float_is_signed_infinity(float f)
 {
 	if (jive_float_is_infinity(f) && jive_float_is_signed(f))
@@ -99,7 +99,7 @@ jive_float_is_signed_infinity(float f)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_float_is_unsigned_infinity(float f)
 {
 	if (jive_float_is_infinity(f) && !jive_float_is_signed(f))
@@ -108,7 +108,7 @@ jive_float_is_unsigned_infinity(float f)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_float_is_nan(float f)
 {
 	if (jive_float_raw_exponent(f) == 255 && jive_float_raw_mantissa(f) != 0)
@@ -117,7 +117,7 @@ jive_float_is_nan(float f)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_float_is_value(float f)
 {
 	if (jive_float_raw_exponent(f) == 255)
@@ -126,7 +126,7 @@ jive_float_is_value(float f)
 	return true;
 }
 
-JIVE_EXPORTED_INLINE uint32_t
+static inline uint32_t
 jive_float_decoded_mantissa(float f)
 {
 	JIVE_DEBUG_ASSERT(jive_float_is_value(f));
@@ -138,7 +138,7 @@ jive_float_decoded_mantissa(float f)
 	return m;
 }
 
-JIVE_EXPORTED_INLINE int8_t
+static inline int8_t
 jive_float_decoded_exponent(float f)
 {
 	JIVE_DEBUG_ASSERT(jive_float_is_value(f));

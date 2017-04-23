@@ -68,14 +68,14 @@ jive_buffer_executable(const jive_buffer * self);
 
 /* implementation */
 
-JIVE_EXPORTED_INLINE const char *
+static inline const char *
 jive_buffer_to_string(struct jive_buffer * self)
 {
 	jive_buffer_putbyte(self, '\0');
 	return static_cast<const char*>(&self->data[0]);
 }
 
-JIVE_EXPORTED_INLINE void
+static inline void
 jive_buffer_clear(struct jive_buffer * self)
 {
 	self->data.clear();

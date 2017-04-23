@@ -32,7 +32,7 @@ struct jive_linker_symbol_resolver {
 	const jive_linker_symbol_resolver_class * class_;
 };
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_linker_symbol_resolver_resolve(
 	const jive_linker_symbol_resolver * self,
 	const jive_linker_symbol * symbol,
@@ -59,7 +59,7 @@ struct jive_symref {
 	} ref;
 };
 
-JIVE_EXPORTED_INLINE jive_symref
+static inline jive_symref
 jive_symref_none(void)
 {
 	jive_symref symref;
@@ -67,7 +67,7 @@ jive_symref_none(void)
 	return symref;
 }
 
-JIVE_EXPORTED_INLINE jive_symref
+static inline jive_symref
 jive_symref_section(jive_stdsectionid section)
 {
 	jive_symref symref;
@@ -76,7 +76,7 @@ jive_symref_section(jive_stdsectionid section)
 	return symref;
 }
 
-JIVE_EXPORTED_INLINE jive_symref
+static inline jive_symref
 jive_symref_linker_symbol(const jive_linker_symbol * linker_symbol)
 {
 	jive_symref symref;

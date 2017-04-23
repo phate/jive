@@ -29,7 +29,7 @@ public:
 
 }
 
-JIVE_EXPORTED_INLINE jive::region *
+static inline jive::region *
 jive_phi_region_cast(jive::region * region)
 {
 	/*
@@ -41,7 +41,7 @@ jive_phi_region_cast(jive::region * region)
 	return nullptr;
 }
 
-JIVE_EXPORTED_INLINE const jive::region *
+static inline const jive::region *
 jive_phi_region_const_cast(const jive::region * region)
 {
 	/*

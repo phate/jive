@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-JIVE_EXPORTED_INLINE uint64_t
+static inline uint64_t
 jive_double_raw_mantissa(double d)
 {
 	union {
@@ -22,7 +22,7 @@ jive_double_raw_mantissa(double d)
 	return (u.int_value & 0xFFFFFFFFFFFFFL);
 }
 
-JIVE_EXPORTED_INLINE uint16_t
+static inline uint16_t
 jive_double_raw_exponent(double d)
 {
 	union {
@@ -33,7 +33,7 @@ jive_double_raw_exponent(double d)
 	return (u.int_value >> 52) & 0x7FF;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_double_is_signed(double d)
 {
 	union {
@@ -44,7 +44,7 @@ jive_double_is_signed(double d)
 	return (u.int_value >> 63);
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_double_is_normalized(double d)
 {
 	uint16_t e = jive_double_raw_exponent(d);
@@ -54,7 +54,7 @@ jive_double_is_normalized(double d)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_double_is_zero(double d)
 {
 	if (jive_double_raw_exponent(d) == 0 && jive_double_raw_mantissa(d) == 0)
@@ -63,7 +63,7 @@ jive_double_is_zero(double d)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_double_is_signed_zero(double d)
 {
 	if (jive_double_is_zero(d) && jive_double_is_signed(d))
@@ -72,7 +72,7 @@ jive_double_is_signed_zero(double d)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_double_is_unsigned_zero(double d)
 {
 	if (jive_double_is_zero(d) && !jive_double_is_signed(d))
@@ -81,7 +81,7 @@ jive_double_is_unsigned_zero(double d)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_double_is_infinity(double d)
 {
 	if (jive_double_raw_exponent(d) == 0x7FF && jive_double_raw_mantissa(d) == 0)
@@ -90,7 +90,7 @@ jive_double_is_infinity(double d)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_double_is_signed_infinity(double d)
 {
 	if (jive_double_is_infinity(d) && jive_double_is_signed(d))
@@ -99,7 +99,7 @@ jive_double_is_signed_infinity(double d)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_double_is_unsigned_infinity(double d)
 {
 	if (jive_double_is_infinity(d) && !jive_double_is_signed(d))
@@ -108,7 +108,7 @@ jive_double_is_unsigned_infinity(double d)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_double_is_nan(double d)
 {
 	if (jive_double_raw_exponent(d) == 0x7FF && jive_double_raw_mantissa(d) != 0)
@@ -117,7 +117,7 @@ jive_double_is_nan(double d)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_double_is_value(double d)
 {
 	if (jive_double_raw_exponent(d) == 0x7FF)
@@ -126,7 +126,7 @@ jive_double_is_value(double d)
 	return true;
 }
 
-JIVE_EXPORTED_INLINE uint64_t
+static inline uint64_t
 jive_double_decoded_mantissa(double d)
 {
 	JIVE_DEBUG_ASSERT(jive_double_is_value(d));
@@ -138,7 +138,7 @@ jive_double_decoded_mantissa(double d)
 	return m;
 }
 
-JIVE_EXPORTED_INLINE int16_t
+static inline int16_t
 jive_double_decoded_exponent(double d)
 {
 	JIVE_DEBUG_ASSERT(jive_double_is_value(d));

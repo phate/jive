@@ -48,7 +48,7 @@ extern template class domain_const_op<
 jive::oport *
 jive_fltconstant(jive::region * region, jive::flt::value_repr value);
 
-JIVE_EXPORTED_INLINE jive::oport *
+static inline jive::oport *
 jive_fltconstant_float(jive::region * region, float value)
 {
 	return jive_fltconstant(region, value);

@@ -60,13 +60,13 @@ extern template class domain_const_op<
 jive::oport *
 jive_control_constant(jive::region * region, size_t nalternatives, size_t alternative);
 
-JIVE_EXPORTED_INLINE jive::oport *
+static inline jive::oport *
 jive_control_false(jive::region * region)
 {
 	return jive_control_constant(region, 2, 0);
 }
 
-JIVE_EXPORTED_INLINE jive::oport *
+static inline jive::oport *
 jive_control_true(jive::region * region)
 {
 	return jive_control_constant(region, 2, 1);

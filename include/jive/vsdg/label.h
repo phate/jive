@@ -30,7 +30,7 @@ struct jive_address {
 	jive_stdsectionid section;
 };
 
-JIVE_EXPORTED_INLINE void
+static inline void
 jive_address_init(jive_address * self, jive_stdsectionid section, jive_offset offset)
 {
 	self->offset = offset;
@@ -56,13 +56,13 @@ struct jive_label {
 	jive_label_flags flags;
 };
 
-JIVE_EXPORTED_INLINE void
+static inline void
 jive_label_fini(jive_label * self)
 {
 	self->class_->fini(self);
 }
 
-JIVE_EXPORTED_INLINE bool
+static inline bool
 jive_label_isinstance(const jive_label * self, const jive_label_class * class_)
 {
 	const jive_label_class * cls = self->class_;

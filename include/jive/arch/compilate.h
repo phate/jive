@@ -77,13 +77,13 @@ struct jive_section {
 	} compilate_section_list;
 };
 
-JIVE_EXPORTED_INLINE void
+static inline void
 jive_section_put(jive_section * self, const void * data, size_t size)
 {
 	jive_buffer_put(&self->contents, data, size);
 }
 
-JIVE_EXPORTED_INLINE void
+static inline void
 jive_section_putbyte(jive_section * self, uint8_t byte)
 {
 	jive_buffer_putbyte(&self->contents, byte);
@@ -181,7 +181,7 @@ jive_compilate_map_destroy(jive_compilate_map * self);
 	mapped into the process' address space. Returns NULL if no such
 	section has been mapped.
 */
-JIVE_EXPORTED_INLINE void *
+static inline void *
 jive_compilate_map_get_stdsection(const jive_compilate_map * self, jive_stdsectionid id)
 {
 	size_t n;

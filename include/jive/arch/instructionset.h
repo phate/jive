@@ -39,7 +39,7 @@ struct jive_instructionset {
 	const struct jive_reg_classifier * reg_classifier;
 };
 
-JIVE_EXPORTED_INLINE jive_xfer_description
+static inline jive_xfer_description
 jive_instructionset_create_xfer(const jive_instructionset * self,
 	struct jive::region * region, jive::output * origin,
 	const struct jive_resource_class * in_class, const struct jive_resource_class * out_class)
@@ -47,13 +47,13 @@ jive_instructionset_create_xfer(const jive_instructionset * self,
 	return  self->class_->create_xfer(region, origin, in_class, out_class);
 }
 
-JIVE_EXPORTED_INLINE const jive::instruction_class *
+static inline const jive::instruction_class *
 jive_instructionset_get_jump_instruction_class(const jive_instructionset * self)
 {
 	return self->jump_instruction_class;
 }
 
-JIVE_EXPORTED_INLINE const struct jive_reg_classifier *
+static inline const struct jive_reg_classifier *
 jive_instructionset_get_reg_classifier(const jive_instructionset * self)
 {
 	return self->reg_classifier;

@@ -19,10 +19,6 @@
 #	define JIVE_DEBUG_ASSERT(x) (void)(x)
 #endif
 
-#ifndef JIVE_EXPORTED_INLINE
-# define JIVE_EXPORTED_INLINE static inline
-#endif
-
 namespace jive {
 
 class compiler_error : public std::runtime_error {

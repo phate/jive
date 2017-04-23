@@ -486,7 +486,7 @@ struct jive_tracker_nodestate {
 	} state_node_list;
 };
 
-JIVE_EXPORTED_INLINE jive::iport *
+static inline jive::iport *
 jive_node_get_gate_input(const jive::node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
@@ -497,7 +497,7 @@ jive_node_get_gate_input(const jive::node * self, const jive::gate * gate)
 	return nullptr;
 }
 
-JIVE_EXPORTED_INLINE jive::iport *
+static inline jive::iport *
 jive_node_get_gate_input(const jive::node * self, const char * name)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
@@ -508,7 +508,7 @@ jive_node_get_gate_input(const jive::node * self, const char * name)
 	return nullptr;
 }
 
-JIVE_EXPORTED_INLINE jive::oport *
+static inline jive::oport *
 jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
@@ -519,7 +519,7 @@ jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 	return nullptr;
 }
 
-JIVE_EXPORTED_INLINE jive::oport *
+static inline jive::oport *
 jive_node_get_gate_output(const jive::node * self, const char * name)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
@@ -540,7 +540,7 @@ jive_node_get_use_count_output(
 	const jive::node * self,
 	struct jive_resource_class_count * use_count);
 
-JIVE_EXPORTED_INLINE std::vector<jive::oport*>
+static inline std::vector<jive::oport*>
 jive_node_arguments(const jive::node * self)
 {
 	std::vector<jive::oport*> arguments;
@@ -566,7 +566,7 @@ jive_node_normalize(jive::node * self);
 jive_tracker_nodestate *
 jive_node_get_tracker_state_slow(jive::node * self, jive_tracker_slot slot);
 
-JIVE_EXPORTED_INLINE jive_tracker_nodestate *
+static inline jive_tracker_nodestate *
 jive_node_get_tracker_state(jive::node * self, jive_tracker_slot slot)
 {
 	jive_tracker_nodestate * nodestate;

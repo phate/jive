@@ -78,7 +78,7 @@ jive_bitconstant_unsigned(jive::region * region, size_t nbits, uint64_t value);
 jive::oport *
 jive_bitconstant_signed(jive::region * region, size_t nbits, int64_t value);
 
-JIVE_EXPORTED_INLINE jive::oport *
+static inline jive::oport *
 jive_bitconstant_undefined(jive::region * region, size_t nbits)
 {
 	size_t i;
@@ -89,7 +89,7 @@ jive_bitconstant_undefined(jive::region * region, size_t nbits)
 	return jive_bitconstant(region, nbits, bits);
 }
 
-JIVE_EXPORTED_INLINE jive::oport *
+static inline jive::oport *
 jive_bitconstant_defined(jive::region * region, size_t nbits)
 {
 	size_t i;

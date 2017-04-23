@@ -114,7 +114,7 @@ jive_instruction_node_create(
 	const std::vector<jive::oport*> & istates,
 	const std::vector<const jive::state::type*> & otypes);
 
-JIVE_EXPORTED_INLINE jive::node *
+static inline jive::node *
 jive_instruction_node_create(
 	struct jive::region * region,
 	const jive::instruction_class * icls,
