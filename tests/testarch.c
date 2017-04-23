@@ -207,189 +207,122 @@ const jive_register_class jive_testarch_regcls_cc = {
 	nbits : 32
 };
 
-static const jive_register_class * gpr_params[] = {
-	&jive_testarch_regcls_gpr,
-	&jive_testarch_regcls_gpr
-};
+namespace jive {
+namespace testarch {
 
-static const jive_register_class * special_params[] = {
-	&jive_testarch_regcls_r0,
-	&jive_testarch_regcls_r1,
-	&jive_testarch_regcls_r2,
-	&jive_testarch_regcls_r3
-};
+#define DEFINE_TESTARCH_INSTRUCTION(NAME, INPUTS, OUTPUTS, NIMMEDIATES, FLAGS, INVERSE_JUMP) \
+const instr_##NAME instr_##NAME::instance_; \
+ \
+instr_##NAME::instr_##NAME() \
+	: instruction_class(#NAME, 0, #NAME, \
+		INPUTS, OUTPUTS, NIMMEDIATES, \
+		FLAGS, INVERSE_JUMP) \
+	{} \
+\
+void \
+instr_##NAME::encode( \
+	struct jive_section * target, \
+	const jive_register_name * inputs[], \
+	const jive_register_name * outputs[], \
+	const jive_codegen_imm immediates[], \
+	jive_instruction_encoding_flags * flags) \
+{ \
+	JIVE_DEBUG_ASSERT(0); \
+} \
+ \
+void \
+instr_##NAME::write_asm( \
+	struct jive_buffer * target, \
+	const jive_register_name * inputs[], \
+	const jive_register_name * outputs[], \
+	const jive_asmgen_imm immediates[], \
+	jive_instruction_encoding_flags * flags) \
+{ \
+	JIVE_DEBUG_ASSERT(0); \
+} \
+ \
+std::unique_ptr<jive::instruction_class> \
+instr_##NAME::copy() const \
+{ \
+	return std::make_unique<instr_##NAME>(); \
+} \
 
-const jive_instruction_class jive_testarch_instr_nop = {
-	name : "nop",
-	mnemonic : "nop",
-	encode : 0,
-	write_asm : 0,
-	inregs : 0, outregs : 0,
-	flags : jive_instruction_flags_none,
-	ninputs : 0, noutputs : 0, nimmediates : 0,
-	code : 0
-};
+#define COMMA ,
 
-const jive_instruction_class jive_testarch_instr_add = {
-	name : "add",
-	mnemonic : "add",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : gpr_params,
-	flags : jive_instruction_write_input | jive_instruction_commutative,
-	ninputs : 2, noutputs : 1, nimmediates : 0,
-	code : 0
-};
+DEFINE_TESTARCH_INSTRUCTION(nop, {}, {}, 0, jive_instruction_flags_none, nullptr);
 
-const jive_instruction_class jive_testarch_instr_load_disp = {
-	name : "load_disp",
-	mnemonic : "load_disp",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : gpr_params,
-	flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 1,
-	code : 0
-};
+DEFINE_TESTARCH_INSTRUCTION(
+	load_disp,
+	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_gpr}, 1,
+	jive_instruction_flags_none, nullptr);
 
-const jive_instruction_class jive_testarch_instr_store_disp = {
-	name : "store_disp",
-	mnemonic : "load_disp",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : 0, flags : jive_instruction_flags_none,
-	ninputs : 2, noutputs : 0, nimmediates : 1,
-	code : 0
-};
+DEFINE_TESTARCH_INSTRUCTION(
+	store_disp,
+	{&jive_testarch_regcls_gpr COMMA &jive_testarch_regcls_gpr}, {}, 1,
+	jive_instruction_flags_none, nullptr);
 
-const jive_instruction_class jive_testarch_instr_spill_gpr = {
-	name : "spill_gpr",
-	mnemonic : "spill_gpr",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : 0, flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 0, nimmediates : 0,
-	code : 0
-};
+DEFINE_TESTARCH_INSTRUCTION(
+	spill_gpr,
+	{&jive_testarch_regcls_gpr}, {}, 0,
+	jive_instruction_flags_none, nullptr);
 
-const jive_instruction_class jive_testarch_instr_restore_gpr = {
-	name : "restore_gpr",
-	mnemonic : "restore_gpr",
-	encode : 0,
-	write_asm : 0,
-	inregs : 0, outregs : gpr_params, flags : jive_instruction_flags_none,
-	ninputs : 0, noutputs : 1, nimmediates : 0,
-	code : 0
-};
+DEFINE_TESTARCH_INSTRUCTION(
+	restore_gpr,
+	{}, {&jive_testarch_regcls_gpr}, 0,
+	jive_instruction_flags_none, nullptr);
 
-const jive_instruction_class jive_testarch_instr_move_gpr = {
-	name : "move_gpr",
-	mnemonic : "move_gpr",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : gpr_params, flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 0,
-	code : 0
-};
+DEFINE_TESTARCH_INSTRUCTION(
+	move_gpr,
+	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_gpr}, 0,
+	jive_instruction_flags_none, nullptr);
 
-const jive_instruction_class jive_testarch_instr_setr0 = {
-	name : "setr0",
-	mnemonic : "setr0",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : &special_params[0], flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 0,
-	code : 0
-};
-const jive_instruction_class jive_testarch_instr_setr1 = {
-	name : "setr1",
-	mnemonic : "setr1",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : &special_params[1], flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 0,
-	code : 0
-};
-const jive_instruction_class jive_testarch_instr_setr2 = {
-	name : "setr2",
-	mnemonic : "setr2",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : &special_params[2], flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 0,
-	code : 0
-};
-const jive_instruction_class jive_testarch_instr_setr3 = {
-	name : "setr3",
-	mnemonic : "setr3",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : &special_params[3], flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 0,
-	code : 0
-};
+DEFINE_TESTARCH_INSTRUCTION(
+	setr0,
+	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r0}, 0,
+	jive_instruction_flags_none, nullptr);
 
-const jive_instruction_class jive_testarch_instr_add_gpr = {
-	name : "add_gpr",
-	mnemonic : "add_gpr",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : gpr_params,
-	flags : jive_instruction_write_input | jive_instruction_commutative,
-	ninputs : 2, noutputs : 1, nimmediates : 0,
-	code : 0
-};
-const jive_instruction_class jive_testarch_instr_sub_gpr = {
-	name : "sub_gpr",
-	mnemonic : "sub_gpr",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : gpr_params, flags : jive_instruction_write_input,
-	ninputs : 2, noutputs : 1, nimmediates : 0,
-	code : 0
-};
-const jive_instruction_class jive_testarch_instr_jump = {
-	name : "jump",
-	mnemonic : "jump",
-	encode : 0,
-	write_asm : 0,
-	inregs : 0, outregs : 0, flags : jive_instruction_flags_none,
-	ninputs : 0, noutputs : 0, nimmediates : 0,
-	code : 0
-};
-const jive_instruction_class jive_testarch_instr_jumpz = {
-	name : "jumpz",
-	mnemonic : "jumpz",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : 0,
-	flags : jive_instruction_jump | jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 0,
-	code : 0,
-	inverse_jump : &jive_testarch_instr_jumpnz
-};
-const jive_instruction_class jive_testarch_instr_jumpnz = {
-	name : "jumpnz",
-	mnemonic : "jumpnz",
-	encode : 0,
-	write_asm : 0,
-	inregs : gpr_params, outregs : 0,
-	flags : jive_instruction_jump | jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 0,
-	code : 0,
-	inverse_jump : &jive_testarch_instr_jumpz
-};
+DEFINE_TESTARCH_INSTRUCTION(
+	setr1,
+	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r1}, 0,
+	jive_instruction_flags_none, nullptr);
 
-const jive_instruction_class jive_testarch_instr_ret = {
-	name : "ret",
-	mnemonic : "ret",
-	encode : 0,
-	write_asm : 0,
-	inregs : 0, outregs : 0,
-	flags : jive_instruction_jump,
-	ninputs : 0, noutputs : 0, nimmediates : 0,
-	code : 0
-};
+DEFINE_TESTARCH_INSTRUCTION(
+	setr2,
+	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r2}, 0,
+	jive_instruction_flags_none, nullptr);
+
+DEFINE_TESTARCH_INSTRUCTION(
+	setr3,
+	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r3}, 0,
+	jive_instruction_flags_none, nullptr);
+
+DEFINE_TESTARCH_INSTRUCTION(
+	add_gpr,
+	{&jive_testarch_regcls_gpr COMMA &jive_testarch_regcls_gpr}, {&jive_testarch_regcls_gpr}, 0,
+	jive_instruction_write_input | jive_instruction_commutative, nullptr);
+
+DEFINE_TESTARCH_INSTRUCTION(
+	sub_gpr,
+	{&jive_testarch_regcls_gpr COMMA &jive_testarch_regcls_gpr}, {&jive_testarch_regcls_gpr}, 0,
+	jive_instruction_write_input, nullptr);
+
+DEFINE_TESTARCH_INSTRUCTION(jump, {}, {}, 0, jive_instruction_flags_none, nullptr);
+
+DEFINE_TESTARCH_INSTRUCTION(
+	jumpz,
+	{&jive_testarch_regcls_gpr}, {}, 0,
+	jive_instruction_jump | jive_instruction_jump_conditional_invertible,
+	&instr_jumpnz::instance());
+
+DEFINE_TESTARCH_INSTRUCTION(
+	jumpnz,
+	{&jive_testarch_regcls_gpr}, {}, 0,
+	jive_instruction_jump | jive_instruction_jump_conditional_invertible,
+	&instr_jumpz::instance());
+
+DEFINE_TESTARCH_INSTRUCTION(ret, {}, {}, 0, jive_instruction_flags_none, nullptr);
+
+}}
 
 static jive_xfer_description
 create_xfer(jive::region * region, jive::output * origin,
@@ -404,7 +337,7 @@ create_xfer(jive::region * region, jive::output * origin,
 		jive::oport * tmparray8[] = {origin};
 		xfer.node = jive_instruction_node_create(
 			region,
-			&jive_testarch_instr_move_gpr,
+			&jive::testarch::instr_move_gpr::instance(),
 			tmparray8, NULL);
 		xfer.input = dynamic_cast<jive::input*>(xfer.node->input(0));
 		xfer.output = dynamic_cast<jive::output*>(xfer.node->output(0));
@@ -412,7 +345,7 @@ create_xfer(jive::region * region, jive::output * origin,
 		jive::oport * tmparray9[] = {origin};
 		xfer.node = jive_instruction_node_create(
 			region,
-			&jive_testarch_instr_spill_gpr,
+			&jive::testarch::instr_spill_gpr::instance(),
 			tmparray9, NULL);
 		xfer.input = dynamic_cast<jive::input*>(xfer.node->input(0));
 		xfer.output = dynamic_cast<jive::output*>(xfer.node->add_output(
@@ -420,7 +353,7 @@ create_xfer(jive::region * region, jive::output * origin,
 	} else if (out_relaxed == CLS(gpr)) {
 		xfer.node = jive_instruction_node_create(
 			region,
-			&jive_testarch_instr_restore_gpr,
+			&jive::testarch::instr_restore_gpr::instance(),
 			NULL, NULL);
 		xfer.input = dynamic_cast<jive::input*>(xfer.node->add_input(
 			jive_resource_class_get_type(in_class), origin));
@@ -532,7 +465,7 @@ const jive_instructionset_class testarch_isa_class = {
 
 const jive_instructionset testarch_isa = {
 	class_ : &testarch_isa_class,
-	jump_instruction_class : &jive_testarch_instr_jump,
+	jump_instruction_class : &jive::testarch::instr_jump::instance(),
 	reg_classifier : &classifier
 };
 
@@ -576,7 +509,7 @@ public:
 		jive_subroutine & subroutine) override
 	{
 		jive::node * ret_instr = jive_instruction_node_create(subroutine.region,
-			&jive_testarch_instr_ret, {}, {}, {}, {}, {&jive::ctl::boolean});
+			&jive::testarch::instr_ret::instance(), {}, {}, {}, {}, {&jive::ctl::boolean});
 		ret_instr->add_input(subroutine.builder_state->passthroughs[1].gate,
 			subroutine.builder_state->passthroughs[1].output);
 		return dynamic_cast<jive::output*>(ret_instr->output(0));

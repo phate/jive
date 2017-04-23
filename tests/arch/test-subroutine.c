@@ -35,12 +35,12 @@ static int test_main(void)
 	
 	jive::output * s1 = dynamic_cast<jive::output*>(jive_instruction_node_create(
 		subroutine.region,
-		&jive_testarch_instr_add,
+		&jive::testarch::instr_add_gpr::instance(),
 		tmparray2, NULL)->output(0));
 	jive::oport * tmparray3[] = {s1, arg3};
 	jive::output * s2 = dynamic_cast<jive::output*>(jive_instruction_node_create(
 		subroutine.region,
-		&jive_testarch_instr_add,
+		&jive::testarch::instr_add_gpr::instance(),
 		tmparray3, NULL)->output(0));
 	jive_subroutine_simple_set_result(subroutine, 0, s2);
 	

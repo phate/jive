@@ -169,29 +169,29 @@ jive_buffer_putdisp(jive_buffer * target, const jive_asmgen_imm * disp,
 }
 
 static void
-jive_i386_encode_simple(const jive_instruction_class * icls,
+jive_i386_encode_simple(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, icls->code());
 }
 
 static void
-jive_i386_asm_simple(const jive_instruction_class * icls,
+jive_i386_asm_simple(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 }
 
 static void
-jive_i386_encode_int_load_imm(const jive_instruction_class * icls,
+jive_i386_encode_int_load_imm(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -199,19 +199,19 @@ jive_i386_encode_int_load_imm(const jive_instruction_class * icls,
 	jive_instruction_encoding_flags * flags)
 {
 	int reg = outputs[0]->code;
-	jive_section_putbyte(target, icls->code|reg);
+	jive_section_putbyte(target, icls->code()|reg);
 	jive_i386_encode_imm32(&immediates[0], 0, 1, target);
 }
 
 static void
-jive_i386_asm_int_load_imm(const jive_instruction_class * icls,
+jive_i386_asm_int_load_imm(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t$");
 	jive_buffer_putimm(target, &immediates[0]);
 	jive_buffer_putstr(target, ", %");
@@ -263,7 +263,7 @@ jive_i386_r2i(
 }
 
 static void
-jive_i386_encode_loadstore32_disp(const jive_instruction_class * icls,
+jive_i386_encode_loadstore32_disp(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -271,25 +271,25 @@ jive_i386_encode_loadstore32_disp(const jive_instruction_class * icls,
 	jive_instruction_encoding_flags * flags)
 {
 	const jive_register_name * r1 = inputs[0], * r2;
-	if (icls->code == 0x89)
+	if (icls->code() == 0x89)
 		r2 = inputs[1];
 	else
 		r2 = outputs[0];
 	
-	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, icls->code());
 	
 	jive_i386_r2i(r1, r2, &immediates[0], 1, flags, target);
 }
 
 static void
-jive_i386_asm_load_disp(const jive_instruction_class * icls,
+jive_i386_asm_load_disp(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t");
 	jive_buffer_putdisp(target, &immediates[0], inputs[0]);
 	jive_buffer_putstr(target, ", %");
@@ -297,14 +297,14 @@ jive_i386_asm_load_disp(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_asm_load_abs(const jive_instruction_class * icls,
+jive_i386_asm_load_abs(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t");
 	jive_buffer_putimm(target, &immediates[0]);
 	jive_buffer_putstr(target, ", %");
@@ -312,14 +312,14 @@ jive_i386_asm_load_abs(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_asm_store(const jive_instruction_class * icls,
+jive_i386_asm_store(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
 	jive_buffer_putstr(target, inputs[1]->base.name);
 	jive_buffer_putstr(target, ", ");
@@ -327,7 +327,7 @@ jive_i386_asm_store(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_encode_regreg(const jive_instruction_class * icls,
+jive_i386_encode_regreg(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -339,19 +339,19 @@ jive_i386_encode_regreg(const jive_instruction_class * icls,
 	int r1 = inputs[0]->code;
 	int r2 = inputs[1]->code;
 	
-	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, icls->code());
 	jive_section_putbyte(target, 0xc0|r1|(r2<<3));
 }
 
 static void
-jive_i386_asm_regreg(const jive_instruction_class * icls,
+jive_i386_asm_regreg(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
 	jive_buffer_putstr(target, inputs[1]->base.name);
 	jive_buffer_putstr(target, ", %");
@@ -359,7 +359,7 @@ jive_i386_asm_regreg(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_encode_cmp_regreg(const jive_instruction_class * icls,
+jive_i386_encode_cmp_regreg(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -369,12 +369,12 @@ jive_i386_encode_cmp_regreg(const jive_instruction_class * icls,
 	int r1 = inputs[1]->code;
 	int r2 = inputs[0]->code;
 	
-	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, icls->code());
 	jive_section_putbyte(target, 0xc0|r1|(r2<<3));
 }
 
 static void
-jive_i386_encode_cmp_regreg_sse(const jive_instruction_class * icls,
+jive_i386_encode_cmp_regreg_sse(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -386,14 +386,14 @@ jive_i386_encode_cmp_regreg_sse(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_asm_imul(const jive_instruction_class * icls,
+jive_i386_asm_imul(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
 	jive_buffer_putstr(target, inputs[1]->base.name);
 	
@@ -402,7 +402,7 @@ jive_i386_asm_imul(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_encode_imull(const jive_instruction_class * icls,
+jive_i386_encode_imull(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -412,14 +412,14 @@ jive_i386_encode_imull(const jive_instruction_class * icls,
 	int r1 = inputs[0]->code;
 	int r2 = inputs[1]->code;
 
-	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, icls->code());
 
 	JIVE_DEBUG_ASSERT(r1 == outputs[1]->code);
 	jive_section_putbyte(target, 0xe8|r2);
 }
 
 static void
-jive_i386_encode_mul_regreg(const jive_instruction_class * icls,
+jive_i386_encode_mul_regreg(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -437,20 +437,20 @@ jive_i386_encode_mul_regreg(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_asm_mul(const jive_instruction_class * icls,
+jive_i386_asm_mul(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
 	jive_buffer_putstr(target, inputs[1]->base.name);
 }
 
 static void
-jive_i386_encode_mull(const jive_instruction_class * icls,
+jive_i386_encode_mull(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -462,25 +462,25 @@ jive_i386_encode_mull(const jive_instruction_class * icls,
 
 	JIVE_DEBUG_ASSERT(r1 == outputs[1]->code);
 
-	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, icls->code());
 	jive_section_putbyte(target, 0xe0|r2);
 }
 
 static void
-jive_i386_asm_div_reg(const jive_instruction_class * icls,
+jive_i386_asm_div_reg(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
 	jive_buffer_putstr(target, inputs[2]->base.name);
 }
 
 static void
-jive_i386_encode_div_reg(const jive_instruction_class * icls,
+jive_i386_encode_div_reg(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -490,11 +490,11 @@ jive_i386_encode_div_reg(const jive_instruction_class * icls,
 	int r = inputs[2]->code;
 
 	jive_section_putbyte(target, 0xf7);
-	jive_section_putbyte(target, icls->code | r);
+	jive_section_putbyte(target, icls->code() | r);
 }
 
 static void
-jive_i386_encode_shift_regimm(const jive_instruction_class * icls,
+jive_i386_encode_shift_regimm(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -511,29 +511,29 @@ jive_i386_encode_shift_regimm(const jive_instruction_class * icls,
 	
 	if (code_constant_one) {
 		jive_section_putbyte(target, 0xd1);
-		jive_section_putbyte(target, icls->code | r1);
+		jive_section_putbyte(target, icls->code() | r1);
 	} else {
 		jive_section_putbyte(target, 0xc1);
-		jive_section_putbyte(target, icls->code | r1);
+		jive_section_putbyte(target, icls->code() | r1);
 		jive_i386_encode_imm8(&immediates[0], 0, 2, target);
 	}
 }
 
 static void
-jive_i386_asm_shift_regreg(const jive_instruction_class * icls,
+jive_i386_asm_shift_regreg(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%cl, %");
 	jive_buffer_putstr(target, inputs[0]->base.name);
 }
 
 static void
-jive_i386_encode_shift_regreg(const jive_instruction_class * icls,
+jive_i386_encode_shift_regreg(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -544,11 +544,11 @@ jive_i386_encode_shift_regreg(const jive_instruction_class * icls,
 	JIVE_DEBUG_ASSERT(r1 == outputs[0]->code);
 	
 	jive_section_putbyte(target, 0xd3);
-	jive_section_putbyte(target, icls->code | r1);
+	jive_section_putbyte(target, icls->code() | r1);
 }
 
 static void
-jive_i386_encode_regimm_readonly(const jive_instruction_class * icls,
+jive_i386_encode_regimm_readonly(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -563,11 +563,11 @@ jive_i386_encode_regimm_readonly(const jive_instruction_class * icls,
 	char prefix = need_long_form ? 0x81 : 0x83;
 	
 	if (r1 == 0 && need_long_form) {
-		char opcode = icls->code >> 8;
+		char opcode = icls->code() >> 8;
 		jive_section_putbyte(target, opcode);
 		coded_size_so_far ++;
 	} else {
-		char opcode = icls->code & 255;
+		char opcode = icls->code() & 255;
 		jive_section_putbyte(target, prefix);
 		jive_section_putbyte(target, opcode | r1);
 		coded_size_so_far += 2;
@@ -580,7 +580,7 @@ jive_i386_encode_regimm_readonly(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_encode_regimm(const jive_instruction_class * icls,
+jive_i386_encode_regimm(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -592,14 +592,14 @@ jive_i386_encode_regimm(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_asm_regimm(const jive_instruction_class * icls,
+jive_i386_asm_regimm(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t$");
 	jive_buffer_putimm(target, &immediates[0]);
 	jive_buffer_putstr(target, ", %");
@@ -607,7 +607,7 @@ jive_i386_asm_regimm(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_encode_mul_regimm(const jive_instruction_class * icls,
+jive_i386_encode_mul_regimm(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -633,14 +633,14 @@ jive_i386_encode_mul_regimm(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_asm_mul_regimm(const jive_instruction_class * icls,
+jive_i386_asm_mul_regimm(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t$");
 	jive_buffer_putimm(target, &immediates[0]);
 	jive_buffer_putstr(target, ", %");
@@ -650,7 +650,7 @@ jive_i386_asm_mul_regimm(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_encode_unaryreg(const jive_instruction_class * icls,
+jive_i386_encode_unaryreg(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -662,24 +662,24 @@ jive_i386_encode_unaryreg(const jive_instruction_class * icls,
 	JIVE_DEBUG_ASSERT(r1 == outputs[0]->code);
 	
 	jive_section_putbyte(target, 0xf7);
-	jive_section_putbyte(target, icls->code|r1);
+	jive_section_putbyte(target, icls->code()|r1);
 }
 
 static void
-jive_i386_asm_unaryreg(const jive_instruction_class * icls,
+jive_i386_asm_unaryreg(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
 	jive_buffer_putstr(target, inputs[0]->base.name);
 }
 
 static void
-jive_i386_encode_regmove(const jive_instruction_class * icls,
+jive_i386_encode_regmove(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -689,12 +689,12 @@ jive_i386_encode_regmove(const jive_instruction_class * icls,
 	int r1 = outputs[0]->code;
 	int r2 = inputs[0]->code;
 	
-	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, icls->code());
 	jive_section_putbyte(target, 0xc0|r1|(r2<<3));
 }
 
 static void
-jive_i386_encode_regmove_sse(const jive_instruction_class * icls,
+jive_i386_encode_regmove_sse(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -707,14 +707,14 @@ jive_i386_encode_regmove_sse(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_asm_regmove(const jive_instruction_class * icls,
+jive_i386_asm_regmove(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
 	jive_buffer_putstr(target, inputs[0]->base.name);
 	jive_buffer_putstr(target, ", %");
@@ -722,32 +722,32 @@ jive_i386_asm_regmove(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_encode_call(const jive_instruction_class * icls,
+jive_i386_encode_call(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, icls->code());
 	jive_i386_encode_imm32(&immediates[0], 0, 1, target);
 }
 
 static void
-jive_i386_asm_call(const jive_instruction_class * icls,
+jive_i386_asm_call(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t");
 	jive_buffer_putimm(target, &immediates[0]);
 }
 
 static void
-jive_i386_encode_call_reg(const jive_instruction_class * icls,
+jive_i386_encode_call_reg(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -761,33 +761,33 @@ jive_i386_encode_call_reg(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_asm_call_reg(const jive_instruction_class * icls,
+jive_i386_asm_call_reg(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t*%");
 	jive_buffer_putstr(target, inputs[0]->base.name);
 }
 
 static void
-jive_i386_asm_jump(const jive_instruction_class * icls,
+jive_i386_asm_jump(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t");
 	jive_buffer_putimm(target, &immediates[0]);
 }
 
 static void
-jive_i386_encode_jump(const jive_instruction_class * icls,
+jive_i386_encode_jump(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -806,7 +806,7 @@ jive_i386_encode_jump(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_encode_jump_conditional(const jive_instruction_class * icls,
+jive_i386_encode_jump_conditional(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -816,17 +816,17 @@ jive_i386_encode_jump_conditional(const jive_instruction_class * icls,
 	bool need_long_form = jive_i386_check_long_form(&immediates[0], flags, -2);
 	
 	if (!need_long_form) {
-		jive_section_putbyte(target, 0x70 | icls->code);
+		jive_section_putbyte(target, 0x70 | icls->code());
 		jive_i386_encode_imm8(&immediates[0], -2, 1, target);
 	} else {
 		jive_section_putbyte(target, 0x0f);
-		jive_section_putbyte(target, 0x80 | icls->code);
+		jive_section_putbyte(target, 0x80 | icls->code());
 		jive_i386_encode_imm32(&immediates[0], -6, 2, target);
 	}
 }
 
 static void
-jive_i386_encode_loadstoresse_disp(const jive_instruction_class * icls,
+jive_i386_encode_loadstoresse_disp(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -838,19 +838,19 @@ jive_i386_encode_loadstoresse_disp(const jive_instruction_class * icls,
 	jive_section_putbyte(target, 0xF3);
 	jive_section_putbyte(target, 0x0F);
 	
-	if (icls->code == 0x11)
+	if (icls->code() == 0x11)
 		r2 = inputs[1];
 	else
 		r2 = outputs[0];
 	
-	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, icls->code());
 	
 	jive_i386_r2i(r1, r2, &immediates[0], 3, flags, target);
 	
 }
 
 static void
-jive_i386_encode_sseload_abs(const jive_instruction_class * icls,
+jive_i386_encode_sseload_abs(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -859,14 +859,14 @@ jive_i386_encode_sseload_abs(const jive_instruction_class * icls,
 {
 	jive_section_putbyte(target, 0xF3);
 	jive_section_putbyte(target, 0x0F);
-	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, icls->code());
 	jive_section_putbyte(target, 0x5 | outputs[0]->code << 3);
 
 	jive_i386_encode_imm32(&immediates[0], 0, 4, target);
 }
 
 static void
-jive_i386_encode_regreg_sse(const jive_instruction_class * icls,
+jive_i386_encode_regreg_sse(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -879,12 +879,12 @@ jive_i386_encode_regreg_sse(const jive_instruction_class * icls,
 	int r2 = inputs[1]->code;
 	
 	jive_section_putbyte(target, 0x0F);
-	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, icls->code());
 	jive_section_putbyte(target, 0xc0|r2|(r1<<3));
 }
 
 static void
-jive_i386_encode_regreg_sse_prefixed(const jive_instruction_class * icls,
+jive_i386_encode_regreg_sse_prefixed(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -898,20 +898,20 @@ jive_i386_encode_regreg_sse_prefixed(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_asm_fp(const jive_instruction_class * icls,
+jive_i386_asm_fp(const jive::instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t");
 	jive_buffer_putdisp(target, &immediates[0], inputs[0]);
 }
 
 static void
-jive_i386_encode_fp(const jive_instruction_class * icls,
+jive_i386_encode_fp(const jive::instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -926,671 +926,370 @@ jive_i386_encode_fp(const jive_instruction_class * icls,
 	jive_i386_r2i(r1, r2, &immediates[0], 1, flags, target);
 }
 
-static const jive_register_class * const fpreg_param[] = {
-	&jive_i386_regcls_fp,
-	&jive_i386_regcls_fp
-};
+namespace jive {
+namespace i386 {
 
-static const jive_register_class * const ssereg_param[] = {
-	&jive_i386_regcls_sse,
-	&jive_i386_regcls_sse
-};
+/* FIXME: encode and write_asm take nullptr as first argument */
+#define DEFINE_I386_INSTRUCTION(NAME, CODE, MNEMONIC, \
+	INPUTS, OUTPUTS, NIMMEDIATES, FLAGS, INVERSE_JUMP, \
+	ENCODE, WRITE_ASM) \
+const instr_##NAME instr_##NAME::instance_; \
+ \
+instr_##NAME::instr_##NAME() \
+	: instruction_class(#NAME, CODE, MNEMONIC, \
+		INPUTS, OUTPUTS, NIMMEDIATES, \
+		FLAGS, INVERSE_JUMP) \
+	{} \
+\
+void \
+instr_##NAME::encode( \
+	struct jive_section * target, \
+	const jive_register_name * inputs[], \
+	const jive_register_name * outputs[], \
+	const jive_codegen_imm immediates[], \
+	jive_instruction_encoding_flags * flags) \
+{ \
+	ENCODE(nullptr, target, inputs, outputs, immediates, flags); \
+} \
+ \
+void \
+instr_##NAME::write_asm( \
+	struct jive_buffer * target, \
+	const jive_register_name * inputs[], \
+	const jive_register_name * outputs[], \
+	const jive_asmgen_imm immediates[], \
+	jive_instruction_encoding_flags * flags) \
+{ \
+	WRITE_ASM(nullptr, target, inputs, outputs, immediates, flags); \
+} \
+ \
+std::unique_ptr<jive::instruction_class> \
+instr_##NAME::copy() const \
+{ \
+	return std::make_unique<jive::i386::instr_##NAME>(); \
+} \
 
-static const jive_register_class * const intreg_param[] = {
-	&jive_i386_regcls_gpr,
-	&jive_i386_regcls_gpr,
-	&jive_i386_regcls_gpr
-};
+#define COMMA ,
 
-static const jive_register_class * const intflags_param[] = {
-	&jive_i386_regcls_gpr,
-	&jive_i386_regcls_flags
-};
+DEFINE_I386_INSTRUCTION(
+	ret, 0xC3, "ret",
+	{}, {}, 0,
+	jive_instruction_jump, nullptr,
+	jive_i386_encode_simple, jive_i386_asm_simple);
 
-const jive_instruction_class jive_i386_instr_ret = {
-	name : "ret",
-	mnemonic : "ret",
-	encode : jive_i386_encode_simple,
-	write_asm : jive_i386_asm_simple,
-	inregs : 0, outregs : 0,
-	flags : jive_instruction_jump,
-	ninputs : 0, noutputs : 0, nimmediates : 0,
-	code : 0xc3
-};
+/* integer load, store, and move instructions */
+DEFINE_I386_INSTRUCTION(
+	int_load_imm, 0x8B, "movl",
+	{}, {&jive_i386_regcls_gpr}, 1,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_int_load_imm, jive_i386_asm_int_load_imm);
+DEFINE_I386_INSTRUCTION(
+	int_load32_disp, 0x8B, "movl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr}, 1,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_loadstore32_disp, jive_i386_asm_load_disp);
+DEFINE_I386_INSTRUCTION(
+	int_store32_disp, 0x89, "movl",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_gpr}, {}, 1,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_loadstore32_disp, jive_i386_asm_store);
+DEFINE_I386_INSTRUCTION(
+	int_transfer, 0x89, "movl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr}, 0,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_regmove, jive_i386_asm_regmove);
 
-const jive_instruction_class jive_i386_instr_int_load_imm = {
-	name : "int_load_imm",
-	mnemonic : "movl",
-	encode : jive_i386_encode_int_load_imm,
-	write_asm : jive_i386_asm_int_load_imm,
-	inregs : 0, outregs : intreg_param, flags : jive_instruction_flags_none,
-	ninputs : 0, noutputs : 1, nimmediates : 1,
-	code : 0xb8
-};
+/* integer arithmetic register register instructions */
+DEFINE_I386_INSTRUCTION(
+	int_add, 0x01, "addl",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_gpr},
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	jive_i386_encode_regreg, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	int_sub, 0x29, "subl",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_gpr},
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_regreg, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	int_and, 0x21, "andl",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_gpr},
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	jive_i386_encode_regreg, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	int_or, 0x09, "orl",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_gpr},
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	jive_i386_encode_regreg, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	int_xor, 0x31, "xorl",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_gpr},
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	jive_i386_encode_regreg, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	int_mul, 0xC0AF0F, "imull",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_gpr},
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	jive_i386_encode_mul_regreg, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	int_mul_expand_signed, 0xF7, "imull",
+	{&jive_i386_regcls_gpr_eax COMMA &jive_i386_regcls_gpr},
+	{&jive_i386_regcls_gpr_edx COMMA &jive_i386_regcls_gpr_eax COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_commutative, nullptr,
+	jive_i386_encode_imull, jive_i386_asm_imul);
+DEFINE_I386_INSTRUCTION(
+	int_mul_expand_unsigned, 0xF7, "mull",
+	{&jive_i386_regcls_gpr_eax COMMA &jive_i386_regcls_gpr},
+	{&jive_i386_regcls_gpr_edx COMMA &jive_i386_regcls_gpr_eax COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_commutative, nullptr,
+	jive_i386_encode_mull, jive_i386_asm_mul);
+DEFINE_I386_INSTRUCTION(
+	int_sdiv, 0xF8, "idivl",
+	{&jive_i386_regcls_gpr_edx COMMA &jive_i386_regcls_gpr_eax COMMA &jive_i386_regcls_gpr},
+	{&jive_i386_regcls_gpr_edx COMMA &jive_i386_regcls_gpr_eax COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_div_reg, jive_i386_asm_div_reg);
+DEFINE_I386_INSTRUCTION(
+	int_udiv, 0xF0, "divl",
+	{&jive_i386_regcls_gpr_edx COMMA &jive_i386_regcls_gpr_eax COMMA &jive_i386_regcls_gpr},
+	{&jive_i386_regcls_gpr_edx COMMA &jive_i386_regcls_gpr_eax COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_div_reg, jive_i386_asm_div_reg);
+DEFINE_I386_INSTRUCTION(
+	int_neg, 0xD8, "negl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_unaryreg, jive_i386_asm_unaryreg);
+DEFINE_I386_INSTRUCTION(
+	int_not, 0xD0, "notl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_unaryreg, jive_i386_asm_unaryreg);
+DEFINE_I386_INSTRUCTION(
+	int_shr, 0xE8, "shrl",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_gpr_ecx},
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_shift_regreg, jive_i386_asm_shift_regreg);
+DEFINE_I386_INSTRUCTION(
+	int_shl, 0xE0, "shll",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_gpr_ecx},
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_shift_regreg, jive_i386_asm_shift_regreg);
+DEFINE_I386_INSTRUCTION(
+	int_ashr, 0xF8, "sarl",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_gpr_ecx},
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 0,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_shift_regreg, jive_i386_asm_shift_regreg);
 
-const jive_instruction_class jive_i386_instr_int_load32_disp = {
-	name : "int_load32_disp",
-	mnemonic : "movl",
-	encode : jive_i386_encode_loadstore32_disp,
-	write_asm : jive_i386_asm_load_disp,
-	inregs : intreg_param, outregs : intreg_param, flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 1,
-	code : 0x8b
-};
-const jive_instruction_class jive_i386_instr_int_store32_disp = {
-	name : "int_store32_disp",
-	mnemonic : "movl",
-	encode : jive_i386_encode_loadstore32_disp,
-	write_asm : jive_i386_asm_store,
-	inregs : intreg_param, outregs : 0, flags : jive_instruction_flags_none,
-	ninputs : 2, noutputs : 0, nimmediates : 1,
-	code : 0x89
-};
-const jive_instruction_class jive_i386_instr_int_add = {
-	name : "int_add",
-	mnemonic : "addl",
-	encode : jive_i386_encode_regreg,
-	write_asm : jive_i386_asm_regreg,
-	inregs : intreg_param, outregs : intflags_param,
-	flags : jive_instruction_write_input | jive_instruction_commutative,
-	ninputs : 2, noutputs : 2, nimmediates : 0,
-	code : 0x01
-};
-const jive_instruction_class jive_i386_instr_int_sub = {
-	name : "int_sub",
-	mnemonic : "subl",
-	encode : jive_i386_encode_regreg,
-	write_asm : jive_i386_asm_regreg,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input,
-	ninputs : 2, noutputs : 2, nimmediates : 0,
-	code : 0x29
-};
-const jive_instruction_class jive_i386_instr_int_and = {
-	name : "int_and",
-	mnemonic : "andl",
-	encode : jive_i386_encode_regreg,
-	write_asm : jive_i386_asm_regreg,
-	inregs : intreg_param, outregs : intflags_param,
-	flags : jive_instruction_write_input | jive_instruction_commutative,
-	ninputs : 2, noutputs : 2, nimmediates : 0,
-	code : 0x21
-};
-const jive_instruction_class jive_i386_instr_int_or = {
-	name : "int_or",
-	mnemonic : "orl",
-	encode : jive_i386_encode_regreg,
-	write_asm : jive_i386_asm_regreg,
-	inregs : intreg_param, outregs : intflags_param,
-	flags : jive_instruction_write_input | jive_instruction_commutative,
-	ninputs : 2, noutputs : 2, nimmediates : 0,
-	code : 0x09
-};
-const jive_instruction_class jive_i386_instr_int_xor = {
-	name : "int_xor",
-	mnemonic : "xorl",
-	encode : jive_i386_encode_regreg,
-	write_asm : jive_i386_asm_regreg,
-	inregs : intreg_param, outregs : intflags_param,
-	flags : jive_instruction_write_input | jive_instruction_commutative,
-	ninputs : 2, noutputs : 2, nimmediates : 0,
-	code : 0x31
-};
-const jive_instruction_class jive_i386_instr_int_mul = {
-	name : "int_mul",
-	mnemonic : "imull",
-	encode : jive_i386_encode_mul_regreg,
-	write_asm : jive_i386_asm_regreg,
-	inregs : intreg_param,
-	outregs : intflags_param,
-	flags : jive_instruction_write_input | jive_instruction_commutative,
-	ninputs : 2, noutputs : 2, nimmediates : 0,
-	code : 0xc0af0f
-};
-const jive_register_class * tmparray0[] = {&jive_i386_regcls_gpr_eax,
-		&jive_i386_regcls_gpr};
-const jive_register_class * tmparray1[] = {&jive_i386_regcls_gpr_edx,
-		&jive_i386_regcls_gpr_eax, &jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_mul_expand_signed = {
-	name : "int_mul_expand_signed",
-	mnemonic : "imull",
-	encode : jive_i386_encode_imull,
-	write_asm : jive_i386_asm_imul,
-	inregs : tmparray0,
-	outregs : tmparray1,
-	flags : jive_instruction_commutative,
-	ninputs : 2, noutputs : 3, nimmediates : 0,
-	code : 0xf7
-};
-const jive_register_class * tmparray2[] = {&jive_i386_regcls_gpr_eax,
-		&jive_i386_regcls_gpr};
-const jive_register_class * tmparray3[] = {&jive_i386_regcls_gpr_edx,
-		&jive_i386_regcls_gpr_eax, &jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_mul_expand_unsigned = {
-	name : "int_mul_expand_unsigned",
-	mnemonic : "mull",
-	encode : jive_i386_encode_mull,
-	write_asm : jive_i386_asm_mul,
-	inregs : tmparray2,
-	outregs : tmparray3,
-	flags : jive_instruction_commutative,
-	ninputs : 2, noutputs : 3, nimmediates : 0,
-	code : 0xf7
-};
-const jive_register_class * tmparray4[] = {&jive_i386_regcls_gpr_edx,
-		&jive_i386_regcls_gpr_eax, &jive_i386_regcls_gpr};
-const jive_register_class * tmparray5[] = {&jive_i386_regcls_gpr_edx,
-		&jive_i386_regcls_gpr_eax, &jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_sdiv = {
-	name : "int_sdiv",
-	mnemonic : "idivl",
-	encode : jive_i386_encode_div_reg,
-	write_asm : jive_i386_asm_div_reg,
-	inregs : tmparray4,
-	outregs : tmparray5,
-	flags : jive_instruction_flags_none,
-	ninputs : 3, noutputs : 3, nimmediates : 0,
-	code : 0xf8
-};
-const jive_register_class * tmparray6[] = {&jive_i386_regcls_gpr_edx,
-		&jive_i386_regcls_gpr_eax, &jive_i386_regcls_gpr};
-const jive_register_class * tmparray7[] = {&jive_i386_regcls_gpr_edx,
-		&jive_i386_regcls_gpr_eax, &jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_udiv = {
-	name : "int_udiv",
-	mnemonic : "divl",
-	encode : jive_i386_encode_div_reg,
-	write_asm : jive_i386_asm_div_reg,
-	inregs : tmparray6,
-	outregs : tmparray7,
-	flags : jive_instruction_flags_none,
-	ninputs : 3, noutputs : 3, nimmediates : 0,
-	code : 0xf0
-};
+/* integer arithmetic register immediate instructions */
+/*
+	for the immediate instructions, code consists of normal_code | (eax_cod << 8), see instruction
+	coding function for explanation
+*/
+DEFINE_I386_INSTRUCTION(
+	int_add_immediate, 0xC0 | (0x05 << 8), "addl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 1,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_regimm, jive_i386_asm_regimm);
+DEFINE_I386_INSTRUCTION(
+	int_sub_immediate, 0xE8 | (0x2D << 8), "subl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 1,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_regimm, jive_i386_asm_regimm);
+DEFINE_I386_INSTRUCTION(
+	int_and_immediate, 0xE0 | (0x25 << 8), "andl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 1,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_regimm, jive_i386_asm_regimm);
+DEFINE_I386_INSTRUCTION(
+	int_or_immediate, 0xC8 | (0x0D << 8), "orl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 1,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_regimm, jive_i386_asm_regimm);
+DEFINE_I386_INSTRUCTION(
+	int_xor_immediate, 0xF0 | (0x35 << 8), "xorl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 1,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_regimm, jive_i386_asm_regimm);
+DEFINE_I386_INSTRUCTION(
+	/* FIXME: code is the same as for int_add_immediate, flags is none */
+	int_mul_immediate, 0xC0 | (0x05 << 8), "imull",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 1,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_mul_regimm, jive_i386_asm_mul_regimm);
+DEFINE_I386_INSTRUCTION(
+	int_shr_immediate, 0xE8, "shrl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 1,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_shift_regimm, jive_i386_asm_regimm);
+DEFINE_I386_INSTRUCTION(
+	int_shl_immediate, 0xE0, "shll",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 1,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_shift_regimm, jive_i386_asm_regimm);
+DEFINE_I386_INSTRUCTION(
+	int_ashr_immediate, 0xF8, "sarl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_gpr COMMA &jive_i386_regcls_flags}, 1,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_shift_regimm, jive_i386_asm_regimm);
 
-/* for the immediate instructions, code consists of normal_code | (eax_code << 8),
-see instruction coding function for explanation */
-const jive_instruction_class jive_i386_instr_int_add_immediate = {
-	name : "int_add_immediate",
-	mnemonic : "addl",
-	encode : jive_i386_encode_regimm,
-	write_asm : jive_i386_asm_regimm,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input,
-	ninputs : 1, noutputs : 2, nimmediates : 1,
-	code : 0xc0 | (0x05 << 8)
-};
-const jive_instruction_class jive_i386_instr_int_sub_immediate = {
-	name : "int_sub_immediate",
-	mnemonic : "subl",
-	encode : jive_i386_encode_regimm,
-	write_asm : jive_i386_asm_regimm,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input,
-	ninputs : 1, noutputs : 2, nimmediates : 1,
-	code : 0xe8 | (0x2d << 8)
-};
-const jive_instruction_class jive_i386_instr_int_and_immediate = {
-	name : "int_and_immediate",
-	mnemonic : "andl",
-	encode : jive_i386_encode_regimm,
-	write_asm : jive_i386_asm_regimm,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input,
-	ninputs : 1, noutputs : 2, nimmediates : 1,
-	code : 0xe0 | (0x25 << 8)
-};
-const jive_instruction_class jive_i386_instr_int_or_immediate = {
-	name : "int_or_immediate",
-	mnemonic : "orl",
-	encode : jive_i386_encode_regimm,
-	write_asm : jive_i386_asm_regimm,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input,
-	ninputs : 1, noutputs : 2, nimmediates : 1,
-	code : 0xc8 | (0x0d << 8)
-};
-const jive_instruction_class jive_i386_instr_int_xor_immediate = {
-	name : "int_xor_immediate",
-	mnemonic : "xorl",
-	encode : jive_i386_encode_regimm,
-	write_asm : jive_i386_asm_regimm,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input,
-	ninputs : 1, noutputs : 2, nimmediates : 1,
-	code : 0xf0 | (0x35 << 8)
-};
-const jive_instruction_class jive_i386_instr_int_mul_immediate = {
-	name : "int_mul_immediate",
-	mnemonic : "imull",
-	encode : jive_i386_encode_mul_regimm,
-	write_asm : jive_i386_asm_mul_regimm,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 2, nimmediates : 1,
-	code : 0xc0 | (0x05 << 8)
-};
-const jive_instruction_class jive_i386_instr_int_neg = {
-	name : "int_neg",
-	mnemonic : "negl",
-	encode : jive_i386_encode_unaryreg,
-	write_asm : jive_i386_asm_unaryreg,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input,
-	ninputs : 1, noutputs : 2, nimmediates : 0,
-	code : 0xd8
-};
-const jive_instruction_class jive_i386_instr_int_not = {
-	name : "int_not",
-	mnemonic : "notl",
-	encode : jive_i386_encode_unaryreg,
-	write_asm : jive_i386_asm_unaryreg,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input,
-	ninputs : 1, noutputs : 2, nimmediates : 0,
-	code : 0xd0
-};
-const jive_register_class * tmparray8[] = {&jive_i386_regcls_gpr,
-		&jive_i386_regcls_gpr_ecx};
-const jive_instruction_class jive_i386_instr_int_shr = {
-	name : "int_shr",
-	mnemonic : "shrl",
-	encode : jive_i386_encode_shift_regreg,
-	write_asm : jive_i386_asm_shift_regreg,
-	inregs : tmparray8,
-	outregs : intflags_param,
-	flags : jive_instruction_write_input,
-	ninputs : 2, noutputs : 2, nimmediates : 0,
-	code : 0xe8
-};
-const jive_register_class * tmparray9[] = {&jive_i386_regcls_gpr};
-const jive_instruction_class jive_i386_instr_int_shr_immediate = {
-	name : "int_shr_immediate",
-	mnemonic : "shrl",
-	encode : jive_i386_encode_shift_regimm,
-	write_asm : jive_i386_asm_regimm,
-	inregs : tmparray9,
-	outregs : intflags_param,
-	flags : jive_instruction_write_input,
-	ninputs : 1, noutputs : 2, nimmediates : 1,
-	code : 0xe8
-};
-const jive_register_class * tmparray10[] = {&jive_i386_regcls_gpr,
-		&jive_i386_regcls_gpr_ecx};
-const jive_instruction_class jive_i386_instr_int_shl = {
-	name : "int_shl",
-	mnemonic : "shll",
-	encode : jive_i386_encode_shift_regreg,
-	write_asm : jive_i386_asm_shift_regreg,
-	inregs : tmparray10,
-	outregs : intflags_param,
-	flags : jive_instruction_write_input,
-	ninputs : 2, noutputs : 2, nimmediates : 0,
-	code : 0xe0
-};
-const jive_register_class * tmparray11[] = {&jive_i386_regcls_gpr};
-const jive_instruction_class jive_i386_instr_int_shl_immediate = {
-	name : "int_shl_immediate",
-	mnemonic : "shll",
-	encode : jive_i386_encode_shift_regimm,
-	write_asm : jive_i386_asm_regimm,
-	inregs : tmparray11,
-	outregs : intflags_param,
-	flags : jive_instruction_write_input,
-	ninputs : 1, noutputs : 2, nimmediates : 1,
-	code : 0xe0
-};
-const jive_register_class * tmparray12[] = {&jive_i386_regcls_gpr,
-		&jive_i386_regcls_gpr_ecx};
-const jive_instruction_class jive_i386_instr_int_ashr = {
-	name : "int_ashr",
-	mnemonic : "sarl",
-	encode : jive_i386_encode_shift_regreg,
-	write_asm : jive_i386_asm_shift_regreg,
-	inregs : tmparray12,
-	outregs : intflags_param,
-	flags : jive_instruction_write_input,
-	ninputs : 2, noutputs : 2, nimmediates : 0,
-	code : 0xf8
-};
-const jive_register_class * tmparray13[] = {&jive_i386_regcls_gpr};
-const jive_instruction_class jive_i386_instr_int_ashr_immediate = {
-	name : "int_ashr_immediate",
-	mnemonic : "sarl",
-	encode : jive_i386_encode_shift_regimm,
-	write_asm : jive_i386_asm_regimm,
-	inregs : tmparray13,
-	outregs : intflags_param,
-	flags : jive_instruction_write_input,
-	ninputs : 1, noutputs : 2, nimmediates : 1,
-	code : 0xf8
-};
+/* call instructions */
+DEFINE_I386_INSTRUCTION(
+	call, 0xE8, "call",
+	{}, {}, 1,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_call, jive_i386_asm_call);
+DEFINE_I386_INSTRUCTION(
+	call_reg, 0xFF, "call_reg",
+	{&jive_i386_regcls_gpr}, {}, 0,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_call_reg, jive_i386_asm_call_reg);
 
-const jive_instruction_class jive_i386_instr_int_transfer = {
-	name : "int_transfer",
-	mnemonic : "movl",
-	encode : jive_i386_encode_regmove,
-	write_asm : jive_i386_asm_regmove,
-	inregs : intreg_param, outregs : intreg_param,
-	flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 0,
-	code : 0x89
-};
-const jive_instruction_class jive_i386_instr_call = {
-	name : "call",
-	mnemonic : "call",
-	encode : jive_i386_encode_call,
-	write_asm : jive_i386_asm_call,
-	inregs : NULL, outregs : NULL,
-	flags : jive_instruction_flags_none,
-	ninputs : 0, noutputs : 0, nimmediates : 1,
-	code : 0xe8
-};
-const jive_instruction_class jive_i386_instr_call_reg = {
-	name : "call_reg",
-	mnemonic : "call_reg",
-	encode : jive_i386_encode_call_reg,
-	write_asm : jive_i386_asm_call_reg,
-	inregs : intreg_param, outregs : NULL,
-	flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 0, nimmediates : 0,
-	code : 0xff
-};
-const jive_register_class * tmparray14[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_cmp = {
-	name : "int_cmp",
-	mnemonic : "cmpl",
-	encode : jive_i386_encode_cmp_regreg,
-	write_asm : jive_i386_asm_regreg,
-	inregs : intreg_param,
-	outregs : tmparray14,
-	flags : jive_instruction_flags_none,
-	ninputs : 2, noutputs : 1, nimmediates : 0,
-	code : 0x3b
-};
-const jive_register_class * tmparray15[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_cmp_immediate = {
-	name : "int_cmp_immediate",
-	mnemonic : "cmpl",
-	encode : jive_i386_encode_regimm_readonly,
-	write_asm : jive_i386_asm_regimm,
-	inregs : intreg_param,
-	outregs : tmparray15,
-	flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 1,
-	code : 0xf8 | (0x3d << 8)
-};
-const jive_register_class * tmparray16[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_jump_sless = {
-	name : "int_jump_sless",
-	mnemonic : "jl",
-	encode : jive_i386_encode_jump_conditional,
-	write_asm : jive_i386_asm_jump,
-	inregs : tmparray16,
-	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative
-		| jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 1,
-	code : 0xc,
-	inverse_jump : &jive_i386_instr_int_jump_sgreatereq
-};
-const jive_register_class * tmparray17[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_jump_uless = {
-	name : "int_jump_uless",
-	mnemonic : "jb",
-	encode : jive_i386_encode_jump_conditional,
-	write_asm : jive_i386_asm_jump,
-	inregs : tmparray17,
-	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative
-		| jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 1,
-	code : 0x2,
-	inverse_jump : &jive_i386_instr_int_jump_ugreatereq
-};
-const jive_register_class * tmparray18[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_jump_slesseq = {
-	name : "int_jump_slesseq",
-	mnemonic : "jle",
-	encode : jive_i386_encode_jump_conditional,
-	write_asm : jive_i386_asm_jump,
-	inregs : tmparray18,
-	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative
-		| jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 1,
-	code : 0xe,
-	inverse_jump : &jive_i386_instr_int_jump_sgreater
-};
-const jive_register_class * tmparray19[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_jump_ulesseq = {
-	name : "int_jump_ulesseq",
-	mnemonic : "jbe",
-	encode : jive_i386_encode_jump_conditional,
-	write_asm : jive_i386_asm_jump,
-	inregs : tmparray19,
-	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative
-		| jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 1,
-	code : 0x6,
-	inverse_jump : &jive_i386_instr_int_jump_ugreater
-};
-const jive_register_class * tmparray20[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_jump_equal = {
-	name : "int_jump_equal",
-	mnemonic : "je",
-	encode : jive_i386_encode_jump_conditional,
-	write_asm : jive_i386_asm_jump,
-	inregs : tmparray20,
-	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative
-		| jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 1,
-	code : 0x4,
-	inverse_jump : &jive_i386_instr_int_jump_notequal
-};
-const jive_register_class * tmparray21[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_jump_notequal = {
-	name : "int_jump_notequal",
-	mnemonic : "jne",
-	encode : jive_i386_encode_jump_conditional,
-	write_asm : jive_i386_asm_jump,
-	inregs : tmparray21,
-	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative
-		| jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 1,
-	code : 0x5,
-	inverse_jump : &jive_i386_instr_int_jump_equal
-};
-const jive_register_class * tmparray22[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_jump_sgreater = {
-	name : "int_jump_sgreater",
-	mnemonic : "jg",
-	encode : jive_i386_encode_jump_conditional,
-	write_asm : jive_i386_asm_jump,
-	inregs : tmparray22,
-	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative
-		| jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 1,
-	code : 0xf,
-	inverse_jump : &jive_i386_instr_int_jump_slesseq
-};
-const jive_register_class * tmparray23[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_jump_ugreater = {
-	name : "int_jump_ugreater",
-	mnemonic : "ja",
-	encode : jive_i386_encode_jump_conditional,
-	write_asm : jive_i386_asm_jump,
-	inregs : tmparray23,
-	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative
-		| jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 1,
-	code : 0x7,
-	inverse_jump : &jive_i386_instr_int_jump_ulesseq
-};
-const jive_register_class * tmparray24[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_jump_sgreatereq = {
-	name : "int_jump_sgreatereq",
-	mnemonic : "jge",
-	encode : jive_i386_encode_jump_conditional,
-	write_asm : jive_i386_asm_jump,
-	inregs : tmparray24,
-	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative
-		| jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 1,
-	code : 0xd,
-	inverse_jump : &jive_i386_instr_int_jump_sless
-};
-const jive_register_class * tmparray25[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_int_jump_ugreatereq = {
-	name : "int_jump_ugreatereq",
-	mnemonic : "jae",
-	encode : jive_i386_encode_jump_conditional,
-	write_asm : jive_i386_asm_jump,
-	inregs : tmparray25,
-	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative
-		| jive_instruction_jump_conditional_invertible,
-	ninputs : 1, noutputs : 0, nimmediates : 1,
-	code : 0x3,
-	inverse_jump : &jive_i386_instr_int_jump_uless
-};
-const jive_instruction_class jive_i386_instr_jump = {
-	name : "jump",
-	mnemonic : "jmp",
-	encode : jive_i386_encode_jump,
-	write_asm : jive_i386_asm_jump,
-	inregs : NULL,
-	outregs : NULL,
-	flags : jive_instruction_jump_relative,
-	ninputs : 0, noutputs : 0, nimmediates : 1,
-	code : 0xeb,
-	inverse_jump : NULL
-};
+/* integer compare instructions */
+DEFINE_I386_INSTRUCTION(
+	int_cmp, 0x3b, "cmpl",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_gpr}, {&jive_i386_regcls_flags}, 0,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_cmp_regreg, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	int_cmp_immediate, 0xF8 | (0x3D << 8), "cmpl",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_flags}, 1,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_regimm_readonly, jive_i386_asm_regimm);
 
-const jive_instruction_class jive_i386_instr_fp_load_disp = {
-	name : "fp_load_disp",
-	mnemonic : "flds",
-	encode : jive_i386_encode_fp,
-	write_asm : jive_i386_asm_fp,
-	inregs : intreg_param,
-	outregs : fpreg_param,
-	flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 1,
-	code : 0x0
-};
+/* jump instructions */
+DEFINE_I386_INSTRUCTION(
+	int_jump_sless, 0xC, "jl",
+	{&jive_i386_regcls_flags}, {}, 1,
+	jive_instruction_jump | jive_instruction_jump_relative
+	| jive_instruction_jump_conditional_invertible, &instr_int_jump_sgreatereq::instance(),
+	jive_i386_encode_jump_conditional, jive_i386_asm_jump);
+DEFINE_I386_INSTRUCTION(
+	int_jump_uless, 0x2, "jb",
+	{&jive_i386_regcls_flags}, {}, 1,
+	jive_instruction_jump | jive_instruction_jump_relative
+	| jive_instruction_jump_conditional_invertible, &instr_int_jump_ugreatereq::instance(),
+	jive_i386_encode_jump_conditional, jive_i386_asm_jump);
+DEFINE_I386_INSTRUCTION(
+	int_jump_slesseq, 0xE, "jle",
+	{&jive_i386_regcls_flags}, {}, 1,
+	jive_instruction_jump | jive_instruction_jump_relative
+	| jive_instruction_jump_conditional_invertible, &instr_int_jump_sgreater::instance(),
+	jive_i386_encode_jump_conditional, jive_i386_asm_jump);
+DEFINE_I386_INSTRUCTION(
+	int_jump_ulesseq, 0x6, "jbe",
+	{&jive_i386_regcls_flags}, {}, 1,
+	jive_instruction_jump | jive_instruction_jump_relative
+	| jive_instruction_jump_conditional_invertible, &instr_int_jump_ugreater::instance(),
+	jive_i386_encode_jump_conditional, jive_i386_asm_jump);
+DEFINE_I386_INSTRUCTION(
+	int_jump_equal, 0x4, "je",
+	{&jive_i386_regcls_flags}, {}, 1,
+	jive_instruction_jump | jive_instruction_jump_relative
+	| jive_instruction_jump_conditional_invertible, &instr_int_jump_notequal::instance(),
+	jive_i386_encode_jump_conditional, jive_i386_asm_jump);
+DEFINE_I386_INSTRUCTION(
+	int_jump_notequal, 0x5, "jne",
+	{&jive_i386_regcls_flags}, {}, 1,
+	jive_instruction_jump | jive_instruction_jump_relative
+	| jive_instruction_jump_conditional_invertible, &instr_int_jump_equal::instance(),
+	jive_i386_encode_jump_conditional, jive_i386_asm_jump);
+DEFINE_I386_INSTRUCTION(
+	int_jump_sgreater, 0xF, "jg",
+	{&jive_i386_regcls_flags}, {}, 1,
+	jive_instruction_jump | jive_instruction_jump_relative
+	| jive_instruction_jump_conditional_invertible, &instr_int_jump_slesseq::instance(),
+	jive_i386_encode_jump_conditional, jive_i386_asm_jump);
+DEFINE_I386_INSTRUCTION(
+	int_jump_ugreater, 0x7, "ja",
+	{&jive_i386_regcls_flags}, {}, 1,
+	jive_instruction_jump | jive_instruction_jump_relative
+	| jive_instruction_jump_conditional_invertible, &instr_int_jump_ulesseq::instance(),
+	jive_i386_encode_jump_conditional, jive_i386_asm_jump);
+DEFINE_I386_INSTRUCTION(
+	int_jump_sgreatereq, 0xD, "jge",
+	{&jive_i386_regcls_flags}, {}, 1,
+	jive_instruction_jump | jive_instruction_jump_relative
+	| jive_instruction_jump_conditional_invertible, &instr_int_jump_sless::instance(),
+	jive_i386_encode_jump_conditional, jive_i386_asm_jump);
+DEFINE_I386_INSTRUCTION(
+	int_jump_ugreatereq, 0x3, "jae",
+	{&jive_i386_regcls_flags}, {}, 1,
+	jive_instruction_jump | jive_instruction_jump_relative
+	| jive_instruction_jump_conditional_invertible, &instr_int_jump_uless::instance(),
+	jive_i386_encode_jump_conditional, jive_i386_asm_jump);
+DEFINE_I386_INSTRUCTION(
+	jump, 0xEB, "jmp",
+	{}, {}, 1,
+	jive_instruction_jump_relative, nullptr,
+	jive_i386_encode_jump, jive_i386_asm_jump);
 
-const jive_instruction_class jive_i386_instr_sse_load32_disp = {
-	name : "sse_load32_disp",
-	mnemonic : "movss",
-	encode : jive_i386_encode_loadstoresse_disp,
-	write_asm : jive_i386_asm_load_disp,
-	inregs : intreg_param,
-	outregs : ssereg_param,
-	flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 1,
-	code : 0x10
-};
-const jive_instruction_class jive_i386_instr_sse_load_abs = {
-	name : "sse_load_abs",
-	mnemonic : "movss",
-	encode : jive_i386_encode_sseload_abs,
-	write_asm : jive_i386_asm_load_abs,
-	inregs : NULL,
-	outregs : ssereg_param,
-	flags : jive_instruction_flags_none,
-	ninputs : 0, noutputs : 1, nimmediates : 1,
-	code : 0x10
-};
-const jive_register_class * tmparray26[] = {
-		&jive_i386_regcls_gpr, &jive_i386_regcls_sse};
-const jive_instruction_class jive_i386_instr_sse_store32_disp = {
-	name : "sse_store32_disp",
-	mnemonic : "movss",
-	encode : jive_i386_encode_loadstoresse_disp,
-	write_asm : jive_i386_asm_store,
-	inregs : tmparray26,
-	outregs : NULL,
-	flags : jive_instruction_flags_none,
-	ninputs : 2, noutputs : 0, nimmediates : 1,
-	code : 0x11
-};
+/* floating-point instructions */
+DEFINE_I386_INSTRUCTION(
+	fp_load_disp, 0x0, "flds",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_fp}, 1,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_fp, jive_i386_asm_fp);
+DEFINE_I386_INSTRUCTION(
+	sse_load32_disp, 0x10, "movss",
+	{&jive_i386_regcls_gpr}, {&jive_i386_regcls_sse}, 1,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_loadstoresse_disp, jive_i386_asm_load_disp);
+DEFINE_I386_INSTRUCTION(
+	sse_load_abs, 0x10, "movss",
+	{}, {&jive_i386_regcls_sse}, 1,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_sseload_abs, jive_i386_asm_load_abs);
+DEFINE_I386_INSTRUCTION(
+	sse_store32_disp, 0x11, "movss",
+	{&jive_i386_regcls_gpr COMMA &jive_i386_regcls_sse}, {}, 1,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_loadstoresse_disp, jive_i386_asm_store);
+DEFINE_I386_INSTRUCTION(
+	sse_xor, 0x57, "xorps",
+	{&jive_i386_regcls_sse COMMA &jive_i386_regcls_sse}, {&jive_i386_regcls_sse}, 0,
+	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	jive_i386_encode_regreg_sse, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	float_add, 0x58, "addss",
+	{&jive_i386_regcls_sse COMMA &jive_i386_regcls_sse}, {&jive_i386_regcls_sse}, 0,
+	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	jive_i386_encode_regreg_sse_prefixed, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	float_sub, 0x5C, "subss",
+	{&jive_i386_regcls_sse COMMA &jive_i386_regcls_sse}, {&jive_i386_regcls_sse}, 0,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_regreg_sse_prefixed, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	float_mul, 0x59, "mulss",
+	{&jive_i386_regcls_sse COMMA &jive_i386_regcls_sse}, {&jive_i386_regcls_sse}, 0,
+	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	jive_i386_encode_regreg_sse_prefixed, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	float_div, 0x5E, "divss",
+	{&jive_i386_regcls_sse COMMA &jive_i386_regcls_sse}, {&jive_i386_regcls_sse}, 0,
+	jive_instruction_write_input, nullptr,
+	jive_i386_encode_regreg_sse_prefixed, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	float_cmp, 0x2E, "ucomiss",
+	{&jive_i386_regcls_sse COMMA &jive_i386_regcls_sse}, {&jive_i386_regcls_flags}, 0,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_cmp_regreg_sse, jive_i386_asm_regreg);
+DEFINE_I386_INSTRUCTION(
+	float_transfer, 0x10, "movss",
+	{&jive_i386_regcls_sse}, {&jive_i386_regcls_sse}, 0,
+	jive_instruction_flags_none, nullptr,
+	jive_i386_encode_regmove_sse, jive_i386_asm_regmove);
 
-const jive_instruction_class jive_i386_instr_sse_xor = {
-	name : "xor",
-	mnemonic : "xorps",
-	encode : jive_i386_encode_regreg_sse,
-	write_asm : jive_i386_asm_regreg,
-	inregs : ssereg_param,
-	outregs : ssereg_param,
-	flags : jive_instruction_write_input | jive_instruction_commutative,
-	ninputs : 2, noutputs : 1, nimmediates : 0,
-	code : 0x57
-};
-
-const jive_instruction_class jive_i386_instr_float_add = {
-	name : "flt_add",
-	mnemonic : "addss",
-	encode : jive_i386_encode_regreg_sse_prefixed,
-	write_asm : jive_i386_asm_regreg,
-	inregs : ssereg_param,
-	outregs : ssereg_param,
-	flags : jive_instruction_write_input | jive_instruction_commutative,
-	ninputs : 2, noutputs : 1, nimmediates : 0,
-	code : 0x58
-};
-const jive_instruction_class jive_i386_instr_float_sub = {
-	name : "flt_sub",
-	mnemonic : "subss",
-	encode : jive_i386_encode_regreg_sse_prefixed,
-	write_asm : jive_i386_asm_regreg,
-	inregs : ssereg_param,
-	outregs : ssereg_param,
-	flags : jive_instruction_write_input,
-	ninputs : 2, noutputs : 1, nimmediates : 0,
-	code : 0x5C
-};
-const jive_instruction_class jive_i386_instr_float_mul = {
-	name : "flt_mul",
-	mnemonic : "mulss",
-	encode : jive_i386_encode_regreg_sse_prefixed,
-	write_asm : jive_i386_asm_regreg,
-	inregs : ssereg_param,
-	outregs : ssereg_param,
-	flags : jive_instruction_write_input | jive_instruction_commutative,
-	ninputs : 2, noutputs : 1, nimmediates : 0,
-	code : 0x59
-};
-const jive_instruction_class jive_i386_instr_float_div = {
-	name : "flt_div",
-	mnemonic : "divss",
-	encode : jive_i386_encode_regreg_sse_prefixed,
-	write_asm : jive_i386_asm_regreg,
-	inregs : ssereg_param,
-	outregs : ssereg_param,
-	flags : jive_instruction_write_input,
-	ninputs : 2, noutputs : 1, nimmediates : 0,
-	code : 0x5E
-};
-const jive_register_class * tmparray27[] = {&jive_i386_regcls_flags};
-const jive_instruction_class jive_i386_instr_float_cmp = {
-	name : "float_cmp",
-	mnemonic : "ucomiss",
-	encode : jive_i386_encode_cmp_regreg_sse,
-	write_asm : jive_i386_asm_regreg,
-	inregs : ssereg_param,
-	outregs : tmparray27,
-	flags : jive_instruction_flags_none,
-	ninputs : 2, noutputs : 1, nimmediates : 0,
-	code : 0x2E
-};
-const jive_instruction_class jive_i386_instr_float_transfer = {
-	name : "float_transfer",
-	mnemonic : "movss",
-	encode : jive_i386_encode_regmove_sse,
-	write_asm : jive_i386_asm_regmove,
-	inregs : ssereg_param,
-	outregs : ssereg_param,
-	flags : jive_instruction_flags_none,
-	ninputs : 1, noutputs : 1, nimmediates : 0,
-	code : 0x10
-};
+}}
 
 jive_xfer_description
 jive_i386_create_xfer(struct jive::region * region, jive::output * origin,
@@ -1604,77 +1303,6 @@ static const jive_instructionset_class jive_i386_instructionset_class = {
 static const jive_i386_reg_classifier classifier;
 const struct jive_instructionset jive_i386_instructionset = {
 	class_ : &jive_i386_instructionset_class,
-	jump_instruction_class : &jive_i386_instr_jump,
+	jump_instruction_class : &jive::i386::instr_jump::instance(),
 	reg_classifier : &classifier
-};
-
-static const jive_instruction_class * const registered_instrs[] = {
-	&jive_i386_instr_ret,
-	
-	&jive_i386_instr_int_load_imm,
-	&jive_i386_instr_int_load32_disp,
-	&jive_i386_instr_int_store32_disp,
-	
-	&jive_i386_instr_int_add,
-	&jive_i386_instr_int_sub,
-	&jive_i386_instr_int_and,
-	&jive_i386_instr_int_or,
-	&jive_i386_instr_int_xor,
-	&jive_i386_instr_int_mul,
-	&jive_i386_instr_int_sdiv,
-	&jive_i386_instr_int_udiv,
-	&jive_i386_instr_int_shl,
-	&jive_i386_instr_int_shr,
-	&jive_i386_instr_int_ashr,
-	&jive_i386_instr_int_mul_expand_signed,
-	&jive_i386_instr_int_mul_expand_unsigned,
-	
-	&jive_i386_instr_int_add_immediate,
-	&jive_i386_instr_int_sub_immediate,
-	&jive_i386_instr_int_and_immediate,
-	&jive_i386_instr_int_or_immediate,
-	&jive_i386_instr_int_xor_immediate,
-	&jive_i386_instr_int_mul_immediate,
-	&jive_i386_instr_int_shl_immediate,
-	&jive_i386_instr_int_shr_immediate,
-	&jive_i386_instr_int_ashr_immediate,
-	
-	&jive_i386_instr_int_neg,
-	&jive_i386_instr_int_not,
-	
-	&jive_i386_instr_int_transfer,
-	
-	&jive_i386_instr_call,
-	&jive_i386_instr_call_reg,
-
-	&jive_i386_instr_int_cmp,
-	&jive_i386_instr_int_cmp_immediate,
-
-	&jive_i386_instr_int_jump_sless,
-	&jive_i386_instr_int_jump_uless,
-	&jive_i386_instr_int_jump_slesseq,
-	&jive_i386_instr_int_jump_ulesseq,
-	&jive_i386_instr_int_jump_equal,
-	&jive_i386_instr_int_jump_notequal,
-	&jive_i386_instr_int_jump_sgreater,
-	&jive_i386_instr_int_jump_ugreater,
-	&jive_i386_instr_int_jump_sgreatereq,
-	&jive_i386_instr_int_jump_ugreatereq,
-	&jive_i386_instr_jump,
-
-	&jive_i386_instr_fp_load_disp,
-
-	&jive_i386_instr_sse_load32_disp,
-	&jive_i386_instr_sse_load_abs,
-	&jive_i386_instr_sse_store32_disp,
-
-	&jive_i386_instr_sse_xor,
-
-	&jive_i386_instr_float_add,
-	&jive_i386_instr_float_sub,
-	&jive_i386_instr_float_mul,
-	&jive_i386_instr_float_div,
-
-	&jive_i386_instr_float_cmp,
-	&jive_i386_instr_float_transfer
 };

@@ -161,7 +161,8 @@ public:
 	finalize(
 		jive_subroutine & subroutine) override
 	{
-		jive::node * ret_instr = jive_instruction_node_create(subroutine.region, &jive_i386_instr_ret,
+		jive::node * ret_instr = jive_instruction_node_create(subroutine.region,
+			&jive::i386::instr_ret::instance(),
 			{}, {}, {}, {}, {&jive::ctl::boolean});
 		/* add dependency on return address on stack */
 			ret_instr->add_input(subroutine.builder_state->passthroughs[6].gate,
@@ -239,7 +240,7 @@ do_stackptr_sub(const jive_value_split_factory * self_, jive::oport * value)
 	
 	return jive_instruction_node_create_simple(
 		value->node()->region(),
-		&jive_i386_instr_int_sub_immediate,
+		&jive::i386::instr_int_sub_immediate::instance(),
 		&value, immediates)->output(0);
 }
 
@@ -251,7 +252,7 @@ do_stackptr_add(const jive_value_split_factory * self_, jive::oport * value)
 	
 	return jive_instruction_node_create_simple(
 		value->node()->region(),
-		&jive_i386_instr_int_add_immediate,
+		&jive::i386::instr_int_add_immediate::instance(),
 		&value, immediates)->output(0);
 }
 

@@ -35,21 +35,21 @@ jive_i386_call_node_substitute(
 		jive::immediate imm(0, op->label());
 		call_instr = jive_instruction_node_create_extended(
 			region,
-			&jive_i386_instr_call,
+			&jive::i386::instr_call::instance(),
 			0, &imm);
 	} else if (auto op = dynamic_cast<const jive::address::label_to_bitstring_op *>(
 		&address->node()->operation())) {
 		jive::immediate imm(0, op->label());
 		call_instr = jive_instruction_node_create_extended(
 			region,
-			&jive_i386_instr_call,
+			&jive::i386::instr_call::instance(),
 			0, &imm);
 	} else {
 		jive::oport *  tmparray0[] = {address};
 		/* FIXME: cast address to bitstring first */
 		call_instr = jive_instruction_node_create(
 			region,
-			&jive_i386_instr_call_reg,
+			&jive::i386::instr_call_reg::instance(),
 			tmparray0, NULL);
 	}
 	

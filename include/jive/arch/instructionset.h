@@ -11,10 +11,10 @@
 
 namespace jive {
 	class input;
+	class instruction_class;
 	class output;
 }
 
-struct jive_instruction_class;
 struct jive_reg_classifier;
 struct jive_resource_class;
 
@@ -35,7 +35,7 @@ struct jive_instructionset_class {
 
 struct jive_instructionset {
 	const jive_instructionset_class * class_;
-	const struct jive_instruction_class * jump_instruction_class;
+	const jive::instruction_class * jump_instruction_class;
 	const struct jive_reg_classifier * reg_classifier;
 };
 
@@ -47,7 +47,7 @@ jive_instructionset_create_xfer(const jive_instructionset * self,
 	return  self->class_->create_xfer(region, origin, in_class, out_class);
 }
 
-JIVE_EXPORTED_INLINE const struct jive_instruction_class *
+JIVE_EXPORTED_INLINE const jive::instruction_class *
 jive_instructionset_get_jump_instruction_class(const jive_instructionset * self)
 {
 	return self->jump_instruction_class;

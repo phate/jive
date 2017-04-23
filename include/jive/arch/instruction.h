@@ -30,7 +30,7 @@ public:
 
 	inline
 	instruction_op(
-		const jive_instruction_class * icls,
+		const jive::instruction_class * icls,
 		const std::vector<const jive::state::type*> & istates,
 		const std::vector<const jive::state::type*> & ostates)
 		: icls_(icls)
@@ -73,7 +73,8 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const jive_instruction_class * icls() const noexcept
+	inline const jive::instruction_class *
+	icls() const noexcept
 	{
 		return icls_;
 	}
@@ -82,7 +83,7 @@ public:
 	copy() const override;
 
 private:
-	const jive_instruction_class * icls_;
+	const jive::instruction_class * icls_;
 	std::vector<std::unique_ptr<base::type>> istates_;
 	std::vector<std::unique_ptr<base::type>> ostates_;
 };
@@ -92,21 +93,21 @@ private:
 jive::node *
 jive_instruction_node_create_simple(
 	struct jive::region * region,
-	const jive_instruction_class * icls,
+	const jive::instruction_class * icls,
 	jive::oport * const * operands,
 	const int64_t * immediates);
 
 jive::node *
 jive_instruction_node_create_extended(
 	struct jive::region * region,
-	const jive_instruction_class * icls,
+	const jive::instruction_class * icls,
 	jive::oport * const * operands,
 	const jive::immediate immediates[]);
 
 jive::node *
 jive_instruction_node_create(
 	struct jive::region * region,
-	const jive_instruction_class * icls,
+	const jive::instruction_class * icls,
 	const std::vector<jive::oport*> & operands,
 	const std::vector<jive::immediate> & immediates,
 	const std::vector<const jive::state::type*> & itypes,
@@ -116,7 +117,7 @@ jive_instruction_node_create(
 JIVE_EXPORTED_INLINE jive::node *
 jive_instruction_node_create(
 	struct jive::region * region,
-	const jive_instruction_class * icls,
+	const jive::instruction_class * icls,
 	jive::oport * const * operands,
 	const int64_t * immediates)
 {

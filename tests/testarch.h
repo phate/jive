@@ -27,6 +27,62 @@ extern const jive_register_name jive_testarch_reg_r2;
 extern const jive_register_name jive_testarch_reg_r3;
 extern const jive_register_name jive_testarch_reg_cc;
 
+namespace jive {
+namespace testarch {
+
+#define DECLARE_TESTARCH_INSTRUCTION(NAME) \
+class instr_##NAME : public jive::instruction_class { \
+public: \
+	instr_##NAME(); \
+\
+	virtual void \
+	encode(	\
+		struct jive_section * target, \
+		const jive_register_name * inputs[], \
+		const jive_register_name * outputs[], \
+		const jive_codegen_imm immediates[], \
+		jive_instruction_encoding_flags * flags) override; \
+\
+	virtual void \
+	write_asm( \
+		struct jive_buffer * target, \
+		const jive_register_name * inputs[], \
+		const jive_register_name * outputs[], \
+		const jive_asmgen_imm immediates[], \
+		jive_instruction_encoding_flags * flags) override; \
+\
+	virtual std::unique_ptr<jive::instruction_class> \
+	copy() const override; \
+\
+	static const instr_##NAME & \
+	instance() \
+	{ \
+		return instance_; \
+	} \
+\
+private: \
+	static const instr_##NAME instance_; \
+} \
+
+DECLARE_TESTARCH_INSTRUCTION(nop);
+DECLARE_TESTARCH_INSTRUCTION(load_disp);
+DECLARE_TESTARCH_INSTRUCTION(store_disp);
+DECLARE_TESTARCH_INSTRUCTION(spill_gpr);
+DECLARE_TESTARCH_INSTRUCTION(restore_gpr);
+DECLARE_TESTARCH_INSTRUCTION(move_gpr);
+DECLARE_TESTARCH_INSTRUCTION(setr0);
+DECLARE_TESTARCH_INSTRUCTION(setr1);
+DECLARE_TESTARCH_INSTRUCTION(setr2);
+DECLARE_TESTARCH_INSTRUCTION(setr3);
+DECLARE_TESTARCH_INSTRUCTION(add_gpr);
+DECLARE_TESTARCH_INSTRUCTION(sub_gpr);
+DECLARE_TESTARCH_INSTRUCTION(jump);
+DECLARE_TESTARCH_INSTRUCTION(jumpz);
+DECLARE_TESTARCH_INSTRUCTION(jumpnz);
+DECLARE_TESTARCH_INSTRUCTION(ret);
+
+}}
+
 extern const jive_instruction_class jive_testarch_instr_nop;
 extern const jive_instruction_class jive_testarch_instr_add;
 extern const jive_instruction_class jive_testarch_instr_load_disp;

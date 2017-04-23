@@ -59,13 +59,13 @@ regvalue_to_immediate(const jive::oport * regvalue)
 
 static void
 convert_bitbinary(jive::node * node,
-	const jive_instruction_class * regreg_icls,
-	const jive_instruction_class * regimm_icls)
+	const jive::instruction_class * regreg_icls,
+	const jive::instruction_class * regimm_icls)
 {
 	auto arg1 = node->input(0)->origin();
 	auto arg2 = node->input(1)->origin();
 	
-	bool commutative = (regreg_icls->flags & jive_instruction_commutative) != 0;
+	bool commutative = (regreg_icls->flags() & jive_instruction_commutative) != 0;
 	bool second_is_immediate = false;
 	if (commutative && is_gpr_immediate(arg1)) {
 		swap(&arg1, &arg2);
@@ -94,21 +94,21 @@ convert_divmod(jive::node * node, bool sign, size_t index)
 	auto arg2 = node->input(1)->origin();
 	
 	jive::output * ext;
-	const jive_instruction_class * icls;
+	const jive::instruction_class * icls;
 	if (sign) {
 		jive::immediate imm(31);
 		jive::node * tmp = jive_instruction_node_create_extended(node->region(),
-			&jive_i386_instr_int_ashr_immediate, &arg1, &imm);
+			&jive::i386::instr_int_ashr_immediate::instance(), &arg1, &imm);
 		
 		ext = dynamic_cast<jive::output*>(tmp->output(0));
-		icls = &jive_i386_instr_int_sdiv;
+		icls = &jive::i386::instr_int_sdiv::instance();
 	} else {
 		jive::immediate imm;
 		jive::node * tmp = jive_instruction_node_create_extended(node->region(),
-			&jive_i386_instr_int_load_imm, nullptr, &imm);
+			&jive::i386::instr_int_load_imm::instance(), nullptr, &imm);
 		
 		ext = dynamic_cast<jive::output*>(tmp->output(0));
-		icls = &jive_i386_instr_int_udiv;
+		icls = &jive::i386::instr_int_udiv::instance();
 	}
 	jive::oport * tmparray3[] = {ext, arg1, arg2};
 	
@@ -120,7 +120,7 @@ convert_divmod(jive::node * node, bool sign, size_t index)
 
 static void
 convert_complex_bitbinary(jive::node * node,
-	const jive_instruction_class * icls,
+	const jive::instruction_class * icls,
 	size_t result_index)
 {
 	auto arg1 = node->input(0)->origin();
@@ -141,84 +141,84 @@ static const jive::detail::typeinfo_map<
 		&typeid(jive::bits::and_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_and,
-			&jive_i386_instr_int_and_immediate)
+			&jive::i386::instr_int_and::instance(),
+			&jive::i386::instr_int_and_immediate::instance())
 	},
 	{
 		&typeid(jive::bits::or_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_or,
-			&jive_i386_instr_int_or_immediate)
+			&jive::i386::instr_int_or::instance(),
+			&jive::i386::instr_int_or_immediate::instance())
 	},
 	{
 		&typeid(jive::bits::xor_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_xor,
-			&jive_i386_instr_int_xor_immediate)
+			&jive::i386::instr_int_xor::instance(),
+			&jive::i386::instr_int_xor_immediate::instance())
 	},
 	{
 		&typeid(jive::bits::add_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_add,
-			&jive_i386_instr_int_add_immediate)
+			&jive::i386::instr_int_add::instance(),
+			&jive::i386::instr_int_add_immediate::instance())
 	},
 	{
 		&typeid(jive::bits::sub_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_sub,
-			&jive_i386_instr_int_sub_immediate)
+			&jive::i386::instr_int_sub::instance(),
+			&jive::i386::instr_int_sub_immediate::instance())
 	},
 	{
 		&typeid(jive::bits::mul_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_mul,
-			&jive_i386_instr_int_mul_immediate)
+			&jive::i386::instr_int_mul::instance(),
+			&jive::i386::instr_int_mul_immediate::instance())
 	},
 	{
 		&typeid(jive::bits::xor_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_xor,
-			&jive_i386_instr_int_xor_immediate)
+			&jive::i386::instr_int_xor::instance(),
+			&jive::i386::instr_int_xor_immediate::instance())
 	},
 	{
 		&typeid(jive::bits::shr_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_shr,
-			&jive_i386_instr_int_shr_immediate)
+			&jive::i386::instr_int_shr::instance(),
+			&jive::i386::instr_int_shr_immediate::instance())
 	},
 	{
 		&typeid(jive::bits::ashr_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_ashr,
-			&jive_i386_instr_int_ashr_immediate)
+			&jive::i386::instr_int_ashr::instance(),
+			&jive::i386::instr_int_ashr_immediate::instance())
 	},
 	{
 		&typeid(jive::bits::shl_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_shl,
-			&jive_i386_instr_int_shl_immediate)
+			&jive::i386::instr_int_shl::instance(),
+			&jive::i386::instr_int_shl_immediate::instance())
 	},
 	{
 		&typeid(jive::bits::umulh_op),
 		std::bind(convert_complex_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_mul_expand_unsigned,
+			&jive::i386::instr_int_mul_expand_unsigned::instance(),
 			0)
 	},
 	{
 		&typeid(jive::bits::smulh_op),
 		std::bind(convert_complex_bitbinary,
 			std::placeholders::_1,
-			&jive_i386_instr_int_mul_expand_signed,
+			&jive::i386::instr_int_mul_expand_signed::instance(),
 			0)
 	},
 	{
@@ -265,8 +265,8 @@ match_gpr_bitbinary(jive::node * node)
 static void
 convert_bitcmp(
 	jive::node * node_,
-	const jive_instruction_class * jump_icls,
-	const jive_instruction_class * inv_jump_icls)
+	const jive::instruction_class * jump_icls,
+	const jive::instruction_class * inv_jump_icls)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::match_op*>(&node_->operation()));
 
@@ -292,11 +292,11 @@ convert_bitcmp(
 	if (second_is_immediate) {
 		jive::immediate imm = regvalue_to_immediate(arg2);
 		cmp_instr = jive_instruction_node_create_extended(node->region(),
-			&jive_i386_instr_int_cmp_immediate, &arg1, &imm);
+			&jive::i386::instr_int_cmp_immediate::instance(), &arg1, &imm);
 	} else {
 		jive::oport * tmparray6[] = {arg1, arg2};
 		cmp_instr = jive_instruction_node_create(node->region(),
-			&jive_i386_instr_int_cmp,
+			&jive::i386::instr_int_cmp::instance(),
 			tmparray6, NULL);
 	}
 	
@@ -308,78 +308,78 @@ convert_bitcmp(
 
 static const jive::detail::typeinfo_map<
 	std::pair<
-		const jive_instruction_class *,
-		const jive_instruction_class *
+		const jive::instruction_class *,
+		const jive::instruction_class *
 	>
 > bitcompare_map = {
 	{
 		&typeid(jive::bits::eq_op),
 		{
-			&jive_i386_instr_int_jump_equal,
-			&jive_i386_instr_int_jump_equal
+			&jive::i386::instr_int_jump_equal::instance(),
+			&jive::i386::instr_int_jump_equal::instance()
 		}
 	},
 	{
 		&typeid(jive::bits::ne_op),
 		{
-			&jive_i386_instr_int_jump_notequal,
-			&jive_i386_instr_int_jump_notequal
+			&jive::i386::instr_int_jump_notequal::instance(),
+			&jive::i386::instr_int_jump_notequal::instance()
 		}
 	},
 	{
 		&typeid(jive::bits::slt_op),
 		{
-			&jive_i386_instr_int_jump_sless,
-			&jive_i386_instr_int_jump_sgreater
+			&jive::i386::instr_int_jump_sless::instance(),
+			&jive::i386::instr_int_jump_sgreater::instance()
 		}
 	},
 	{
 		&typeid(jive::bits::sle_op),
 		{
-			&jive_i386_instr_int_jump_slesseq,
-			&jive_i386_instr_int_jump_sgreatereq
+			&jive::i386::instr_int_jump_slesseq::instance(),
+			&jive::i386::instr_int_jump_sgreatereq::instance()
 		}
 	},
 	{
 		&typeid(jive::bits::sgt_op),
 		{
-			&jive_i386_instr_int_jump_sgreater,
-			&jive_i386_instr_int_jump_sless
+			&jive::i386::instr_int_jump_sgreater::instance(),
+			&jive::i386::instr_int_jump_sless::instance()
 		}
 	},
 	{
 		&typeid(jive::bits::sge_op),
 		{
-			&jive_i386_instr_int_jump_sgreatereq,
-			&jive_i386_instr_int_jump_slesseq
+			&jive::i386::instr_int_jump_sgreatereq::instance(),
+			&jive::i386::instr_int_jump_slesseq::instance()
 		}
 	},
 	{
 		&typeid(jive::bits::ult_op),
 		{
-			&jive_i386_instr_int_jump_uless,
-			&jive_i386_instr_int_jump_ugreater
+			&jive::i386::instr_int_jump_uless::instance(),
+			&jive::i386::instr_int_jump_ugreater::instance()
 		}
 	},
 	{
 		&typeid(jive::bits::ule_op),
 		{
-			&jive_i386_instr_int_jump_ulesseq,
-			&jive_i386_instr_int_jump_ugreatereq
+			&jive::i386::instr_int_jump_ulesseq::instance(),
+			&jive::i386::instr_int_jump_ugreatereq::instance()
 		}
 	},
 	{
 		&typeid(jive::bits::ugt_op),
 		{
-			&jive_i386_instr_int_jump_ugreater,
-			&jive_i386_instr_int_jump_uless
+			&jive::i386::instr_int_jump_ugreater::instance(),
+			&jive::i386::instr_int_jump_uless::instance()
 		}
 	},
 	{
 		&typeid(jive::bits::uge_op),
 		{
-			&jive_i386_instr_int_jump_ugreatereq,
-			&jive_i386_instr_int_jump_ulesseq
+			&jive::i386::instr_int_jump_ugreatereq::instance(),
+			&jive::i386::instr_int_jump_ulesseq::instance()
 		}
 	}
 };
@@ -399,15 +399,15 @@ match_gpr_bitcmp(jive::node * node)
 }
 
 static const jive::detail::typeinfo_map<
-	const jive_instruction_class *
+	const jive::instruction_class *
 > bitunary_map = {
 	{
 		&typeid(jive::bits::neg_op),
-		&jive_i386_instr_int_neg
+		&jive::i386::instr_int_neg::instance()
 	},
 	{
 		&typeid(jive::bits::not_op),
-		&jive_i386_instr_int_not
+		&jive::i386::instr_int_not::instance()
 	}
 };
 
@@ -416,7 +416,7 @@ match_gpr_bitunary(jive::node * node)
 {
 	auto i = bitunary_map.find(&typeid(node->operation()));
 	if (i != bitunary_map.end()) {
-		const jive_instruction_class * icls = i->second;
+		auto icls = i->second;
 		jive::oport * tmparray8[] = {node->input(0)->origin()};
 		jive::node * instr = jive_instruction_node_create(node->region(),
 			icls,
@@ -436,7 +436,7 @@ match_gpr_immediate(jive::node * node)
 	jive::immediate imm = regvalue_to_immediate(dynamic_cast<jive::output*>(node->output(0)));
 	
 	jive::node * instr = jive_instruction_node_create_extended(node->region(),
-		&jive_i386_instr_int_load_imm, nullptr, &imm);
+		&jive::i386::instr_int_load_imm::instance(), nullptr, &imm);
 
 	node->output(0)->replace(instr->output(0));
 }
@@ -476,7 +476,7 @@ match_gpr_load(jive::node * node)
 		case jive_i386_addr_mode_disp: {
 			jive::immediate imm(info.info.disp.offset);
 			instr = jive_instruction_node_create_extended(node->region(),
-				&jive_i386_instr_int_load32_disp, &info.info.disp.base, &imm);
+				&jive::i386::instr_int_load32_disp::instance(), &info.info.disp.base, &imm);
 			value = instr->output(0);
 			break;
 		}
@@ -515,7 +515,7 @@ match_gpr_store(jive::node * node)
 			jive::immediate imm(info.info.disp.offset);
 			jive::oport * tmparray10[] = {info.info.disp.base, value};
 			instr = jive_instruction_node_create_extended(node->region(),
-				&jive_i386_instr_int_store32_disp,
+				&jive::i386::instr_int_store32_disp::instance(),
 				tmparray10, &imm);
 			break;
 		}

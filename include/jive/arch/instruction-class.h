@@ -150,53 +150,135 @@ operator&(jive_instruction_encoding_flags a, jive_instruction_encoding_flags b)
 		static_cast<int>(a) & static_cast<int>(b));
 }
 
-struct jive_instruction_class {
+namespace jive {
+
+class instruction_class {
+public:
+	inline
+	instruction_class(
+		const std::string & name,
+		int code,
+		const std::string & mnemonic,
+		const std::vector<const jive_register_class*> & inputs,
+		const std::vector<const jive_register_class*> & outputs,
+		size_t nimmediates,
+		jive_instruction_flags flags,
+		const jive::instruction_class * inverse_jump)
+	: code_(code)
+	, name_(name)
+	, nimmediates_(nimmediates)
+	, mnemonic_(mnemonic)
+	, flags_(flags)
+	, inverse_jump_(inverse_jump)
+	, inputs_(inputs)
+	, outputs_(outputs)
+	{}
+
 	/** \brief Descriptive name of instruction */
-	const char * name;
-	
+	inline const std::string &
+	name() const noexcept
+	{
+		return name_;
+	}
+
+	/** \brief Opcode of instruction */
+	inline int
+	code() const noexcept
+	{
+		return code_;
+	}
+
 	/** \brief Mnemonic name of instruction */
-	const char * mnemonic;
-	
+	inline const std::string &
+	mnemonic() const noexcept
+	{
+		return mnemonic_;
+	}
+
+	inline jive_instruction_flags
+	flags() const noexcept
+	{
+		return flags_;
+	}
+
+	inline const size_t
+	nimmediates() const noexcept
+	{
+		return nimmediates_;
+	}
+
+	/** \brief Inverse jump class (only meaningful if flag set accordingly) */
+	inline const jive::instruction_class *
+	inverse_jump() const noexcept
+	{
+		return inverse_jump_;
+	}
+
+	inline size_t
+	ninputs() const noexcept
+	{
+		return inputs_.size();
+	}
+
+	inline const jive_register_class *
+	input(size_t n) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(n < ninputs());
+		return inputs_[n];
+	}
+
+	inline size_t
+	noutputs() const noexcept
+	{
+		return outputs_.size();
+	}
+
+	inline const jive_register_class *
+	output(size_t n) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(n < noutputs());
+		return outputs_[n];
+	}
+
 	/**
 		\brief Generate code
 		\param target Target buffer to put encoded instructions into
-		\param instruction Instruction to encode
 	*/
-	void (*encode)(
-		const jive_instruction_class * icls,
+	virtual void
+	encode(
 		struct jive_section * target,
 		const jive_register_name * inputs[],
 		const jive_register_name * outputs[],
 		const jive_codegen_imm immediates[],
-		jive_instruction_encoding_flags * flags);
-	
+		jive_instruction_encoding_flags * flags) = 0;
+
 	/**
 		\brief Generate mnemonic
 		\param target Target buffer to put mnemonic instruction into
 		\param instruction Instruction to encode
 	*/
-	void (*write_asm)(
-		const jive_instruction_class * icls,
+	virtual void
+	write_asm(
 		struct jive_buffer * target,
 		const jive_register_name * inputs[],
 		const jive_register_name * outputs[],
 		const jive_asmgen_imm immediates[],
-		jive_instruction_encoding_flags * flags);
-	
-	const jive_register_class * const * inregs;
-	const jive_register_class * const * outregs;
-	
-	jive_instruction_flags flags;
-	
-	unsigned short ninputs;
-	unsigned short noutputs;
-	unsigned short nimmediates;
-	
-	/** \brief Internal number, used for code generation */
-	int code;
-	
-	/** \brief Inverse jump class (only meaningful if flag set accordingly) */
-	const jive_instruction_class * inverse_jump;
+		jive_instruction_encoding_flags * flags) = 0;
+
+	virtual std::unique_ptr<jive::instruction_class>
+	copy() const = 0;
+
+private:
+	int code_;
+	std::string name_;
+	size_t nimmediates_;
+	std::string mnemonic_;
+	jive_instruction_flags flags_;
+	const jive::instruction_class * inverse_jump_;
+	std::vector<const jive_register_class*> inputs_;
+	std::vector<const jive_register_class*> outputs_;
 };
+
+}
 
 #endif

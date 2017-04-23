@@ -39,27 +39,27 @@ instruction_op::operator==(const operation & other) const noexcept
 size_t
 instruction_op::narguments() const noexcept
 {
-	return icls()->ninputs + icls()->nimmediates + istates_.size();
+	return icls()->ninputs() + icls()->nimmediates() + istates_.size();
 }
 
 const jive::base::type &
 instruction_op::argument_type(size_t index) const noexcept
 {
-	if (index < icls()->ninputs)
-		return *jive_register_class_get_type(icls()->inregs[index]);
+	if (index < icls()->ninputs())
+		return *jive_register_class_get_type(icls()->input(index));
 
 	static const jive::imm::type immtype;
-	if (index < (icls()->ninputs + icls()->nimmediates))
+	if (index < (icls()->ninputs() + icls()->nimmediates()))
 		return immtype;
 
-	return *istates_[index - (icls()->ninputs + icls()->nimmediates)];
+	return *istates_[index - (icls()->ninputs() + icls()->nimmediates())];
 }
 
 const jive_resource_class *
 instruction_op::argument_cls(size_t index) const noexcept
 {
-	if (index < icls()->ninputs) {
-		return &icls()->inregs[index]->base;
+	if (index < icls()->ninputs()) {
+		return &icls()->input(index)->base;
 	} else {
 		return &jive_root_resource_class;
 	}
@@ -68,14 +68,14 @@ instruction_op::argument_cls(size_t index) const noexcept
 size_t
 instruction_op::nresults() const noexcept
 {
-	return icls()->noutputs + ostates_.size();
+	return icls()->noutputs() + ostates_.size();
 }
 
 const jive_resource_class *
 instruction_op::result_cls(size_t index) const noexcept
 {
-	if (index < icls()->noutputs) {
-		return &icls()->outregs[index]->base;
+	if (index < icls()->noutputs()) {
+		return &icls()->output(index)->base;
 	} else {
 		return &jive_root_resource_class;
 	}
@@ -84,16 +84,16 @@ instruction_op::result_cls(size_t index) const noexcept
 const jive::base::type &
 instruction_op::result_type(size_t index) const noexcept
 {
-	if (index < icls()->noutputs)
-		return *jive_register_class_get_type(icls()->outregs[index]);
+	if (index < icls()->noutputs())
+		return *jive_register_class_get_type(icls()->output(index));
 
-	return *ostates_[index - icls()->noutputs];
+	return *ostates_[index - icls()->noutputs()];
 }
 
 std::string
 instruction_op::debug_string() const
 {
-	return icls()->name;
+	return icls()->name();
 }
 
 std::unique_ptr<jive::operation>
@@ -107,12 +107,12 @@ instruction_op::copy() const
 jive::node *
 jive_instruction_node_create_simple(
 	jive::region * region,
-	const jive_instruction_class * icls,
+	const jive::instruction_class * icls,
 	jive::oport * const * operands,
 	const int64_t * immediates)
 {
 	std::vector<jive::immediate> imm;
-	for (size_t n = 0; n < icls->nimmediates; ++n)
+	for (size_t n = 0; n < icls->nimmediates(); ++n)
 		imm.push_back(jive::immediate(immediates[0]));
 
 	return jive_instruction_node_create_extended(region, icls, operands, &imm[0]);
@@ -121,12 +121,12 @@ jive_instruction_node_create_simple(
 jive::node *
 jive_instruction_node_create_extended(
 	jive::region * region,
-	const jive_instruction_class * icls,
+	const jive::instruction_class * icls,
 	jive::oport * const * operands_,
 	const jive::immediate immediates_[])
 {
-	std::vector<jive::oport*> operands(operands_, operands_ + icls->ninputs);
-	std::vector<jive::immediate> immediates(immediates_, immediates_ + icls->nimmediates);
+	std::vector<jive::oport*> operands(operands_, operands_ + icls->ninputs());
+	std::vector<jive::immediate> immediates(immediates_, immediates_ + icls->nimmediates());
 
 	return jive_instruction_node_create(region, icls, operands, immediates, {}, {}, {});
 }
@@ -134,7 +134,7 @@ jive_instruction_node_create_extended(
 jive::node *
 jive_instruction_node_create(
 	jive::region * region,
-	const jive_instruction_class * icls,
+	const jive::instruction_class * icls,
 	const std::vector<jive::oport*> & operands,
 	const std::vector<jive::immediate> & immediates,
 	const std::vector<const jive::state::type*> & itypes,
@@ -142,7 +142,7 @@ jive_instruction_node_create(
 	const std::vector<const jive::state::type*> & otypes)
 {
 	std::vector<jive::oport*> arguments(operands.begin(), operands.end());
-	for (size_t n = 0; n < icls->nimmediates; n++)
+	for (size_t n = 0; n < icls->nimmediates(); n++)
 		arguments.push_back(jive_immediate_create(region, &immediates[n]));
 	arguments.insert(arguments.end(), istates.begin(), istates.end());
 
