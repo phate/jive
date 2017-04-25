@@ -947,7 +947,7 @@ instr_##NAME::encode( \
 	const jive_register_name * inputs[], \
 	const jive_register_name * outputs[], \
 	const jive_codegen_imm immediates[], \
-	jive_instruction_encoding_flags * flags) \
+	jive_instruction_encoding_flags * flags) const \
 { \
 	ENCODE(nullptr, target, inputs, outputs, immediates, flags); \
 } \
@@ -958,7 +958,7 @@ instr_##NAME::write_asm( \
 	const jive_register_name * inputs[], \
 	const jive_register_name * outputs[], \
 	const jive_asmgen_imm immediates[], \
-	jive_instruction_encoding_flags * flags) \
+	jive_instruction_encoding_flags * flags) const \
 { \
 	WRITE_ASM(nullptr, target, inputs, outputs, immediates, flags); \
 } \

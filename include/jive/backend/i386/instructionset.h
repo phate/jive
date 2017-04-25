@@ -23,7 +23,7 @@ public: \
 		const jive_register_name * inputs[], \
 		const jive_register_name * outputs[], \
 		const jive_codegen_imm immediates[], \
-		jive_instruction_encoding_flags * flags) override; \
+		jive_instruction_encoding_flags * flags) const override; \
 \
 	virtual void \
 	write_asm( \
@@ -31,7 +31,7 @@ public: \
 		const jive_register_name * inputs[], \
 		const jive_register_name * outputs[], \
 		const jive_asmgen_imm immediates[], \
-		jive_instruction_encoding_flags * flags) override; \
+		jive_instruction_encoding_flags * flags) const override; \
 \
 	virtual std::unique_ptr<jive::instruction_class> \
 	copy() const override; \

@@ -249,7 +249,7 @@ public:
 		const jive_register_name * inputs[],
 		const jive_register_name * outputs[],
 		const jive_codegen_imm immediates[],
-		jive_instruction_encoding_flags * flags) = 0;
+		jive_instruction_encoding_flags * flags) const = 0;
 
 	/**
 		\brief Generate mnemonic
@@ -262,7 +262,7 @@ public:
 		const jive_register_name * inputs[],
 		const jive_register_name * outputs[],
 		const jive_asmgen_imm immediates[],
-		jive_instruction_encoding_flags * flags) = 0;
+		jive_instruction_encoding_flags * flags) const = 0;
 
 	virtual std::unique_ptr<jive::instruction_class>
 	copy() const = 0;
