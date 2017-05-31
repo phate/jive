@@ -40,7 +40,7 @@ unary_normal_form::normalize_node(jive::node * node) const
 	jive::output * output = dynamic_cast<jive::output*>(node->output(0));
 
 	if (get_reducible()) {
-		jive::output * tmp = dynamic_cast<jive::output*>(node->input(0)->origin());
+		auto tmp = node->input(0)->origin();
 		jive_unop_reduction_path_t reduction = op.can_reduce_operand(tmp);
 		if (reduction != jive_unop_reduction_none) {
 			output->replace(op.reduce_operand(reduction, tmp));

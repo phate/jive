@@ -56,12 +56,10 @@ jive_unop_reduction_path_t
 select_operation::can_reduce_operand(
 	const jive::oport * arg) const noexcept
 {
-	auto op = dynamic_cast<const jive::output*>(arg);
-
-	if (op && dynamic_cast<const group_op *>(&op->node()->operation()))
+	if (arg->node() && dynamic_cast<const group_op *>(&arg->node()->operation()))
 		return jive_unop_reduction_inverse;
 
-	if (dynamic_cast<const load_op *>(&op->node()->operation()))
+	if (arg->node() && dynamic_cast<const load_op *>(&arg->node()->operation()))
 		return jive_select_reduction_load;
 
 	return jive_unop_reduction_none;

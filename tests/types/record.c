@@ -57,41 +57,47 @@ JIVE_UNIT_TEST_REGISTER("types/record/test-rcdgroup", _test_rcdgroup);
 
 static int _test_rcdselect()
 {
+	using namespace jive;
+
 	jive::graph graph;
 
-	static const jive::bits::type bits8(8);
-	static const jive::bits::type bits16(16);
-	static const jive::bits::type bits32(32);
-	static std::shared_ptr<const jive::rcd::declaration> decl(
-		new jive::rcd::declaration({&bits8, &bits16, &bits32}));
-	static jive::rcd::type rcdtype(decl);
-
 	jive::addr::type addrtype;
-	auto top = jive::test::simple_node_create(graph.root(),
-		{}, {}, {&bits8, &bits16, &bits32, &rcdtype, &rcdtype, &addrtype});
-	jive::oport * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
+	jive::bits::type bits8(8);
+	jive::bits::type bits16(16);
+	jive::bits::type bits32(32);
+	std::shared_ptr<const jive::rcd::declaration> decl(
+		new jive::rcd::declaration({&bits8, &bits16, &bits32}));
+	jive::rcd::type rcdtype(decl);
 
-	auto g0 = dynamic_cast<jive::output*>(jive_group_create(decl, 3, tmparray1));
-	auto load = jive_load_by_address_create(top->output(5), &rcdtype, 0, NULL);
+	auto a1 = graph.root()->add_argument(nullptr, bits8);
+	auto a2 = graph.root()->add_argument(nullptr, bits16);
+	auto a3 = graph.root()->add_argument(nullptr, bits32);
+	auto a4 = graph.root()->add_argument(nullptr, rcdtype);
+	auto a5 = graph.root()->add_argument(nullptr, addrtype);
 
-	auto s0 = dynamic_cast<jive::output*>(jive_select_create(1, top->output(3)));
+	std::vector<jive::oport*> args({a1, a2, a3});
+	auto g0 = jive_group_create(decl, 3, &args[0]);
+	auto load = jive_load_by_address_create(a5, &rcdtype, 0, NULL);
+
+	auto s0 = jive_select_create(1, a4);
 	auto s1 = jive_select_create(1, g0);
-	auto s2 = dynamic_cast<jive::output*>(jive_select_create(2, top->output(4)));
+	auto s2 = jive_select_create(2, a4);
 	auto s3 = jive_select_create(0, load);
 
-	auto bottom = jive::test::simple_node_create(graph.root(),
-		{&bits16, &bits16, &bits32, &bits8}, {s0, s1, s2, s3}, {&bits8});
-	graph.export_port(bottom->output(0), "dummy");
+	graph.export_port(s0, "");
+	graph.export_port(s1, "");
+	graph.export_port(s2, "");
+	graph.export_port(s3, "");
 
 	graph.normalize();
 	graph.prune();
 
 	jive::view(graph.root(), stderr);
 
-	assert(dynamic_cast<jive::output*>(bottom->input(1)->origin())->node() == top);
-	assert(s0->node()->operation() != s2->node()->operation());
-	assert(dynamic_cast<const jive::load_op *>(
-		&dynamic_cast<jive::output*>(bottom->input(3)->origin())->node()->operation()));
+	assert(dynamic_cast<const rcd::select_operation*>(&s0->node()->operation()));
+	assert(s1 == a2);
+	assert(dynamic_cast<const rcd::select_operation*>(&s2->node()->operation()));
+	assert(!dynamic_cast<const load_op*>(&s3->node()->input(0)->origin()->node()->operation()));
 
 	return 0;
 }
