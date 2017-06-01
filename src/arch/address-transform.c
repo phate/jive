@@ -390,21 +390,22 @@ jive_unop_reduction_path_t
 address_to_bitstring_operation::can_reduce_operand(
 	const jive::oport * arg) const noexcept
 {
-	auto op = dynamic_cast<const jive::output*>(arg);
+	if (!type_contains_address(&arg->type()))
+		return jive_unop_reduction_idempotent;
 
-	auto up = dynamic_cast<const bitstring_to_address_operation *>(&op->node()->operation());
-	if (up) {
-		if (up->nbits() != nbits())
+	if (!arg->node())
+		return jive_unop_reduction_none;
+
+	auto op = dynamic_cast<const bitstring_to_address_operation *>(&arg->node()->operation());
+	if (op) {
+		if (op->nbits() != nbits())
 			return jive_unop_reduction_none;
 
-		if (up->original_type() != original_type())
+		if (op->original_type() != original_type())
 			return jive_unop_reduction_none;
 
 		return jive_unop_reduction_inverse;
 	}
-
-	if (!type_contains_address(&arg->type()))
-		return jive_unop_reduction_idempotent;
 
 	return jive_unop_reduction_none;
 }
@@ -414,10 +415,8 @@ address_to_bitstring_operation::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::oport * arg) const
 {
-	auto op = static_cast<jive::output*>(arg);
-
 	if (path == jive_unop_reduction_inverse)
-		return dynamic_cast<jive::output*>(op->node()->input(0)->origin());
+		return arg->node()->input(0)->origin();
 
 	if (path == jive_unop_reduction_idempotent)
 		return arg;
@@ -472,23 +471,23 @@ jive_unop_reduction_path_t
 bitstring_to_address_operation::can_reduce_operand(
 	const jive::oport * arg) const noexcept
 {
-	auto op = dynamic_cast<const jive::output*>(arg);
-	if (!op)
+	if (!type_contains_address(&original_type()))
+		return jive_unop_reduction_idempotent;
+
+	if (!arg->node())
 		return jive_unop_reduction_none;
 
-	auto up = dynamic_cast<const address_to_bitstring_operation *>(&op->node()->operation());
-	if (up) {
-		if (up->nbits() != nbits())
+	auto op = dynamic_cast<const address_to_bitstring_operation *>(&arg->node()->operation());
+	if (op) {
+		if (op->nbits() != nbits())
 			return jive_unop_reduction_none;
 
-		if (up->original_type() != original_type())
+		if (op->original_type() != original_type())
 			return jive_unop_reduction_none;
 
 		return jive_unop_reduction_inverse;
 	}
 
-	if (!type_contains_address(&original_type()))
-		return jive_unop_reduction_idempotent;
 
 	return jive_unop_reduction_none;
 }
@@ -498,10 +497,8 @@ bitstring_to_address_operation::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::oport * arg) const
 {
-	auto op = static_cast<jive::output*>(arg);
-
 	if (path == jive_unop_reduction_inverse)
-		return dynamic_cast<jive::output*>(op->node()->input(0)->origin());
+		return arg->node()->input(0)->origin();
 
 	if (path == jive_unop_reduction_idempotent)
 		return arg;

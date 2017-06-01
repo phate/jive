@@ -90,35 +90,32 @@ test_address_transform_nodes(void)
 	jive::addr::type addrtype;
 	jive::bits::type bits32(32);
 	jive::bits::type bits64(64);
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&addrtype, &bits32, &bits64});
+	auto i0 = graph.import(addrtype, "i0");
+	auto i1 = graph.import(bits32, "i1");
+	auto i2 = graph.import(bits64, "i2");
 
-	auto b0 = jive_address_to_bitstring_create(top->output(0), 32, &top->output(0)->type());
+	auto b0 = jive_address_to_bitstring_create(i0, 32, &i0->type());
 	auto a0 = jive_bitstring_to_address_create(b0, 32, &addrtype);
 
-	auto a1 = jive_bitstring_to_address_create(top->output(1), 32, &addrtype);
+	auto a1 = jive_bitstring_to_address_create(i1, 32, &addrtype);
 	auto b1 = jive_address_to_bitstring_create(a1, 32, &addrtype);
 
-	auto bottom = jive::test::simple_node_create(graph.root(), {&addrtype, &bits32}, {a0, b1}, {});
+	auto x0 = graph.export_port(a0, "x0");
+	auto x1 = graph.export_port(b1, "x1");
 
-	assert(bottom->input(0)->origin() == top->output(0));
-	assert(bottom->input(1)->origin() == top->output(1));
+	assert(x0->origin() == i0);
+	assert(x1->origin() == i1);
 
-	auto b2 = dynamic_cast<jive::output*>(
-		jive_bitstring_to_address_create(top->output(1), 32, &addrtype));
-	auto b3 = dynamic_cast<jive::output*>(
-		jive_bitstring_to_address_create(top->output(1), 32, &addrtype));
-	auto a2 = dynamic_cast<jive::output*>(
-		jive_address_to_bitstring_create(top->output(0), 32, &top->output(0)->type()));
-	auto a3 = dynamic_cast<jive::output*>(
-		jive_address_to_bitstring_create(top->output(0), 32, &top->output(0)->type()));
+	auto b2 = jive_bitstring_to_address_create(i1, 32, &addrtype);
+	auto b3 = jive_bitstring_to_address_create(i1, 32, &addrtype);
+	auto a2 = jive_address_to_bitstring_create(i0, 32, &i0->type());
+	auto a3 = jive_address_to_bitstring_create(i0, 32, &i0->type());
 
 	assert(a2->node()->operation() == a3->node()->operation());
 	assert(b2->node()->operation() == b3->node()->operation());
 
-	auto b4 = dynamic_cast<jive::output*>(
-		jive_bitstring_to_address_create(top->output(2), 64, &addrtype));
-	auto a4 = dynamic_cast<jive::output*>(
-		jive_address_to_bitstring_create(top->output(0), 64, &addrtype));
+	auto b4 = jive_bitstring_to_address_create(i2, 64, &addrtype);
+	auto a4 = jive_address_to_bitstring_create(i0, 64, &addrtype);
 
 	assert(a2->node()->operation() != a4->node()->operation());
 	assert(b2->node()->operation() != b4->node()->operation());
