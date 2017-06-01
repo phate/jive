@@ -267,6 +267,38 @@ test_loadstore(jive::graph * graph)
 	assert(v == 0xF08);
 }
 
+static void
+test_external_function()
+{
+	using namespace jive::evaluator;
+
+	jive::graph graph;
+
+	jive::bits::type bits64(64);
+	auto i = graph.import(bits64, "v");
+
+	jive::lambda_builder lb;
+	auto region = lb.begin(graph.root(), {{&bits64}, {&bits64}});
+	auto v = lb.add_dependency(i);
+	auto sum = jive_bitsum(64, {region->argument(0), v});
+	auto lambda = lb.end({sum});
+
+	graph.export_port(lambda->output(0), "test");
+
+	jive::view(graph.root(), stdout);
+
+	bool exception_caught = false;
+	try {
+		uint32_t g = 42;
+		bitliteral arg(jive::bits::value_repr(64, (uint64_t)&g));
+		eval(&graph, "test", {&arg});
+	} catch (jive::compiler_error e) {
+		exception_caught = true;
+	}
+
+	assert(exception_caught);
+}
+
 static int
 test_evaluator()
 {
@@ -275,6 +307,7 @@ test_evaluator()
 	test_fib_iter(&graph);
 	test_fib_rec(&graph);
 	test_loadstore(&graph);
+	test_external_function();
 
 	return 0;
 }

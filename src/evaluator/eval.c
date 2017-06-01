@@ -458,6 +458,9 @@ eval_node(const jive::node * node, size_t index, context & ctx)
 static std::unique_ptr<const literal>
 eval_argument(const jive::argument * argument, context & ctx)
 {
+	if (argument->region() == argument->region()->graph()->root())
+		throw compiler_error("Cannot evaluate external entity.");
+
 	std::unique_ptr<const literal> result;
 	if (typeid(argument->region()->node()->operation()) == typeid(jive::phi_op)) {
 		ctx.push_frame(argument->region());
