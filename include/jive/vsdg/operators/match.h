@@ -15,6 +15,8 @@
 namespace jive {
 
 class match_op final : public base::unary_op {
+	typedef std::map<uint64_t,uint64_t>::const_iterator const_iterator;
+
 public:
 	virtual
 	~match_op() noexcept;
@@ -66,6 +68,18 @@ public:
 	default_alternative() const noexcept
 	{
 		return default_alternative_;
+	}
+
+	inline const_iterator
+	begin() const
+	{
+		return mapping_.begin();
+	}
+
+	inline const_iterator
+	end() const
+	{
+		return mapping_.end();
 	}
 
 private:
