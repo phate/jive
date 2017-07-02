@@ -62,6 +62,12 @@ public:
 		return default_alternative_;
 	}
 
+	inline uint64_t
+	default_alternative() const noexcept
+	{
+		return default_alternative_;
+	}
+
 private:
 	jive::ctl::type otype_;
 	jive::bits::type itype_;
