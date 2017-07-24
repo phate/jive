@@ -25,6 +25,12 @@ region_tree(const jive::region * region);
 void
 region_tree(const jive::region * region, FILE * out);
 
+std::string
+to_xml(const jive::region * region);
+
+void
+view_xml(const jive::region * region, FILE * out);
+
 }
 
 #endif
