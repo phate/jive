@@ -37,7 +37,7 @@ jive_subroutine_node_prepare_stackframe(
 		op, region, frame, xfrm);
 }
 
-jive::input *
+jive::simple_input *
 jive_subroutine_node_add_fp_dependency(
 	const jive::node * self,
 	const jive::subroutine_op & op,
@@ -48,7 +48,7 @@ jive_subroutine_node_add_fp_dependency(
 		op, region, node);
 }
 
-jive::input *
+jive::simple_input *
 jive_subroutine_node_add_sp_dependency(
 	const jive::node * self,
 	const jive::subroutine_op & op,

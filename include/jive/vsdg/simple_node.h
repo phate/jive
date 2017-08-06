@@ -12,26 +12,26 @@ namespace jive {
 
 /* inputs */
 
-class input final : public iport {
+class simple_input final : public iport {
 	friend jive::output;
 
 public:
 	virtual
-	~input() noexcept;
+	~simple_input() noexcept;
 
-	input(
+	simple_input(
 		jive::node * node,
 		size_t index,
 		jive::oport * origin,
 		const jive::base::type & type);
 
-	input(
+	simple_input(
 		jive::node * node,
 		size_t index,
 		jive::oport * origin,
 		jive::gate * gate);
 
-	input(
+	simple_input(
 		jive::node * node,
 		size_t index,
 		jive::oport * origin,
@@ -48,7 +48,7 @@ private:
 /* outputs */
 
 class output final : public oport {
-	friend jive::input;
+	friend jive::simple_input;
 
 public:
 	virtual
@@ -106,7 +106,7 @@ public:
 	virtual size_t
 	ninputs() const noexcept override;
 
-	virtual jive::input *
+	virtual jive::simple_input *
 	input(size_t index) const noexcept override;
 
 	virtual size_t
@@ -115,13 +115,13 @@ public:
 	virtual jive::output *
 	output(size_t index) const noexcept override;
 
-	virtual jive::input *
+	virtual jive::simple_input *
 	add_input(const jive::base::type * type, jive::oport * origin) override;
 
-	virtual jive::input *
+	virtual jive::simple_input *
 	add_input(jive::gate * gate, jive::oport * origin) override;
 
-	virtual jive::input *
+	virtual jive::simple_input *
 	add_input(const struct jive_resource_class * rescls, jive::oport * origin) override;
 
 	virtual void
@@ -146,7 +146,7 @@ public:
 	copy(jive::region * region, jive::substitution_map & smap) const override;
 
 private:
-	std::vector<std::unique_ptr<jive::input>> inputs_;
+	std::vector<std::unique_ptr<jive::simple_input>> inputs_;
 	std::vector<std::unique_ptr<jive::output>> outputs_;
 };
 

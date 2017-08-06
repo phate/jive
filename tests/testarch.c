@@ -339,7 +339,7 @@ create_xfer(jive::region * region, jive::output * origin,
 			region,
 			&jive::testarch::instr_move_gpr::instance(),
 			tmparray8, NULL);
-		xfer.input = dynamic_cast<jive::input*>(xfer.node->input(0));
+		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
 		xfer.output = dynamic_cast<jive::output*>(xfer.node->output(0));
 	} else if (in_relaxed == CLS(gpr)) {
 		jive::oport * tmparray9[] = {origin};
@@ -347,7 +347,7 @@ create_xfer(jive::region * region, jive::output * origin,
 			region,
 			&jive::testarch::instr_spill_gpr::instance(),
 			tmparray9, NULL);
-		xfer.input = dynamic_cast<jive::input*>(xfer.node->input(0));
+		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
 		xfer.output = dynamic_cast<jive::output*>(xfer.node->add_output(
 			jive_resource_class_get_type(out_class)));
 	} else if (out_relaxed == CLS(gpr)) {
@@ -355,7 +355,7 @@ create_xfer(jive::region * region, jive::output * origin,
 			region,
 			&jive::testarch::instr_restore_gpr::instance(),
 			NULL, NULL);
-		xfer.input = dynamic_cast<jive::input*>(xfer.node->add_input(
+		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->add_input(
 			jive_resource_class_get_type(in_class), origin));
 		xfer.output = dynamic_cast<jive::output*>(xfer.node->output(0));
 	} else {

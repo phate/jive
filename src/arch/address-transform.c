@@ -312,7 +312,7 @@ jive_arrayindex_node_address_transform(
 static void
 jive_apply_node_address_transform(const jive::node * node, size_t nbits)
 {
-	jive::input * fct = dynamic_cast<jive::input*>(node->input(0));
+	auto fct = dynamic_cast<jive::simple_input*>(node->input(0));
 
 	const jive::base::type * fcttype = &fct->type();
 	if (!type_contains_address(fcttype))
@@ -323,7 +323,7 @@ jive_apply_node_address_transform(const jive::node * node, size_t nbits)
 	size_t n;
 	jive::oport * arguments[narguments];
 	for (n = 1; n < node->ninputs(); n++) {
-		jive::input * argument = dynamic_cast<jive::input*>(node->input(n));
+		auto argument = dynamic_cast<jive::simple_input*>(node->input(n));
 		arguments[n-1] = jive_address_to_bitstring_create(
 			argument->origin(), nbits, &argument->type());
 	}

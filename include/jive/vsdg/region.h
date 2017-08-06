@@ -17,7 +17,6 @@
 #include <jive/vsdg/section.h>
 
 namespace jive {
-	class input;
 	class substitution_map;
 }
 

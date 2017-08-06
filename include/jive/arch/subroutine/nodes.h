@@ -13,6 +13,8 @@
 
 namespace jive {
 
+class simple_input;
+
 class subroutine_op final : public structural_op {
 public:
 	virtual
@@ -48,10 +50,10 @@ public:
 	output *
 	get_passthrough_enter_by_index(jive::region * region, size_t index) const noexcept;
 
-	input *
+	jive::simple_input *
 	get_passthrough_leave_by_name(jive::region * region, const char * name) const noexcept;
 
-	input *
+	jive::simple_input *
 	get_passthrough_leave_by_index(jive::region * region, size_t index) const noexcept;
 
 	virtual std::unique_ptr<jive::operation>

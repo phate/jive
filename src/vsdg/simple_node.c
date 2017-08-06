@@ -16,13 +16,13 @@ namespace jive {
 
 /* inputs */
 
-input::~input() noexcept
+simple_input::~simple_input() noexcept
 {
 	node()->graph()->on_iport_destroy(this);
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->ninputs(); n++) {
-			jive::input * other = dynamic_cast<jive::input*>(node()->input(n));
+			auto other = dynamic_cast<jive::simple_input*>(node()->input(n));
 			if (other == this || !other->gate())
 				continue;
 			jive_gate_interference_remove(node()->graph(), gate(), other->gate());
@@ -30,10 +30,10 @@ input::~input() noexcept
 	}
 
 	for (size_t n = index()+1; n < node()->ninputs(); n++)
-		dynamic_cast<jive::input*>(node()->input(n))->set_index(n-1);
+		dynamic_cast<jive::simple_input*>(node()->input(n))->set_index(n-1);
 }
 
-input::input(
+simple_input::simple_input(
 	jive::node * node,
 	size_t index,
 	jive::oport * origin,
@@ -42,7 +42,7 @@ input::input(
 	, node_(node)
 {}
 
-input::input(
+simple_input::simple_input(
 	jive::node * node,
 	size_t index,
 	jive::oport * origin,
@@ -51,13 +51,13 @@ input::input(
 	, node_(node)
 {
 	for (size_t n = 0; n < index; n++) {
-		jive::input * other = dynamic_cast<jive::input*>(node->input(n));
+		auto other = dynamic_cast<jive::simple_input*>(node->input(n));
 		if (!other->gate()) continue;
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
 }
 
-input::input(
+simple_input::simple_input(
 	jive::node * node,
 	size_t index,
 	jive::oport * origin,
@@ -67,7 +67,7 @@ input::input(
 {}
 
 jive::node *
-input::node() const noexcept
+simple_input::node() const noexcept
 {
 	return node_;
 }
@@ -165,11 +165,11 @@ simple_node::simple_node(
 
 	for (size_t n = 0; n < operation().narguments(); n++) {
 		if (operation().argument_cls(n) != &jive_root_resource_class) {
-			inputs_.emplace_back(std::unique_ptr<jive::input>(new jive::input(
-				this, n, operands[n], operation().argument_cls(n))));
+			inputs_.emplace_back(std::make_unique<jive::simple_input>(
+				this, n, operands[n], operation().argument_cls(n)));
 		} else {
-			inputs_.emplace_back(std::unique_ptr<jive::input>(new jive::input(
-				this, n, operands[n], operation().argument_type(n))));
+			inputs_.emplace_back(std::make_unique<jive::simple_input>(
+				this, n, operands[n], operation().argument_type(n)));
 		}
 	}
 
@@ -189,7 +189,7 @@ simple_node::ninputs() const noexcept
 	return inputs_.size();
 }
 
-jive::input *
+jive::simple_input *
 simple_node::input(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < ninputs());
@@ -233,14 +233,13 @@ simple_node::has_successors() const noexcept
 	return false;
 }
 
-jive::input *
+jive::simple_input *
 simple_node::add_input(const jive::base::type * type, jive::oport * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
-	inputs_.emplace_back(std::unique_ptr<jive::input>(
-		new jive::input(this, ninputs(), origin, *type)));
+	inputs_.emplace_back(std::make_unique<jive::simple_input>(this, ninputs(), origin, *type));
 	auto input = this->input(ninputs()-1);
 
 	recompute_depth();
@@ -249,14 +248,13 @@ simple_node::add_input(const jive::base::type * type, jive::oport * origin)
 	return input;
 }
 
-jive::input *
+jive::simple_input *
 simple_node::add_input(jive::gate * gate, jive::oport * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
-	inputs_.emplace_back(std::unique_ptr<jive::input>(
-		new jive::input(this, ninputs(), origin, gate)));
+	inputs_.emplace_back(std::make_unique<jive::simple_input>(this, ninputs(), origin, gate));
 	auto input = this->input(ninputs()-1);
 
 	recompute_depth();
@@ -265,14 +263,13 @@ simple_node::add_input(jive::gate * gate, jive::oport * origin)
 	return input;
 }
 
-jive::input *
+jive::simple_input *
 simple_node::add_input(const struct jive_resource_class * rescls, jive::oport * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
-	inputs_.emplace_back(std::unique_ptr<jive::input>(new jive::input(this, ninputs(), origin,
-		rescls)));
+	inputs_.emplace_back(std::make_unique<jive::simple_input>(this, ninputs(), origin, rescls));
 	auto input = this->input(ninputs()-1);
 
 	recompute_depth();

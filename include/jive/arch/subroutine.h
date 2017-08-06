@@ -131,7 +131,7 @@ struct jive_subroutine_late_transforms {
 	void (*value_split)(
 		const jive_subroutine_late_transforms * self,
 		jive::output * value_in,
-		jive::input * value_out,
+		jive::simple_input * value_out,
 		const jive_value_split_factory * enter_split,
 		const jive_value_split_factory * leave_split);
 };
@@ -155,11 +155,11 @@ struct jive_subroutine_abi_class {
 		jive::region * region,
 		jive_subroutine_stackframe_info * frame,
 		const jive_subroutine_late_transforms * xfrm);
-	jive::input *(*add_fp_dependency)(
+	jive::simple_input *(*add_fp_dependency)(
 		const jive::subroutine_op & op,
 		jive::region * region,
 		jive::node * node);
-	jive::input *(*add_sp_dependency)(
+	jive::simple_input *(*add_sp_dependency)(
 		const jive::subroutine_op & op,
 		jive::region * region,
 		jive::node * node);
@@ -173,13 +173,13 @@ jive_subroutine_node_prepare_stackframe(
 	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm);
 
-jive::input *
+jive::simple_input *
 jive_subroutine_node_add_fp_dependency(
 	const jive::node * self,
 	const jive::subroutine_op & op,
 	jive::node * node);
 
-jive::input *
+jive::simple_input *
 jive_subroutine_node_add_sp_dependency(
 	const jive::node * self,
 	const jive::subroutine_op & op,

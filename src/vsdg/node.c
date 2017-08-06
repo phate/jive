@@ -263,7 +263,7 @@ jive_node_get_use_count_input(const jive::node * self, jive_resource_class_count
 	use_count->clear();
 	
 	for (size_t n = 0; n < self->ninputs(); n++) {
-		jive::input * input = dynamic_cast<jive::input*>(self->input(n));
+		auto input = dynamic_cast<jive::simple_input*>(self->input(n));
 		
 		/* filter out multiple inputs using the same value
 		FIXME: this assumes that all inputs have the same resource

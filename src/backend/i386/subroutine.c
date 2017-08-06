@@ -113,11 +113,11 @@ jive_i386_subroutine_prepare_stackframe_(
 	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm);
 
-static jive::input *
+static jive::simple_input *
 jive_i386_subroutine_add_fp_dependency_(
 	const jive::subroutine_op & op, jive::region * region, jive::node * node);
 
-static jive::input *
+static jive::simple_input *
 jive_i386_subroutine_add_sp_dependency_(
 	const jive::subroutine_op & op, jive::region * region, jive::node * node);
 
@@ -291,7 +291,7 @@ jive_i386_subroutine_prepare_stackframe_(
 		&stackptr_add.base);
 }
 
-static jive::input *
+static jive::simple_input *
 jive_i386_subroutine_add_fp_dependency_(
 	const jive::subroutine_op & op, jive::region * region, jive::node * node)
 {
@@ -299,14 +299,14 @@ jive_i386_subroutine_add_fp_dependency_(
 	
 	size_t n;
 	for (n = 0; n < node->ninputs(); n++) {
-		jive::input * input = dynamic_cast<jive::input*>(node->input(n));
+		auto input = dynamic_cast<jive::simple_input*>(node->input(n));
 		if (input->origin() == frameptr)
 			return NULL;
 	}
-	return dynamic_cast<jive::input*>(node->add_input(&frameptr->type(), frameptr));
+	return dynamic_cast<jive::simple_input*>(node->add_input(&frameptr->type(), frameptr));
 }
 
-static jive::input *
+static jive::simple_input *
 jive_i386_subroutine_add_sp_dependency_(
 	const jive::subroutine_op & op, jive::region * region, jive::node * node)
 {
@@ -314,9 +314,9 @@ jive_i386_subroutine_add_sp_dependency_(
 	
 	size_t n;
 	for (n = 0; n < node->ninputs(); n++) {
-		jive::input * input = dynamic_cast<jive::input*>(node->input(n));
+		auto input = dynamic_cast<jive::simple_input*>(node->input(n));
 		if (input->origin() == stackptr)
 			return NULL;
 	}
-	return dynamic_cast<jive::input*>(node->add_input(&stackptr->type(), stackptr));
+	return dynamic_cast<jive::simple_input*>(node->add_input(&stackptr->type(), stackptr));
 }

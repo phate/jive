@@ -62,21 +62,23 @@ subroutine_op::get_passthrough_enter_by_index(jive::region * region, size_t inde
 	return get_passthrough_enter_by_name(region, signature().passthroughs[index].name.c_str());
 }
 
-input *
-subroutine_op::get_passthrough_leave_by_name(jive::region * region, const char * name) const noexcept
+jive::simple_input *
+subroutine_op::get_passthrough_leave_by_name(
+	jive::region * region,
+	const char * name) const noexcept
 {
 	/* FIXME: this function is broken */
 	jive::node * leave = nullptr;
 	JIVE_DEBUG_ASSERT(leave);
 	for (size_t n = 0; n < leave->ninputs(); ++n) {
-		input * i = dynamic_cast<jive::input*>(leave->input(n));
+		auto i = dynamic_cast<jive::simple_input*>(leave->input(n));
 		if (i->gate() && name == i->gate()->name())
 			return i;
 	}
 	return nullptr;
 }
 
-input *
+jive::simple_input *
 subroutine_op::get_passthrough_leave_by_index(jive::region * region, size_t index) const noexcept
 {
 	return get_passthrough_leave_by_name(region, signature().passthroughs[index].name.c_str());

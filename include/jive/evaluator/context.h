@@ -14,7 +14,6 @@
 
 namespace jive {
 
-class input;
 class output;
 
 namespace evaluator {

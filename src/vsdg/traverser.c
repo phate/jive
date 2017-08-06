@@ -261,7 +261,7 @@ upward_cone_traverser::iport_change(iport * in, oport * old_origin, oport * new_
 			for (const auto & user : *out) {
 				if (user == in)
 					continue;
-				auto input = dynamic_cast<jive::input*>(user);
+				auto input = dynamic_cast<jive::simple_input*>(user);
 				state = tracker_.get_nodestate(input->node());
 				if (state != traversal_nodestate::ahead)
 					return;
