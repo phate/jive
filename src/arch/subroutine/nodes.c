@@ -42,21 +42,23 @@ subroutine_op::copy() const
 	return std::unique_ptr<jive::operation>(new subroutine_op(*this));
 }
 
-output *
-subroutine_op::get_passthrough_enter_by_name(jive::region * region, const char * name) const noexcept
+simple_output *
+subroutine_op::get_passthrough_enter_by_name(
+	jive::region * region,
+	const char * name) const noexcept
 {
 	/* FIXME: this function is broken */
 	jive::node * enter = nullptr;
 	JIVE_DEBUG_ASSERT(enter);
 	for (size_t n = 0; n < enter->noutputs(); ++n) {
-		output * o = dynamic_cast<jive::output*>(enter->output(n));
+		auto o = enter->output(n);
 		if (o->gate() && name == o->gate()->name())
-			return o;
+			return dynamic_cast<simple_output*>(o);
 	}
 	return nullptr;
 }
 
-output *
+simple_output *
 subroutine_op::get_passthrough_enter_by_index(jive::region * region, size_t index) const noexcept
 {
 	return get_passthrough_enter_by_name(region, signature().passthroughs[index].name.c_str());

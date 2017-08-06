@@ -60,8 +60,7 @@ test_address_transform(void)
 
 	jive::oport * state = top->output(2);
 	auto load = jive_load_by_address_create(arraysub, &addr, 1, &state);
-	jive::node * store = dynamic_cast<jive::output*>(jive_store_by_address_create(
-		arraysub, &bits64, arrayindex, 1, &state)[0])->node();
+	auto store = jive_store_by_address_create(arraysub, &bits64, arrayindex, 1, &state)[0]->node();
 
 	auto o_addr = jive_address_to_bitstring_create(load, 64, &load->type());
 
@@ -146,11 +145,11 @@ test_apply_transform(void)
 	jive::view(graph.root(), stdout);
 
 	jive::memlayout_mapper_simple mapper(4);
-	jive_node_address_transform(dynamic_cast<jive::output*>(results[0])->node(), &mapper);
+	jive_node_address_transform(results[0]->node(), &mapper);
 
 	jive::view(graph.root(), stdout);
 
-	assert(dynamic_cast<jive::output*>(bottom->input(0)->origin())->node()->operation()
+	assert(bottom->input(0)->origin()->node()->operation()
 		== jive::bitstring_to_address_operation(32, addrtype));
 
 	return 0;
@@ -211,24 +210,24 @@ test_containerof_transform(void)
 		}
 	}
 
-	jive::node * sum = dynamic_cast<jive::output*>(bottom->input(0)->origin())->node();
+	auto sum = bottom->input(0)->origin()->node();
 	assert(sum->operation() == jive::bits::sub_op(32));
-	jive::node * constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
+	auto constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 0));
 
-	sum = dynamic_cast<jive::output*>(bottom->input(1)->origin())->node();
+	sum = bottom->input(1)->origin()->node();
 	assert(sum->operation() == jive::bits::sub_op(32));
-	constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
+	constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 2));
 
-	sum = dynamic_cast<jive::output*>(bottom->input(2)->origin())->node();
+	sum = bottom->input(2)->origin()->node();
 	assert(sum->operation() == jive::bits::sub_op(32));
-	constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
+	constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 4));
 
-	sum = dynamic_cast<jive::output*>(bottom->input(3)->origin())->node();
+	sum = bottom->input(3)->origin()->node();
 	assert(sum->operation() == jive::bits::sub_op(32));
-	constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
+	constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 8));
 
 	return 0;
@@ -286,24 +285,24 @@ test_memberof_transform(void)
 		}
 	}
 
-	jive::node * sum = dynamic_cast<jive::output*>(bottom->input(0)->origin())->node();
+	auto sum = bottom->input(0)->origin()->node();
 	assert(sum->operation() == jive::bits::add_op(32));
-	jive::node * constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
+	auto constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 0));
 
-	sum = dynamic_cast<jive::output*>(bottom->input(1)->origin())->node();
+	sum = bottom->input(1)->origin()->node();
 	assert(sum->operation() == jive::bits::add_op(32));
-	constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
+	constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 2));
 
-	sum = dynamic_cast<jive::output*>(bottom->input(2)->origin())->node();
+	sum = bottom->input(2)->origin()->node();
 	assert(sum->operation() == jive::bits::add_op(32));
-	constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
+	constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 4));
 
-	sum = dynamic_cast<jive::output*>(bottom->input(3)->origin())->node();
+	sum = bottom->input(3)->origin()->node();
 	assert(sum->operation() == jive::bits::add_op(32));
-	constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
+	constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 8));
 
 	return 0;

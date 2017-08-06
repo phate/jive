@@ -30,7 +30,7 @@ get_slot_memory_reference(const jive_resource_class * rescls,
 }
 
 jive_xfer_description
-jive_i386_create_xfer(jive::region * region, jive::output * origin,
+jive_i386_create_xfer(jive::region * region, jive::simple_output * origin,
 	const jive_resource_class * in_class, const jive_resource_class * out_class)
 {
 	jive_xfer_description xfer;
@@ -52,7 +52,7 @@ jive_i386_create_xfer(jive::region * region, jive::output * origin,
 			&jive::i386::instr_int_load32_disp::instance(),
 			&base, &displacement);
 		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->add_input(in_class, origin));
-		xfer.output = dynamic_cast<jive::output*>(xfer.node->output(0));
+		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
 	} else if (out_mem) {
 		jive::immediate displacement;
 		jive::oport * base;
@@ -63,7 +63,7 @@ jive_i386_create_xfer(jive::region * region, jive::output * origin,
 			&jive::i386::instr_int_store32_disp::instance(),
 			tmparray0, &displacement);
 		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(1));
-		xfer.output = dynamic_cast<jive::output*>(xfer.node->add_output(out_class));
+		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->add_output(out_class));
 	} else {
 		jive::oport * tmparray1[] = {origin};
 		xfer.node = jive_instruction_node_create(
@@ -71,7 +71,7 @@ jive_i386_create_xfer(jive::region * region, jive::output * origin,
 			&jive::i386::instr_int_transfer::instance(),
 			tmparray1, NULL);
 		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
-		xfer.output = dynamic_cast<jive::output*>(xfer.node->output(0));
+		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
 	}
 	
 	return xfer;

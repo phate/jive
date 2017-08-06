@@ -96,8 +96,8 @@ jive_equiv_state_check_node(jive_equiv_state * self, const jive::node * n1, cons
 	
 	size_t n = 0;
 	for (n = 0; n < n1->ninputs(); ++n) {
-		jive::output * o1 = dynamic_cast<jive::output*>(n1->input(n)->origin());
-		jive::output * o2 = dynamic_cast<jive::output*>(n2->input(n)->origin());
+		auto o1 = n1->input(n)->origin();
+		auto o2 = n2->input(n)->origin();
 		
 		jive_node_equiv_entry * entry = jive_equiv_state_lookup(self, o1->node());
 		if (entry->second && entry->second != o2->node())

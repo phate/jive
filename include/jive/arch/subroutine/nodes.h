@@ -14,6 +14,7 @@
 namespace jive {
 
 class simple_input;
+class simple_output;
 
 class subroutine_op final : public structural_op {
 public:
@@ -44,10 +45,10 @@ public:
 		return signature_;
 	}
 
-	output *
+	simple_output *
 	get_passthrough_enter_by_name(jive::region * region, const char * name) const noexcept;
 
-	output *
+	simple_output *
 	get_passthrough_enter_by_index(jive::region * region, size_t index) const noexcept;
 
 	jive::simple_input *

@@ -29,7 +29,7 @@ jive_i386_call_node_substitute(
 	
 	/* distinguish between call to fixed address and register-indirect call */
 	jive::node * call_instr;
-	jive::output * address = dynamic_cast<jive::output*>(node->input(0)->origin());
+	auto address = dynamic_cast<jive::simple_output*>(node->input(0)->origin());
 	if (auto op = dynamic_cast<const jive::address::label_to_address_op *>(
 		&address->node()->operation())) {
 		jive::immediate imm(0, op->label());
@@ -54,13 +54,13 @@ jive_i386_call_node_substitute(
 	}
 	
 	/* mark caller-saved regs as clobbered */
-	jive::output * clobber_eax = dynamic_cast<jive::output*>(
+	auto clobber_eax = dynamic_cast<jive::simple_output*>(
 		call_instr->add_output(&jive_i386_regcls_gpr_eax.base));
-	jive::output * clobber_edx = dynamic_cast<jive::output*>(
+	auto clobber_edx = dynamic_cast<jive::simple_output*>(
 		call_instr->add_output(&jive_i386_regcls_gpr_edx.base));
-	jive::output * clobber_ecx = dynamic_cast<jive::output*>(
+	auto clobber_ecx = dynamic_cast<jive::simple_output*>(
 		call_instr->add_output(&jive_i386_regcls_gpr_ecx.base));
-	jive::output * clobber_flags = dynamic_cast<jive::output*>(
+	auto clobber_flags = dynamic_cast<jive::simple_output*>(
 		call_instr->add_output(&jive_i386_regcls_flags.base));
 	(void) clobber_edx;
 	(void) clobber_ecx;
@@ -70,7 +70,7 @@ jive_i386_call_node_substitute(
 	a pointer to the return value area as first (hidden) parameter */
 	size_t offset = 0;
 	for (size_t n = 0; n < nargs; n++) {
-		jive::output * value = dynamic_cast<jive::output*>(node->input(n+1)->origin());
+		auto value = dynamic_cast<jive::simple_output*>(node->input(n+1)->origin());
 		
 		const jive_resource_class * value_cls = value->rescls();
 		if (value_cls == &jive_root_resource_class) {
@@ -103,12 +103,12 @@ jive_i386_call_node_substitute(
 		}
 	}
 	for (size_t n = op.result_types().size(); n < node->noutputs(); n++) {
-		jive::output * orig_output = dynamic_cast<jive::output*>(node->output(n));
-		jive::output * new_output;
+		auto orig_output = dynamic_cast<jive::simple_output*>(node->output(n));
+		jive::oport * new_output;
 		if (orig_output->gate()) {
-			new_output = dynamic_cast<jive::output*>(call_instr->add_output(orig_output->gate()));
+			new_output = call_instr->add_output(orig_output->gate());
 		} else {
-			new_output = dynamic_cast<jive::output*>(call_instr->add_output(orig_output->rescls()));
+			new_output = call_instr->add_output(orig_output->rescls());
 		}
 		orig_output->replace(new_output);
 	}

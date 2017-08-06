@@ -72,10 +72,10 @@ static int test_main(void)
 		{&addrtype, &addrtype, &bits32}, {memberof, arraysub, diff2}, {&addrtype});
 	graph.export_port(bottom->output(0), "dummy");
 
-	jive_node_address_transform(dynamic_cast<jive::output*>(cont3)->node(), &mapper);
-	jive_node_address_transform(dynamic_cast<jive::output*>(memberof)->node(), &mapper);
-	jive_node_address_transform(dynamic_cast<jive::output*>(diff2)->node(), &mapper);
-	jive_node_address_transform(dynamic_cast<jive::output*>(arraysub)->node(), &mapper);
+	jive_node_address_transform(cont3->node(), &mapper);
+	jive_node_address_transform(memberof->node(), &mapper);
+	jive_node_address_transform(diff2->node(), &mapper);
+	jive_node_address_transform(arraysub->node(), &mapper);
 
 	graph.prune();
 	jive::view(graph.root(), stdout);

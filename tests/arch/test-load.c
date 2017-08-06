@@ -45,7 +45,7 @@ static int test_main()
 
 	jive::view(graph.root(), stderr);
 
-	assert(dynamic_cast<jive::output*>(bottom->input(1)->origin())->node() == top);
+	assert(bottom->input(1)->origin()->node() == top);
 
 	return 0;
 }

@@ -292,7 +292,7 @@ jive_node_get_use_count_output(const jive::node * self, jive_resource_class_coun
 	use_count->clear();
 	
 	for (size_t n = 0; n < self->noutputs(); n++) {
-		jive::output * output = dynamic_cast<jive::output*>(self->output(n));
+		auto output = self->output(n);
 		
 		const jive_resource_class * rescls;
 		if (output->gate()) rescls = output->gate()->rescls();

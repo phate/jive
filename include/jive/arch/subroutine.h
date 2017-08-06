@@ -19,7 +19,7 @@ struct jive_subroutine;
 
 namespace jive {
 class gate;
-class output;
+class simple_output;
 class region;
 
 class subroutine_hl_builder_interface {
@@ -36,9 +36,9 @@ public:
 	value_return(
 		jive_subroutine & subroutine,
 		size_t index,
-		output * value) = 0;
+		simple_output * value) = 0;
 	
-	virtual output *
+	virtual simple_output *
 	finalize(
 		jive_subroutine & subroutine) = 0;
 };
@@ -106,7 +106,7 @@ void
 jive_subroutine_simple_set_result(
 	jive_subroutine & self,
 	size_t index,
-	jive::output * value);
+	jive::simple_output * value);
 
 jive::oport *
 jive_subroutine_simple_get_global_state(const jive_subroutine & self);
@@ -130,7 +130,7 @@ struct jive_value_split_factory {
 struct jive_subroutine_late_transforms {
 	void (*value_split)(
 		const jive_subroutine_late_transforms * self,
-		jive::output * value_in,
+		jive::simple_output * value_in,
 		jive::simple_input * value_out,
 		const jive_value_split_factory * enter_split,
 		const jive_value_split_factory * leave_split);
@@ -191,10 +191,10 @@ jive_region_get_subroutine_node(const jive::region * region);
 const jive_instructionset *
 jive_region_get_instructionset(const jive::region * region);
 
-jive::output *
+jive::simple_output *
 jive_subroutine_node_get_sp(const jive::node * self);
 
-jive::output *
+jive::simple_output *
 jive_subroutine_node_get_fp(const jive::node * self);
 
 #endif

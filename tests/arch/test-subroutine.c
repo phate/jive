@@ -33,16 +33,16 @@ static int test_main(void)
 	auto arg3 = jive_subroutine_simple_get_argument(subroutine, 2);
 	jive::oport * tmparray2[] = {arg1, arg2};
 	
-	jive::output * s1 = dynamic_cast<jive::output*>(jive_instruction_node_create(
+	auto s1 = jive_instruction_node_create(
 		subroutine.region,
 		&jive::testarch::instr_add_gpr::instance(),
-		tmparray2, NULL)->output(0));
+		tmparray2, NULL)->output(0);
 	jive::oport * tmparray3[] = {s1, arg3};
-	jive::output * s2 = dynamic_cast<jive::output*>(jive_instruction_node_create(
+	auto s2 = jive_instruction_node_create(
 		subroutine.region,
 		&jive::testarch::instr_add_gpr::instance(),
-		tmparray3, NULL)->output(0));
-	jive_subroutine_simple_set_result(subroutine, 0, s2);
+		tmparray3, NULL)->output(0);
+	jive_subroutine_simple_set_result(subroutine, 0, dynamic_cast<jive::simple_output*>(s2));
 	
 	graph.export_port(jive_subroutine_end(subroutine)->output(0), "dummy");
 	

@@ -40,10 +40,10 @@ static int test_main(void)
 
 	jive::unn::type union_t(&u_decl);
 
-	auto s0 = dynamic_cast<jive::output*>(jive_sizeof_create(graph.root(), &bits4));
-	auto s1 = dynamic_cast<jive::output*>(jive_sizeof_create(graph.root(), &bits8));
-	auto s2 = dynamic_cast<jive::output*>(jive_sizeof_create(graph.root(), &bits8));
-	auto s3 = dynamic_cast<jive::output*>(jive_sizeof_create(graph.root(), &bits18));
+	auto s0 = jive_sizeof_create(graph.root(), &bits4);
+	auto s1 = jive_sizeof_create(graph.root(), &bits8);
+	auto s2 = jive_sizeof_create(graph.root(), &bits8);
+	auto s3 = jive_sizeof_create(graph.root(), &bits18);
 	auto s4 = jive_sizeof_create(graph.root(), &bits32);
 	auto s5 = jive_sizeof_create(graph.root(), &addr);
 	auto s6 = jive_sizeof_create(graph.root(), &record_t);
@@ -66,22 +66,14 @@ static int test_main(void)
 	}
 	graph.prune();
 
-	assert(dynamic_cast<jive::output*>(bottom->input(0)->origin())->node()->operation()
-		== jive::bits::uint_constant_op(32, 1));
-	assert(dynamic_cast<jive::output*>(bottom->input(1)->origin())->node()->operation()
-		== jive::bits::uint_constant_op(32, 1));
-	assert(dynamic_cast<jive::output*>(bottom->input(2)->origin())->node()->operation()
-		== jive::bits::uint_constant_op(32, 1));
-	assert(dynamic_cast<jive::output*>(bottom->input(3)->origin())->node()->operation()
-		== jive::bits::uint_constant_op(32, 4));
-	assert(dynamic_cast<jive::output*>(bottom->input(4)->origin())->node()->operation()
-		== jive::bits::uint_constant_op(32, 4));
-	assert(dynamic_cast<jive::output*>(bottom->input(5)->origin())->node()->operation()
-		== jive::bits::uint_constant_op(32, 4));
-	assert(dynamic_cast<jive::output*>(bottom->input(6)->origin())->node()->operation()
-		== jive::bits::uint_constant_op(32, 8));
-	assert(dynamic_cast<jive::output*>(bottom->input(7)->origin())->node()->operation()
-		== jive::bits::uint_constant_op(32, 4));
+	assert(bottom->input(0)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 1));
+	assert(bottom->input(1)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 1));
+	assert(bottom->input(2)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 1));
+	assert(bottom->input(3)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(bottom->input(4)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(bottom->input(5)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(bottom->input(6)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 8));
+	assert(bottom->input(7)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
 	
 	jive::view(graph.root(), stdout);
 

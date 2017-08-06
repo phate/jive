@@ -232,7 +232,7 @@ upward_cone_traverser::node_destroy(jive::node * node)
 	}
 	
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		check_node(dynamic_cast<jive::output*>(node->input(n)->origin())->node());
+		check_node(node->input(n)->origin()->node());
 	}
 }
 
@@ -242,7 +242,7 @@ upward_cone_traverser::iport_change(iport * in, oport * old_origin, oport * new_
 	if (!in->node())
 		return;
 
-	auto output = dynamic_cast<jive::output*>(old_origin);
+	auto output = dynamic_cast<jive::simple_output*>(old_origin);
 
 	/* for node of new origin, it may now belong to the cone */
 	traversal_nodestate state = tracker_.get_nodestate(in->node());
@@ -257,7 +257,7 @@ upward_cone_traverser::iport_change(iport * in, oport * old_origin, oport * new_
 	if (state == traversal_nodestate::frontier) {
 		size_t n;
 		for (n = 0; n < output->node()->noutputs(); n++) {
-			jive::output * out = dynamic_cast<jive::output*>(output->node()->output(n));
+			auto out = dynamic_cast<jive::simple_output*>(output->node()->output(n));
 			for (const auto & user : *out) {
 				if (user == in)
 					continue;
@@ -280,7 +280,7 @@ upward_cone_traverser::next()
 	}
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		check_node(dynamic_cast<jive::output*>(node->input(n)->origin())->node());
+		check_node(node->input(n)->origin()->node());
 	}
 	return node;
 }
@@ -344,7 +344,7 @@ void
 bottomup_region_traverser::check_above(jive::node * node)
 {
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		jive::node * above = dynamic_cast<jive::output*>(node->input(n)->origin())->node();
+		auto above = node->input(n)->origin()->node();
 		jive_tracker_nodestate * nodestate = map_node(above);
 		if (nodestate->state != jive_tracker_nodestate_none) {
 			continue;

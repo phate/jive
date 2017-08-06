@@ -91,9 +91,9 @@ negotiator_split_operation::copy() const
 
 }
 
-static jive::output *
+static jive::simple_output *
 jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * operand_type,
-	jive::output * operand, const jive_negotiator_option * input_option,
+	jive::simple_output * operand, const jive_negotiator_option * input_option,
 	const jive::base::type * output_type, const jive_negotiator_option * output_option)
 {
 	jive::negotiator_split_operation op(
@@ -108,10 +108,10 @@ jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * ope
 
 	jive_negotiator_annotate_simple_input(negotiator, dynamic_cast<jive::simple_input*>(
 		node->input(0)), input_option);
-	jive_negotiator_annotate_simple_output(negotiator, dynamic_cast<jive::output*>(node->output(0)),
-		output_option);
+	jive_negotiator_annotate_simple_output(negotiator, dynamic_cast<jive::simple_output*>(
+		node->output(0)), output_option);
 
-	return dynamic_cast<jive::output*>(node->output(0));
+	return dynamic_cast<jive::simple_output*>(node->output(0));
 }
 
 /* constraints */
@@ -497,7 +497,7 @@ jive_negotiator_map_input(jive_negotiator * self, jive::simple_input * input)
 }
 
 const jive_negotiator_port *
-jive_negotiator_map_output(const jive_negotiator * self, jive::output * output)
+jive_negotiator_map_output(const jive_negotiator * self, jive::simple_output * output)
 {
 	auto i = self->output_map.find(output);
 	if (i != self->output_map.end())
@@ -507,7 +507,7 @@ jive_negotiator_map_output(const jive_negotiator * self, jive::output * output)
 }
 
 jive_negotiator_port *
-jive_negotiator_map_output(jive_negotiator * self, jive::output * output)
+jive_negotiator_map_output(jive_negotiator * self, jive::simple_output * output)
 {
 	auto i = self->output_map.find(output);
 	if (i != self->output_map.end())
@@ -529,8 +529,8 @@ jive_negotiator_map_gate(jive_negotiator * self, jive::gate * gate)
 jive_negotiator_connection *
 jive_negotiator_create_input_connection(jive_negotiator * self, jive::simple_input * input)
 {
-	jive_negotiator_port * output_port;
-	output_port = jive_negotiator_map_output(self, dynamic_cast<jive::output*>(input->origin()));
+	auto output_port = jive_negotiator_map_output(self,
+		dynamic_cast<jive::simple_output*>(input->origin()));
 	jive_negotiator_connection * connection;
 	if (!output_port)
 		connection = jive_negotiator_connection_create(self);
@@ -571,7 +571,7 @@ jive_negotiator_annotate_gate(jive_negotiator * self, jive::gate * gate)
 jive_negotiator_constraint *
 jive_negotiator_annotate_identity(jive_negotiator * self,
 	size_t ninputs, jive::simple_input * const inputs[],
-	size_t noutputs, jive::output * const outputs[],
+	size_t noutputs, jive::simple_output * const outputs[],
 	const jive_negotiator_option * option)
 {
 	jive_negotiator_constraint * constraint = jive_negotiator_identity_constraint_create(self);
@@ -586,8 +586,8 @@ jive_negotiator_annotate_identity(jive_negotiator * self,
 	}
 	
 	for(n = 0; n < noutputs; n++) {
-		jive::output * output = outputs[n];
-		jive_negotiator_connection * connection = jive_negotiator_create_output_connection(self, output);
+		jive::simple_output * output = outputs[n];
+		auto connection = jive_negotiator_create_output_connection(self, output);
 		jive_negotiator_port * port = jive_negotiator_port_create(constraint, connection, option);
 		port->hash_key_.output = output;
 		self->output_map.insert(port);
@@ -612,9 +612,9 @@ jive_negotiator_annotate_identity_node(
 		}
 	}
 
-	std::vector<jive::output*> outputs;
+	std::vector<jive::simple_output*> outputs;
 	for (size_t n = 0; n < node->noutputs(); n++) {
-		jive::output * output = dynamic_cast<jive::output*>(node->output(0));
+		auto output = dynamic_cast<jive::simple_output*>(node->output(0));
 		if (!output->gate()) {
 			outputs.push_back(output);
 		}
@@ -644,7 +644,7 @@ jive_negotiator_annotate_simple_input(jive_negotiator * self, jive::simple_input
 }
 
 jive_negotiator_port *
-jive_negotiator_annotate_simple_output(jive_negotiator * self, jive::output * output,
+jive_negotiator_annotate_simple_output(jive_negotiator * self, jive::simple_output * output,
 	const jive_negotiator_option * option)
 {
 	jive_negotiator_constraint * constraint = jive_negotiator_identity_constraint_create(self);
@@ -715,7 +715,7 @@ jive_negotiator_process_region_(jive_negotiator * self, jive::region * region)
 static void
 jive_negotiator_maybe_split_edge(
 	jive_negotiator * self,
-	jive::output * origin,
+	jive::simple_output * origin,
 	jive::simple_input * input)
 {
 	jive_negotiator_port * origin_port = jive_negotiator_map_output(self, origin);
@@ -730,8 +730,8 @@ jive_negotiator_maybe_split_edge(
 		return;
 	
 	const jive::base::type * type = &input->type();
-	jive::output * split_output = jive_negotiator_split(self,
-		type, dynamic_cast<jive::output*>(input->origin()), origin_port->option,
+	auto split_output = jive_negotiator_split(self,
+		type, dynamic_cast<jive::simple_output*>(input->origin()), origin_port->option,
 		type, input_port->option);
 	
 	jive_negotiator_port * split_output_port = jive_negotiator_map_output(self, split_output);
@@ -768,7 +768,8 @@ jive_negotiator_insert_split_nodes(jive_negotiator * self)
 	for (jive::node * node : jive::topdown_traverser(self->graph->root())) {
 		for (size_t n = 0; n < node->ninputs(); n++) {
 			auto input = dynamic_cast<jive::simple_input*>(node->input(n));
-			jive_negotiator_maybe_split_edge(self, dynamic_cast<jive::output*>(input->origin()), input);
+			jive_negotiator_maybe_split_edge(self,
+				dynamic_cast<jive::simple_output*>(input->origin()), input);
 		}
 	}
 }
@@ -783,7 +784,7 @@ jive_negotiator_remove_split_nodes(jive_negotiator * self)
 		jive_negotiator_port * input_port = jive_negotiator_map_input(self,
 			dynamic_cast<jive::simple_input*>(node->input(0)));
 		jive_negotiator_port * output_port = jive_negotiator_map_output(self,
-			dynamic_cast<jive::output*>(node->output(0)));
+			dynamic_cast<jive::simple_output*>(node->output(0)));
 		jive_negotiator_port_destroy(input_port);
 		jive_negotiator_port_destroy(output_port);
 		node->output(0)->replace(node->input(0)->origin());

@@ -127,7 +127,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive::node * nod
 		const jive_register_class * regcls = op->regcls();
 		option.mask = jive_regselector_classify_regcls(self, regcls);
 		jive_negotiator_annotate_simple_output(&self->base,
-			dynamic_cast<jive::output*>(node->output(0)), &option);
+			dynamic_cast<jive::simple_output*>(node->output(0)), &option);
 	} else if (auto op = dynamic_cast<const jive::flt::unary_op *>(gen_op)) {
 		option.mask = self->classifier->classify_float_unary(*op);
 		jive_negotiator_annotate_identity_node(&self->base, node, &option);
@@ -137,9 +137,9 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive::node * nod
 	} else if (auto op = dynamic_cast<const jive::flt::compare_op *>(gen_op)) {
 		option.mask = self->classifier->classify_float_compare(*op);
 		auto input = dynamic_cast<jive::simple_input*>(node->input(0));
-		std::vector<jive::output*> outputs;
+		std::vector<jive::simple_output*> outputs;
 		for (size_t n = 0; n < node->noutputs(); n++)
-			outputs.push_back(dynamic_cast<jive::output*>(node->output(n)));
+			outputs.push_back(dynamic_cast<jive::simple_output*>(node->output(n)));
 		jive_negotiator_annotate_identity(&self->base, 2, &input, 0, &outputs[0], &option);
 	} else if (auto op = dynamic_cast<const jive::bits::unary_op *>(gen_op)) {
 		option.mask = self->classifier->classify_fixed_unary(*op);
@@ -150,9 +150,9 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive::node * nod
 	} else if (auto op = dynamic_cast<const jive::bits::compare_op *>(gen_op)) {
 		option.mask = self->classifier->classify_fixed_compare(*op);
 		auto input = dynamic_cast<jive::simple_input*>(node->input(0));
-		std::vector<jive::output*> outputs;
+		std::vector<jive::simple_output*> outputs;
 		for (size_t n = 0; n < node->noutputs(); n++)
-			outputs.push_back(dynamic_cast<jive::output*>(node->output(n)));
+			outputs.push_back(dynamic_cast<jive::simple_output*>(node->output(n)));
 		jive_negotiator_annotate_identity(&self->base, 2, &input, 0, &outputs[0], &option);
 	} else if (dynamic_cast<const jive::load_op *>(gen_op)) {
 		option.mask = self->classifier->classify_address();
@@ -160,11 +160,11 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive::node * nod
 		jive_negotiator_annotate_identity(&self->base, 1, &input, 0, NULL, &option);
 		
 		const jive::base::type * type = &node->output(0)->type();
-		const jive_resource_class * rescls = dynamic_cast<jive::output*>(node->output(0))->rescls();
+		auto rescls = node->output(0)->rescls();
 		option.mask = self->classifier->classify_type(type, rescls);
-		std::vector<jive::output*> outputs;
+		std::vector<jive::simple_output*> outputs;
 		for (size_t n = 0; n < node->noutputs(); n++)
-			outputs.push_back(dynamic_cast<jive::output*>(node->output(n)));
+			outputs.push_back(dynamic_cast<jive::simple_output*>(node->output(n)));
 		jive_negotiator_annotate_identity(&self->base, 0, NULL, 1, &outputs[0], &option);
 	} else if (dynamic_cast<const jive::store_op *>(gen_op)) {
 		option.mask = self->classifier->classify_address();
@@ -178,7 +178,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive::node * nod
 		jive_negotiator_annotate_identity(&self->base, 1, &input, 0, NULL, &option);
 	} else if (dynamic_cast<const jive::split_operation *>(gen_op)) {
 		auto input = dynamic_cast<jive::simple_input*>(node->input(0));
-		jive::output * output = dynamic_cast<jive::output*>(node->output(0));
+		auto output = dynamic_cast<jive::simple_output*>(node->output(0));
 		
 		if (dynamic_cast<const jive::value::type*>(&input->type())) {
 			jive_regselector_option option;
@@ -193,9 +193,9 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive::node * nod
 			jive_regselector_option option;
 			option.mask = self->classifier->classify_type(&output->type(), output->rescls());
 			if (option.mask) {
-				std::vector<jive::output*> outputs;
+				std::vector<jive::simple_output*> outputs;
 				for (size_t n = 0; n < node->noutputs(); n++)
-					outputs.push_back(dynamic_cast<jive::output*>(node->output(n)));
+					outputs.push_back(dynamic_cast<jive::simple_output*>(node->output(n)));
 				jive_negotiator_annotate_identity(&self->base,0, NULL, 1, &outputs[0], &option);
 			}
 		}
@@ -254,46 +254,46 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 
 	if (auto op = dynamic_cast<const jive::regvalue_op *>(&node->operation())) {
 		const jive_register_class * regcls = op->regcls();
-		jive::node * origin = dynamic_cast<jive::output*>(node->input(1)->origin())->node();
+		auto origin = node->input(1)->origin()->node();
 
 		if (dynamic_cast<const jive::base::binary_op *>(&origin->operation())) {
 			jive::oport * operands[origin->noperands()];
 			for (size_t n = 0; n < origin->noperands(); n++) {
 				jive::oport * operand = origin->input(n)->origin();
-				jive::output * regvalue = dynamic_cast<jive::output*>(jive_regvalue(operand, regcls));
+				auto regvalue = dynamic_cast<jive::simple_output*>(jive_regvalue(operand, regcls));
 				jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 				if (!reg_port)
 					self->base.class_->annotate_node(&self->base, regvalue->node());
 				operands[n] = regvalue;
 			}
 			
-			jive::output * subst = dynamic_cast<jive::output*>(jive::create_normalized(
+			auto subst = dynamic_cast<jive::simple_output*>(jive::create_normalized(
 				region,
 				origin->operation(),
 				std::vector<jive::oport*>(operands, operands + origin->noperands()))[0]);
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(&self->base,
-				dynamic_cast<jive::output*>(node->output(0))));
+				dynamic_cast<jive::simple_output*>(node->output(0))));
 			node->output(0)->replace(subst);
 			
 			if (!jive_negotiator_map_output(&self->base, subst))
 				self->base.class_->annotate_node(&self->base, subst->node());
 			jive_negotiator_fully_specialize(&self->base);
 		} else if (dynamic_cast<const jive::base::unary_op *>(&origin->operation())) {
-			jive::output * operands[origin->noperands()];
+			jive::simple_output * operands[origin->noperands()];
 			for (size_t n = 0; n < origin->noperands(); n++) {
 				jive::oport * operand = origin->input(n)->origin();
-				jive::output * regvalue = dynamic_cast<jive::output*>(jive_regvalue(operand, regcls));
+				auto regvalue = dynamic_cast<jive::simple_output*>(jive_regvalue(operand, regcls));
 				jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 				if (!reg_port)
 					self->base.class_->annotate_node(&self->base, regvalue->node());
 				operands[n] = regvalue;
 			}
-			jive::output * subst = dynamic_cast<jive::output*>(jive::create_normalized(
+			auto subst = dynamic_cast<jive::simple_output*>(jive::create_normalized(
 				region, origin->operation(), {operands[0]})[0]);
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(&self->base,
-				dynamic_cast<jive::output*>(node->output(0))));
+				dynamic_cast<jive::simple_output*>(node->output(0))));
 			node->output(0)->replace(subst);
 			
 			if (!jive_negotiator_map_output(&self->base, subst))
@@ -308,7 +308,7 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 		auto input = dynamic_cast<jive::simple_input*>(node->input(n));
 		if (input->origin()->region() != root_region
 		&& !dynamic_cast<const jive::base::nullary_op*>(
-			&dynamic_cast<jive::output*>(input->origin())->node()->operation()))
+			&input->origin()->node()->operation()))
 			continue;
 		jive_negotiator_port * port = jive_negotiator_map_input(&self->base, input);
 		if (!port)
@@ -317,7 +317,7 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 		if (!regcls)
 			continue;
 		
-		jive::output * regvalue = dynamic_cast<jive::output*>(jive_regvalue(input->origin(), regcls));
+		auto regvalue = dynamic_cast<jive::simple_output*>(jive_regvalue(input->origin(), regcls));
 		jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 		if (!reg_port) {
 			self->base.class_->annotate_node(&self->base, regvalue->node());
@@ -357,7 +357,7 @@ jive_regselector_process(jive_regselector * self)
 }
 
 const jive_register_class *
-jive_regselector_map_output(const jive_regselector * self, jive::output * output)
+jive_regselector_map_output(const jive_regselector * self, jive::simple_output * output)
 {
 	const jive_negotiator_port * port = jive_negotiator_map_output(&self->base, output);
 	return jive_regselector_map_port(self, port);

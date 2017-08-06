@@ -38,8 +38,7 @@ jive_unop_reduction_path_t
 unary_op::can_reduce_operand(
 	const jive::oport * arg) const noexcept
 {
-	auto op = dynamic_cast<const jive::output*>(arg);
-	if (op && dynamic_cast<const constant_op*>(&op->node()->operation()))
+	if (arg->node() && dynamic_cast<const constant_op*>(&arg->node()->operation()))
 		return jive_unop_reduction_constant;
 
 	return jive_unop_reduction_none;
@@ -51,8 +50,7 @@ unary_op::reduce_operand(
 	jive::oport * arg) const
 {
 	if (path == jive_unop_reduction_constant) {
-		auto op = static_cast<jive::output*>(arg);
-		const constant_op & c = static_cast<const constant_op&>(op->node()->operation());
+		auto & c = static_cast<const constant_op&>(arg->node()->operation());
 		value_repr result = reduce_constant(c.value());
 		return jive_fltconstant(arg->region(), result);
 	}
@@ -94,8 +92,8 @@ binary_op::can_reduce_operand_pair(
 	const jive::oport * arg1,
 	const jive::oport * arg2) const noexcept
 {
-	auto op1 = dynamic_cast<const jive::output*>(arg1);
-	auto op2 = dynamic_cast<const jive::output*>(arg2);
+	auto op1 = dynamic_cast<const jive::simple_output*>(arg1);
+	auto op2 = dynamic_cast<const jive::simple_output*>(arg2);
 	if (!op1 || !op2)
 		return jive_binop_reduction_none;
 
@@ -114,10 +112,8 @@ binary_op::reduce_operand_pair(
 	jive::oport * arg2) const
 {
 	if (path == jive_binop_reduction_constants) {
-		auto op1 = static_cast<jive::output*>(arg1);
-		auto op2 = static_cast<jive::output*>(arg2);
-		const constant_op & c1 = static_cast<const constant_op&>(op1->node()->operation());
-		const constant_op & c2 = static_cast<const constant_op&>(op2->node()->operation());
+		auto & c1 = static_cast<const constant_op&>(arg1->node()->operation());
+		auto & c2 = static_cast<const constant_op&>(arg2->node()->operation());
 		value_repr result = reduce_constants(c1.value(), c2.value());
 		return jive_fltconstant(arg1->region(), result);
 	}
@@ -159,8 +155,8 @@ compare_op::can_reduce_operand_pair(
 	const jive::oport * arg1,
 	const jive::oport * arg2) const noexcept
 {
-	auto op1 = dynamic_cast<const jive::output*>(arg1);
-	auto op2 = dynamic_cast<const jive::output*>(arg2);
+	auto op1 = dynamic_cast<const jive::simple_output*>(arg1);
+	auto op2 = dynamic_cast<const jive::simple_output*>(arg2);
 	if (!op1 || !op2)
 		return jive_binop_reduction_none;
 
@@ -179,10 +175,8 @@ compare_op::reduce_operand_pair(
 	jive::oport * arg2) const
 {
 	if (path == jive_binop_reduction_constants) {
-		auto op1 = static_cast<jive::output*>(arg1);
-		auto op2 = static_cast<jive::output*>(arg2);
-		auto c1 = static_cast<const constant_op&>(op1->node()->operation());
-		auto c2 = static_cast<const constant_op&>(op2->node()->operation());
+		auto & c1 = static_cast<const constant_op&>(arg1->node()->operation());
+		auto & c2 = static_cast<const constant_op&>(arg2->node()->operation());
 		bool result = reduce_constants(c1.value(), c2.value());
 		if (result) {
 			return jive_bitconstant(arg1->region(), 1, "1");

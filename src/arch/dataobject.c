@@ -87,7 +87,7 @@ flatten_data_items(
 	jive::oport * data,
 	jive::memlayout_mapper * layout_mapper)
 {
-	auto tmp = dynamic_cast<jive::output*>(data);
+	auto tmp = dynamic_cast<jive::simple_output*>(data);
 
 	std::vector<jive::oport*> items;
 	const jive::base::type * type_ = &data->type();

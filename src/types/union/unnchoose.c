@@ -55,12 +55,10 @@ jive_unop_reduction_path_t
 choose_operation::can_reduce_operand(
 	const jive::oport * arg) const noexcept
 {
-	auto op = dynamic_cast<const jive::output*>(arg);
-
-	if (op && dynamic_cast<const unify_op*>(&op->node()->operation()))
+	if (arg->node() && dynamic_cast<const unify_op*>(&arg->node()->operation()))
 		return jive_unop_reduction_inverse;
 
-	if (op && dynamic_cast<const load_op*>(&op->node()->operation()))
+	if (arg->node() && dynamic_cast<const load_op*>(&arg->node()->operation()))
 		return jive_choose_reduction_load;
 
 	return jive_unop_reduction_none;
@@ -71,22 +69,20 @@ choose_operation::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::oport * arg) const
 {
-	auto op = static_cast<jive::output*>(arg);
-
 	if (path == jive_unop_reduction_inverse) {
-		return dynamic_cast<jive::output*>(op->node()->input(0)->origin());
+		return arg->node()->input(0)->origin();
 	}
 
 	if (path == jive_choose_reduction_load) {
-		jive::output * address = dynamic_cast<jive::output*>(op->node()->input(0)->origin());
+		auto address = arg->node()->input(0)->origin();
 
-		const jive::unn::declaration * decl = static_cast<const jive::unn::type*>(
-			&op->node()->output(0)->type())->declaration();
+		auto decl = static_cast<const jive::unn::type*>(
+			&arg->node()->output(0)->type())->declaration();
 
-		size_t nstates = op->node()->ninputs()-1;
+		size_t nstates = arg->node()->ninputs()-1;
 		jive::oport * states[nstates];
 		for (size_t n = 0; n < nstates; n++) {
-			states[n] = dynamic_cast<jive::output*>(op->node()->input(n+1)->origin());
+			states[n] = arg->node()->input(n+1)->origin();
 		}
 	
 		if (dynamic_cast<const jive::addr::type*>(&address->type())) {

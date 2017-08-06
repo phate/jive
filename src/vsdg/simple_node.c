@@ -74,25 +74,25 @@ simple_input::node() const noexcept
 
 /* outputs */
 
-output::output(jive::node * node, size_t index, const jive::base::type & type)
+simple_output::simple_output(jive::node * node, size_t index, const jive::base::type & type)
 	: oport(index)
 	, node_(node)
 	, type_(type.copy())
 {}
 
-output::output(jive::node * node, size_t index, jive::gate * gate)
+simple_output::simple_output(jive::node * node, size_t index, jive::gate * gate)
 	: oport(index, gate)
 	, node_(node)
 	, type_(gate->type().copy())
 {
 	for (size_t n = 0; n < index; n++) {
-		jive::output * other = dynamic_cast<jive::output*>(node->output(n));
+		auto other = node->output(n);
 		if (!other->gate()) continue;
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
 }
 
-output::output(
+simple_output::simple_output(
 	jive::node * node,
 	size_t index,
 	const jive::base::type & type,
@@ -102,13 +102,13 @@ output::output(
 	, type_(type.copy())
 {}
 
-output::~output() noexcept
+simple_output::~simple_output() noexcept
 {
 	node_->graph()->on_oport_destroy(this);
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->noutputs(); n++) {
-			jive::output * other = dynamic_cast<jive::output*>(node()->output(n));
+			auto other = node()->output(n);
 			if (other == this || !other->gate())
 				continue;
 			jive_gate_interference_remove(node()->graph(), gate(), other->gate());
@@ -116,23 +116,23 @@ output::~output() noexcept
 	}
 
 	for (size_t n = index()+1; n < node()->noutputs(); n++)
-		dynamic_cast<jive::output*>(node()->output(n))->set_index(n-1);
+		dynamic_cast<jive::simple_output*>(node()->output(n))->set_index(n-1);
 }
 
 const jive::base::type &
-output::type() const noexcept
+simple_output::type() const noexcept
 {
 	return *type_;
 }
 
 jive::region *
-output::region() const noexcept
+simple_output::region() const noexcept
 {
 	return node()->region();
 }
 
 jive::node *
-output::node() const noexcept
+simple_output::node() const noexcept
 {
 	return node_;
 }
@@ -174,8 +174,8 @@ simple_node::simple_node(
 	}
 
 	for (size_t n = 0; n < operation().nresults(); n++) {
-		outputs_.emplace_back(std::unique_ptr<jive::output>(new jive::output(this, n,
-			operation().result_type(n), operation().result_cls(n))));
+		outputs_.emplace_back(std::make_unique<jive::simple_output>(this, n,
+			operation().result_type(n), operation().result_cls(n)));
 	}
 
 	JIVE_DEBUG_ASSERT(operation().narguments() == inputs_.size());
@@ -202,7 +202,7 @@ simple_node::noutputs() const noexcept
 	return outputs_.size();
 }
 
-jive::output *
+jive::simple_output *
 simple_node::output(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < noutputs());
@@ -293,11 +293,10 @@ simple_node::remove_input(size_t index)
 		JIVE_LIST_PUSH_BACK(region()->top_nodes, this, region_top_node_list);
 }
 
-jive::output *
+jive::simple_output *
 simple_node::add_output(const jive::base::type * type)
 {
-	outputs_.emplace_back(std::unique_ptr<jive::output>(
-		new jive::output(this, noutputs(), *type)));
+	outputs_.emplace_back(std::make_unique<jive::simple_output>(this, noutputs(), *type));
 	auto output = outputs_[noutputs()-1].get();
 
 	graph()->on_oport_create(output);
@@ -305,11 +304,10 @@ simple_node::add_output(const jive::base::type * type)
 	return output;
 }
 
-jive::output *
+jive::simple_output *
 simple_node::add_output(jive::gate * gate)
 {
-	outputs_.emplace_back(std::unique_ptr<jive::output>(
-		new jive::output(this, noutputs(), gate)));
+	outputs_.emplace_back(std::make_unique<jive::simple_output>(this, noutputs(), gate));
 	auto output = this->output(noutputs()-1);
 
 	graph()->on_oport_create(output);
@@ -317,11 +315,11 @@ simple_node::add_output(jive::gate * gate)
 	return output;
 }
 
-jive::output *
+jive::simple_output *
 simple_node::add_output(const struct jive_resource_class * rescls)
 {
-	outputs_.emplace_back(std::unique_ptr<jive::output>(
-		new jive::output(this, noutputs(), *jive_resource_class_get_type(rescls), rescls)));
+	outputs_.emplace_back(std::make_unique<jive::simple_output>(
+		this, noutputs(), *jive_resource_class_get_type(rescls), rescls));
 	auto output = this->output(noutputs()-1);
 
 	graph()->on_oport_create(output);

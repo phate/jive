@@ -132,10 +132,9 @@ public:
 			new_args = base::detail::associative_flatten(
 				args,
 				[](jive::oport * arg) {
-					auto operand = dynamic_cast<jive::output*>(arg);
 					// FIXME: switch to comparing operator, not just typeid, after
 					// converting "concat" to not be a binary operator anymore
-					return operand && typeid(operand->node()->operation()) == typeid(concat_op);
+					return arg->node() && typeid(arg->node()->operation()) == typeid(concat_op);
 				});
 		} else {
 			new_args = args;
@@ -192,8 +191,7 @@ public:
 			bool can_flatten = base::detail::associative_test_flatten(
 				arguments,
 				[](jive::oport * arg) {
-					auto operand = dynamic_cast<jive::output*>(arg);
-					return operand && typeid(operand->node()->operation()) == typeid(concat_op);
+					return arg->node() && typeid(arg->node()->operation()) == typeid(concat_op);
 				});
 			if (can_flatten) {
 				return false;

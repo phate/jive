@@ -95,7 +95,7 @@ void
 jive_regselector_process(jive_regselector * self);
 
 const jive_register_class *
-jive_regselector_map_output(const jive_regselector * self, jive::output * output);
+jive_regselector_map_output(const jive_regselector * self, jive::simple_output * output);
 
 const jive_register_class *
 jive_regselector_map_input(const jive_regselector * self, jive::simple_input * input);

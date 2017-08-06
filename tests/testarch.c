@@ -325,7 +325,7 @@ DEFINE_TESTARCH_INSTRUCTION(ret, {}, {}, 0, jive_instruction_flags_none, nullptr
 }}
 
 static jive_xfer_description
-create_xfer(jive::region * region, jive::output * origin,
+create_xfer(jive::region * region, jive::simple_output * origin,
 	const jive_resource_class * in_class, const jive_resource_class * out_class)
 {
 	jive_xfer_description xfer;
@@ -340,7 +340,7 @@ create_xfer(jive::region * region, jive::output * origin,
 			&jive::testarch::instr_move_gpr::instance(),
 			tmparray8, NULL);
 		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
-		xfer.output = dynamic_cast<jive::output*>(xfer.node->output(0));
+		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
 	} else if (in_relaxed == CLS(gpr)) {
 		jive::oport * tmparray9[] = {origin};
 		xfer.node = jive_instruction_node_create(
@@ -348,7 +348,7 @@ create_xfer(jive::region * region, jive::output * origin,
 			&jive::testarch::instr_spill_gpr::instance(),
 			tmparray9, NULL);
 		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
-		xfer.output = dynamic_cast<jive::output*>(xfer.node->add_output(
+		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->add_output(
 			jive_resource_class_get_type(out_class)));
 	} else if (out_relaxed == CLS(gpr)) {
 		xfer.node = jive_instruction_node_create(
@@ -357,7 +357,7 @@ create_xfer(jive::region * region, jive::output * origin,
 			NULL, NULL);
 		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->add_input(
 			jive_resource_class_get_type(in_class), origin));
-		xfer.output = dynamic_cast<jive::output*>(xfer.node->output(0));
+		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
 	} else {
 		JIVE_DEBUG_ASSERT(false);
 	}
@@ -499,12 +499,12 @@ public:
 	value_return(
 		jive_subroutine & subroutine,
 		size_t index,
-		jive::output * value) override
+		jive::simple_output * value) override
 	{
 		subroutine.builder_state->results[index].output = value;
 	}
 	
-	virtual jive::output *
+	virtual jive::simple_output *
 	finalize(
 		jive_subroutine & subroutine) override
 	{
@@ -512,7 +512,7 @@ public:
 			&jive::testarch::instr_ret::instance(), {}, {}, {}, {}, {&jive::ctl::boolean});
 		ret_instr->add_input(subroutine.builder_state->passthroughs[1].gate,
 			subroutine.builder_state->passthroughs[1].output);
-		return dynamic_cast<jive::output*>(ret_instr->output(0));
+		return dynamic_cast<jive::simple_output*>(ret_instr->output(0));
 	}
 };
 

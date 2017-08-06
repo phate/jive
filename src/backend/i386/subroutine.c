@@ -152,12 +152,12 @@ public:
 	value_return(
 		jive_subroutine & subroutine,
 		size_t index,
-		jive::output * value) override
+		jive::simple_output * value) override
 	{
 		subroutine.builder_state->results[index].output = value;
 	}
 	
-	virtual jive::output *
+	virtual jive::simple_output *
 	finalize(
 		jive_subroutine & subroutine) override
 	{
@@ -167,7 +167,7 @@ public:
 		/* add dependency on return address on stack */
 			ret_instr->add_input(subroutine.builder_state->passthroughs[6].gate,
 				subroutine.builder_state->passthroughs[6].output);
-		return dynamic_cast<jive::output*>(ret_instr->output(0));
+		return dynamic_cast<jive::simple_output*>(ret_instr->output(0));
 	}
 };
 
@@ -295,7 +295,7 @@ static jive::simple_input *
 jive_i386_subroutine_add_fp_dependency_(
 	const jive::subroutine_op & op, jive::region * region, jive::node * node)
 {
-	jive::output * frameptr = op.get_passthrough_enter_by_index(region, 1);
+	auto frameptr = op.get_passthrough_enter_by_index(region, 1);
 	
 	size_t n;
 	for (n = 0; n < node->ninputs(); n++) {
@@ -310,7 +310,7 @@ static jive::simple_input *
 jive_i386_subroutine_add_sp_dependency_(
 	const jive::subroutine_op & op, jive::region * region, jive::node * node)
 {
-	jive::output * stackptr = op.get_passthrough_enter_by_index(region, 1);
+	auto stackptr = op.get_passthrough_enter_by_index(region, 1);
 	
 	size_t n;
 	for (n = 0; n < node->ninputs(); n++) {

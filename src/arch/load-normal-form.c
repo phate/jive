@@ -51,14 +51,14 @@ load_normal_form::normalize_node(jive::node * node) const
 {
 	if (get_mutable() && get_reducible()) {
 		const jive::load_op & l_op = static_cast<const jive::load_op &>(node->operation());
-		jive::output * address = dynamic_cast<jive::output*>(node->input(0)->origin());
+		auto address = node->input(0)->origin();
 		jive::node * store_node =
 			(node->ninputs() >= 2 &&
 				is_matching_store_node(l_op, address,
-				dynamic_cast<jive::output*>(node->input(1)->origin())->node())) ?
-			dynamic_cast<jive::output*>(node->input(1)->origin())->node() : nullptr;
+				node->input(1)->origin()->node())) ?
+			node->input(1)->origin()->node() : nullptr;
 		for (size_t n = 2; n < node->ninputs(); ++n) {
-			if (dynamic_cast<jive::output*>(node->input(n)->origin())->node() != store_node) {
+			if (node->input(n)->origin()->node() != store_node) {
 				store_node = nullptr;
 			}
 		}
@@ -80,12 +80,12 @@ load_normal_form::operands_are_normalized(
 	if (get_mutable() && get_reducible()) {
 		const jive::load_op & l_op = static_cast<const jive::load_op &>(op);
 		jive::oport * address = arguments[0];
-		auto arg1 = dynamic_cast<jive::output*>(arguments[1]);
+		auto arg1 = dynamic_cast<jive::simple_output*>(arguments[1]);
 		jive::node * store_node =
 			(arg1 && arguments.size() >= 2 && is_matching_store_node(l_op, address, arg1->node())) ?
 			arg1->node() : nullptr;
 		for (size_t n = 2; n < arguments.size(); ++n) {
-			auto argn = dynamic_cast<jive::output*>(arguments[n]);
+			auto argn = dynamic_cast<jive::simple_output*>(arguments[n]);
 			if (argn && argn->node() != store_node) {
 				store_node = nullptr;
 			}

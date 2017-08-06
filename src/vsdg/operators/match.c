@@ -50,8 +50,7 @@ match_op::result_type(size_t index) const noexcept
 jive_unop_reduction_path_t
 match_op::can_reduce_operand(const jive::oport * arg) const noexcept
 {
-	auto op = dynamic_cast<const jive::output*>(arg);
-	if (op && dynamic_cast<const jive::bits::constant_op*>(&op->node()->operation()))
+	if (arg->node() && dynamic_cast<const jive::bits::constant_op*>(&arg->node()->operation()))
 		return jive_unop_reduction_constant;
 
 	return jive_unop_reduction_none;
@@ -61,8 +60,7 @@ jive::oport *
 match_op::reduce_operand(jive_unop_reduction_path_t path, jive::oport * arg) const
 {
 	if (path == jive_unop_reduction_constant) {
-		auto tmp = static_cast<jive::output*>(arg);
-		auto op = static_cast<const jive::bits::constant_op*>(&tmp->node()->operation());
+		auto op = static_cast<const jive::bits::constant_op*>(&arg->node()->operation());
 		return jive_control_constant(arg->region(), nalternatives(),
 			alternative(op->value().to_uint()));
 	}

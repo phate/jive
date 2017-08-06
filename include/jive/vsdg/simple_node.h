@@ -47,18 +47,18 @@ private:
 
 /* outputs */
 
-class output final : public oport {
+class simple_output final : public oport {
 	friend jive::simple_input;
 
 public:
 	virtual
-	~output() noexcept;
+	~simple_output() noexcept;
 
-	output(jive::node * node, size_t index, const jive::base::type & type);
+	simple_output(jive::node * node, size_t index, const jive::base::type & type);
 
-	output(jive::node * node, size_t index, jive::gate * gate);
+	simple_output(jive::node * node, size_t index, jive::gate * gate);
 
-	output(
+	simple_output(
 		jive::node * node,
 		size_t index,
 		const jive::base::type & type,
@@ -112,7 +112,7 @@ public:
 	virtual size_t
 	noutputs() const noexcept override;
 
-	virtual jive::output *
+	virtual jive::simple_output *
 	output(size_t index) const noexcept override;
 
 	virtual jive::simple_input *
@@ -127,13 +127,13 @@ public:
 	virtual void
 	remove_input(size_t index) override;
 
-	virtual jive::output *
+	virtual jive::simple_output *
 	add_output(const jive::base::type * type) override;
 
-	virtual jive::output *
+	virtual jive::simple_output *
 	add_output(const struct jive_resource_class * rescls) override;
 
-	virtual jive::output *
+	virtual jive::simple_output *
 	add_output(jive::gate * gate) override;
 
 	virtual void
@@ -147,7 +147,7 @@ public:
 
 private:
 	std::vector<std::unique_ptr<jive::simple_input>> inputs_;
-	std::vector<std::unique_ptr<jive::output>> outputs_;
+	std::vector<std::unique_ptr<jive::simple_output>> outputs_;
 };
 
 std::vector<jive::oport*>

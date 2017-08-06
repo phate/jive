@@ -27,18 +27,14 @@ test_reduce_operands(
 			args,
 			[&op](jive::oport * arg1, jive::oport * arg2)
 			{
-				auto op1 = dynamic_cast<jive::output*>(arg1);
-				auto op2 = dynamic_cast<jive::output*>(arg2);
-				return op.can_reduce_operand_pair(op1, op2) != jive_binop_reduction_none;
+				return op.can_reduce_operand_pair(arg1, arg2) != jive_binop_reduction_none;
 			});
 	} else {
 		return base::detail::pairwise_test_reduce(
 			args,
 			[&op](jive::oport * arg1, jive::oport * arg2)
 			{
-				auto op1 = dynamic_cast<jive::output*>(arg1);
-				auto op2 = dynamic_cast<jive::output*>(arg2);
-				return op.can_reduce_operand_pair(op1, op2) != jive_binop_reduction_none;
+				return op.can_reduce_operand_pair(arg1, arg2) != jive_binop_reduction_none;
 			});
 	}
 }
@@ -192,9 +188,8 @@ binary_normal_form::operands_are_normalized(
 		bool can_flatten = base::detail::associative_test_flatten(
 			args,
 			[&op](jive::oport * arg) {
-				auto operand = dynamic_cast<jive::output*>(arg);
-				const base::flattened_binary_op * fb_op;
-				fb_op = dynamic_cast<const base::flattened_binary_op *>(&operand->node()->operation());
+				auto operand = dynamic_cast<jive::simple_output*>(arg);
+				auto fb_op = dynamic_cast<const base::flattened_binary_op*>(&operand->node()->operation());
 				return operand->node()->operation() == op ||
 					(fb_op && fb_op->bin_operation() == op);
 			});

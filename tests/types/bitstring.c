@@ -492,18 +492,14 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitxor", types_bitstrin
 static inline void
 expect_static_true(jive::oport * port)
 {
-	auto output = dynamic_cast<jive::output*>(port);
-	const jive::bits::constant_op * op;
-	op = dynamic_cast<const jive::bits::constant_op*>(&output->node()->operation());
+	auto op = dynamic_cast<const jive::bits::constant_op*>(&port->node()->operation());
 	assert(op && op->value().nbits() == 1 && op->value().str() == "1");
 }
 
 static inline void
 expect_static_false(jive::oport * port)
 {
-	auto output = dynamic_cast<jive::output*>(port);
-	const jive::bits::constant_op * op;
-	op = dynamic_cast<const jive::bits::constant_op*>(&output->node()->operation());
+	auto op = dynamic_cast<const jive::bits::constant_op*>(&port->node()->operation());
 	assert(op && op->value().nbits() == 1 && op->value().str() == "0");
 }
 
@@ -920,10 +916,10 @@ static int types_bitstring_test_constant(void)
 {
 	jive::graph graph;
 
-	auto b1 = dynamic_cast<jive::output*>(jive_bitconstant(graph.root(), 8, "00110011"));
-	auto b2 = dynamic_cast<jive::output*>(jive_bitconstant_unsigned(graph.root(), 8, 204));
-	auto b3 = dynamic_cast<jive::output*>(jive_bitconstant_signed(graph.root(), 8, 204));
-	auto b4 = dynamic_cast<jive::output*>(jive_bitconstant(graph.root(), 9, "001100110"));
+	auto b1 = jive_bitconstant(graph.root(), 8, "00110011");
+	auto b2 = jive_bitconstant_unsigned(graph.root(), 8, 204);
+	auto b3 = jive_bitconstant_signed(graph.root(), 8, 204);
+	auto b4 = jive_bitconstant(graph.root(), 9, "001100110");
 	
 	assert(b1->node()->operation() == jive::bits::uint_constant_op(8, 204));
 	assert(b1->node()->operation() == jive::bits::int_constant_op(8, -52));
@@ -937,13 +933,11 @@ static int types_bitstring_test_constant(void)
 	assert(b4->node()->operation() == jive::bits::uint_constant_op(9, 204));
 	assert(b4->node()->operation() == jive::bits::int_constant_op(9, 204));
 
-	auto plus_one_128 = dynamic_cast<jive::output*>(
-		jive_bitconstant(graph.root(), 128, ONE_64 ZERO_64));
+	auto plus_one_128 = jive_bitconstant(graph.root(), 128, ONE_64 ZERO_64);
 	assert(plus_one_128->node()->operation() == jive::bits::uint_constant_op(128, 1));
 	assert(plus_one_128->node()->operation() == jive::bits::int_constant_op(128, 1));
 
-	auto minus_one_128 = dynamic_cast<jive::output*>(
-		jive_bitconstant(graph.root(), 128, MONE_64 MONE_64));
+	auto minus_one_128 = jive_bitconstant(graph.root(), 128, MONE_64 MONE_64);
 	assert(minus_one_128->node()->operation() == jive::bits::int_constant_op(128, -1));
 
 	jive::view(graph.root(), stdout);
@@ -1002,9 +996,7 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/test-normalize", types_bitstring_test_n
 static void
 assert_constant(jive::oport * bitstr, size_t nbits, const char bits[])
 {
-	auto tmp = dynamic_cast<jive::output*>(bitstr);
-	auto op = dynamic_cast<const jive::bits::constant_op &>(tmp->node()->operation());
-	
+	auto op = dynamic_cast<const jive::bits::constant_op &>(bitstr->node()->operation());
 	assert(op.value() == jive::bits::value_repr(std::string(bits, nbits).c_str()));
 }
 
@@ -1032,24 +1024,24 @@ static int types_bitstring_test_reduction(void)
 	{
 		auto concat = jive_bitconcat({x, y});
 		auto slice = jive_bitslice(concat, 8, 24);
-		jive::node * node = dynamic_cast<jive::output*>(slice)->node();
+		auto node = slice->node();
 		assert(dynamic_cast<const jive::bits::concat_op *>(&node->operation()));
 		assert(node->ninputs() == 2);
 		assert(dynamic_cast<const jive::bits::slice_op *>(
-			&dynamic_cast<jive::output*>(node->input(0)->origin())->node()->operation()));
+			&node->input(0)->origin()->node()->operation()));
 		assert(dynamic_cast<const jive::bits::slice_op *>(
-			&dynamic_cast<jive::output*>(node->input(1)->origin())->node()->operation()));
+			&node->input(1)->origin()->node()->operation()));
 		
 		const jive::bits::slice_op * attrs;
 		attrs = dynamic_cast<const jive::bits::slice_op*>(
-			&dynamic_cast<jive::output*>(node->input(0)->origin())->node()->operation());
+			&node->input(0)->origin()->node()->operation());
 		assert( (attrs->low() == 8) && (attrs->high() == 16) );
 		attrs = dynamic_cast<const jive::bits::slice_op*>(
-			&dynamic_cast<jive::output*>(node->input(1)->origin())->node()->operation());
+			&node->input(1)->origin()->node()->operation());
 		assert( (attrs->low() == 0) && (attrs->high() == 8) );
 		
-		assert(dynamic_cast<jive::output*>(node->input(0)->origin())->node()->input(0)->origin() == x);
-		assert(dynamic_cast<jive::output*>(node->input(1)->origin())->node()->input(0)->origin() == y);
+		assert(node->input(0)->origin()->node()->input(0)->origin() == x);
+		assert(node->input(1)->origin()->node()->input(0)->origin() == y);
 	}
 	
 	{
@@ -1077,7 +1069,7 @@ static int types_bitstring_test_slice_concat(void)
 	
 	{
 		/* slice of constant */
-		auto a = dynamic_cast<jive::output*>(jive_bitslice(base_const1, 2, 6));
+		auto a = jive_bitslice(base_const1, 2, 6);
 		
 		const jive::bits::constant_op & op =
 			dynamic_cast<const jive::bits::constant_op &>(a->node()->operation());
@@ -1087,7 +1079,7 @@ static int types_bitstring_test_slice_concat(void)
 	{
 		/* slice of slice */
 		auto a = jive_bitslice(base_x, 2, 6);
-		auto b = dynamic_cast<jive::output*>(jive_bitslice(a, 1, 3));
+		auto b = jive_bitslice(a, 1, 3);
 
 		assert(dynamic_cast<const jive::bits::slice_op *>(&b->node()->operation()));
 		const jive::bits::slice_op * attrs;
@@ -1115,7 +1107,7 @@ static int types_bitstring_test_slice_concat(void)
 	{
 		/* concat flattening */
 		auto a = jive_bitconcat({base_x, base_y});
-		auto b = dynamic_cast<jive::output*>(jive_bitconcat({a, base_z}));
+		auto b = jive_bitconcat({a, base_z});
 		
 		assert(dynamic_cast<const jive::bits::concat_op *>(&b->node()->operation()));
 		assert(b->node()->ninputs() == 3);
@@ -1142,7 +1134,7 @@ static int types_bitstring_test_slice_concat(void)
 	
 	{
 		/* concat of constants */
-		auto a = dynamic_cast<jive::output*>(jive_bitconcat({base_const1, base_const2}));
+		auto a = jive_bitconcat({base_const1, base_const2});
 		
 		const jive::bits::constant_op & op =
 			dynamic_cast<const jive::bits::constant_op &>(a->node()->operation());

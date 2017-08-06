@@ -47,8 +47,7 @@ jive_binop_reduction_path_t
 unary_op::can_reduce_operand(
 	const jive::oport * arg) const noexcept
 {
-	auto op = dynamic_cast<const jive::output*>(arg);
-	if (op && dynamic_cast<const bits::constant_op*>(&op->node()->operation()))
+	if (arg->node() && dynamic_cast<const bits::constant_op*>(&arg->node()->operation()))
 		return jive_unop_reduction_constant;
 
 	return jive_unop_reduction_none;
@@ -60,10 +59,9 @@ unary_op::reduce_operand(
 	jive::oport * arg) const
 {
 	if (path == jive_unop_reduction_constant) {
-		auto op = dynamic_cast<jive::output*>(arg);
-		const auto c = static_cast<const bits::constant_op&>(op->node()->operation());
+		const auto c = static_cast<const bits::constant_op&>(arg->node()->operation());
 		value_repr result = reduce_constant(c.value());
-		return jive_bitconstant(op->node()->region(), result.nbits(), &result[0]);
+		return jive_bitconstant(arg->node()->region(), result.nbits(), &result[0]);
 	}
 
 	return nullptr;
@@ -101,11 +99,9 @@ binary_op::can_reduce_operand_pair(
 	const jive::oport * arg1,
 	const jive::oport * arg2) const noexcept
 {
-	auto op1 = dynamic_cast<const jive::output*>(arg1);
-	auto op2 = dynamic_cast<const jive::output*>(arg2);
-	if (op1 && op2
-			&& dynamic_cast<const bits::constant_op*>(&op1->node()->operation())
-			&& dynamic_cast<const bits::constant_op*>(&op2->node()->operation()))
+	if (arg1->node() && arg2->node()
+			&& dynamic_cast<const bits::constant_op*>(&arg1->node()->operation())
+			&& dynamic_cast<const bits::constant_op*>(&arg2->node()->operation()))
 	{
 		return jive_binop_reduction_constants;
 	}
@@ -120,10 +116,8 @@ binary_op::reduce_operand_pair(
 	jive::oport * arg2) const
 {
 	if (path == jive_binop_reduction_constants) {
-		auto op1 = dynamic_cast<jive::output*>(arg1);
-		auto op2 = dynamic_cast<jive::output*>(arg2);
-		const auto c1 = static_cast<const bits::constant_op&>(op1->node()->operation());
-		const auto c2 = static_cast<const bits::constant_op&>(op2->node()->operation());
+		const auto c1 = static_cast<const bits::constant_op&>(arg1->node()->operation());
+		const auto c2 = static_cast<const bits::constant_op&>(arg2->node()->operation());
 		value_repr result = reduce_constants(c1.value(), c2.value());
 		return jive_bitconstant(arg1->region(), result.nbits(), &result[0]);
 	}

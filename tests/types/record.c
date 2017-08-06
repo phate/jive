@@ -35,8 +35,8 @@ static int _test_rcdgroup(void)
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&bits8, &bits16, &bits32});
 	jive::oport * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
 
-	auto g0 = dynamic_cast<jive::output*>(jive_group_create(decl, 3, tmparray1));
-	auto g1 = dynamic_cast<jive::output*>(jive_empty_group_create(&graph, decl_empty));
+	auto g0 = jive_group_create(decl, 3, tmparray1);
+	auto g1 = jive_empty_group_create(&graph, decl_empty);
 
 	auto bottom = jive::test::simple_node_create(graph.root(), {&rcdtype, &rcdtype_empty}, {g0, g1},
 		{&bits8});

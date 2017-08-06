@@ -57,7 +57,7 @@ jive_unop_reduction_path_t
 memberof_op::can_reduce_operand(
 	const jive::oport * arg) const noexcept
 {
-	auto tmp = dynamic_cast<const jive::output*>(arg);
+	auto tmp = dynamic_cast<const jive::simple_output*>(arg);
 	if (!tmp)
 		return jive_unop_reduction_none;
 
@@ -77,9 +77,8 @@ memberof_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::oport * arg) const
 {
-	auto op = static_cast<jive::output*>(arg);
 	if (path == jive_unop_reduction_inverse)
-		return dynamic_cast<jive::output*>(op->node()->input(0)->origin());
+		return arg->node()->input(0)->origin();
 	
 	return nullptr;
 }
@@ -142,7 +141,7 @@ jive_unop_reduction_path_t
 containerof_op::can_reduce_operand(
 	const jive::oport * arg) const noexcept
 {
-	auto tmp = dynamic_cast<const jive::output*>(arg);
+	auto tmp = dynamic_cast<const jive::simple_output*>(arg);
 	if (!tmp)
 		return jive_unop_reduction_none;
 
@@ -161,9 +160,8 @@ containerof_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::oport * arg) const
 {
-	auto op = static_cast<const jive::output*>(arg);
 	if (path == jive_unop_reduction_inverse)
-		return dynamic_cast<jive::output*>(op->node()->input(0)->origin());
+		return arg->node()->input(0)->origin();
 
 	return nullptr;
 }

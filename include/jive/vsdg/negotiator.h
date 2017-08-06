@@ -499,7 +499,7 @@ jive_negotiator_remove_split_nodes(jive_negotiator * self);
 jive_negotiator_constraint *
 jive_negotiator_annotate_identity(jive_negotiator * self,
 	size_t ninputs, jive::simple_input * const inputs[],
-	size_t noutputs, jive::output * const outputs[],
+	size_t noutputs, jive::simple_output * const outputs[],
 	const jive_negotiator_option * option);
 
 jive_negotiator_constraint *
@@ -512,10 +512,10 @@ void
 jive_negotiator_fully_specialize(jive_negotiator * self);
 
 const jive_negotiator_port *
-jive_negotiator_map_output(const jive_negotiator * self, jive::output * output);
+jive_negotiator_map_output(const jive_negotiator * self, jive::simple_output * output);
 
 jive_negotiator_port *
-jive_negotiator_map_output(jive_negotiator * self, jive::output * output);
+jive_negotiator_map_output(jive_negotiator * self, jive::simple_output * output);
 
 const jive_negotiator_port *
 jive_negotiator_map_input(const jive_negotiator * self, jive::simple_input * input);
@@ -532,7 +532,7 @@ jive_negotiator_annotate_simple_input(jive_negotiator * self, jive::simple_input
 	const jive_negotiator_option * option);
 
 jive_negotiator_port *
-jive_negotiator_annotate_simple_output(jive_negotiator * self, jive::output * output,
+jive_negotiator_annotate_simple_output(jive_negotiator * self, jive::simple_output * output,
 	const jive_negotiator_option * option);
 
 #endif

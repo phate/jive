@@ -36,9 +36,9 @@ static int test_unnchoose(void)
 	auto u0 = jive_unify_create(&decl, 0, top->output(0));
 	auto load = jive_load_by_address_create(top->output(3), &unntype, 0, NULL);
 
-	auto c0 = dynamic_cast<jive::output*>(jive_choose_create(1, top->output(1)));
+	auto c0 = jive_choose_create(1, top->output(1));
 	auto c1 = jive_choose_create(0, u0);
-	auto c2 = dynamic_cast<jive::output*>(jive_choose_create(1, top->output(2)));
+	auto c2 = jive_choose_create(1, top->output(2));
 	auto c3 = jive_choose_create(0, load);
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
@@ -50,10 +50,9 @@ static int test_unnchoose(void)
 
 	jive::view(graph.root(), stderr);
 
-	assert(dynamic_cast<jive::output*>(bottom->input(1)->origin())->node() == top);
+	assert(bottom->input(1)->origin()->node() == top);
 	assert(c0->node()->operation() == c2->node()->operation());
-	assert(dynamic_cast<const jive::load_op *>(
-		&dynamic_cast<jive::output*>(bottom->input(3)->origin())->node()->operation()));
+	assert(dynamic_cast<const jive::load_op *>(&bottom->input(3)->origin()->node()->operation()));
 
 	return 0;
 }
@@ -77,8 +76,8 @@ static int test_unnunify(void)
 	
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&bits8});
 
-	auto u0 = dynamic_cast<jive::output*>(jive_unify_create(&decl, 0, top->output(0)));
-	auto u1 = dynamic_cast<jive::output*>(jive_empty_unify_create(graph.root(), &decl_empty));
+	auto u0 = jive_unify_create(&decl, 0, top->output(0));
+	auto u1 = jive_empty_unify_create(graph.root(), &decl_empty);
 
 	auto bottom = jive::test::simple_node_create(graph.root(), {&unntype, &unntype_empty}, {u0, u1},
 		{&bits8});

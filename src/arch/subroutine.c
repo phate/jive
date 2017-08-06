@@ -82,7 +82,7 @@ jive_region_get_instructionset(const jive::region * region)
 	}
 }
 
-jive::output *
+jive::simple_output *
 jive_subroutine_node_get_sp(const jive::node * self)
 {
 	jive::region * region = self->input(0)->origin()->region();
@@ -90,7 +90,7 @@ jive_subroutine_node_get_sp(const jive::node * self)
 		.get_passthrough_enter_by_index(region, 1);
 }
 
-jive::output *
+jive::simple_output *
 jive_subroutine_node_get_fp(const jive::node * self)
 {
 	jive::region * region = self->input(0)->origin()->region();
@@ -173,7 +173,7 @@ void
 jive_subroutine_simple_set_result(
 	jive_subroutine & self,
 	size_t index,
-	jive::output * value)
+	jive::simple_output * value)
 {
 	self.hl_builder->value_return(self, index, value);
 }
@@ -185,7 +185,7 @@ jive_subroutine_simple_get_global_state(const jive_subroutine & self)
 }
 
 void
-jive_subroutine_simple_set_global_state(jive_subroutine & self, jive::output * state)
+jive_subroutine_simple_set_global_state(jive_subroutine & self, jive::simple_output * state)
 {
 	self.builder_state->passthroughs[0].output = state;
 }

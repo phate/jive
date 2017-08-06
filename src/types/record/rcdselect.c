@@ -70,13 +70,11 @@ select_operation::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::oport * arg) const
 {
-	auto op = static_cast<jive::output*>(arg);
-
 	if (path == jive_unop_reduction_inverse)
-		return op->node()->input(element())->origin();
+		return arg->node()->input(element())->origin();
 
 	if (path == jive_select_reduction_load) {
-		auto address = op->node()->input(0)->origin();
+		auto address = arg->node()->input(0)->origin();
 
 		size_t nbits = 0;
 		if (dynamic_cast<const jive::bits::type*>(&address->type())) {
@@ -85,12 +83,12 @@ select_operation::reduce_operand(
 		}
 		
 		std::shared_ptr<const jive::rcd::declaration> decl;
-		decl = static_cast<const jive::rcd::type*>(&op->node()->output(0)->type())->declaration();
+		decl = static_cast<const jive::rcd::type*>(&arg->node()->output(0)->type())->declaration();
 
-		size_t nstates = op->node()->ninputs()-1;
+		size_t nstates = arg->node()->ninputs()-1;
 		jive::oport * states[nstates];
 		for (size_t n = 0; n < nstates; n++) {
-			states[n] = op->node()->input(n+1)->origin();
+			states[n] = arg->node()->input(n+1)->origin();
 		}
 
 		auto element_address = jive_memberof(address, decl, element());
