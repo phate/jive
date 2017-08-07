@@ -39,7 +39,7 @@ is_matching_store_op(const jive::load_op & l_op, const jive::operation & op)
 }
 
 static bool is_matching_store_node(
-	const jive::load_op & l_op, const jive::oport * address,
+	const jive::load_op & l_op, const jive::output * address,
 	const jive::node * node) {
 	return
 		is_matching_store_op(l_op, node->operation()) &&
@@ -75,11 +75,11 @@ load_normal_form::normalize_node(jive::node * node) const
 bool
 load_normal_form::operands_are_normalized(
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments) const
+	const std::vector<jive::output*> & arguments) const
 {
 	if (get_mutable() && get_reducible()) {
 		const jive::load_op & l_op = static_cast<const jive::load_op &>(op);
-		jive::oport * address = arguments[0];
+		auto address = arguments[0];
 		auto arg1 = dynamic_cast<jive::simple_output*>(arguments[1]);
 		jive::node * store_node =
 			(arg1 && arguments.size() >= 2 && is_matching_store_node(l_op, address, arg1->node())) ?
@@ -98,15 +98,15 @@ load_normal_form::operands_are_normalized(
 	return simple_normal_form::operands_are_normalized(op, arguments);
 }
 
-std::vector<jive::oport*>
+std::vector<jive::output*>
 load_normal_form::normalized_create(
 	jive::region * region,
 	const jive::operation & op,
-	const std::vector<jive::oport*> & args) const
+	const std::vector<jive::output*> & args) const
 {
 	if (get_mutable() && get_reducible()) {
 		const jive::load_op & l_op = static_cast<const jive::load_op &>(op);
-		jive::oport * addr = args[0];
+		auto addr = args[0];
 		jive::node * store_node = nullptr;
 		if (args.size() >= 2 && args[1]->node() && is_matching_store_node(l_op, addr, args[1]->node()))
 			store_node = args[1]->node();

@@ -20,8 +20,8 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
 
-jive::oport *
-jive_bitconcat(const std::vector<jive::oport*> & operands)
+jive::output *
+jive_bitconcat(const std::vector<jive::output*> & operands)
 {
 	std::vector<jive::bits::type> types;
 	for (const auto operand : operands)
@@ -39,7 +39,7 @@ namespace bits {
 namespace {
 
 bool
-concat_test_reduce_arg_pair(const jive::oport * arg1, const jive::oport * arg2)
+concat_test_reduce_arg_pair(const jive::output * arg1, const jive::output * arg2)
 {
 	if (!arg1->node() || !arg2->node())
 		return false;
@@ -60,8 +60,8 @@ concat_test_reduce_arg_pair(const jive::oport * arg1, const jive::oport * arg2)
 	return false;
 }
 
-jive::oport *
-concat_reduce_arg_pair(jive::oport * arg1, jive::oport * arg2)
+jive::output *
+concat_reduce_arg_pair(jive::output * arg1, jive::output * arg2)
 {
 	if (!arg1->node() || !arg2->node())
 		return nullptr;
@@ -92,7 +92,7 @@ concat_reduce_arg_pair(jive::oport * arg1, jive::oport * arg2)
 }
 
 std::vector<jive::bits::type>
-types_from_arguments(const std::vector<jive::oport*> & args)
+types_from_arguments(const std::vector<jive::output*> & args)
 {
 	std::vector<type> types;
 	for (const auto arg : args) {
@@ -124,14 +124,14 @@ public:
 			return true;
 		}
 
-		std::vector<jive::oport*> args = jive_node_arguments(node);
-		std::vector<jive::oport*> new_args;
+		std::vector<jive::output*> args = jive_node_arguments(node);
+		std::vector<jive::output*> new_args;
 
 		/* possibly expand associative */
 		if (get_flatten()) {
 			new_args = base::detail::associative_flatten(
 				args,
-				[](jive::oport * arg) {
+				[](jive::output * arg) {
 					// FIXME: switch to comparing operator, not just typeid, after
 					// converting "concat" to not be a binary operator anymore
 					return arg->node() && typeid(arg->node()->operation()) == typeid(concat_op);
@@ -180,7 +180,7 @@ public:
 	virtual bool
 	operands_are_normalized(
 		const jive::operation & op,
-		const std::vector<jive::oport*> & arguments) const override
+		const std::vector<jive::output*> & arguments) const override
 	{
 		if (!get_mutable()) {
 			return true;
@@ -190,7 +190,7 @@ public:
 		if (get_flatten()) {
 			bool can_flatten = base::detail::associative_test_flatten(
 				arguments,
-				[](jive::oport * arg) {
+				[](jive::output * arg) {
 					return arg->node() && typeid(arg->node()->operation()) == typeid(concat_op);
 				});
 			if (can_flatten) {
@@ -210,19 +210,19 @@ public:
 		return simple_normal_form::operands_are_normalized(op, arguments);
 	}
 
-	virtual std::vector<jive::oport*>
+	virtual std::vector<jive::output*>
 	normalized_create(
 		jive::region * region,
 		const jive::operation & op,
-		const std::vector<jive::oport*> & arguments) const override
+		const std::vector<jive::output*> & arguments) const override
 	{
-		std::vector<jive::oport*> new_args;
+		std::vector<jive::output*> new_args;
 
 		/* possibly expand associative */
 		if (get_mutable() && get_flatten()) {
 			new_args = base::detail::associative_flatten(
 				arguments,
-				[](jive::oport * arg) {
+				[](jive::output * arg) {
 					// FIXME: switch to comparing operator, not just typeid, after
 					// converting "concat" to not be a binary operator anymore
 					return arg->node() && typeid(arg->node()->operation()) == typeid(concat_op);
@@ -346,8 +346,8 @@ concat_op::result_type(size_t index) const noexcept
 }
 jive_binop_reduction_path_t
 concat_op::can_reduce_operand_pair(
-	const jive::oport * arg1,
-	const jive::oport * arg2) const noexcept
+	const jive::output * arg1,
+	const jive::output * arg2) const noexcept
 {
 	if (!arg1->node() || !arg2->node())
 		return jive_binop_reduction_none;
@@ -363,8 +363,8 @@ concat_op::can_reduce_operand_pair(
 	auto arg2_slice = dynamic_cast<const slice_op*>(&arg2->node()->operation());
 
 	if (arg1_slice && arg2_slice){
-		jive::oport * origin1 = arg1->node()->input(0)->origin();
-		jive::oport * origin2 = arg2->node()->input(0)->origin();
+		auto origin1 = arg1->node()->input(0)->origin();
+		auto origin2 = arg2->node()->input(0)->origin();
 
 		if (origin1 == origin2 && arg1_slice->high() == arg2_slice->low()) {
 			return jive_binop_reduction_merge;
@@ -376,11 +376,11 @@ concat_op::can_reduce_operand_pair(
 	return jive_binop_reduction_none;
 }
 
-jive::oport *
+jive::output *
 concat_op::reduce_operand_pair(
 	jive_binop_reduction_path_t path,
-	jive::oport * arg1,
-	jive::oport * arg2) const
+	jive::output * arg1,
+	jive::output * arg2) const
 {
 	if (path == jive_binop_reduction_constants) {
 		auto arg1_constant = static_cast<const constant_op &>(arg1->node()->operation());

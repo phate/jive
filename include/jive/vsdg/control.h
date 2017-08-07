@@ -38,13 +38,13 @@ typedef base::domain_const_op<
 	type, value_repr, format_value, type_of_value
 > constant_op;
 
-jive::oport *
+jive::output *
 match(
 	size_t nbits,
 	const std::map<uint64_t, uint64_t> & mapping,
 	uint64_t default_alternative,
 	size_t nalternatives,
-	jive::oport * operand);
+	jive::output * operand);
 
 }
 
@@ -57,16 +57,16 @@ extern template class domain_const_op<
 
 }
 
-jive::oport *
+jive::output *
 jive_control_constant(jive::region * region, size_t nalternatives, size_t alternative);
 
-static inline jive::oport *
+static inline jive::output *
 jive_control_false(jive::region * region)
 {
 	return jive_control_constant(region, 2, 0);
 }
 
-static inline jive::oport *
+static inline jive::output *
 jive_control_true(jive::region * region)
 {
 	return jive_control_constant(region, 2, 1);

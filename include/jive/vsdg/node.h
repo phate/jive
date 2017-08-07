@@ -29,7 +29,6 @@ namespace base {
 class gate;
 class graph;
 class node_normal_form;
-class oport;
 class output;
 class substitution_map;
 
@@ -42,19 +41,19 @@ public:
 
 	input(
 		size_t index,
-		jive::oport * origin,
+		jive::output * origin,
 		jive::region * region,
 		const jive::base::type & type);
 
 	input(
 		size_t index,
-		jive::oport * origin,
+		jive::output * origin,
 		jive::region * region,
 		jive::gate * gate);
 
 	input(
 		size_t index,
-		jive::oport * origin,
+		jive::output * origin,
 		jive::region * region,
 		const struct jive_resource_class * rescls);
 
@@ -74,7 +73,7 @@ public:
 		return index_;
 	}
 
-	jive::oport *
+	jive::output *
 	origin() const noexcept
 	{
 		return origin_;
@@ -93,7 +92,7 @@ public:
 	}
 
 	void
-	divert_origin(jive::oport * new_origin);
+	divert_origin(jive::output * new_origin);
 
 	inline const jive::base::type &
 	type() const noexcept
@@ -128,38 +127,38 @@ protected:
 private:
 	size_t index_;
 	jive::gate * gate_;
-	jive::oport * origin_;
+	jive::output * origin_;
 	jive::region * region_;
 	std::unique_ptr<jive::base::type> type_;
 	const struct jive_resource_class * rescls_;
 };
 
-/* oports */
+/* outputs */
 
-class oport {
+class output {
 	friend input;
 
 	typedef std::unordered_set<jive::input*>::const_iterator user_iterator;
 
 public:
 	virtual
-	~oport() noexcept;
+	~output() noexcept;
 
-	oport(size_t index);
+	output(size_t index);
 
-	oport(size_t index, jive::gate * gate);
+	output(size_t index, jive::gate * gate);
 
-	oport(size_t index, const struct jive_resource_class * rescls);
+	output(size_t index, const struct jive_resource_class * rescls);
 
-	oport(const oport &) = delete;
+	output(const output &) = delete;
 
-	oport(const oport &&) = delete;
+	output(const output &&) = delete;
 
-	oport &
-	operator=(const oport &) = delete;
+	output &
+	operator=(const output &) = delete;
 
-	oport &
-	operator=(const oport &&) = delete;
+	output &
+	operator=(const output &&) = delete;
 
 	inline size_t
 	index() const noexcept
@@ -174,7 +173,7 @@ public:
 	}
 
 	inline void
-	replace(jive::oport * new_origin)
+	replace(jive::output * new_origin)
 	{
 		while (users_.size())
 			(*users_.begin())->divert_origin(new_origin);
@@ -217,9 +216,9 @@ public:
 	debug_string() const;
 
 	struct {
-		jive::oport * prev;
-		jive::oport * next;
-	} gate_oport_list;
+		jive::output * prev;
+		jive::output * next;
+	} gate_output_list;
 
 protected:
 	inline void
@@ -304,9 +303,9 @@ public:
 	} inputs;
 
 	struct {
-		jive::oport * first;
-		jive::oport * last;
-	}	oports;
+		jive::output * first;
+		jive::output * last;
+	}	outputs;
 
 	bool may_spill;
 	jive_gate_interference_hash interference;
@@ -363,24 +362,24 @@ public:
 	}
 
 	virtual jive::input *
-	add_input(const jive::base::type * type, jive::oport * origin) = 0;
+	add_input(const jive::base::type * type, jive::output * origin) = 0;
 
 	virtual jive::input *
-	add_input(jive::gate * gate, jive::oport * origin) = 0;
+	add_input(jive::gate * gate, jive::output * origin) = 0;
 
 	virtual jive::input *
-	add_input(const struct jive_resource_class * rescls, jive::oport * origin) = 0;
+	add_input(const struct jive_resource_class * rescls, jive::output * origin) = 0;
 
 	virtual void
 	remove_input(size_t index) = 0;
 
-	virtual jive::oport *
+	virtual jive::output *
 	add_output(const jive::base::type * type) = 0;
 
-	virtual jive::oport *
+	virtual jive::output *
 	add_output(const struct jive_resource_class * rescls) = 0;
 
-	virtual jive::oport *
+	virtual jive::output *
 	add_output(jive::gate * gate) = 0;
 
 	virtual void
@@ -405,7 +404,7 @@ public:
 	noutputs() const noexcept = 0;
 
 	virtual jive::node *
-	copy(jive::region * region, const std::vector<jive::oport*> & operands) const = 0;
+	copy(jive::region * region, const std::vector<jive::output*> & operands) const = 0;
 
 	/**
 		\brief Copy a node with substitutions
@@ -430,7 +429,7 @@ public:
 	virtual jive::input *
 	input(size_t index) const noexcept = 0;
 
-	virtual jive::oport *
+	virtual jive::output *
 	output(size_t index) const noexcept = 0;
 
 	inline size_t
@@ -508,7 +507,7 @@ jive_node_get_gate_input(const jive::node * self, const char * name)
 	return nullptr;
 }
 
-static inline jive::oport *
+static inline jive::output *
 jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
@@ -519,11 +518,11 @@ jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 	return nullptr;
 }
 
-static inline jive::oport *
+static inline jive::output *
 jive_node_get_gate_output(const jive::node * self, const char * name)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
-		jive::oport * o = self->output(n);
+		auto o = self->output(n);
 		if (o->gate() && o->gate()->name() == name)
 			return o;
 	}
@@ -540,10 +539,10 @@ jive_node_get_use_count_output(
 	const jive::node * self,
 	struct jive_resource_class_count * use_count);
 
-static inline std::vector<jive::oport*>
+static inline std::vector<jive::output*>
 jive_node_arguments(const jive::node * self)
 {
-	std::vector<jive::oport*> arguments;
+	std::vector<jive::output*> arguments;
 	for (size_t n = 0; n < self->noperands(); ++n) {
 		arguments.push_back(self->input(n)->origin());
 	}
@@ -554,7 +553,7 @@ jive::node *
 jive_node_cse(
 	jive::region * region,
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments);
+	const std::vector<jive::output*> & arguments);
 
 /* normal forms */
 

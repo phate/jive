@@ -40,7 +40,7 @@ static int test_main()
 
 	lb.begin(pb.region(), f1type);
 	auto dep = lb.add_dependency(rv3->value());
-	jive::oport * arg[1] = {lb.region()->argument(0)};
+	jive::output * arg[1] = {lb.region()->argument(0)};
 	auto ret = jive_apply_create(dep, 1, arg)[0];
 	auto lambda2 = lb.end({ret})->output(0);
 

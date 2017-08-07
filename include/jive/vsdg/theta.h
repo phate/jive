@@ -32,25 +32,25 @@ class loopvar final {
 
 private:
 	inline constexpr
-	loopvar(jive::oport * value)
+	loopvar(jive::output * value)
 	: value_(value)
 	{}
 
 public:
 	inline void
-	set_value(jive::oport * value)
+	set_value(jive::output * value)
 	{
 		value_ = value;
 	}
 
-	inline jive::oport *
+	inline jive::output *
 	value() const noexcept
 	{
 		return value_;
 	}
 
 private:
-	jive::oport * value_;
+	jive::output * value_;
 };
 
 class theta_builder final {
@@ -77,7 +77,7 @@ public:
 	}
 
 	inline std::shared_ptr<jive::loopvar>
-	add_loopvar(jive::oport * origin)
+	add_loopvar(jive::output * origin)
 	{
 		if (!node_)
 			return nullptr;
@@ -89,7 +89,7 @@ public:
 	}
 
 	inline jive::structural_node *
-	end(jive::oport * predicate)
+	end(jive::output * predicate)
 	{
 		if (!node_)
 			return nullptr;

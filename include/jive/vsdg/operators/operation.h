@@ -21,7 +21,7 @@ class type;
 
 class node;
 class node_normal_form;
-class oport;
+class output;
 class region;
 
 class operation {

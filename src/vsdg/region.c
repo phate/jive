@@ -22,7 +22,7 @@ namespace jive {
 
 argument::~argument() noexcept
 {
-	region()->graph()->on_oport_destroy(this);
+	region()->graph()->on_output_destroy(this);
 
 	if (input())
 		JIVE_LIST_REMOVE(input()->arguments, this, input_argument_list);
@@ -45,7 +45,7 @@ argument::argument(
 	size_t index,
 	jive::structural_input * input,
 	const jive::base::type & type)
-	: oport(index)
+	: output(index)
 	, region_(region)
 	, input_(input)
 	, type_(type.copy())
@@ -60,7 +60,7 @@ argument::argument(
 	size_t index,
 	jive::structural_input * input,
 	jive::gate * gate)
-	: oport(index, gate)
+	: output(index, gate)
 	, region_(region)
 	, input_(input)
 	, type_(gate->type().copy())
@@ -119,7 +119,7 @@ result::~result() noexcept
 result::result(
 	jive::region * region,
 	size_t index,
-	jive::oport * origin,
+	jive::output * origin,
 	jive::structural_output * output,
 	const jive::base::type & type)
 	: input(index, origin, region, type)
@@ -134,7 +134,7 @@ result::result(
 result::result(
 	jive::region * region,
 	size_t index,
-	jive::oport * origin,
+	jive::output * origin,
 	jive::structural_output * output,
 	jive::gate * gate)
 	: input(index, origin, region, gate)
@@ -200,7 +200,7 @@ region::add_argument(jive::structural_input * input, const jive::base::type & ty
 	jive::argument * argument = new jive::argument(this, narguments(), input, type);
 	arguments_.push_back(argument);
 
-	graph()->on_oport_create(argument);
+	graph()->on_output_create(argument);
 
 	return argument;
 }
@@ -211,7 +211,7 @@ region::add_argument(jive::structural_input * input, jive::gate * gate)
 	jive::argument * argument = new jive::argument(this, narguments(), input, gate);
 	arguments_.push_back(argument);
 
-	graph()->on_oport_create(argument);
+	graph()->on_output_create(argument);
 
 	return argument;
 }
@@ -231,7 +231,7 @@ region::remove_argument(size_t index)
 }
 
 jive::result *
-region::add_result(jive::oport * origin, structural_output * output, const base::type & type)
+region::add_result(jive::output * origin, structural_output * output, const base::type & type)
 {
 	jive::result * result = new jive::result(this, nresults(), origin, output, type);
 	results_.push_back(result);
@@ -245,7 +245,7 @@ region::add_result(jive::oport * origin, structural_output * output, const base:
 }
 
 jive::result *
-region::add_result(jive::oport * origin, structural_output * output, jive::gate * gate)
+region::add_result(jive::output * origin, structural_output * output, jive::gate * gate)
 {
 	jive::result * result = new jive::result(this, nresults(), origin, output, gate);
 	results_.push_back(result);
@@ -273,7 +273,7 @@ region::remove_result(size_t index)
 }
 
 jive::simple_node *
-region::add_simple_node(const jive::operation & op, const std::vector<jive::oport*> & operands)
+region::add_simple_node(const jive::operation & op, const std::vector<jive::output*> & operands)
 {
 	return new jive::simple_node(op, this, operands);
 }

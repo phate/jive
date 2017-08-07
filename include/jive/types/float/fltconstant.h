@@ -45,10 +45,10 @@ extern template class domain_const_op<
 }
 }
 
-jive::oport *
+jive::output *
 jive_fltconstant(jive::region * region, jive::flt::value_repr value);
 
-static inline jive::oport *
+static inline jive::output *
 jive_fltconstant_float(jive::region * region, float value)
 {
 	return jive_fltconstant(region, value);

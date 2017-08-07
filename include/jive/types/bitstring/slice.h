@@ -44,12 +44,12 @@ public:
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::oport * arg) const noexcept override;
+		const jive::output * arg) const noexcept override;
 
-	virtual jive::oport *
+	virtual jive::output *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::oport * arg) const override;
+		jive::output * arg) const override;
 
 	inline size_t
 	low() const noexcept { return low_; }
@@ -85,7 +85,7 @@ private:
 	Convenience function that either creates a new slice or
 	returns the output handle of an existing slice.
 */
-jive::oport *
-jive_bitslice(jive::oport * operand, size_t low, size_t high);
+jive::output *
+jive_bitslice(jive::output * operand, size_t low, size_t high);
 
 #endif

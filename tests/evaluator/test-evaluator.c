@@ -17,7 +17,7 @@
 #include <jive/vsdg/phi.h>
 #include <jive/vsdg/theta.h>
 
-static jive::oport *
+static jive::output *
 setup_fib_iter(jive::graph * graph)
 {
 /*
@@ -133,7 +133,7 @@ test_fib_iter(jive::graph * graph)
 	assert(fib->value_repr() == 89);
 }
 
-static jive::oport *
+static jive::output *
 setup_fib_rec(jive::graph * &graph)
 {
 /*
@@ -242,8 +242,8 @@ test_loadstore(jive::graph * graph)
 	jive::lambda_builder lb;
 	lb.begin(graph->root(), {{&mem, &bits64}, {&mem}});
 
-	jive::oport * state = lb.region()->argument(0);
-	jive::oport * address = lb.region()->argument(1);
+	auto state = dynamic_cast<jive::output*>(lb.region()->argument(0));
+	auto address = lb.region()->argument(1);
 
 	auto value = jive_load_by_bitstring_create(address, 64, &bits4, 1, &state);
 

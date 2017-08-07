@@ -13,15 +13,15 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/simple_node.h>
 
-static jive::oport *
+static jive::output *
 jive_load_node_normalized_create(
 	const jive::node_normal_form * nf,
 	jive::graph * graph,
 	const jive::operation & op,
-	jive::oport * address,
-	size_t nstates, jive::oport * const states[])
+	jive::output * address,
+	size_t nstates, jive::output * const states[])
 {
-	std::vector<jive::oport*> args = {address};
+	std::vector<jive::output*> args = {address};
 	for (size_t n = 0; n < nstates; ++n) {
 		args.push_back(states[n]);
 	}
@@ -138,10 +138,10 @@ make_ptr_array(const T * begin, const T * end)
 
 }
 
-jive::oport *
-jive_load_by_address_create(jive::oport * address,
+jive::output *
+jive_load_by_address_create(jive::output * address,
 	const jive::value::type * datatype,
-	size_t nstates, jive::oport * const states[])
+	size_t nstates, jive::output * const states[])
 {
 	auto graph = address->region()->graph();
 	const auto nf = graph->node_normal_form(typeid(jive::load_op));
@@ -157,10 +157,10 @@ jive_load_by_address_create(jive::oport * address,
 	return jive_load_node_normalized_create(nf, graph, op, address, nstates, states);
 }
 
-jive::oport *
-jive_load_by_bitstring_create(jive::oport * address, size_t nbits,
+jive::output *
+jive_load_by_bitstring_create(jive::output * address, size_t nbits,
 	const jive::value::type * datatype,
-	size_t nstates, jive::oport * const states[])
+	size_t nstates, jive::output * const states[])
 {
 	auto graph = address->region()->graph();
 	const auto nf = graph->node_normal_form(typeid(jive::load_op));

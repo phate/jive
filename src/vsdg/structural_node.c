@@ -35,7 +35,7 @@ structural_input::~structural_input()
 structural_input::structural_input(
 	jive::structural_node * node,
 	size_t index,
-	jive::oport * origin,
+	jive::output * origin,
 	const jive::base::type & type)
 	: input(index, origin, node->region(), type)
 	, node_(node)
@@ -47,7 +47,7 @@ structural_input::structural_input(
 structural_input::structural_input(
 	jive::structural_node * node,
 	size_t index,
-	jive::oport * origin,
+	jive::output * origin,
 	jive::gate * gate)
 	: input(index, origin, node->region(), gate)
 	, node_(node)
@@ -66,7 +66,7 @@ structural_input::structural_input(
 structural_input::structural_input(
 	jive::structural_node * node,
 	size_t index,
-	jive::oport * origin,
+	jive::output * origin,
 	const struct jive_resource_class * rescls)
 	: input(index, origin, node->region(), rescls)
 	, node_(node)
@@ -87,7 +87,7 @@ structural_output::~structural_output()
 {
 	JIVE_DEBUG_ASSERT(results.first == nullptr && results.last == nullptr);
 
-	node()->graph()->on_oport_destroy(this);
+	node()->graph()->on_output_destroy(this);
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->noutputs(); n++) {
@@ -106,45 +106,45 @@ structural_output::structural_output(
 	jive::structural_node * node,
 	size_t index,
 	const jive::base::type & type)
-	: oport(index)
+	: output(index)
 	, node_(node)
 	, type_(type.copy())
 {
 	results.first = results.last = nullptr;
 
-	node->graph()->on_oport_create(this);
+	node->graph()->on_output_create(this);
 }
 
 structural_output::structural_output(
 	jive::structural_node * node,
 	size_t index,
 	jive::gate * gate)
-	: oport(index, gate)
+	: output(index, gate)
 	, node_(node)
 	, type_(gate->type().copy())
 {
 	results.first = results.last = nullptr;
 
 	for (size_t n = 0; n < index; n++) {
-		jive::oport * other = node->output(n);
+		auto other = node->output(n);
 		if (!other->gate()) continue;
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
 
-	node->graph()->on_oport_create(this);
+	node->graph()->on_output_create(this);
 }
 
 structural_output::structural_output(
 	jive::structural_node * node,
 	size_t index,
 	const struct jive_resource_class * rescls)
-	: oport(index, rescls)
+	: output(index, rescls)
 	, node_(node)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
 	results.first = results.last = nullptr;
 
-	node->graph()->on_oport_create(this);
+	node->graph()->on_output_create(this);
 }
 
 const jive::base::type &
@@ -244,7 +244,7 @@ structural_node::output(size_t index) const noexcept
 }
 
 jive::structural_input *
-structural_node::add_input(const jive::base::type * type, jive::oport * origin)
+structural_node::add_input(const jive::base::type * type, jive::output * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
@@ -262,7 +262,7 @@ structural_node::add_input(const jive::base::type * type, jive::oport * origin)
 }
 
 jive::structural_input *
-structural_node::add_input(jive::gate * gate, jive::oport * origin)
+structural_node::add_input(jive::gate * gate, jive::output * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
@@ -280,7 +280,7 @@ structural_node::add_input(jive::gate * gate, jive::oport * origin)
 }
 
 jive::structural_input *
-structural_node::add_input(const struct jive_resource_class * rescls, jive::oport * origin)
+structural_node::add_input(const struct jive_resource_class * rescls, jive::output * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
@@ -349,7 +349,7 @@ structural_node::remove_output(size_t index)
 }
 
 jive::structural_node *
-structural_node::copy(jive::region * region, const std::vector<jive::oport*> & operands) const
+structural_node::copy(jive::region * region, const std::vector<jive::output*> & operands) const
 {
 	jive::substitution_map smap;
 

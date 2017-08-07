@@ -490,14 +490,14 @@ static int types_bitstring_arithmetic_test_bitxor(void)
 JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitxor", types_bitstring_arithmetic_test_bitxor);
 
 static inline void
-expect_static_true(jive::oport * port)
+expect_static_true(jive::output * port)
 {
 	auto op = dynamic_cast<const jive::bits::constant_op*>(&port->node()->operation());
 	assert(op && op->value().nbits() == 1 && op->value().str() == "1");
 }
 
 static inline void
-expect_static_false(jive::oport * port)
+expect_static_false(jive::output * port)
 {
 	auto op = dynamic_cast<const jive::bits::constant_op*>(&port->node()->operation());
 	assert(op && op->value().nbits() == 1 && op->value().str() == "0");
@@ -994,7 +994,7 @@ static int types_bitstring_test_normalize(void)
 JIVE_UNIT_TEST_REGISTER("types/bitstring/test-normalize", types_bitstring_test_normalize);
 
 static void
-assert_constant(jive::oport * bitstr, size_t nbits, const char bits[])
+assert_constant(jive::output * bitstr, size_t nbits, const char bits[])
 {
 	auto op = dynamic_cast<const jive::bits::constant_op &>(bitstr->node()->operation());
 	assert(op.value() == jive::bits::value_repr(std::string(bits, nbits).c_str()));

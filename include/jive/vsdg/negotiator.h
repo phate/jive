@@ -106,12 +106,12 @@ public:
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::oport * arg) const noexcept override;
+		const jive::output * arg) const noexcept override;
 
-	virtual jive::oport *
+	virtual jive::output *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::oport * arg) const override;
+		jive::output * arg) const override;
 
 	inline jive_negotiator *
 	negotiator() const noexcept { return negotiator_; }
@@ -178,7 +178,7 @@ private:
 public:
 	union {
 		const jive::simple_input * input;
-		const jive::oport * output;
+		const jive::output * output;
 	} hash_key_;
 
 	class input_hash_chain_accessor {
@@ -211,7 +211,7 @@ public:
 	};
 	class output_hash_chain_accessor {
 	public:
-		inline const jive::oport *
+		inline const jive::output *
 		get_key(const jive_negotiator_port * obj) const noexcept
 		{
 			return obj->hash_key_.output;
@@ -246,7 +246,7 @@ typedef jive::detail::intrusive_hash<
 > jive_negotiator_input_hash;
 
 typedef jive::detail::intrusive_hash<
-	const jive::oport *,
+	const jive::output *,
 	jive_negotiator_port,
 	jive_negotiator_port::output_hash_chain_accessor
 > jive_negotiator_output_hash;

@@ -36,7 +36,7 @@ simple_input::~simple_input() noexcept
 simple_input::simple_input(
 	jive::node * node,
 	size_t index,
-	jive::oport * origin,
+	jive::output * origin,
 	const jive::base::type & type)
 	: input(index, origin, node->region(), type)
 	, node_(node)
@@ -45,7 +45,7 @@ simple_input::simple_input(
 simple_input::simple_input(
 	jive::node * node,
 	size_t index,
-	jive::oport * origin,
+	jive::output * origin,
 	jive::gate * gate)
 	: input(index, origin, node->region(), gate)
 	, node_(node)
@@ -60,7 +60,7 @@ simple_input::simple_input(
 simple_input::simple_input(
 	jive::node * node,
 	size_t index,
-	jive::oport * origin,
+	jive::output * origin,
 	const struct jive_resource_class * rescls)
 	: input(index, origin, node->region(), rescls)
 	, node_(node)
@@ -75,13 +75,13 @@ simple_input::node() const noexcept
 /* outputs */
 
 simple_output::simple_output(jive::node * node, size_t index, const jive::base::type & type)
-	: oport(index)
+	: output(index)
 	, node_(node)
 	, type_(type.copy())
 {}
 
 simple_output::simple_output(jive::node * node, size_t index, jive::gate * gate)
-	: oport(index, gate)
+	: output(index, gate)
 	, node_(node)
 	, type_(gate->type().copy())
 {
@@ -97,14 +97,14 @@ simple_output::simple_output(
 	size_t index,
 	const jive::base::type & type,
 	const struct jive_resource_class * rescls)
-	: oport(index, rescls)
+	: output(index, rescls)
 	, node_(node)
 	, type_(type.copy())
 {}
 
 simple_output::~simple_output() noexcept
 {
-	node_->graph()->on_oport_destroy(this);
+	node_->graph()->on_output_destroy(this);
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->noutputs(); n++) {
@@ -153,9 +153,9 @@ simple_node::~simple_node()
 simple_node::simple_node(
 	const jive::operation & op,
 	jive::region * region,
-	const std::vector<jive::oport*> & operands)
+	const std::vector<jive::output*> & operands)
 	: node(op.copy(), region, std::accumulate(operands.begin(), operands.end(), 0,
-			[](size_t depth, const jive::oport * operand) {
+			[](size_t depth, const jive::output * operand) {
 				return std::max(depth, operand->node() ? operand->node()->depth()+1 : 0);
 			}))
 {
@@ -234,7 +234,7 @@ simple_node::has_successors() const noexcept
 }
 
 jive::simple_input *
-simple_node::add_input(const jive::base::type * type, jive::oport * origin)
+simple_node::add_input(const jive::base::type * type, jive::output * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
@@ -249,7 +249,7 @@ simple_node::add_input(const jive::base::type * type, jive::oport * origin)
 }
 
 jive::simple_input *
-simple_node::add_input(jive::gate * gate, jive::oport * origin)
+simple_node::add_input(jive::gate * gate, jive::output * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
@@ -264,7 +264,7 @@ simple_node::add_input(jive::gate * gate, jive::oport * origin)
 }
 
 jive::simple_input *
-simple_node::add_input(const struct jive_resource_class * rescls, jive::oport * origin)
+simple_node::add_input(const struct jive_resource_class * rescls, jive::output * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
@@ -299,7 +299,7 @@ simple_node::add_output(const jive::base::type * type)
 	outputs_.emplace_back(std::make_unique<jive::simple_output>(this, noutputs(), *type));
 	auto output = outputs_[noutputs()-1].get();
 
-	graph()->on_oport_create(output);
+	graph()->on_output_create(output);
 
 	return output;
 }
@@ -310,7 +310,7 @@ simple_node::add_output(jive::gate * gate)
 	outputs_.emplace_back(std::make_unique<jive::simple_output>(this, noutputs(), gate));
 	auto output = this->output(noutputs()-1);
 
-	graph()->on_oport_create(output);
+	graph()->on_output_create(output);
 
 	return output;
 }
@@ -322,7 +322,7 @@ simple_node::add_output(const struct jive_resource_class * rescls)
 		this, noutputs(), *jive_resource_class_get_type(rescls), rescls));
 	auto output = this->output(noutputs()-1);
 
-	graph()->on_oport_create(output);
+	graph()->on_output_create(output);
 
 	return output;
 }
@@ -340,7 +340,7 @@ simple_node::remove_output(size_t index)
 }
 
 jive::node *
-simple_node::copy(jive::region * region, const std::vector<jive::oport*> & operands) const
+simple_node::copy(jive::region * region, const std::vector<jive::output*> & operands) const
 {
 	jive::node * node = region->add_simple_node(operation(), operands);
 	graph()->mark_denormalized();
@@ -350,7 +350,7 @@ simple_node::copy(jive::region * region, const std::vector<jive::oport*> & opera
 jive::node *
 simple_node::copy(jive::region * region, jive::substitution_map & smap) const
 {
-	std::vector<jive::oport*> operands(noperands());
+	std::vector<jive::output*> operands(noperands());
 	for (size_t n = 0; n < noperands(); n++) {
 		operands[n] = smap.lookup(input(n)->origin());
 		if (!operands[n])
@@ -359,7 +359,7 @@ simple_node::copy(jive::region * region, jive::substitution_map & smap) const
 
 	jive::node * new_node = copy(region, operands);
 	for (size_t n = noperands(); n < ninputs(); n++) {
-		jive::oport * origin = smap.lookup(input(n)->origin());
+		jive::output * origin = smap.lookup(input(n)->origin());
 		if (!origin) {
 			origin = input(n)->origin();
 		}
@@ -400,11 +400,11 @@ simple_node::copy(jive::region * region, jive::substitution_map & smap) const
 }
 
 
-std::vector<jive::oport*>
+std::vector<jive::output*>
 create_normalized(
 	jive::region * region,
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments)
+	const std::vector<jive::output*> & arguments)
 {
 	auto graph = region->graph();
 	/* FIXME: tighten jive::operation to jive::simple_op and replace dynamic with static cast */

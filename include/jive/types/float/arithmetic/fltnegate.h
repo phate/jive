@@ -26,7 +26,7 @@ typedef detail::make_unop<
 }
 }
 
-jive::oport *
-jive_fltnegate(jive::oport * arg);
+jive::output *
+jive_fltnegate(jive::output * arg);
 
 #endif

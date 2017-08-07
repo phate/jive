@@ -28,7 +28,7 @@ public:
 	virtual bool
 	operands_are_normalized(
 		const jive::operation & op,
-		const std::vector<jive::oport*> & arguments) const override;
+		const std::vector<jive::output*> & arguments) const override;
 
 	virtual void
 	set_predicate_reduction(bool enable);

@@ -17,8 +17,8 @@ class gate;
 
 class substitution_map final {
 public:
-	inline jive::oport *
-	lookup(const jive::oport * original) const noexcept
+	inline jive::output *
+	lookup(const jive::output * original) const noexcept
 	{
 		auto i = output_map_.find(original);
 		return i != output_map_.end() ? i->second : nullptr;
@@ -46,7 +46,7 @@ public:
 	}
 
 	inline void
-	insert(const jive::oport * original, jive::oport * substitute)
+	insert(const jive::output * original, jive::output * substitute)
 	{
 		output_map_[original] = substitute;
 	}
@@ -72,7 +72,7 @@ public:
 private:
 	std::unordered_map<const jive::gate*, jive::gate*> gate_map_;
 	std::unordered_map<const jive::region*, jive::region*> region_map_;
-	std::unordered_map<const jive::oport*, jive::oport*> output_map_;
+	std::unordered_map<const jive::output*, jive::output*> output_map_;
 	std::unordered_map<const jive::structural_input*, jive::structural_input*> structinput_map_;
 };
 

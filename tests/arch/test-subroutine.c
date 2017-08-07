@@ -31,13 +31,13 @@ static int test_main(void)
 	auto arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
 	auto arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
 	auto arg3 = jive_subroutine_simple_get_argument(subroutine, 2);
-	jive::oport * tmparray2[] = {arg1, arg2};
+	jive::output * tmparray2[] = {arg1, arg2};
 	
 	auto s1 = jive_instruction_node_create(
 		subroutine.region,
 		&jive::testarch::instr_add_gpr::instance(),
 		tmparray2, NULL)->output(0);
-	jive::oport * tmparray3[] = {s1, arg3};
+	jive::output * tmparray3[] = {s1, arg3};
 	auto s2 = jive_instruction_node_create(
 		subroutine.region,
 		&jive::testarch::instr_add_gpr::instance(),

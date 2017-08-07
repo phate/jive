@@ -17,8 +17,8 @@
 
 static void
 get_slot_memory_reference(const jive_resource_class * rescls,
-	jive::immediate * displacement, jive::oport ** base,
-	jive::oport * sp, jive::oport * fp)
+	jive::immediate * displacement, jive::output ** base,
+	jive::output * sp, jive::output * fp)
 {
 	if (jive_resource_class_isinstance(rescls, &JIVE_STACK_CALLSLOT_RESOURCE)) {
 		*displacement = jive::immediate(0, &jive_label_spoffset);
@@ -45,7 +45,7 @@ jive_i386_create_xfer(jive::region * region, jive::simple_output * origin,
 	
 	if (in_mem) {
 		jive::immediate displacement;
-		jive::oport * base;
+		jive::output * base;
 		get_slot_memory_reference(in_class, &displacement, &base, sp, fp);
 		xfer.node = jive_instruction_node_create_extended(
 			region,
@@ -55,9 +55,9 @@ jive_i386_create_xfer(jive::region * region, jive::simple_output * origin,
 		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
 	} else if (out_mem) {
 		jive::immediate displacement;
-		jive::oport * base;
+		jive::output * base;
 		get_slot_memory_reference(out_class, &displacement, &base, sp, fp);
-		jive::oport * tmparray0[] = {base, origin};
+		jive::output * tmparray0[] = {base, origin};
 		xfer.node = jive_instruction_node_create_extended(
 			region,
 			&jive::i386::instr_int_store32_disp::instance(),
@@ -65,7 +65,7 @@ jive_i386_create_xfer(jive::region * region, jive::simple_output * origin,
 		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(1));
 		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->add_output(out_class));
 	} else {
-		jive::oport * tmparray1[] = {origin};
+		jive::output * tmparray1[] = {origin};
 		xfer.node = jive_instruction_node_create(
 			region,
 			&jive::i386::instr_int_transfer::instance(),

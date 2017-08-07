@@ -62,25 +62,25 @@ class recvar final {
 
 private:
 	inline constexpr
-	recvar(jive::oport * value)
+	recvar(jive::output * value)
 	: value_(value)
 	{}
 
 public:
 	inline void
-	set_value(jive::oport * value)
+	set_value(jive::output * value)
 	{
 		value_ = value;
 	}
 
-	inline jive::oport *
+	inline jive::output *
 	value() const noexcept
 	{
 		return value_;
 	}
 
 private:
-	jive::oport * value_;
+	jive::output * value_;
 };
 
 class phi_builder final {
@@ -106,8 +106,8 @@ public:
 		return node_ ? node_->subregion(0) : nullptr;
 	}
 
-	inline jive::oport *
-	add_dependency(jive::oport * value)
+	inline jive::output *
+	add_dependency(jive::output * value)
 	{
 		if (!node_)
 			return nullptr;

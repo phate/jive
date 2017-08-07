@@ -83,7 +83,7 @@ public:
 	}
 
 	inline jive::input *
-	export_port(jive::oport * operand, const std::string & name)
+	export_port(jive::output * operand, const std::string & name)
 	{
 		jive::gate * gate = create_gate(name, operand->type());
 		return root()->add_result(operand, nullptr, gate);
@@ -114,13 +114,13 @@ public:
 	jive::notifier<jive::input *> on_input_create;
 	jive::notifier<
 		jive::input *,
-		jive::oport *,	/* old */
-		jive::oport *		/* new */
+		jive::output *,	/* old */
+		jive::output *		/* new */
 	> on_input_change;
 	jive::notifier<jive::input *> on_input_destroy;
 	
-	jive::notifier<jive::oport *> on_oport_create;
-	jive::notifier<jive::oport *> on_oport_destroy;
+	jive::notifier<jive::output *> on_output_create;
+	jive::notifier<jive::output *> on_output_destroy;
 
 	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_add;
 	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_remove;

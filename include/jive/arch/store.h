@@ -89,14 +89,14 @@ private:
 
 }
 
-std::vector<jive::oport*>
-jive_store_by_address_create(jive::oport * address,
-	const jive::value::type * datatype, jive::oport * value,
-	size_t nstates, jive::oport * const states[]);
+std::vector<jive::output*>
+jive_store_by_address_create(jive::output * address,
+	const jive::value::type * datatype, jive::output * value,
+	size_t nstates, jive::output * const states[]);
 
-std::vector<jive::oport*>
-jive_store_by_bitstring_create(jive::oport * address, size_t nbits,
-	const jive::value::type * datatype, jive::oport * value,
-	size_t nstates, jive::oport * const istates[]);
+std::vector<jive::output*>
+jive_store_by_bitstring_create(jive::output * address, size_t nbits,
+	const jive::value::type * datatype, jive::output * value,
+	size_t nstates, jive::output * const istates[]);
 
 #endif

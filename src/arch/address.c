@@ -55,7 +55,7 @@ memberof_op::result_type(size_t index) const noexcept
 
 jive_unop_reduction_path_t
 memberof_op::can_reduce_operand(
-	const jive::oport * arg) const noexcept
+	const jive::output * arg) const noexcept
 {
 	auto tmp = dynamic_cast<const jive::simple_output*>(arg);
 	if (!tmp)
@@ -72,10 +72,10 @@ memberof_op::can_reduce_operand(
 	return jive_unop_reduction_none;
 }
 
-jive::oport *
+jive::output *
 memberof_op::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::oport * arg) const
+	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_inverse)
 		return arg->node()->input(0)->origin();
@@ -93,9 +93,9 @@ memberof_op::copy() const
 }
 
 
-jive::oport *
+jive::output *
 jive_memberof(
-	jive::oport * address,
+	jive::output * address,
 	std::shared_ptr<const jive::rcd::declaration> & record_decl,
 	size_t index)
 {
@@ -139,7 +139,7 @@ containerof_op::result_type(size_t index) const noexcept
 
 jive_unop_reduction_path_t
 containerof_op::can_reduce_operand(
-	const jive::oport * arg) const noexcept
+	const jive::output * arg) const noexcept
 {
 	auto tmp = dynamic_cast<const jive::simple_output*>(arg);
 	if (!tmp)
@@ -155,10 +155,10 @@ containerof_op::can_reduce_operand(
 	return jive_unop_reduction_none;
 }
 
-jive::oport *
+jive::output *
 containerof_op::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::oport * arg) const
+	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_inverse)
 		return arg->node()->input(0)->origin();
@@ -175,9 +175,9 @@ containerof_op::copy() const
 }
 }
 
-jive::oport *
+jive::output *
 jive_containerof(
-	jive::oport * address,
+	jive::output * address,
 	std::shared_ptr<const jive::rcd::declaration> & record_decl,
 	size_t index)
 {
@@ -267,11 +267,11 @@ arraysubscript_op::copy() const
 }
 
 
-jive::oport *
+jive::output *
 jive_arraysubscript(
-	jive::oport * address,
+	jive::output * address,
 	const jive::value::type * element_type,
-	jive::oport * index)
+	jive::output * index)
 {
 	jive::address::arraysubscript_op op(
 		*element_type,
@@ -357,9 +357,9 @@ arrayindex_op::copy() const
 }
 }
 
-jive::oport *
+jive::output *
 jive_arrayindex(
-	jive::oport * addr1, jive::oport * addr2,
+	jive::output * addr1, jive::output * addr2,
 	const jive::value::type * element_type,
 	const jive::bits::type * difference_type)
 {
@@ -407,7 +407,7 @@ label_to_address_op::copy() const
 }
 
 
-jive::oport *
+jive::output *
 jive_label_to_address_create(jive::region * region, const jive_label * label)
 {
 	jive::address::label_to_address_op op(label);
@@ -452,7 +452,7 @@ label_to_bitstring_op::copy() const
 
 /* constant */
 
-jive::oport *
+jive::output *
 constant(jive::graph * graph, const value_repr & vr)
 {
 	constant_op op(vr);
@@ -463,7 +463,7 @@ constant(jive::graph * graph, const value_repr & vr)
 }
 
 
-jive::oport *
+jive::output *
 jive_label_to_bitstring_create(jive::region * region, const jive_label * label, size_t nbits)
 {
 	jive::address::label_to_bitstring_op op(label, nbits);

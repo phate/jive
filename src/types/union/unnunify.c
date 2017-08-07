@@ -49,15 +49,15 @@ unify_op::result_type(size_t index) const noexcept
 
 jive_unop_reduction_path_t
 unify_op::can_reduce_operand(
-	const jive::oport * arg) const noexcept
+	const jive::output * arg) const noexcept
 {
 	return jive_unop_reduction_none;
 }
 
-jive::oport *
+jive::output *
 unify_op::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::oport * arg) const
+	jive::output * arg) const
 {
 	return nullptr;
 }
@@ -100,8 +100,8 @@ empty_unify_op::copy() const
 }
 }
 
-jive::oport *
-jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::oport * const argument)
+jive::output *
+jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::output * const argument)
 {
 	const jive::unn::type  unn_type(decl);
 	jive::unn::unify_op op(unn_type, option);
@@ -110,7 +110,7 @@ jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::opor
 
 /* empty unify node */
 
-jive::oport *
+jive::output *
 jive_empty_unify_create(struct jive::region * region, const jive::unn::declaration * decl)
 {
 	jive::unn::empty_unify_op op(decl);

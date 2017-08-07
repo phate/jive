@@ -57,11 +57,11 @@ private:
 }
 }
 
-jive::oport *
+jive::output *
 jive_group_create(std::shared_ptr<const jive::rcd::declaration> & decl,
-	size_t narguments, jive::oport * const * arguments);
+	size_t narguments, jive::output * const * arguments);
 
-jive::oport *
+jive::output *
 jive_empty_group_create(jive::graph * graph, std::shared_ptr<const jive::rcd::declaration> & decl);
 
 #endif

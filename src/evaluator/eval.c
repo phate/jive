@@ -486,7 +486,7 @@ eval_argument(const jive::argument * argument, context & ctx)
 }
 
 static std::unique_ptr<const literal>
-eval_output(const jive::oport * output, context & ctx)
+eval_output(const jive::output * output, context & ctx)
 {
 	if (ctx.exists(output))
 		return ctx.lookup(output)->copy();

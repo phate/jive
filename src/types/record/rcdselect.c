@@ -54,7 +54,7 @@ select_operation::result_type(size_t index) const noexcept
 
 jive_unop_reduction_path_t
 select_operation::can_reduce_operand(
-	const jive::oport * arg) const noexcept
+	const jive::output * arg) const noexcept
 {
 	if (arg->node() && dynamic_cast<const group_op *>(&arg->node()->operation()))
 		return jive_unop_reduction_inverse;
@@ -65,10 +65,10 @@ select_operation::can_reduce_operand(
 	return jive_unop_reduction_none;
 }
 
-jive::oport *
+jive::output *
 select_operation::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::oport * arg) const
+	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_inverse)
 		return arg->node()->input(element())->origin();
@@ -86,7 +86,7 @@ select_operation::reduce_operand(
 		decl = static_cast<const jive::rcd::type*>(&arg->node()->output(0)->type())->declaration();
 
 		size_t nstates = arg->node()->ninputs()-1;
-		jive::oport * states[nstates];
+		jive::output * states[nstates];
 		for (size_t n = 0; n < nstates; n++) {
 			states[n] = arg->node()->input(n+1)->origin();
 		}
@@ -114,8 +114,8 @@ select_operation::copy() const
 }
 
 
-jive::oport *
-jive_select_create(size_t member, jive::oport * argument)
+jive::output *
+jive_select_create(size_t member, jive::output * argument)
 {
 	const jive::rcd::type & rcd_type =
 		dynamic_cast<const jive::rcd::type &>(argument->type());

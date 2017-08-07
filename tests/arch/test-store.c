@@ -43,12 +43,12 @@ static int test_main(void)
 	auto top = jive::test::simple_node_create(graph.root(), {}, {},
 		{&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype, &addrtype});
 
-	jive::oport * state = top->output(1);
+	auto state = top->output(1);
 	auto states0 = jive_store_by_address_create(top->output(0), &bits32, top->output(4), 1, &state);
 
-	jive::oport * tmparray1[] = {top->output(2), top->output(3), top->output(4)};
+	jive::output * tmparray1[] = {top->output(2), top->output(3), top->output(4)};
 	auto group = jive_group_create(rcddecl, 3, tmparray1);
-	jive::oport * tmparray2[] = {top->output(1), top->output(5)};
+	jive::output * tmparray2[] = {top->output(1), top->output(5)};
 	auto states1 = jive_store_by_address_create(top->output(0), &rcdtype, group, 2, tmparray2);
 
 	auto unify = jive_unify_create(&unndecl, 2, top->output(4));

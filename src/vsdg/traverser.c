@@ -97,7 +97,7 @@ topdown_traverser::node_create(jive::node * node)
 }
 
 void
-topdown_traverser::input_change(input * in, oport * old_origin, oport * new_origin)
+topdown_traverser::input_change(input * in, output * old_origin, output * new_origin)
 {
 	if (in->region() != region() || !in->node())
 		return;
@@ -179,7 +179,7 @@ bottomup_traverser::node_destroy(jive::node * node)
 }
 
 void
-bottomup_traverser::input_change(input * in, oport * old_origin, oport * new_origin)
+bottomup_traverser::input_change(input * in, output * old_origin, output * new_origin)
 {
 	if (in->region() != region() || !in->node())
 		return;
@@ -237,7 +237,7 @@ upward_cone_traverser::node_destroy(jive::node * node)
 }
 
 void
-upward_cone_traverser::input_change(input * in, oport * old_origin, oport * new_origin)
+upward_cone_traverser::input_change(input * in, output * old_origin, output * new_origin)
 {
 	if (!in->node())
 		return;

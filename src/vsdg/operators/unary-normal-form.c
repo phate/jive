@@ -63,7 +63,7 @@ unary_normal_form::normalize_node(jive::node * node) const
 bool
 unary_normal_form::operands_are_normalized(
 	const jive::operation & base_op,
-	const std::vector<jive::oport*> & arguments) const
+	const std::vector<jive::output*> & arguments) const
 {
 	JIVE_DEBUG_ASSERT(arguments.size() == 1);
 
@@ -80,11 +80,11 @@ unary_normal_form::operands_are_normalized(
 	return simple_normal_form::operands_are_normalized(base_op, arguments);
 }
 
-std::vector<jive::oport*>
+std::vector<jive::output*>
 unary_normal_form::normalized_create(
 	jive::region * region,
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments) const
+	const std::vector<jive::output*> & arguments) const
 {
 	JIVE_DEBUG_ASSERT(arguments.size() == 1);
 

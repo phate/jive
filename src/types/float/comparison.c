@@ -24,38 +24,38 @@ const char fltnotequal_name[] = "FLTNOTEQUAL";
 }
 }
 
-jive::oport *
-jive_fltequal(jive::oport * arg1, jive::oport * arg2)
+jive::output *
+jive_fltequal(jive::output * arg1, jive::output * arg2)
 {
 	return jive::flt::eq_op::normalized_create(arg1, arg2);
 }
 
-jive::oport *
-jive_fltgreater(jive::oport * arg1, jive::oport * arg2)
+jive::output *
+jive_fltgreater(jive::output * arg1, jive::output * arg2)
 {
 	return jive::flt::gt_op::normalized_create(arg1, arg2);
 }
 
-jive::oport *
-jive_fltgreatereq(jive::oport * arg1, jive::oport * arg2)
+jive::output *
+jive_fltgreatereq(jive::output * arg1, jive::output * arg2)
 {
 	return jive::flt::ge_op::normalized_create(arg1, arg2);
 }
 
-jive::oport *
-jive_fltless(jive::oport * arg1, jive::oport * arg2)
+jive::output *
+jive_fltless(jive::output * arg1, jive::output * arg2)
 {
 	return jive::flt::lt_op::normalized_create(arg1, arg2);
 }
 
-jive::oport *
-jive_fltlesseq(jive::oport * arg1, jive::oport * arg2)
+jive::output *
+jive_fltlesseq(jive::output * arg1, jive::output * arg2)
 {
 	return jive::flt::le_op::normalized_create(arg1, arg2);
 }
 
-jive::oport *
-jive_fltnotequal(jive::oport * arg1, jive::oport * arg2)
+jive::output *
+jive_fltnotequal(jive::output * arg1, jive::output * arg2)
 {
 	return jive::flt::ne_op::normalized_create(arg1, arg2);
 }

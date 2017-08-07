@@ -14,7 +14,7 @@ static jive::node *
 node_cse(
 	jive::region * region,
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments)
+	const std::vector<jive::output*> & arguments)
 {
 	auto cse_test = [&](const jive::node * node)
 	{
@@ -76,16 +76,16 @@ simple_normal_form::normalize_node(jive::node * node) const
 bool
 simple_normal_form::operands_are_normalized(
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments) const
+	const std::vector<jive::output*> & arguments) const
 {
 	return true;
 }
 
-std::vector<jive::oport*>
+std::vector<jive::output*>
 simple_normal_form::normalized_create(
 	jive::region * region,
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments) const
+	const std::vector<jive::output*> & arguments) const
 {
 	jive::node * node = nullptr;
 	if (get_mutable() && get_cse())
@@ -93,7 +93,7 @@ simple_normal_form::normalized_create(
 	if (!node)
 		node = region->add_simple_node(op, arguments);
 
-	std::vector<jive::oport*> outputs;
+	std::vector<jive::output*> outputs;
 	for (size_t n = 0; n < node->noutputs(); n++)
 		outputs.push_back(node->output(n));
 

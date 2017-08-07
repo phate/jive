@@ -56,7 +56,7 @@ pairwise_reduce(
 	auto right = std::next(left);
 
 	while (right != args.end()) {
-		jive::oport * res = reductor(*left, *right);
+		auto res = reductor(*left, *right);
 		if (res) {
 			*left = res;
 			++right;
@@ -107,7 +107,7 @@ commutative_pairwise_reduce(
 	while (left != args.end()) {
 		auto right = std::next(left);
 		while (right != args.end()) {
-			jive::oport * result = reductor(*left, *right);
+			auto result = reductor(*left, *right);
 			if (result) {
 				*left = result;
 				*right = args.back();
@@ -136,14 +136,14 @@ associative_test_flatten(const Container & args, const FlattenTester& flatten_te
 /* Replace each argument of "args" with the arguments of its defining node
  * for each where "flatten_tester" returns true. */
 template<typename FlattenTester>
-std::vector<jive::oport*>
-associative_flatten(std::vector<jive::oport*> args, const FlattenTester& flatten_tester)
+std::vector<jive::output*>
+associative_flatten(std::vector<jive::output*> args, const FlattenTester& flatten_tester)
 {
 	size_t n = 0;
 	while (n < args.size()) {
 		if (flatten_tester(args[n])) {
 			auto arg = args[n];
-			std::vector<jive::oport*> sub_args = jive_node_arguments(arg->node());
+			auto sub_args = jive_node_arguments(arg->node());
 			args[n] = sub_args[0];
 			args.insert(args.begin() + n + 1, sub_args.begin() + 1, sub_args.end());
 		} else {

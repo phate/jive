@@ -64,17 +64,17 @@ group_op::copy() const
 }
 }
 
-jive::oport *
+jive::output *
 jive_group_create(std::shared_ptr<const jive::rcd::declaration> & decl,
-	size_t narguments, jive::oport * const * arguments)
+	size_t narguments, jive::output * const * arguments)
 {
 	jive::rcd::group_op op(decl);
 	jive::region * region = arguments[0]->region();
 	return jive::create_normalized(
-		region, op, std::vector<jive::oport*>(arguments, arguments + narguments))[0];
+		region, op, std::vector<jive::output*>(arguments, arguments + narguments))[0];
 }
 
-jive::oport *
+jive::output *
 jive_empty_group_create(jive::graph * graph,
 	std::shared_ptr<const jive::rcd::declaration> & decl)
 {

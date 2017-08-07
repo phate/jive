@@ -102,8 +102,8 @@ public:
 		return node_ ? node_->subregion(0) : nullptr;
 	}
 
-	inline jive::oport *
-	add_dependency(jive::oport * value)
+	inline jive::output *
+	add_dependency(jive::output * value)
 	{
 		if (!node_)
 			return nullptr;
@@ -113,7 +113,7 @@ public:
 	}
 
 	inline jive::structural_node *
-	end(const std::vector<jive::oport*> & results)
+	end(const std::vector<jive::output*> & results)
 	{
 		if (!node_)
 			return nullptr;

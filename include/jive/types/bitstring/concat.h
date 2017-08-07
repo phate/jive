@@ -54,14 +54,14 @@ public:
 	/* reduction methods */
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
-		const jive::oport * arg1,
-		const jive::oport * arg2) const noexcept override;
+		const jive::output * arg1,
+		const jive::output * arg2) const noexcept override;
 
-	virtual jive::oport *
+	virtual jive::output *
 	reduce_operand_pair(
 		jive_binop_reduction_path_t path,
-		jive::oport * arg1,
-		jive::oport * arg2) const override;
+		jive::output * arg1,
+		jive::output * arg2) const override;
 
 	virtual jive_binary_operation_flags
 	flags() const noexcept override;
@@ -90,7 +90,7 @@ private:
 }
 }
 
-jive::oport *
-jive_bitconcat(const std::vector<jive::oport*> & operands);
+jive::output *
+jive_bitconcat(const std::vector<jive::output*> & operands);
 
 #endif

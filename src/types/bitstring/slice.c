@@ -54,7 +54,7 @@ slice_op::result_type(size_t index) const noexcept
 }
 
 jive_unop_reduction_path_t
-slice_op::can_reduce_operand(const jive::oport * arg) const noexcept
+slice_op::can_reduce_operand(const jive::output * arg) const noexcept
 {
 	/*
 		FIXME: this should be a dynamic_cast
@@ -77,10 +77,10 @@ slice_op::can_reduce_operand(const jive::oport * arg) const noexcept
 	return jive_unop_reduction_none;
 }
 
-jive::oport *
+jive::output *
 slice_op::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::oport * arg) const
+	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_idempotent) {
 		return arg;
@@ -98,9 +98,9 @@ slice_op::reduce_operand(
 	
 	if (path == jive_unop_reduction_distribute) {
 		size_t pos = 0, n;
-		std::vector<jive::oport*> arguments;
+		std::vector<jive::output*> arguments;
 		for (n = 0; n < arg->node()->noperands(); n++) {
-			jive::oport * argument = arg->node()->input(n)->origin();
+			auto argument = arg->node()->input(n)->origin();
 			size_t base = pos;
 			size_t nbits = static_cast<const jive::bits::type&>(argument->type()).nbits();
 			pos = pos + nbits;
@@ -127,8 +127,8 @@ slice_op::copy() const
 }
 }
 
-jive::oport *
-jive_bitslice(jive::oport * argument, size_t low, size_t high)
+jive::output *
+jive_bitslice(jive::output * argument, size_t low, size_t high)
 {
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(argument->type());
 	jive::bits::slice_op op(type, low, high);

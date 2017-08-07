@@ -22,19 +22,19 @@ public:
 	simple_input(
 		jive::node * node,
 		size_t index,
-		jive::oport * origin,
+		jive::output * origin,
 		const jive::base::type & type);
 
 	simple_input(
 		jive::node * node,
 		size_t index,
-		jive::oport * origin,
+		jive::output * origin,
 		jive::gate * gate);
 
 	simple_input(
 		jive::node * node,
 		size_t index,
-		jive::oport * origin,
+		jive::output * origin,
 		const struct jive_resource_class * rescls);
 
 public:
@@ -47,7 +47,7 @@ private:
 
 /* outputs */
 
-class simple_output final : public oport {
+class simple_output final : public output {
 	friend jive::simple_input;
 
 public:
@@ -95,7 +95,7 @@ public:
 	simple_node(
 		const jive::operation & op,
 		jive::region * region,
-		const std::vector<jive::oport*> & operands);
+		const std::vector<jive::output*> & operands);
 
 	virtual bool
 	has_users() const noexcept override;
@@ -116,13 +116,13 @@ public:
 	output(size_t index) const noexcept override;
 
 	virtual jive::simple_input *
-	add_input(const jive::base::type * type, jive::oport * origin) override;
+	add_input(const jive::base::type * type, jive::output * origin) override;
 
 	virtual jive::simple_input *
-	add_input(jive::gate * gate, jive::oport * origin) override;
+	add_input(jive::gate * gate, jive::output * origin) override;
 
 	virtual jive::simple_input *
-	add_input(const struct jive_resource_class * rescls, jive::oport * origin) override;
+	add_input(const struct jive_resource_class * rescls, jive::output * origin) override;
 
 	virtual void
 	remove_input(size_t index) override;
@@ -140,7 +140,7 @@ public:
 	remove_output(size_t index) override;
 
 	virtual jive::node *
-	copy(jive::region * region, const std::vector<jive::oport*> & operands) const override;
+	copy(jive::region * region, const std::vector<jive::output*> & operands) const override;
 
 	virtual jive::node *
 	copy(jive::region * region, jive::substitution_map & smap) const override;
@@ -150,11 +150,11 @@ private:
 	std::vector<std::unique_ptr<jive::simple_output>> outputs_;
 };
 
-std::vector<jive::oport*>
+std::vector<jive::output*>
 create_normalized(
 	jive::region * region,
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments);
+	const std::vector<jive::output*> & arguments);
 
 }
 

@@ -334,7 +334,7 @@ create_xfer(jive::region * region, jive::simple_output * origin,
 	const jive_resource_class * out_relaxed = jive_resource_class_relax(out_class);
 	
 	if (in_relaxed == CLS(gpr) && out_relaxed == CLS(gpr)) {
-		jive::oport * tmparray8[] = {origin};
+		jive::output * tmparray8[] = {origin};
 		xfer.node = jive_instruction_node_create(
 			region,
 			&jive::testarch::instr_move_gpr::instance(),
@@ -342,7 +342,7 @@ create_xfer(jive::region * region, jive::simple_output * origin,
 		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
 		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
 	} else if (in_relaxed == CLS(gpr)) {
-		jive::oport * tmparray9[] = {origin};
+		jive::output * tmparray9[] = {origin};
 		xfer.node = jive_instruction_node_create(
 			region,
 			&jive::testarch::instr_spill_gpr::instance(),
@@ -480,12 +480,12 @@ public:
 	{
 	}
 
-	virtual jive::oport *
+	virtual jive::output *
 	value_parameter(
 		jive_subroutine & subroutine,
 		size_t index) override
 	{
-		jive::oport * o = subroutine.builder_state->arguments[index].output;
+		auto o = subroutine.builder_state->arguments[index].output;
 	
 		if (index >= 2) {
 			auto node = jive_splitnode_create(subroutine.region, o, o->gate()->rescls(),

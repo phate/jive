@@ -65,13 +65,13 @@ class memlayout_mapper;
 
 }
 
-jive::oport *
-jive_dataobj(jive::oport * data, jive::memlayout_mapper * mapper);
+jive::output *
+jive_dataobj(jive::output * data, jive::memlayout_mapper * mapper);
 
-jive::oport *
-jive_rodataobj(jive::oport * data, jive::memlayout_mapper * mapper);
+jive::output *
+jive_rodataobj(jive::output * data, jive::memlayout_mapper * mapper);
 
-jive::oport *
-jive_bssobj(jive::oport * data, jive::memlayout_mapper * mapper);
+jive::output *
+jive_bssobj(jive::output * data, jive::memlayout_mapper * mapper);
 
 #endif

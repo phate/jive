@@ -28,7 +28,7 @@ static int test_main()
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&addrtype, &addrtype, &memtype,
 		&bits32});
 
-	jive::oport * state = top->output(2);
+	auto state = top->output(2);
 	auto load0 = jive_load_by_address_create(top->output(0), &bits32, 1, &state);
 
 	state = top->output(2);

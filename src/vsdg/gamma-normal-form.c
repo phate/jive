@@ -91,7 +91,7 @@ gamma_normal_form::normalize_node(jive::node * node_) const
 bool
 gamma_normal_form::operands_are_normalized(
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments) const
+	const std::vector<jive::output*> & arguments) const
 {
 	if (!get_mutable())
 		return true;

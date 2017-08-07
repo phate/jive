@@ -53,12 +53,12 @@ public:
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::oport * arg) const noexcept override;
+		const jive::output * arg) const noexcept override;
 
-	virtual jive::oport *
+	virtual jive::output *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::oport * arg) const override;
+		jive::output * arg) const override;
 
 	inline size_t
 	option() const noexcept { return option_; }
@@ -106,15 +106,15 @@ private:
 }
 }
 
-jive::oport *
+jive::output *
 jive_unify_create(
 	const jive::unn::declaration * decl,
 	size_t option,
-	jive::oport * const operand);
+	jive::output * const operand);
 
 /* empty unify node */
 
-jive::oport *
+jive::output *
 jive_empty_unify_create(
 	jive::region * region,
 	const jive::unn::declaration * decl);

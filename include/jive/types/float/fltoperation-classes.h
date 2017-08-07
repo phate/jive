@@ -28,13 +28,10 @@ public:
 
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
-	can_reduce_operand(
-		const jive::oport * arg) const noexcept override;
+	can_reduce_operand(const jive::output * arg) const noexcept override;
 
-	virtual jive::oport *
-	reduce_operand(
-		jive_unop_reduction_path_t path,
-		jive::oport * arg) const override;
+	virtual jive::output *
+	reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) const override;
 
 	virtual flt::value_repr
 	reduce_constant(
@@ -62,14 +59,14 @@ public:
 	/* reduction methods */
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
-		const jive::oport * arg1,
-		const jive::oport * arg2) const noexcept override;
+		const jive::output * arg1,
+		const jive::output * arg2) const noexcept override;
 
-	virtual jive::oport *
+	virtual jive::output *
 	reduce_operand_pair(
 		jive_binop_reduction_path_t path,
-		jive::oport * arg1,
-		jive::oport * arg2) const override;
+		jive::output * arg1,
+		jive::output * arg2) const override;
 
 	virtual flt::value_repr
 	reduce_constants(
@@ -98,14 +95,14 @@ public:
 	/* reduction methods */
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
-		const jive::oport * arg1,
-		const jive::oport * arg2) const noexcept override;
+		const jive::output * arg1,
+		const jive::output * arg2) const noexcept override;
 
-	virtual jive::oport *
+	virtual jive::output *
 	reduce_operand_pair(
 		jive_binop_reduction_path_t path,
-		jive::oport * arg1,
-		jive::oport * arg2) const override;
+		jive::output * arg1,
+		jive::output * arg2) const override;
 
 	virtual bool
 	reduce_constants(
@@ -129,8 +126,8 @@ public:
 		return o != nullptr;
 	}
 
-	static jive::oport *
-	normalized_create(jive::oport * arg)
+	static jive::output *
+	normalized_create(jive::output * arg)
 	{
 		return jive::create_normalized(arg->region(), make_unop(), {arg})[0];
 	}
@@ -171,8 +168,8 @@ public:
 		return o != nullptr;
 	}
 
-	static jive::oport *
-	normalized_create(jive::oport * arg1, jive::oport * arg2)
+	static jive::output *
+	normalized_create(jive::output * arg1, jive::output * arg2)
 	{
 		return jive::create_normalized(arg1->region(), make_binop(), {arg1, arg2})[0];
 	}
@@ -221,8 +218,8 @@ public:
 		return o != nullptr;
 	}
 
-	static jive::oport *
-	normalized_create(jive::oport * arg1, jive::oport * arg2)
+	static jive::output *
+	normalized_create(jive::output * arg1, jive::output * arg2)
 	{
 		make_cmpop op;
 		return jive::create_normalized(arg1->region(), make_cmpop(), {arg1, arg2})[0];

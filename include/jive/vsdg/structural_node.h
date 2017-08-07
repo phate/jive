@@ -25,19 +25,19 @@ private:
 	structural_input(
 		jive::structural_node * node,
 		size_t index,
-		jive::oport * origin,
+		jive::output * origin,
 		const jive::base::type & type);
 
 	structural_input(
 		jive::structural_node * node,
 		size_t index,
-		jive::oport * origin,
+		jive::output * origin,
 		jive::gate * gate);
 
 	structural_input(
 		jive::structural_node * node,
 		size_t index,
-		jive::oport * origin,
+		jive::output * origin,
 		const struct jive_resource_class * rescls);
 
 public:
@@ -53,7 +53,7 @@ private:
 	jive::structural_node * node_;
 };
 
-class structural_output final : public oport {
+class structural_output final : public output {
 	friend structural_node;
 
 public:
@@ -138,13 +138,13 @@ public:
 	output(size_t index) const noexcept override;
 
 	virtual jive::structural_input *
-	add_input(const jive::base::type * type, jive::oport * origin) override;
+	add_input(const jive::base::type * type, jive::output * origin) override;
 
 	virtual jive::structural_input *
-	add_input(jive::gate * gate, jive::oport * origin) override;
+	add_input(jive::gate * gate, jive::output * origin) override;
 
 	virtual jive::structural_input *
-	add_input(const struct jive_resource_class * rescls, jive::oport * origin) override;
+	add_input(const struct jive_resource_class * rescls, jive::output * origin) override;
 
 	virtual void
 	remove_input(size_t index) override;
@@ -162,7 +162,7 @@ public:
 	remove_output(size_t index) override;
 
 	virtual jive::structural_node *
-	copy(jive::region * region, const std::vector<jive::oport*> & operands) const override;
+	copy(jive::region * region, const std::vector<jive::output*> & operands) const override;
 
 	virtual jive::structural_node *
 	copy(jive::region * region, jive::substitution_map & smap) const override;

@@ -414,71 +414,71 @@ ule_op::copy() const
 }
 }
 
-jive::oport *
-jive_biteq(size_t nbits, jive::oport * op1, jive::oport * op2)
+jive::output *
+jive_biteq(size_t nbits, jive::output * op1, jive::output * op2)
 {
 	jive::bits::type type(nbits);
 	return jive::create_normalized(op1->region(), jive::bits::eq_op(type), {op1, op2})[0];
 }
 
-jive::oport *
-jive_bitne(size_t nbits, jive::oport * op1, jive::oport * op2)
+jive::output *
+jive_bitne(size_t nbits, jive::output * op1, jive::output * op2)
 {
 	jive::bits::type type(nbits);
 	return jive::create_normalized(op1->region(), jive::bits::ne_op(type), {op1, op2})[0];
 }
 
-jive::oport *
-jive_bitsgt(size_t nbits, jive::oport * op1, jive::oport * op2)
+jive::output *
+jive_bitsgt(size_t nbits, jive::output * op1, jive::output * op2)
 {
 	jive::bits::type type(nbits);
 	return jive::create_normalized(op1->region(), jive::bits::sgt_op(type), {op1, op2})[0];
 }
 
-jive::oport *
-jive_bitsge(size_t nbits, jive::oport * op1, jive::oport * op2)
+jive::output *
+jive_bitsge(size_t nbits, jive::output * op1, jive::output * op2)
 {
 	jive::bits::type type(nbits);
 	return jive::create_normalized(op1->region(), jive::bits::sge_op(type), {op1, op2})[0];
 }
 
-jive::oport *
-jive_bitslt(size_t nbits, jive::oport * op1, jive::oport * op2)
+jive::output *
+jive_bitslt(size_t nbits, jive::output * op1, jive::output * op2)
 {
 	jive::bits::type type(nbits);
 	return jive::create_normalized(op1->region(), jive::bits::slt_op(type), {op1, op2})[0];
 }
 
-jive::oport *
-jive_bitsle(size_t nbits, jive::oport * op1, jive::oport * op2)
+jive::output *
+jive_bitsle(size_t nbits, jive::output * op1, jive::output * op2)
 {
 	jive::bits::type type(nbits);
 	return jive::create_normalized(op1->region(), jive::bits::sle_op(type), {op1, op2})[0];
 }
 
-jive::oport *
-jive_bitugt(size_t nbits, jive::oport * op1, jive::oport * op2)
+jive::output *
+jive_bitugt(size_t nbits, jive::output * op1, jive::output * op2)
 {
 	jive::bits::type type(nbits);
 	return jive::create_normalized(op1->region(), jive::bits::ugt_op(type), {op1, op2})[0];
 }
 
-jive::oport *
-jive_bituge(size_t nbits, jive::oport * op1, jive::oport * op2)
+jive::output *
+jive_bituge(size_t nbits, jive::output * op1, jive::output * op2)
 {
 	jive::bits::type type(nbits);
 	return jive::create_normalized(op1->region(), jive::bits::uge_op(type), {op1, op2})[0];
 }
 
-jive::oport *
-jive_bitult(size_t nbits, jive::oport * op1, jive::oport * op2)
+jive::output *
+jive_bitult(size_t nbits, jive::output * op1, jive::output * op2)
 {
 	jive::bits::type type(nbits);
 	return jive::create_normalized(op1->region(), jive::bits::ult_op(type), {op1, op2})[0];
 }
 
-jive::oport *
-jive_bitule(size_t nbits, jive::oport * op1, jive::oport * op2)
+jive::output *
+jive_bitule(size_t nbits, jive::output * op1, jive::output * op2)
 {
 	jive::bits::type type(nbits);
 	return jive::create_normalized(op1->region(), jive::bits::ule_op(type), {op1, op2})[0];

@@ -19,36 +19,36 @@ namespace {
 bool
 test_reduce_operands(
 	const jive::base::binary_op & op,
-	const std::vector<jive::oport*> & args)
+	const std::vector<jive::output*> & args)
 {
 	/* pair-wise reduce */
 	if (op.is_commutative()) {
 		return base::detail::commutative_pairwise_test_reduce(
 			args,
-			[&op](jive::oport * arg1, jive::oport * arg2)
+			[&op](jive::output * arg1, jive::output * arg2)
 			{
 				return op.can_reduce_operand_pair(arg1, arg2) != jive_binop_reduction_none;
 			});
 	} else {
 		return base::detail::pairwise_test_reduce(
 			args,
-			[&op](jive::oport * arg1, jive::oport * arg2)
+			[&op](jive::output * arg1, jive::output * arg2)
 			{
 				return op.can_reduce_operand_pair(arg1, arg2) != jive_binop_reduction_none;
 			});
 	}
 }
 
-std::vector<jive::oport*>
+std::vector<jive::output*>
 reduce_operands(
 	const jive::base::binary_op & op,
-	std::vector<jive::oport*> args)
+	std::vector<jive::output*> args)
 {
 	/* pair-wise reduce */
 	if (op.is_commutative()) {
 		return base::detail::commutative_pairwise_reduce(
 			std::move(args),
-			[&op](jive::oport * arg1, jive::oport * arg2)
+			[&op](jive::output * arg1, jive::output * arg2)
 			{
 				jive_binop_reduction_path_t reduction = op.can_reduce_operand_pair(arg1, arg2);
 				return reduction != jive_binop_reduction_none
@@ -58,7 +58,7 @@ reduce_operands(
 	} else {
 		return base::detail::pairwise_reduce(
 			std::move(args),
-			[&op](jive::oport * arg1, jive::oport * arg2)
+			[&op](jive::output * arg1, jive::output * arg2)
 			{
 				jive_binop_reduction_path_t reduction = op.can_reduce_operand_pair(arg1, arg2);
 				return reduction != jive_binop_reduction_none
@@ -110,14 +110,14 @@ binary_normal_form::normalize_node(jive::node * node, const base::binary_op & op
 		return true;
 	}
 
-	std::vector<jive::oport*> args = jive_node_arguments(node);
-	std::vector<jive::oport*> new_args;
+	std::vector<jive::output*> args = jive_node_arguments(node);
+	std::vector<jive::output*> new_args;
 
 	/* possibly expand associative */
 	if (get_flatten() && op.is_associative()) {
 		new_args = base::detail::associative_flatten(
 			args,
-			[&op](jive::oport * arg) {
+			[&op](jive::output * arg) {
 				if (!arg->node())
 					return false;
 
@@ -176,7 +176,7 @@ binary_normal_form::normalize_node(jive::node * node, const base::binary_op & op
 bool
 binary_normal_form::operands_are_normalized(
 	const jive::operation & base_op,
-	const std::vector<jive::oport*> & args) const
+	const std::vector<jive::output*> & args) const
 {
 	const jive::base::binary_op& op = *static_cast<const jive::base::binary_op*>(&base_op);
 	if (!get_mutable()) {
@@ -187,7 +187,7 @@ binary_normal_form::operands_are_normalized(
 	if (get_flatten() && op.is_associative()) {
 		bool can_flatten = base::detail::associative_test_flatten(
 			args,
-			[&op](jive::oport * arg) {
+			[&op](jive::output * arg) {
 				auto operand = dynamic_cast<jive::simple_output*>(arg);
 				auto fb_op = dynamic_cast<const base::flattened_binary_op*>(&operand->node()->operation());
 				return operand->node()->operation() == op ||
@@ -211,21 +211,21 @@ binary_normal_form::operands_are_normalized(
 	return simple_normal_form::operands_are_normalized(base_op, args);
 }
 
-std::vector<jive::oport*>
+std::vector<jive::output*>
 binary_normal_form::normalized_create(
 	jive::region * region,
 	const jive::operation & base_op,
-	const std::vector<jive::oport*> & args) const
+	const std::vector<jive::output*> & args) const
 {
 	const jive::base::binary_op& op = *static_cast<const jive::base::binary_op *>(&base_op);
 
-	std::vector<jive::oport*> new_args(args.begin(), args.end());
+	std::vector<jive::output*> new_args(args.begin(), args.end());
 
 	/* possibly expand associative */
 	if (get_mutable() && get_flatten() && op.is_associative()) {
 		new_args = base::detail::associative_flatten(
 			args,
-			[&op](jive::oport* arg) {
+			[&op](jive::output* arg) {
 				if (!arg->node())
 					return false;
 				auto fb_op = dynamic_cast<const base::flattened_binary_op *>(&arg->node()->operation());
@@ -351,7 +351,7 @@ flattened_binary_normal_form::normalize_node(jive::node * node) const
 bool
 flattened_binary_normal_form::operands_are_normalized(
 	const jive::operation & base_op,
-	const std::vector<jive::oport*> & arguments) const
+	const std::vector<jive::output*> & arguments) const
 {
 	const base::flattened_binary_op & op =
 		static_cast<const base::flattened_binary_op &>(base_op);
@@ -361,11 +361,11 @@ flattened_binary_normal_form::operands_are_normalized(
 	return nf->operands_are_normalized(op.bin_operation(), arguments);
 }
 
-std::vector<jive::oport*>
+std::vector<jive::output*>
 flattened_binary_normal_form::normalized_create(
 	jive::region * region,
 	const jive::operation & base_op,
-	const std::vector<jive::oport*> & arguments) const
+	const std::vector<jive::output*> & arguments) const
 {
 	const base::flattened_binary_op & op =
 		static_cast<const base::flattened_binary_op &>(base_op);

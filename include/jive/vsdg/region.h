@@ -29,7 +29,7 @@ class simple_node;
 class structural_input;
 class structural_output;
 
-class argument final : public oport {
+class argument final : public output {
 public:
 	virtual
 	~argument() noexcept;
@@ -90,14 +90,14 @@ public:
 	result(
 		jive::region * region,
 		size_t index,
-		jive::oport * origin,
+		jive::output * origin,
 		jive::structural_output * output,
 		const jive::base::type & type);
 
 	result(
 		jive::region * region,
 		size_t index,
-		jive::oport * origin,
+		jive::output * origin,
 		jive::structural_output * output,
 		jive::gate * gate);
 
@@ -174,10 +174,10 @@ public:
 	}
 
 	jive::result *
-	add_result(jive::oport * origin, structural_output * output, const base::type & type);
+	add_result(jive::output * origin, structural_output * output, const base::type & type);
 
 	jive::result *
-	add_result(jive::oport * origin, structural_output * output, jive::gate * gate);
+	add_result(jive::output * origin, structural_output * output, jive::gate * gate);
 
 	void
 	remove_result(size_t index);
@@ -196,7 +196,7 @@ public:
 	}
 
 	jive::simple_node *
-	add_simple_node(const jive::operation & op, const std::vector<jive::oport*> & operands);
+	add_simple_node(const jive::operation & op, const std::vector<jive::output*> & operands);
 
 	jive::structural_node *
 	add_structural_node(const jive::operation & op, size_t nsubregions);

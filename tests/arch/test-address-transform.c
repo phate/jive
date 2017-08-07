@@ -46,7 +46,7 @@ test_address_transform(void)
 	jive_label_external write_label;
 	jive_label_external_init(&write_label, "write", &write_symbol);
 	auto label = jive_label_to_address_create(graph.root(), &write_label.base);
-	jive::oport * tmparray2[] = {memberof, containerof};
+	jive::output * tmparray2[] = {memberof, containerof};
 	const jive::base::type * tmparray3[] = {&addr, &addr};
 	jive::node * call = jive_call_by_address_node_create(graph.root(),
 		label, NULL,
@@ -58,7 +58,7 @@ test_address_transform(void)
 
 	auto arrayindex = jive_arrayindex(call->output(0), call->output(1), &addr, &bits64);
 
-	jive::oport * state = top->output(2);
+	auto state = top->output(2);
 	auto load = jive_load_by_address_create(arraysub, &addr, 1, &state);
 	auto store = jive_store_by_address_create(arraysub, &bits64, arrayindex, 1, &state)[0]->node();
 
@@ -136,7 +136,7 @@ test_apply_transform(void)
 	jive::fct::type fcttype({&addrtype}, {&addrtype});
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&fcttype, &addrtype});
 
-	jive::oport * address = top->output(1);
+	auto address = top->output(1);
 	auto results = jive_apply_create(top->output(0), 1, &address);
 
 	auto bottom = jive::test::simple_node_create(graph.root(), {&addrtype}, {results.begin(),

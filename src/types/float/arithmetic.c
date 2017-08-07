@@ -22,32 +22,32 @@ const char fltsum_name[] = "FLTSUM";
 }
 }
 
-jive::oport *
-jive_fltdifference(jive::oport * arg1, jive::oport * arg2)
+jive::output *
+jive_fltdifference(jive::output * arg1, jive::output * arg2)
 {
 	return jive::flt::sub_op::normalized_create(arg1, arg2);
 }
 
-jive::oport *
-jive_fltnegate(jive::oport * arg)
+jive::output *
+jive_fltnegate(jive::output * arg)
 {
 	return jive::flt::neg_op::normalized_create(arg);
 }
 
-jive::oport *
-jive_fltproduct(jive::oport * arg1, jive::oport * arg2)
+jive::output *
+jive_fltproduct(jive::output * arg1, jive::output * arg2)
 {
 	return jive::flt::mul_op::normalized_create(arg1, arg2);
 }
 
-jive::oport *
-jive_fltquotient(jive::oport * arg1, jive::oport * arg2)
+jive::output *
+jive_fltquotient(jive::output * arg1, jive::output * arg2)
 {
 	return jive::flt::div_op::normalized_create(arg1, arg2);
 }
 
-jive::oport *
-jive_fltsum(jive::oport * arg1, jive::oport * arg2)
+jive::output *
+jive_fltsum(jive::output * arg1, jive::output * arg2)
 {
 	return jive::flt::add_op::normalized_create(arg1, arg2);
 }

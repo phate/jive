@@ -59,7 +59,7 @@ class memlayout_mapper;
 
 }
 
-jive::oport *
+jive::output *
 jive_sizeof_create(jive::region * region, const jive::value::type * type);
 
 void

@@ -68,17 +68,17 @@ static inline jive::node *
 simple_node_create(
 	jive::region * region,
 	const std::vector<const jive::base::type*> & operand_types,
-	const std::vector<jive::oport*> & operands,
+	const std::vector<jive::output*> & operands,
 	const std::vector<const jive::base::type*> & result_types)
 {
 	return region->add_simple_node(jive::test::simple_op(operand_types, result_types), operands);
 }
 
-static inline std::vector<jive::oport*>
+static inline std::vector<jive::output*>
 simple_node_normalized_create(
 	jive::region * r,
 	const std::vector<const jive::base::type*> & operand_types,
-	const std::vector<jive::oport*> & operands,
+	const std::vector<jive::output*> & operands,
 	const std::vector<const jive::base::type*> & result_types)
 {
 	jive::test::simple_op op(operand_types, result_types);

@@ -137,7 +137,7 @@ public:
 	{
 	}
 
-	virtual jive::oport *
+	virtual jive::output *
 	value_parameter(
 		jive_subroutine & subroutine,
 		size_t index) override
@@ -232,8 +232,8 @@ typedef struct jive_i386_stackptr_split_factory {
 	ssize_t offset;
 } jive_i386_stackptr_split_factory;
 
-static jive::oport *
-do_stackptr_sub(const jive_value_split_factory * self_, jive::oport * value)
+static jive::output *
+do_stackptr_sub(const jive_value_split_factory * self_, jive::output * value)
 {
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
 	int64_t immediates[1] = {self->offset};
@@ -244,8 +244,8 @@ do_stackptr_sub(const jive_value_split_factory * self_, jive::oport * value)
 		&value, immediates)->output(0);
 }
 
-static jive::oport *
-do_stackptr_add(const jive_value_split_factory * self_, jive::oport * value)
+static jive::output *
+do_stackptr_add(const jive_value_split_factory * self_, jive::output * value)
 {
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
 	int64_t immediates[1] = {self->offset};

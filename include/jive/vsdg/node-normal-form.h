@@ -24,7 +24,6 @@ namespace jive {
 class graph;
 class node;
 class operation;
-class oport;
 class output;
 class region;
 
@@ -56,7 +55,7 @@ public:
 	virtual bool
 	operands_are_normalized(
 		const jive::operation & op,
-		const std::vector<jive::oport*> & arguments) const;
+		const std::vector<jive::output*> & arguments) const;
 
 	inline node_normal_form *
 	parent() const noexcept { return parent_; }

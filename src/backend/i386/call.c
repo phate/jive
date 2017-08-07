@@ -45,7 +45,7 @@ jive_i386_call_node_substitute(
 			&jive::i386::instr_call::instance(),
 			0, &imm);
 	} else {
-		jive::oport *  tmparray0[] = {address};
+		jive::output *  tmparray0[] = {address};
 		/* FIXME: cast address to bitstring first */
 		call_instr = jive_instruction_node_create(
 			region,
@@ -104,7 +104,7 @@ jive_i386_call_node_substitute(
 	}
 	for (size_t n = op.result_types().size(); n < node->noutputs(); n++) {
 		auto orig_output = dynamic_cast<jive::simple_output*>(node->output(n));
-		jive::oport * new_output;
+		jive::output * new_output;
 		if (orig_output->gate()) {
 			new_output = call_instr->add_output(orig_output->gate());
 		} else {

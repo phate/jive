@@ -61,13 +61,13 @@ split_operation::result_cls(size_t index) const noexcept
 
 /* reduction methods */
 jive_unop_reduction_path_t
-split_operation::can_reduce_operand(const jive::oport * arg) const noexcept
+split_operation::can_reduce_operand(const jive::output * arg) const noexcept
 {
 	return jive_unop_reduction_none;
 }
 
-jive::oport *
-split_operation::reduce_operand(jive_unop_reduction_path_t path, jive::oport * arg) const
+jive::output *
+split_operation::reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) const
 {
 	return nullptr;
 }
@@ -82,7 +82,7 @@ split_operation::copy() const
 
 jive::node *
 jive_splitnode_create(jive::region * region,
-	jive::oport * in_origin,
+	jive::output * in_origin,
 	const struct jive_resource_class * in_class,
 	const struct jive_resource_class * out_class)
 {

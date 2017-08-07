@@ -174,7 +174,7 @@ public:
 	}
 
 	inline void
-	begin(jive::oport * predicate)
+	begin(jive::output * predicate)
 	{
 		if (node_)
 			return;
@@ -190,7 +190,7 @@ public:
 	}
 
 	inline std::shared_ptr<jive::entryvar>
-	add_entryvar(jive::oport * origin)
+	add_entryvar(jive::output * origin)
 	{
 		if (!node_)
 			return nullptr;
@@ -203,7 +203,7 @@ public:
 	}
 
 	inline std::shared_ptr<jive::exitvar>
-	add_exitvar(const std::vector<jive::oport*> & values)
+	add_exitvar(const std::vector<jive::output*> & values)
 	{
 		if (!node_)
 			return nullptr;

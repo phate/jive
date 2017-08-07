@@ -72,7 +72,7 @@ is_powerof2(size_t v)
 }
 
 static void
-squeeze_data_items(std::vector<jive::oport*> & items)
+squeeze_data_items(std::vector<jive::output*> & items)
 {
 	size_t k = 0;
 	for (size_t n = 0; n < items.size(); n++) {
@@ -82,14 +82,14 @@ squeeze_data_items(std::vector<jive::oport*> & items)
 	items.resize(k);
 }
 
-static std::vector<jive::oport*>
+static std::vector<jive::output*>
 flatten_data_items(
-	jive::oport * data,
+	jive::output * data,
 	jive::memlayout_mapper * layout_mapper)
 {
 	auto tmp = dynamic_cast<jive::simple_output*>(data);
 
-	std::vector<jive::oport*> items;
+	std::vector<jive::output*> items;
 	const jive::base::type * type_ = &data->type();
 	if (dynamic_cast<const jive::bits::type*>(type_)) {
 		const jive::bits::type * type = static_cast<const jive::bits::type*>(type_);
@@ -163,13 +163,13 @@ flatten_data_items(
 	return items;
 }
 
-static jive::oport *
+static jive::output *
 jive_dataobj_internal(
-	jive::oport * data,
+	jive::output * data,
 	jive::memlayout_mapper * layout_mapper,
 	jive::region * parent)
 {
-	std::vector<jive::oport*> data_items = flatten_data_items(data, layout_mapper);
+	auto data_items = flatten_data_items(data, layout_mapper);
 	squeeze_data_items(data_items);
 
 	std::vector<std::unique_ptr<const jive::base::type>> types;
@@ -183,22 +183,22 @@ jive_dataobj_internal(
 	return node->add_output(&jive::addr::type::instance());
 }
 
-jive::oport *
-jive_dataobj(jive::oport * data, jive::memlayout_mapper * layout_mapper)
+jive::output *
+jive_dataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
 	jive::region * parent = data->region()->graph()->root();
 	return jive_dataobj_internal(data, layout_mapper, parent);
 }
 
-jive::oport *
-jive_rodataobj(jive::oport * data, jive::memlayout_mapper * layout_mapper)
+jive::output *
+jive_rodataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
 	jive::region * parent = data->region()->graph()->root();
 	return jive_dataobj_internal(data, layout_mapper, parent);
 }
 
-jive::oport *
-jive_bssobj(jive::oport * data, jive::memlayout_mapper * layout_mapper)
+jive::output *
+jive_bssobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
 	jive::region * parent = data->region()->graph()->root();
 	return jive_dataobj_internal(data, layout_mapper, parent);

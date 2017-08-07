@@ -33,13 +33,12 @@ public:
 	nresults() const noexcept override;
 
 	virtual jive_unop_reduction_path_t
-	can_reduce_operand(
-		const jive::oport * arg) const noexcept = 0;
+	can_reduce_operand(const jive::output * arg) const noexcept = 0;
 
-	virtual jive::oport *
+	virtual jive::output *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::oport * arg) const = 0;
+		jive::output * arg) const = 0;
 };
 
 }

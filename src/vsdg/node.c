@@ -33,7 +33,7 @@ input::~input() noexcept
 
 input::input(
 	size_t index,
-	jive::oport * origin,
+	jive::output * origin,
 	jive::region * region,
 	const jive::base::type & type)
 	: index_(index)
@@ -56,7 +56,7 @@ input::input(
 
 input::input(
 	size_t index,
-	jive::oport * origin,
+	jive::output * origin,
 	jive::region * region,
 	jive::gate * gate)
 	: index_(index)
@@ -81,7 +81,7 @@ input::input(
 
 input::input(
 	size_t index,
-	jive::oport * origin,
+	jive::output * origin,
 	jive::region * region,
 	const struct jive_resource_class * rescls)
 	: index_(index)
@@ -113,7 +113,7 @@ input::debug_string() const
 }
 
 void
-input::divert_origin(jive::oport * new_origin)
+input::divert_origin(jive::output * new_origin)
 {
 	if (type() != new_origin->type())
 		throw jive::type_error(type().debug_string(), new_origin->type().debug_string());
@@ -131,41 +131,41 @@ input::divert_origin(jive::oport * new_origin)
 	region()->graph()->on_input_change(this, old_origin, new_origin);
 }
 
-/* oport */
+/* output */
 
-oport::~oport()
+output::~output()
 {
 	JIVE_DEBUG_ASSERT(nusers() == 0);
 
 	if (gate())
-		JIVE_LIST_REMOVE(gate()->oports, this, gate_oport_list);
+		JIVE_LIST_REMOVE(gate()->outputs, this, gate_output_list);
 }
 
-oport::oport(size_t index)
+output::output(size_t index)
 	: index_(index)
 	, gate_(nullptr)
 	, rescls_(&jive_root_resource_class)
 {
-	gate_oport_list.prev = gate_oport_list.next = nullptr;
+	gate_output_list.prev = gate_output_list.next = nullptr;
 }
 
-oport::oport(size_t index, jive::gate * gate)
+output::output(size_t index, jive::gate * gate)
 	: index_(index)
 	, gate_(gate)
 	, rescls_(gate->rescls())
 {
-	gate_oport_list.prev = gate_oport_list.next = nullptr;
-	JIVE_LIST_PUSH_BACK(gate->oports, this, gate_oport_list);
+	gate_output_list.prev = gate_output_list.next = nullptr;
+	JIVE_LIST_PUSH_BACK(gate->outputs, this, gate_output_list);
 }
 
-oport::oport(size_t index, const struct jive_resource_class * rescls)
+output::output(size_t index, const struct jive_resource_class * rescls)
 	: index_(index)
 	, gate_(nullptr)
 	, rescls_(rescls)
 {}
 
 std::string
-oport::debug_string() const
+output::debug_string() const
 {
 	if (gate())
 		return gate()->debug_string();
@@ -174,7 +174,7 @@ oport::debug_string() const
 }
 
 void
-oport::remove_user(jive::input * user)
+output::remove_user(jive::input * user)
 {
 	JIVE_DEBUG_ASSERT(users_.find(user) != users_.end());
 
@@ -184,7 +184,7 @@ oport::remove_user(jive::input * user)
 }
 
 void
-oport::add_user(jive::input * user)
+output::add_user(jive::input * user)
 {
 	JIVE_DEBUG_ASSERT(users_.find(user) == users_.end());
 
@@ -205,7 +205,7 @@ gate::gate(
 	, type_(type.copy())
 {
 	inputs.first = inputs.last = nullptr;
-	oports.first = oports.last = nullptr;
+	outputs.first = outputs.last = nullptr;
 	may_spill = true;
 	graph_gate_list.prev = graph_gate_list.next = nullptr;
 
@@ -222,7 +222,7 @@ gate::gate(
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
 	inputs.first = inputs.last = nullptr;
-	oports.first = oports.last = nullptr;
+	outputs.first = outputs.last = nullptr;
 	may_spill = true;
 	graph_gate_list.prev = graph_gate_list.next = nullptr;
 
@@ -232,7 +232,7 @@ gate::gate(
 gate::~gate() noexcept
 {
 	JIVE_DEBUG_ASSERT(inputs.first == nullptr && inputs.last == nullptr);
-	JIVE_DEBUG_ASSERT(oports.first == nullptr && oports.last == nullptr);
+	JIVE_DEBUG_ASSERT(outputs.first == nullptr && outputs.last == nullptr);
 
 	JIVE_LIST_REMOVE(graph()->gates, this, graph_gate_list);
 }
@@ -362,7 +362,7 @@ static bool
 jive_node_cse_test(
 	jive::node * node,
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments)
+	const std::vector<jive::output*> & arguments)
 {
 	return (node->operation() == op && arguments == jive_node_arguments(node));
 }
@@ -371,7 +371,7 @@ jive::node *
 jive_node_cse(
 	jive::region * region,
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments)
+	const std::vector<jive::output*> & arguments)
 {
 	if (!arguments.empty()) {
 		for (const auto & user : *arguments[0]) {

@@ -161,7 +161,7 @@ jive_subroutine_end(jive_subroutine & self)
 	return self.node;
 }
 
-jive::oport *
+jive::output *
 jive_subroutine_simple_get_argument(
 	jive_subroutine & self,
 	size_t index)
@@ -178,7 +178,7 @@ jive_subroutine_simple_set_result(
 	self.hl_builder->value_return(self, index, value);
 }
 
-jive::oport *
+jive::output *
 jive_subroutine_simple_get_global_state(const jive_subroutine & self)
 {
 	return self.builder_state->passthroughs[0].output;

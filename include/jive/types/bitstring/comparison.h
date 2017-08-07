@@ -275,34 +275,34 @@ public:
 }
 }
 
-jive::oport *
-jive_biteq(size_t nbits, jive::oport * operand1, jive::oport * operand2);
+jive::output *
+jive_biteq(size_t nbits, jive::output * operand1, jive::output * operand2);
 
-jive::oport *
-jive_bitne(size_t nbits, jive::oport * operand1, jive::oport * operand2);
+jive::output *
+jive_bitne(size_t nbits, jive::output * operand1, jive::output * operand2);
 
-jive::oport *
-jive_bitsgt(size_t nbits, jive::oport * operand1, jive::oport * operand2);
+jive::output *
+jive_bitsgt(size_t nbits, jive::output * operand1, jive::output * operand2);
 
-jive::oport *
-jive_bitsge(size_t nbits, jive::oport * operand1, jive::oport * operand2);
+jive::output *
+jive_bitsge(size_t nbits, jive::output * operand1, jive::output * operand2);
 
-jive::oport *
-jive_bitslt(size_t nbits, jive::oport * operand1, jive::oport * operand2);
+jive::output *
+jive_bitslt(size_t nbits, jive::output * operand1, jive::output * operand2);
 
-jive::oport *
-jive_bitsle(size_t nbits, jive::oport * operand1, jive::oport * operand2);
+jive::output *
+jive_bitsle(size_t nbits, jive::output * operand1, jive::output * operand2);
 
-jive::oport *
-jive_bitugt(size_t nbits, jive::oport * operand1, jive::oport * operand2);
+jive::output *
+jive_bitugt(size_t nbits, jive::output * operand1, jive::output * operand2);
 
-jive::oport *
-jive_bituge(size_t nbits, jive::oport * operand1, jive::oport * operand2);
+jive::output *
+jive_bituge(size_t nbits, jive::output * operand1, jive::output * operand2);
 
-jive::oport *
-jive_bitult(size_t nbits, jive::oport * operand1, jive::oport * operand2);
+jive::output *
+jive_bitult(size_t nbits, jive::output * operand1, jive::output * operand2);
 
-jive::oport *
-jive_bitule(size_t nbits, jive::oport * operand1, jive::oport * operand2);
+jive::output *
+jive_bitule(size_t nbits, jive::output * operand1, jive::output * operand2);
 
 #endif

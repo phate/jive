@@ -29,20 +29,20 @@ public:
 	{}
 
 	inline bool
-	exists(const jive::oport * output) const noexcept
+	exists(const jive::output * output) const noexcept
 	{
 		return literals_.find(output) != literals_.end();
 	}
 
 	inline const literal *
-	lookup(const jive::oport * output) const noexcept
+	lookup(const jive::output * output) const noexcept
 	{
 		JIVE_DEBUG_ASSERT(exists(output));
 		return literals_.find(output)->second.get();
 	}
 
 	void
-	insert(const jive::oport * output, const literal * v)
+	insert(const jive::output * output, const literal * v)
 	{
 		JIVE_DEBUG_ASSERT(!exists(output));
 		JIVE_DEBUG_ASSERT(output->type() == v->type());
@@ -50,7 +50,7 @@ public:
 	}
 
 private:
-	std::unordered_map<const jive::oport *, std::unique_ptr<const literal>> literals_;
+	std::unordered_map<const jive::output *, std::unique_ptr<const literal>> literals_;
 };
 
 class context final {
@@ -138,7 +138,7 @@ public:
 	}
 
 	inline bool
-	exists(const jive::oport * output) const noexcept
+	exists(const jive::output * output) const noexcept
 	{
 		jive::region * region = output->region();
 
@@ -158,7 +158,7 @@ public:
 	}
 
 	inline const literal *
-	lookup(const jive::oport * output) const noexcept
+	lookup(const jive::output * output) const noexcept
 	{
 		jive::region * region = output->region();
 
@@ -172,7 +172,7 @@ public:
 	}
 
 	void
-	insert(const jive::oport * output, const literal * v)
+	insert(const jive::output * output, const literal * v)
 	{
 		JIVE_DEBUG_ASSERT(!exists(output));
 		frames_.find(output->region())->second.back()->insert(output, v);

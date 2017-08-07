@@ -65,12 +65,12 @@ public:
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::oport * arg) const noexcept override;
+		const jive::output * arg) const noexcept override;
 
-	virtual jive::oport *
+	virtual jive::output *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::oport * arg) const override;
+		jive::output * arg) const override;
 
 	inline size_t nbits() const noexcept { return nbits_; }
 	inline const jive::base::type & original_type() const noexcept { return *original_type_; }
@@ -130,12 +130,12 @@ public:
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::oport * arg) const noexcept override;
+		const jive::output * arg) const noexcept override;
 
-	virtual jive::oport *
+	virtual jive::output *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::oport * arg) const override;
+		jive::output * arg) const override;
 
 	inline size_t nbits() const noexcept { return nbits_; }
 	inline const jive::base::type & original_type() const noexcept { return *original_type_; }
@@ -155,14 +155,14 @@ class memlayout_mapper;
 
 /* address_to_bitstring node */
 
-jive::oport *
-jive_address_to_bitstring_create(jive::oport * address, size_t nbits,
+jive::output *
+jive_address_to_bitstring_create(jive::output * address, size_t nbits,
 	const jive::base::type * original_type);
 
 /* bitstring_to_address node */
 
-jive::oport *
-jive_bitstring_to_address_create(jive::oport * bitstring, size_t nbits,
+jive::output *
+jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
 	const jive::base::type * original_type);
 
 /* reductions */

@@ -19,7 +19,7 @@ static std::string
 region_to_string(
 	const jive::region * region,
 	size_t depth,
-	std::unordered_map<oport*, std::string> &);
+	std::unordered_map<output*, std::string> &);
 
 static inline std::string
 indent(size_t depth)
@@ -28,7 +28,7 @@ indent(size_t depth)
 }
 
 static inline std::string
-create_port_name(const jive::oport * port, std::unordered_map<oport*, std::string> & map)
+create_port_name(const jive::output * port, std::unordered_map<output*, std::string> & map)
 {
 	std::string name = dynamic_cast<const jive::argument*>(port) ? "a" : "o";
 	name += jive::detail::strfmt(map.size());
@@ -39,7 +39,7 @@ static inline std::string
 node_to_string(
 	const jive::node * node,
 	size_t depth,
-	std::unordered_map<oport*, std::string> & map)
+	std::unordered_map<output*, std::string> & map)
 {
 	std::string s(indent(depth));
 	for (size_t n = 0; n < node->noutputs(); n++) {
@@ -66,7 +66,7 @@ node_to_string(
 }
 
 static inline std::string
-region_header(const jive::region * region, std::unordered_map<oport*, std::string> & map)
+region_header(const jive::region * region, std::unordered_map<output*, std::string> & map)
 {
 	std::string header("[");
 	for (size_t n = 0; n < region->narguments(); n++) {
@@ -90,7 +90,7 @@ static inline std::string
 region_body(
 	const jive::region * region,
 	size_t depth,
-	std::unordered_map<oport*, std::string> & map)
+	std::unordered_map<output*, std::string> & map)
 {
 	std::vector<std::vector<const jive::node*>> context;
 	for (const auto & node : region->nodes) {
@@ -109,7 +109,7 @@ region_body(
 }
 
 static inline std::string
-region_footer(const jive::region * region, std::unordered_map<oport*, std::string> & map)
+region_footer(const jive::region * region, std::unordered_map<output*, std::string> & map)
 {
 	std::string footer("}[");
 	for (size_t n = 0; n < region->nresults(); n++) {
@@ -132,7 +132,7 @@ static inline std::string
 region_to_string(
 	const jive::region * region,
 	size_t depth,
-	std::unordered_map<oport*, std::string> & map)
+	std::unordered_map<output*, std::string> & map)
 {
 	std::string s;
 	s = indent(depth) + region_header(region, map) + "\n";
@@ -144,7 +144,7 @@ region_to_string(
 std::string
 view(const jive::region * region)
 {
-	std::unordered_map<oport*, std::string> map;
+	std::unordered_map<output*, std::string> map;
 	return region_to_string(region, 0, map);
 }
 
@@ -210,7 +210,7 @@ xml_footer()
 }
 
 static inline std::string
-id(const jive::oport * port)
+id(const jive::output * port)
 {
 	return detail::strfmt("o", (intptr_t)port);
 }

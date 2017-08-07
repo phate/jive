@@ -69,16 +69,16 @@ extern template class domain_const_op<
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
-jive::oport *
+jive::output *
 jive_bitconstant(jive::region * region, size_t nbits, const char bits[]);
 
-jive::oport *
+jive::output *
 jive_bitconstant_unsigned(jive::region * region, size_t nbits, uint64_t value);
 
-jive::oport *
+jive::output *
 jive_bitconstant_signed(jive::region * region, size_t nbits, int64_t value);
 
-static inline jive::oport *
+static inline jive::output *
 jive_bitconstant_undefined(jive::region * region, size_t nbits)
 {
 	size_t i;
@@ -89,7 +89,7 @@ jive_bitconstant_undefined(jive::region * region, size_t nbits)
 	return jive_bitconstant(region, nbits, bits);
 }
 
-static inline jive::oport *
+static inline jive::output *
 jive_bitconstant_defined(jive::region * region, size_t nbits)
 {
 	size_t i;

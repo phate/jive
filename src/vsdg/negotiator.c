@@ -70,15 +70,15 @@ negotiator_split_operation::debug_string() const
 
 jive_unop_reduction_path_t
 negotiator_split_operation::can_reduce_operand(
-	const jive::oport * arg) const noexcept
+	const jive::output * arg) const noexcept
 {
 	return jive_unop_reduction_none;
 }
 
-jive::oport *
+jive::output *
 negotiator_split_operation::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::oport * arg) const
+	jive::output * arg) const
 {
 	return nullptr;
 }
@@ -540,7 +540,7 @@ jive_negotiator_create_input_connection(jive_negotiator * self, jive::simple_inp
 }
 
 jive_negotiator_connection *
-jive_negotiator_create_output_connection(jive_negotiator * self, jive::oport * output)
+jive_negotiator_create_output_connection(jive_negotiator * self, jive::output * output)
 {
 	jive_negotiator_connection * connection = 0;
 	for (const auto & user : *output) {

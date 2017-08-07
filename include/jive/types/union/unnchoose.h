@@ -48,12 +48,12 @@ public:
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::oport * arg) const noexcept override;
+		const jive::output * arg) const noexcept override;
 
-	virtual jive::oport *
+	virtual jive::output *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::oport * arg) const override;
+		jive::output * arg) const override;
 
 	inline size_t
 	element() const noexcept { return element_; }
@@ -69,7 +69,7 @@ private:
 }
 }
 
-jive::oport *
-jive_choose_create(size_t element, jive::oport * operand);
+jive::output *
+jive_choose_create(size_t element, jive::output * operand);
 
 #endif

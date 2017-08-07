@@ -33,7 +33,7 @@ static int _test_rcdgroup(void)
 	static jive::rcd::type rcdtype_empty(decl_empty);
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&bits8, &bits16, &bits32});
-	jive::oport * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
+	jive::output * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
 
 	auto g0 = jive_group_create(decl, 3, tmparray1);
 	auto g1 = jive_empty_group_create(&graph, decl_empty);
@@ -75,7 +75,7 @@ static int _test_rcdselect()
 	auto a4 = graph.root()->add_argument(nullptr, rcdtype);
 	auto a5 = graph.root()->add_argument(nullptr, addrtype);
 
-	std::vector<jive::oport*> args({a1, a2, a3});
+	std::vector<jive::output*> args({a1, a2, a3});
 	auto g0 = jive_group_create(decl, 3, &args[0]);
 	auto load = jive_load_by_address_create(a5, &rcdtype, 0, NULL);
 

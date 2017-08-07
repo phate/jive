@@ -51,7 +51,7 @@ static int function_test_call(void)
 
 	auto constant = jive_bitconstant(graph.root(), 8, "00001111" ) ;
 	auto func = graph.import(ftype, "sin");
-	jive::oport *  tmparray2[] = { constant };
+	jive::output *  tmparray2[] = { constant };
 	auto ret = jive_apply_create(func, 1, tmparray2)[0];
 
 	assert(ret->type() == btype);
