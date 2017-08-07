@@ -82,7 +82,7 @@ private:
 	std::unique_ptr<jive::base::type> type_;
 };
 
-class result final : public iport {
+class result final : public input {
 public:
 	virtual
 	~result() noexcept;

@@ -167,7 +167,7 @@ public:
 		return node_ ? node_->subregion(n) : nullptr;
 	}
 
-	inline jive::iport *
+	inline jive::input *
 	predicate() const noexcept
 	{
 		return node_ ? node_->input(0) : nullptr;

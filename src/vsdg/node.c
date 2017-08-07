@@ -21,17 +21,17 @@
 
 namespace jive {
 
-/* iport */
+/* input */
 
-iport::~iport() noexcept
+input::~input() noexcept
 {
 	origin()->remove_user(this);
 
 	if (gate())
-		JIVE_LIST_REMOVE(gate()->iports, this, gate_iport_list);
+		JIVE_LIST_REMOVE(gate()->inputs, this, gate_input_list);
 }
 
-iport::iport(
+input::input(
 	size_t index,
 	jive::oport * origin,
 	jive::region * region,
@@ -43,7 +43,7 @@ iport::iport(
 	, type_(type.copy())
 	, rescls_(&jive_root_resource_class)
 {
-	gate_iport_list.prev = gate_iport_list.next = nullptr;
+	gate_input_list.prev = gate_input_list.next = nullptr;
 
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
@@ -54,7 +54,7 @@ iport::iport(
 	origin->add_user(this);
 }
 
-iport::iport(
+input::input(
 	size_t index,
 	jive::oport * origin,
 	jive::region * region,
@@ -66,7 +66,7 @@ iport::iport(
 	, type_(gate->type().copy())
 	, rescls_(gate->rescls())
 {
-	gate_iport_list.prev = gate_iport_list.next = nullptr;
+	gate_input_list.prev = gate_input_list.next = nullptr;
 
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
@@ -74,12 +74,12 @@ iport::iport(
 	if (gate->type() != origin->type())
 		throw jive::type_error(gate->type().debug_string(), origin->type().debug_string());
 
-	JIVE_LIST_PUSH_BACK(gate->iports, this, gate_iport_list);
+	JIVE_LIST_PUSH_BACK(gate->inputs, this, gate_input_list);
 
 	origin->add_user(this);
 }
 
-iport::iport(
+input::input(
 	size_t index,
 	jive::oport * origin,
 	jive::region * region,
@@ -91,7 +91,7 @@ iport::iport(
 	, type_(jive_resource_class_get_type(rescls)->copy())
 	, rescls_(rescls)
 {
-	gate_iport_list.prev = gate_iport_list.next = nullptr;
+	gate_input_list.prev = gate_input_list.next = nullptr;
 
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
@@ -104,7 +104,7 @@ iport::iport(
 }
 
 std::string
-iport::debug_string() const
+input::debug_string() const
 {
 	if (gate())
 		return gate()->debug_string();
@@ -113,7 +113,7 @@ iport::debug_string() const
 }
 
 void
-iport::divert_origin(jive::oport * new_origin)
+input::divert_origin(jive::oport * new_origin)
 {
 	if (type() != new_origin->type())
 		throw jive::type_error(type().debug_string(), new_origin->type().debug_string());
@@ -128,7 +128,7 @@ iport::divert_origin(jive::oport * new_origin)
 
 	if (node()) node()->recompute_depth();
 	region()->graph()->mark_denormalized();
-	region()->graph()->on_iport_change(this, old_origin, new_origin);
+	region()->graph()->on_input_change(this, old_origin, new_origin);
 }
 
 /* oport */
@@ -174,7 +174,7 @@ oport::debug_string() const
 }
 
 void
-oport::remove_user(jive::iport * user)
+oport::remove_user(jive::input * user)
 {
 	JIVE_DEBUG_ASSERT(users_.find(user) != users_.end());
 
@@ -184,7 +184,7 @@ oport::remove_user(jive::iport * user)
 }
 
 void
-oport::add_user(jive::iport * user)
+oport::add_user(jive::input * user)
 {
 	JIVE_DEBUG_ASSERT(users_.find(user) == users_.end());
 
@@ -204,7 +204,7 @@ gate::gate(
 	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {
-	iports.first = iports.last = nullptr;
+	inputs.first = inputs.last = nullptr;
 	oports.first = oports.last = nullptr;
 	may_spill = true;
 	graph_gate_list.prev = graph_gate_list.next = nullptr;
@@ -221,7 +221,7 @@ gate::gate(
 	, rescls_(rescls)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
-	iports.first = iports.last = nullptr;
+	inputs.first = inputs.last = nullptr;
 	oports.first = oports.last = nullptr;
 	may_spill = true;
 	graph_gate_list.prev = graph_gate_list.next = nullptr;
@@ -231,7 +231,7 @@ gate::gate(
 
 gate::~gate() noexcept
 {
-	JIVE_DEBUG_ASSERT(iports.first == nullptr && iports.last == nullptr);
+	JIVE_DEBUG_ASSERT(inputs.first == nullptr && inputs.last == nullptr);
 	JIVE_DEBUG_ASSERT(oports.first == nullptr && oports.last == nullptr);
 
 	JIVE_LIST_REMOVE(graph()->gates, this, graph_gate_list);

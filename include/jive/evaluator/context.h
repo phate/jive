@@ -132,7 +132,7 @@ public:
 	}
 
 	inline bool
-	exists(const jive::iport * input) const noexcept
+	exists(const jive::input * input) const noexcept
 	{
 		return exists(input->origin());
 	}
@@ -152,7 +152,7 @@ public:
 	}
 
 	inline const literal *
-	lookup(const jive::iport * input) const noexcept
+	lookup(const jive::input * input) const noexcept
 	{
 		return lookup(input->origin());
 	}

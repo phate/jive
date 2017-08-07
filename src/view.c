@@ -216,7 +216,7 @@ id(const jive::oport * port)
 }
 
 static inline std::string
-id(const jive::iport * port)
+id(const jive::input * port)
 {
 	return detail::strfmt("i", (intptr_t)port);
 }

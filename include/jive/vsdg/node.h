@@ -33,40 +33,40 @@ class oport;
 class output;
 class substitution_map;
 
-/* iports */
+/* inputs */
 
-class iport {
+class input {
 public:
 	virtual
-	~iport() noexcept;
+	~input() noexcept;
 
-	iport(
+	input(
 		size_t index,
 		jive::oport * origin,
 		jive::region * region,
 		const jive::base::type & type);
 
-	iport(
+	input(
 		size_t index,
 		jive::oport * origin,
 		jive::region * region,
 		jive::gate * gate);
 
-	iport(
+	input(
 		size_t index,
 		jive::oport * origin,
 		jive::region * region,
 		const struct jive_resource_class * rescls);
 
-	iport(const iport &) = delete;
+	input(const input &) = delete;
 
-	iport(const iport &&) = delete;
+	input(const input &&) = delete;
 
-	iport &
-	operator=(const iport &) = delete;
+	input &
+	operator=(const input &) = delete;
 
-	iport &
-	operator=(const iport &&) = delete;
+	input &
+	operator=(const input &&) = delete;
 
 	inline size_t
 	index() const noexcept
@@ -114,9 +114,9 @@ public:
 	debug_string() const;
 
 	struct {
-		jive::iport * prev;
-		jive::iport * next;
-	} gate_iport_list;
+		jive::input * prev;
+		jive::input * next;
+	} gate_input_list;
 
 protected:
 	inline void
@@ -137,9 +137,9 @@ private:
 /* oports */
 
 class oport {
-	friend iport;
+	friend input;
 
-	typedef std::unordered_set<jive::iport*>::const_iterator user_iterator;
+	typedef std::unordered_set<jive::input*>::const_iterator user_iterator;
 
 public:
 	virtual
@@ -230,14 +230,14 @@ protected:
 
 private:
 	void
-	remove_user(jive::iport * user);
+	remove_user(jive::input * user);
 
 	void
-	add_user(jive::iport * user);
+	add_user(jive::input * user);
 
 	size_t index_;
 	jive::gate * gate_;
-	std::unordered_set<jive::iport*> users_;
+	std::unordered_set<jive::input*> users_;
 	const struct jive_resource_class * rescls_;
 };
 
@@ -299,9 +299,9 @@ public:
 	} graph_gate_list;
 
 	struct {
-		jive::iport * first;
-		jive::iport * last;
-	} iports;
+		jive::input * first;
+		jive::input * last;
+	} inputs;
 
 	struct {
 		jive::oport * first;
@@ -362,13 +362,13 @@ public:
 		return operation_->narguments();
 	}
 
-	virtual jive::iport *
+	virtual jive::input *
 	add_input(const jive::base::type * type, jive::oport * origin) = 0;
 
-	virtual jive::iport *
+	virtual jive::input *
 	add_input(jive::gate * gate, jive::oport * origin) = 0;
 
-	virtual jive::iport *
+	virtual jive::input *
 	add_input(const struct jive_resource_class * rescls, jive::oport * origin) = 0;
 
 	virtual void
@@ -427,7 +427,7 @@ public:
 	virtual jive::node *
 	copy(jive::region * region, jive::substitution_map & smap) const = 0;
 
-	virtual jive::iport *
+	virtual jive::input *
 	input(size_t index) const noexcept = 0;
 
 	virtual jive::oport *
@@ -486,7 +486,7 @@ struct jive_tracker_nodestate {
 	} state_node_list;
 };
 
-static inline jive::iport *
+static inline jive::input *
 jive_node_get_gate_input(const jive::node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
@@ -497,11 +497,11 @@ jive_node_get_gate_input(const jive::node * self, const jive::gate * gate)
 	return nullptr;
 }
 
-static inline jive::iport *
+static inline jive::input *
 jive_node_get_gate_input(const jive::node * self, const char * name)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
-		jive::iport * i = self->input(n);
+		auto i = self->input(n);
 		if (i->gate() && i->gate()->name() == name)
 			return i;
 	}

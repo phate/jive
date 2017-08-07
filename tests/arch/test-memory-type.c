@@ -25,7 +25,7 @@ static int test_main(void)
 	auto ret_gate = graph.create_gate("ret", memtype);
 
 	jive::oport * arg = node0->add_output(arg_gate);
-	jive::iport * ret = node1->add_input(ret_gate, arg);
+	auto ret = node1->add_input(ret_gate, arg);
 
 	assert(dynamic_cast<const jive::state::type*>(&arg->type()));
 	assert(dynamic_cast<const jive::state::type*>(&ret->type()));

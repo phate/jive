@@ -98,7 +98,7 @@ argument::node() const noexcept
 
 result::~result() noexcept
 {
-	region()->graph()->on_iport_destroy(this);
+	region()->graph()->on_input_destroy(this);
 
 	if (output())
 		JIVE_LIST_REMOVE(output()->results, this, output_result_list);
@@ -122,7 +122,7 @@ result::result(
 	jive::oport * origin,
 	jive::structural_output * output,
 	const jive::base::type & type)
-	: iport(index, origin, region, type)
+	: input(index, origin, region, type)
 	, output_(output)
 {
 	output_result_list.prev = output_result_list.next = nullptr;
@@ -137,7 +137,7 @@ result::result(
 	jive::oport * origin,
 	jive::structural_output * output,
 	jive::gate * gate)
-	: iport(index, origin, region, gate)
+	: input(index, origin, region, gate)
 	, output_(output)
 {
 	output_result_list.prev = output_result_list.next = nullptr;
@@ -239,7 +239,7 @@ region::add_result(jive::oport * origin, structural_output * output, const base:
 	if (origin->region() != this)
 		throw jive::compiler_error("Invalid region result");
 
-	graph()->on_iport_create(result);
+	graph()->on_input_create(result);
 
 	return result;
 }
@@ -253,7 +253,7 @@ region::add_result(jive::oport * origin, structural_output * output, jive::gate 
 	if (origin->region() != this)
 		throw jive::compiler_error("Invalid region result");
 
-	graph()->on_iport_create(result);
+	graph()->on_input_create(result);
 
 	return result;
 }

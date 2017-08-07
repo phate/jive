@@ -82,7 +82,7 @@ public:
 		return root()->add_argument(nullptr, gate);
 	}
 
-	inline jive::iport *
+	inline jive::input *
 	export_port(jive::oport * operand, const std::string & name)
 	{
 		jive::gate * gate = create_gate(name, operand->type());
@@ -111,13 +111,13 @@ public:
 	jive::notifier<jive::node *> on_node_destroy;
 	jive::notifier<jive::node *, size_t> on_node_depth_change;
 
-	jive::notifier<jive::iport *> on_iport_create;
+	jive::notifier<jive::input *> on_input_create;
 	jive::notifier<
-		jive::iport *,
+		jive::input *,
 		jive::oport *,	/* old */
 		jive::oport *		/* new */
-	> on_iport_change;
-	jive::notifier<jive::iport *> on_iport_destroy;
+	> on_input_change;
+	jive::notifier<jive::input *> on_input_destroy;
 	
 	jive::notifier<jive::oport *> on_oport_create;
 	jive::notifier<jive::oport *> on_oport_destroy;

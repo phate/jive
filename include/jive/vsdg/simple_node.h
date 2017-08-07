@@ -12,7 +12,7 @@ namespace jive {
 
 /* inputs */
 
-class simple_input final : public iport {
+class simple_input final : public input {
 	friend jive::output;
 
 public:

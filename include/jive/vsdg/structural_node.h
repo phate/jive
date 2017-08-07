@@ -14,7 +14,7 @@ class argument;
 class result;
 class structural_node;
 
-class structural_input final : public iport {
+class structural_input final : public input {
 	friend structural_node;
 
 public:

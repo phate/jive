@@ -297,7 +297,7 @@ compute_operation(
 /* evaluation */
 
 static std::unique_ptr<const literal>
-eval_input(const jive::iport * input, context & ctx);
+eval_input(const jive::input * input, context & ctx);
 
 static const std::unique_ptr<const literal>
 eval_apply_node(const jive::node * node, size_t index, context & ctx)
@@ -348,7 +348,7 @@ eval_gamma_node(const jive::node * node, size_t index, context & ctx)
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_op*>(&node->operation()));
 	auto gamma = static_cast<const jive::structural_node*>(node);
 
-	jive::iport * predicate = node->input(0);
+	auto predicate = node->input(0);
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&predicate->type()));
 
 	size_t alt = static_cast<const ctlliteral*>(eval_input(predicate, ctx).get())->alternative();
@@ -498,7 +498,7 @@ eval_output(const jive::oport * output, context & ctx)
 }
 
 static std::unique_ptr<const literal>
-eval_input(const jive::iport * input, context & ctx)
+eval_input(const jive::input * input, context & ctx)
 {
 	return eval_output(input->origin(), ctx);
 }
@@ -509,7 +509,7 @@ eval(
 	const std::string & name,
 	const std::vector<const literal*> & arguments)
 {
-	const jive::iport * port = nullptr;
+	const jive::input * port = nullptr;
 	for (size_t n = 0; n < graph->root()->nresults(); n++) {
 		auto result = graph->root()->result(n);
 		if (result->gate()->name() == name) {

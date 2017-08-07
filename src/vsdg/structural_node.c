@@ -17,7 +17,7 @@ structural_input::~structural_input()
 {
 	JIVE_DEBUG_ASSERT(arguments.first == nullptr && arguments.last == nullptr);
 
-	node()->graph()->on_iport_destroy(this);
+	node()->graph()->on_input_destroy(this);
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->ninputs(); n++) {
@@ -37,11 +37,11 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	const jive::base::type & type)
-	: iport(index, origin, node->region(), type)
+	: input(index, origin, node->region(), type)
 	, node_(node)
 {
 	arguments.first = arguments.last = nullptr;
-	node->graph()->on_iport_create(this);
+	node->graph()->on_input_create(this);
 }
 
 structural_input::structural_input(
@@ -49,7 +49,7 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	jive::gate * gate)
-	: iport(index, origin, node->region(), gate)
+	: input(index, origin, node->region(), gate)
 	, node_(node)
 {
 	arguments.first = arguments.last = nullptr;
@@ -60,7 +60,7 @@ structural_input::structural_input(
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
 
-	node->graph()->on_iport_create(this);
+	node->graph()->on_input_create(this);
 }
 
 structural_input::structural_input(
@@ -68,11 +68,11 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	const struct jive_resource_class * rescls)
-	: iport(index, origin, node->region(), rescls)
+	: input(index, origin, node->region(), rescls)
 	, node_(node)
 {
 	arguments.first = arguments.last = nullptr;
-	node->graph()->on_iport_create(this);
+	node->graph()->on_input_create(this);
 }
 
 jive::node *

@@ -18,7 +18,7 @@ namespace jive {
 
 simple_input::~simple_input() noexcept
 {
-	node()->graph()->on_iport_destroy(this);
+	node()->graph()->on_input_destroy(this);
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->ninputs(); n++) {
@@ -38,7 +38,7 @@ simple_input::simple_input(
 	size_t index,
 	jive::oport * origin,
 	const jive::base::type & type)
-	: iport(index, origin, node->region(), type)
+	: input(index, origin, node->region(), type)
 	, node_(node)
 {}
 
@@ -47,7 +47,7 @@ simple_input::simple_input(
 	size_t index,
 	jive::oport * origin,
 	jive::gate * gate)
-	: iport(index, origin, node->region(), gate)
+	: input(index, origin, node->region(), gate)
 	, node_(node)
 {
 	for (size_t n = 0; n < index; n++) {
@@ -62,7 +62,7 @@ simple_input::simple_input(
 	size_t index,
 	jive::oport * origin,
 	const struct jive_resource_class * rescls)
-	: iport(index, origin, node->region(), rescls)
+	: input(index, origin, node->region(), rescls)
 	, node_(node)
 {}
 
@@ -243,7 +243,7 @@ simple_node::add_input(const jive::base::type * type, jive::oport * origin)
 	auto input = this->input(ninputs()-1);
 
 	recompute_depth();
-	graph()->on_iport_create(input);
+	graph()->on_input_create(input);
 
 	return input;
 }
@@ -258,7 +258,7 @@ simple_node::add_input(jive::gate * gate, jive::oport * origin)
 	auto input = this->input(ninputs()-1);
 
 	recompute_depth();
-	graph()->on_iport_create(input);
+	graph()->on_input_create(input);
 
 	return input;
 }
@@ -273,7 +273,7 @@ simple_node::add_input(const struct jive_resource_class * rescls, jive::oport * 
 	auto input = this->input(ninputs()-1);
 
 	recompute_depth();
-	graph()->on_iport_create(input);
+	graph()->on_input_create(input);
 
 	return input;
 }
