@@ -36,8 +36,8 @@ argument::~argument() noexcept
 		}
 	}
 
-	for (size_t n = index()+1; n < region_->narguments(); n++)
-		region_->argument(n)->set_index(n-1);
+	for (size_t n = index()+1; n < region()->narguments(); n++)
+		region()->argument(n)->set_index(n-1);
 }
 
 argument::argument(
@@ -45,8 +45,7 @@ argument::argument(
 	size_t index,
 	jive::structural_input * input,
 	const jive::base::type & type)
-	: output(index, type)
-	, region_(region)
+	: output(index, region, type)
 	, input_(input)
 {
 	input_argument_list.prev = input_argument_list.next = nullptr;
@@ -59,8 +58,7 @@ argument::argument(
 	size_t index,
 	jive::structural_input * input,
 	jive::gate * gate)
-	: output(index, gate)
-	, region_(region)
+	: output(index, region, gate)
 	, input_(input)
 {
 	input_argument_list.prev = input_argument_list.next = nullptr;
@@ -72,12 +70,6 @@ argument::argument(
 		if (!other->gate()) continue;
 		jive_gate_interference_add(region->graph(), gate, other->gate());
 	}
-}
-
-jive::region *
-argument::region() const noexcept
-{
-	return region_;
 }
 
 jive::node *

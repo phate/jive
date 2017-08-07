@@ -77,9 +77,6 @@ private:
 		const struct jive_resource_class * rescls);
 
 public:
-	virtual jive::region *
-	region() const noexcept override;
-
 	virtual jive::node *
 	node() const noexcept override;
 

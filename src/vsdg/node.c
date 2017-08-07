@@ -141,18 +141,26 @@ output::~output()
 		JIVE_LIST_REMOVE(gate()->outputs, this, gate_output_list);
 }
 
-output::output(size_t index, const jive::base::type & type)
+output::output(
+	size_t index,
+	jive::region * region,
+	const jive::base::type & type)
 	: index_(index)
 	, gate_(nullptr)
+	, region_(region)
 	, type_(type.copy())
 	, rescls_(&jive_root_resource_class)
 {
 	gate_output_list.prev = gate_output_list.next = nullptr;
 }
 
-output::output(size_t index, jive::gate * gate)
+output::output(
+	size_t index,
+	jive::region * region,
+	jive::gate * gate)
 	: index_(index)
 	, gate_(gate)
+	, region_(region)
 	, type_(gate->type().copy())
 	, rescls_(gate->rescls())
 {
@@ -162,10 +170,12 @@ output::output(size_t index, jive::gate * gate)
 
 output::output(
 	size_t index,
+	jive::region * region,
 	const jive::base::type & type,
 	const struct jive_resource_class * rescls)
 	: index_(index)
 	, gate_(nullptr)
+	, region_(region)
 	, type_(type.copy())
 	, rescls_(rescls)
 {}

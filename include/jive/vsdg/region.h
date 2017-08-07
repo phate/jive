@@ -56,9 +56,6 @@ public:
 	argument &
 	operator=(const argument &&) = delete;
 
-	virtual jive::region *
-	region() const noexcept override;
-
 	virtual jive::node *
 	node() const noexcept override;
 
@@ -74,7 +71,6 @@ public:
 	} input_argument_list;
 
 private:
-	jive::region * region_;
 	jive::structural_input * input_;
 };
 
