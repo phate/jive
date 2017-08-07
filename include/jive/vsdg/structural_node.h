@@ -77,9 +77,6 @@ private:
 		const struct jive_resource_class * rescls);
 
 public:
-	virtual const jive::base::type &
-	type() const noexcept override;
-
 	virtual jive::region *
 	region() const noexcept override;
 
@@ -93,7 +90,6 @@ public:
 
 private:
 	jive::structural_node * node_;
-	std::unique_ptr<jive::base::type> type_;
 };
 
 class structural_node final : public node {

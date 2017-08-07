@@ -65,9 +65,6 @@ public:
 		const struct jive_resource_class * rescls);
 
 public:
-	virtual const jive::base::type &
-	type() const noexcept override;
-
 	virtual jive::region *
 	region() const noexcept override;
 
@@ -76,13 +73,6 @@ public:
 
 private:
 	jive::node * node_;
-
-	/*
-		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the
-		number given by the operation. Once this is fixed, the attribute can be removed and the type
-		can be taken from the operation.
-	*/
-	std::unique_ptr<jive::base::type> type_;
 };
 
 /* simple nodes */

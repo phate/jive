@@ -75,15 +75,13 @@ simple_input::node() const noexcept
 /* outputs */
 
 simple_output::simple_output(jive::node * node, size_t index, const jive::base::type & type)
-	: output(index)
+	: output(index, type)
 	, node_(node)
-	, type_(type.copy())
 {}
 
 simple_output::simple_output(jive::node * node, size_t index, jive::gate * gate)
 	: output(index, gate)
 	, node_(node)
-	, type_(gate->type().copy())
 {
 	for (size_t n = 0; n < index; n++) {
 		auto other = node->output(n);
@@ -97,9 +95,8 @@ simple_output::simple_output(
 	size_t index,
 	const jive::base::type & type,
 	const struct jive_resource_class * rescls)
-	: output(index, rescls)
+	: output(index, type, rescls)
 	, node_(node)
-	, type_(type.copy())
 {}
 
 simple_output::~simple_output() noexcept
@@ -117,12 +114,6 @@ simple_output::~simple_output() noexcept
 
 	for (size_t n = index()+1; n < node()->noutputs(); n++)
 		dynamic_cast<jive::simple_output*>(node()->output(n))->set_index(n-1);
-}
-
-const jive::base::type &
-simple_output::type() const noexcept
-{
-	return *type_;
 }
 
 jive::region *

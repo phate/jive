@@ -45,10 +45,9 @@ argument::argument(
 	size_t index,
 	jive::structural_input * input,
 	const jive::base::type & type)
-	: output(index)
+	: output(index, type)
 	, region_(region)
 	, input_(input)
-	, type_(type.copy())
 {
 	input_argument_list.prev = input_argument_list.next = nullptr;
 	if (input)
@@ -63,7 +62,6 @@ argument::argument(
 	: output(index, gate)
 	, region_(region)
 	, input_(input)
-	, type_(gate->type().copy())
 {
 	input_argument_list.prev = input_argument_list.next = nullptr;
 	if (input)
@@ -74,12 +72,6 @@ argument::argument(
 		if (!other->gate()) continue;
 		jive_gate_interference_add(region->graph(), gate, other->gate());
 	}
-}
-
-const jive::base::type &
-argument::type() const noexcept
-{
-	return *type_;
 }
 
 jive::region *

@@ -106,9 +106,8 @@ structural_output::structural_output(
 	jive::structural_node * node,
 	size_t index,
 	const jive::base::type & type)
-	: output(index)
+	: output(index, type)
 	, node_(node)
-	, type_(type.copy())
 {
 	results.first = results.last = nullptr;
 
@@ -121,7 +120,6 @@ structural_output::structural_output(
 	jive::gate * gate)
 	: output(index, gate)
 	, node_(node)
-	, type_(gate->type().copy())
 {
 	results.first = results.last = nullptr;
 
@@ -138,19 +136,12 @@ structural_output::structural_output(
 	jive::structural_node * node,
 	size_t index,
 	const struct jive_resource_class * rescls)
-	: output(index, rescls)
+	: output(index, *jive_resource_class_get_type(rescls), rescls)
 	, node_(node)
-	, type_(jive_resource_class_get_type(rescls)->copy())
 {
 	results.first = results.last = nullptr;
 
 	node->graph()->on_output_create(this);
-}
-
-const jive::base::type &
-structural_output::type() const noexcept
-{
-	return *type_;
 }
 
 jive::region *

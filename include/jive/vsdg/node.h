@@ -144,11 +144,18 @@ public:
 	virtual
 	~output() noexcept;
 
-	output(size_t index);
+	output(size_t index, const jive::base::type & type);
 
 	output(size_t index, jive::gate * gate);
 
-	output(size_t index, const struct jive_resource_class * rescls);
+	/*
+		FIXME: The type parameter is currently necessary, since the jive_root_resource_class has no
+		       type.
+	*/
+	output(
+		size_t index,
+		const jive::base::type & type,
+		const struct jive_resource_class * rescls);
 
 	output(const output &) = delete;
 
@@ -203,8 +210,11 @@ public:
 		return users_.end();
 	}
 
-	virtual const jive::base::type &
-	type() const noexcept = 0;
+	inline const jive::base::type &
+	type() const noexcept
+	{
+		return *type_;
+	}
 
 	virtual jive::region *
 	region() const noexcept = 0;
@@ -237,6 +247,7 @@ private:
 	size_t index_;
 	jive::gate * gate_;
 	std::unordered_set<jive::input*> users_;
+	std::unique_ptr<jive::base::type> type_;
 	const struct jive_resource_class * rescls_;
 };
 

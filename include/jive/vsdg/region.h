@@ -56,9 +56,6 @@ public:
 	argument &
 	operator=(const argument &&) = delete;
 
-	virtual const jive::base::type &
-	type() const noexcept override;
-
 	virtual jive::region *
 	region() const noexcept override;
 
@@ -79,7 +76,6 @@ public:
 private:
 	jive::region * region_;
 	jive::structural_input * input_;
-	std::unique_ptr<jive::base::type> type_;
 };
 
 class result final : public input {
