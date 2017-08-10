@@ -39,9 +39,7 @@ immediate_op::result_type(size_t index) const noexcept
 std::string
 immediate_op::debug_string() const
 {
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "%" "lld", value().offset());
-	return tmp;
+	return detail::strfmt(value().offset());
 }
 
 std::unique_ptr<jive::operation>
