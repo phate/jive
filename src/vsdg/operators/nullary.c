@@ -46,7 +46,7 @@ nullary_op::nresults() const noexcept
 const type &
 nullary_op::argument_type(size_t index) const noexcept
 {
-	throw std::logic_error("No arguments to nullary operation");
+	JIVE_ASSERT(0 && "No arguments to nullary operation.");
 }
 
 }

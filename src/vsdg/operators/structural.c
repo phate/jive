@@ -3,6 +3,7 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <jive/common.h>
 #include <jive/vsdg/operators/structural.h>
 
 namespace jive {
@@ -22,7 +23,7 @@ structural_op::narguments() const noexcept
 const jive::base::type &
 structural_op::argument_type(size_t index) const noexcept
 {
-	throw std::logic_error("structural_op has no arguments.");
+	JIVE_ASSERT(0 && "structural_op has no arguments.");
 }
 
 size_t
@@ -34,7 +35,7 @@ structural_op::nresults() const noexcept
 const jive::base::type &
 structural_op::result_type(size_t index) const noexcept
 {
-	throw std::logic_error("structural_op has no results.");
+	JIVE_ASSERT(0 && "structural_op has no arguments.");
 }
 
 }
