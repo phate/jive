@@ -29,9 +29,7 @@ jive_buffer_putimm(jive_buffer * target, const jive_asmgen_imm * imm)
 {
 	bool empty = true;
 	if (imm->value) {
-		char tmp[80];
-		snprintf(tmp, sizeof(tmp), "%" "lld", imm->value);
-		jive_buffer_putstr(target, tmp);
+		jive_buffer_putstr(target, jive::detail::strfmt(imm->value).c_str());
 		empty = false;
 	}
 	if (imm->add_symbol) {
