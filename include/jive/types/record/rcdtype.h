@@ -22,6 +22,10 @@ namespace rcd {
 class declaration final {
 public:
 	inline
+	declaration()
+	{}
+
+	inline
 	declaration(const std::vector<const value::type*> & types)
 	: types_(types.size())
 	{
@@ -45,6 +49,12 @@ public:
 	{
 		JIVE_DEBUG_ASSERT(index < nelements());
 		return *static_cast<const value::type*>(types_[index].get());
+	}
+
+	void
+	append(const jive::value::type & type)
+	{
+		types_.push_back(type.copy());
 	}
 
 private:

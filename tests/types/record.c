@@ -28,9 +28,8 @@ static int _test_rcdgroup(void)
 		new jive::rcd::declaration({&bits8, &bits16, &bits32}));
 	static jive::rcd::type rcdtype(decl);
 
-	static std::shared_ptr<const jive::rcd::declaration> decl_empty(
-		new jive::rcd::declaration({}));
-	static jive::rcd::type rcdtype_empty(decl_empty);
+	auto decl_empty = std::make_shared<const jive::rcd::declaration>();
+	jive::rcd::type rcdtype_empty(decl_empty);
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&bits8, &bits16, &bits32});
 	jive::output * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
