@@ -45,7 +45,11 @@ bool
 match_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const match_op*>(&other);
-	return op && op->itype_ == itype_ && op->otype_ == otype_ && op->mapping_ == mapping_;
+	return op
+	    && op->itype_ == itype_
+	    && op->otype_ == otype_
+	    && op->default_alternative_ == default_alternative_
+	    && op->mapping_ == mapping_;
 }
 
 const jive::base::type &
