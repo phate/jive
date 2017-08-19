@@ -12,7 +12,6 @@
 #include <jive/types/function.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/gamma.h>
-#include <jive/vsdg/operators/match.h>
 #include <jive/vsdg/phi.h>
 #include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/theta.h>
@@ -234,9 +233,9 @@ compute_match_op(
 {
 	JIVE_DEBUG_ASSERT(operands.size() == 1);
 	JIVE_DEBUG_ASSERT(dynamic_cast<const bitliteral*>(operands[0].get()));
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::match_op*>(&operation));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::match_op*>(&operation));
 
-	const jive::match_op * op = static_cast<const jive::match_op*>(&operation);
+	auto op = static_cast<const jive::ctl::match_op*>(&operation);
 	const bitliteral * cmp = static_cast<const bitliteral*>(operands[0].get());
 
 	jive::ctl::value_repr vr(op->alternative(cmp->value_repr().to_uint()), op->nalternatives());
@@ -280,7 +279,7 @@ static operation_map opmap({
 	{std::type_index(typeid(jive::load_op)), compute_bitload_op},
 	{std::type_index(typeid(jive::store_op)), compute_bitstore_op},
 	{std::type_index(typeid(jive::ctl::constant_op)), compute_ctlconstant_op},
-	{std::type_index(typeid(jive::match_op)), compute_match_op}
+	{std::type_index(typeid(jive::ctl::match_op)), compute_match_op}
 });
 
 static std::vector<std::unique_ptr<const literal>>

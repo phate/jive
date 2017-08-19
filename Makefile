@@ -23,7 +23,6 @@ LIBJIVE_SRC = \
 	src/vsdg/operators/operation.c \
 	src/vsdg/operators/binary-normal-form.c \
 	src/vsdg/operators/binary.c \
-	src/vsdg/operators/match.c \
 	src/vsdg/operators/nullary.c \
 	src/vsdg/operators/simple-normal-form.c \
 	src/vsdg/operators/simple.c \

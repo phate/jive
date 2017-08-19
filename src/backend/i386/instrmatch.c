@@ -18,9 +18,9 @@
 #include <jive/backend/i386/registerset.h>
 #include <jive/types/bitstring.h>
 #include <jive/util/typeinfo-map.h>
+#include <jive/vsdg/control.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators/match.h>
 #include <jive/vsdg/traverser.h>
 
 static inline bool
@@ -268,7 +268,7 @@ convert_bitcmp(
 	const jive::instruction_class * jump_icls,
 	const jive::instruction_class * inv_jump_icls)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::match_op*>(&node_->operation()));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::match_op*>(&node_->operation()));
 
 	auto node = node_->input(0)->origin()->node();
 
@@ -387,7 +387,7 @@ static const jive::detail::typeinfo_map<
 static void
 match_gpr_bitcmp(jive::node * node)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::match_op*>(&node->operation()));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::match_op*>(&node->operation()));
 
 	auto i = bitcompare_map.find(&typeid(
 		node->input(0)->origin()->node()->operation()));
@@ -558,7 +558,7 @@ match_single(jive::node * node, const jive_regselector * regselector)
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (dynamic_cast<const jive::match_op *>(&node->operation())
+	} else if (dynamic_cast<const jive::ctl::match_op *>(&node->operation())
 		&& dynamic_cast<const jive::bits::compare_op *>(
 		& node->input(0)->origin()->node()->operation())) {
 		auto cmp_input = dynamic_cast<jive::simple_input*>(node->input(0)->origin()->node()->input(0));
