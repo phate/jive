@@ -15,7 +15,7 @@
 #include <jive/vsdg/operators/nullary.h>
 #include <jive/vsdg/operators/unary.h>
 
-#include <map>
+#include <unordered_map>
 
 #include <inttypes.h>
 
@@ -41,7 +41,7 @@ typedef base::domain_const_op<
 > constant_op;
 
 class match_op final : public base::unary_op {
-	typedef std::map<uint64_t,uint64_t>::const_iterator const_iterator;
+	typedef std::unordered_map<uint64_t,uint64_t>::const_iterator const_iterator;
 
 public:
 	virtual
@@ -49,7 +49,7 @@ public:
 
 	match_op(
 		size_t nbits,
-		const std::map<uint64_t, uint64_t> & mapping,
+		const std::unordered_map<uint64_t, uint64_t> & mapping,
 		uint64_t default_alternative,
 		size_t nalternatives);
 
@@ -112,13 +112,13 @@ private:
 	jive::ctl::type otype_;
 	jive::bits::type itype_;
 	uint64_t default_alternative_;
-	std::map<uint64_t, uint64_t> mapping_;
+	std::unordered_map<uint64_t, uint64_t> mapping_;
 };
 
 jive::output *
 match(
 	size_t nbits,
-	const std::map<uint64_t, uint64_t> & mapping,
+	const std::unordered_map<uint64_t, uint64_t> & mapping,
 	uint64_t default_alternative,
 	size_t nalternatives,
 	jive::output * operand);

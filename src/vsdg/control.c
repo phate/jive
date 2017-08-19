@@ -31,7 +31,7 @@ match_op::~match_op() noexcept
 
 match_op::match_op(
 	size_t nbits,
-	const std::map<uint64_t, uint64_t> & mapping,
+	const std::unordered_map<uint64_t, uint64_t> & mapping,
 	uint64_t default_alternative,
 	size_t nalternatives)
 	: base::unary_op()
@@ -96,7 +96,7 @@ match_op::copy() const
 jive::output *
 match(
 	size_t nbits,
-	const std::map<uint64_t, uint64_t> & mapping,
+	const std::unordered_map<uint64_t, uint64_t> & mapping,
 	uint64_t default_alternative,
 	size_t nalternatives,
 	jive::output * operand)
