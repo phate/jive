@@ -7,21 +7,117 @@
 #ifndef JIVE_VSDG_OPERATION_H
 #define JIVE_VSDG_OPERATION_H
 
+#include <jive/vsdg/basetype.h>
+
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace jive {
 
-namespace base {
-class type;
-}
-
+class gate;
 class node;
 class node_normal_form;
 class output;
 class region;
 class resource_class;
+
+/* port */
+
+class port final {
+public:
+	port(jive::gate * gate);
+
+	port(const jive::base::type & type);
+
+	port(std::unique_ptr<jive::base::type> type);
+
+	port(const resource_class * rescls);
+
+	inline
+	port(const port & other)
+	: gate_(other.gate_)
+	, rescls_(other.rescls_)
+	, type_(other.type_->copy())
+	{}
+
+	inline
+	port(port && other)
+	: gate_(other.gate_)
+	, rescls_(other.rescls_)
+	, type_(std::move(other.type_))
+	{
+		other.gate_ = nullptr;
+		other.rescls_ = nullptr;
+	}
+
+	inline port &
+	operator=(const port & other)
+	{
+		if (&other == this)
+			return *this;
+
+		gate_ = other.gate_;
+		rescls_ = other.rescls_;
+		type_ = std::move(other.type_->copy());
+
+		return *this;
+	}
+
+	inline port &
+	operator=(port && other)
+	{
+		if (&other == this)
+			return *this;
+
+		gate_ = other.gate_;
+		rescls_ = other.rescls_;
+		type_ = std::move(other.type_);
+		other.gate_ = nullptr;
+		other.rescls_ = nullptr;
+
+		return *this;
+	}
+
+	inline bool
+	operator==(const port & other) const noexcept
+	{
+		return gate_ == other.gate_
+		    && rescls_ == other.rescls_
+		    && *type_ == *other.type_;
+	}
+
+	inline bool
+	operator!=(const port & other) const noexcept
+	{
+		return !(*this == other);
+	}
+
+	inline jive::gate *
+	gate() const noexcept
+	{
+		return gate_;
+	}
+
+	inline const resource_class *
+	rescls() const noexcept
+	{
+		return rescls_;
+	}
+
+	inline const jive::base::type &
+	type() const noexcept
+	{
+		return *type_;
+	}
+
+private:
+	jive::gate * gate_;
+	const resource_class * rescls_;
+	std::unique_ptr<jive::base::type> type_;
+};
+
+/* operation */
 
 class operation {
 public:
