@@ -9,7 +9,7 @@
 
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators/structural.h>
+#include <jive/vsdg/structural.h>
 #include <jive/vsdg/structural_node.h>
 
 namespace jive {

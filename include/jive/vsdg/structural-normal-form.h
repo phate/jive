@@ -3,8 +3,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_VSDG_OPERATORS_STRUCTURAL_NORMAL_FORM_H
-#define JIVE_VSDG_OPERATORS_STRUCTURAL_NORMAL_FORM_H
+#ifndef JIVE_VSDG_STRUCTURAL_NORMAL_FORM_H
+#define JIVE_VSDG_STRUCTURAL_NORMAL_FORM_H
 
 #include <jive/vsdg/node-normal-form.h>
 

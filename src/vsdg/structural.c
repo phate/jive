@@ -4,7 +4,7 @@
  */
 
 #include <jive/common.h>
-#include <jive/vsdg/operators/structural.h>
+#include <jive/vsdg/structural.h>
 
 namespace jive {
 

@@ -11,7 +11,7 @@
 
 #include <jive/arch/registers.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/simple.h>
+#include <jive/vsdg/simple.h>
 
 namespace jive {
 

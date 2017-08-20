@@ -18,7 +18,7 @@
 #include <jive/util/ptr-collection.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/nullary.h>
+#include <jive/vsdg/nullary.h>
 #include <jive/vsdg/statetype.h>
 
 namespace jive {

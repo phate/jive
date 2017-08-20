@@ -16,7 +16,6 @@
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
 

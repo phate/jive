@@ -3,10 +3,10 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_VSDG_OPERATORS_STRUCTURAL_H
-#define JIVE_VSDG_OPERATORS_STRUCTURAL_H
+#ifndef JIVE_VSDG_STRUCTURAL_H
+#define JIVE_VSDG_STRUCTURAL_H
 
-#include <jive/vsdg/operators/operation.h>
+#include <jive/vsdg/operation.h>
 
 namespace jive {
 

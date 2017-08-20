@@ -14,7 +14,8 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/types/record/rcdtype.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators.h>
+#include <jive/vsdg/nullary.h>
+#include <jive/vsdg/unary.h>
 
 struct jive_label;
 

@@ -11,8 +11,8 @@
 
 #include <jive/util/ptr-collection.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/structural.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/structural.h>
 
 namespace jive {
 

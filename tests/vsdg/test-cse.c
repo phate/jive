@@ -9,7 +9,7 @@
 
 #include <jive/view.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators/simple-normal-form.h>
+#include <jive/vsdg/simple-normal-form.h>
 
 static int
 test_main()

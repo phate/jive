@@ -3,13 +3,13 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_VSDG_OPERATORS_UNARY_NORMAL_FORM_H
-#define JIVE_VSDG_OPERATORS_UNARY_NORMAL_FORM_H
+#ifndef JIVE_VSDG_UNARY_NORMAL_FORM_H
+#define JIVE_VSDG_UNARY_NORMAL_FORM_H
 
 #include <jive/common.h>
-#include <jive/vsdg/operators/simple-normal-form.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/operation.h>
+#include <jive/vsdg/operation.h>
+#include <jive/vsdg/simple-normal-form.h>
 
 namespace jive {
 

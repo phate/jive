@@ -3,8 +3,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/operators/structural.h>
-#include <jive/vsdg/operators/structural-normal-form.h>
+#include <jive/vsdg/structural.h>
+#include <jive/vsdg/structural-normal-form.h>
 
 namespace jive {
 

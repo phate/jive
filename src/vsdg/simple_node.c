@@ -5,9 +5,9 @@
 
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators/simple-normal-form.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-normal-form.h>
 #include <jive/vsdg/substitution.h>
 
 #include <numeric>

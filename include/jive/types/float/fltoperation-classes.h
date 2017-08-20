@@ -8,8 +8,9 @@
 #define JIVE_TYPES_FLOAT_FLTOPERATION_CLASSES_H
 
 #include <jive/types/float/value-representation.h>
-#include <jive/vsdg/operators.h>
 #include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/binary.h>
+#include <jive/vsdg/unary.h>
 
 namespace jive {
 namespace flt {

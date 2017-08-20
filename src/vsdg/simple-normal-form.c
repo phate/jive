@@ -5,10 +5,10 @@
 
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/simple.h>
-#include <jive/vsdg/operators/simple-normal-form.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple.h>
+#include <jive/vsdg/simple-normal-form.h>
 
 static jive::node *
 node_cse(

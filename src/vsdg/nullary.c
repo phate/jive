@@ -4,10 +4,9 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/operators/nullary.h>
-
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators/simple-normal-form.h>
+#include <jive/vsdg/nullary.h>
+#include <jive/vsdg/simple-normal-form.h>
 #include <jive/vsdg/region.h>
 
 namespace jive {

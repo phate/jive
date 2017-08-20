@@ -9,6 +9,8 @@ CFLAGS+=-Wall -g --std=c++17 -xc++
 LIBJIVE_SRC = \
 	src/common.c \
 	src/vsdg/basetype.c \
+	src/vsdg/binary-normal-form.c \
+	src/vsdg/binary.c \
 	src/vsdg/control.c \
 	src/vsdg/controltype.c \
 	src/vsdg/equivalence.c \
@@ -20,26 +22,24 @@ LIBJIVE_SRC = \
 	src/vsdg/negotiator.c \
 	src/vsdg/node-normal-form.c \
 	src/vsdg/node.c \
-	src/vsdg/operators/operation.c \
-	src/vsdg/operators/binary-normal-form.c \
-	src/vsdg/operators/binary.c \
-	src/vsdg/operators/nullary.c \
-	src/vsdg/operators/simple-normal-form.c \
-	src/vsdg/operators/simple.c \
-	src/vsdg/operators/structural-normal-form.c \
-	src/vsdg/operators/structural.c \
-	src/vsdg/operators/unary-normal-form.c \
-	src/vsdg/operators/unary.c \
+	src/vsdg/nullary.c \
+	src/vsdg/operation.c \
 	src/vsdg/phi.c \
 	src/vsdg/region.c \
 	src/vsdg/resource.c \
+	src/vsdg/simple-normal-form.c \
+	src/vsdg/simple.c \
+	src/vsdg/simple_node.c \
 	src/vsdg/splitnode.c \
 	src/vsdg/statetype.c \
-	src/vsdg/simple_node.c \
+	src/vsdg/structural-normal-form.c \
+	src/vsdg/structural.c \
 	src/vsdg/structural_node.c \
 	src/vsdg/theta.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \
+	src/vsdg/unary-normal-form.c \
+	src/vsdg/unary.c \
 
 #evaluation
 LIBJIVE_SRC += \

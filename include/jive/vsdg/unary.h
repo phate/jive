@@ -4,13 +4,13 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_VSDG_OPERATORS_UNARY_H
-#define JIVE_VSDG_OPERATORS_UNARY_H
+#ifndef JIVE_VSDG_UNARY_H
+#define JIVE_VSDG_UNARY_H
 
 #include <jive/common.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/simple.h>
+#include <jive/vsdg/simple.h>
 
 typedef size_t jive_unop_reduction_path_t;
 

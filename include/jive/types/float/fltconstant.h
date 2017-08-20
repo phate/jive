@@ -10,7 +10,7 @@
 #include <jive/types/float/flttype.h>
 #include <jive/types/float/value-representation.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators.h>
+#include <jive/vsdg/nullary.h>
 
 namespace jive {
 namespace flt {

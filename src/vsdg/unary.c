@@ -4,11 +4,10 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/operators/unary.h>
-
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators/unary-normal-form.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/unary.h>
+#include <jive/vsdg/unary-normal-form.h>
 
 namespace jive {
 namespace base {

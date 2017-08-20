@@ -4,8 +4,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_VSDG_OPERATORS_BASE_H
-#define JIVE_VSDG_OPERATORS_BASE_H
+#ifndef JIVE_VSDG_OPERATION_H
+#define JIVE_VSDG_OPERATION_H
 
 #include <memory>
 #include <string>

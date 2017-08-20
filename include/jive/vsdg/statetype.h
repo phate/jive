@@ -12,7 +12,7 @@
 
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/simple.h>
+#include <jive/vsdg/simple.h>
 
 namespace jive {
 namespace state {

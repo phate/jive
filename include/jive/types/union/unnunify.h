@@ -8,8 +8,8 @@
 #define JIVE_TYPES_UNION_UNNUNIFY_H
 
 #include <jive/types/union/unntype.h>
-#include <jive/vsdg/operators/nullary.h>
-#include <jive/vsdg/operators/unary.h>
+#include <jive/vsdg/nullary.h>
+#include <jive/vsdg/unary.h>
 
 /* unify node */
 

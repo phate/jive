@@ -8,7 +8,7 @@
 #define JIVE_TYPES_UNION_UNNCHOOSE_H
 
 #include <jive/types/union/unntype.h>
-#include <jive/vsdg/operators/unary.h>
+#include <jive/vsdg/unary.h>
 
 namespace jive {
 namespace unn {

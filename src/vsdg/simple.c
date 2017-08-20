@@ -3,7 +3,7 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/operators/simple.h>
+#include <jive/vsdg/simple.h>
 
 namespace jive {
 

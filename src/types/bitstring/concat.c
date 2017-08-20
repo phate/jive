@@ -14,11 +14,10 @@
 #include <jive/types/bitstring/slice.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators.h>
-#include <jive/vsdg/operators/reduction-helpers.h>
-#include <jive/vsdg/operators/simple-normal-form.h>
+#include <jive/vsdg/reduction-helpers.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-normal-form.h>
 
 jive::output *
 jive_bitconcat(const std::vector<jive::output*> & operands)

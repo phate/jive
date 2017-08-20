@@ -13,7 +13,7 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/types/bitstring/value-representation.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators.h>
+#include <jive/vsdg/nullary.h>
 
 namespace jive {
 namespace bits {

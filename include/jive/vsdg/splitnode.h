@@ -12,7 +12,7 @@
 #include <jive/common.h>
 
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/unary.h>
+#include <jive/vsdg/unary.h>
 
 struct jive_resource_class;
 

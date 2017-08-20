@@ -3,8 +3,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_VSDG_OPERATORS_REDUCTION_HELPERS_H
-#define JIVE_VSDG_OPERATORS_REDUCTION_HELPERS_H
+#ifndef JIVE_VSDG_REDUCTION_HELPERS_H
+#define JIVE_VSDG_REDUCTION_HELPERS_H
 
 #include <algorithm>
 

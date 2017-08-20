@@ -10,7 +10,7 @@
 #include <memory>
 
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/nullary.h>
+#include <jive/vsdg/nullary.h>
 
 namespace jive {
 

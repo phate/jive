@@ -7,7 +7,7 @@
 #ifndef JIVE_TYPES_RECORD_RCDSELECT_H
 #define JIVE_TYPES_RECORD_RCDSELECT_H
 
-#include <jive/vsdg/operators/unary.h>
+#include <jive/vsdg/unary.h>
 
 namespace jive {
 namespace rcd {

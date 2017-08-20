@@ -4,10 +4,9 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/operators/binary.h>
-
+#include <jive/vsdg/binary.h>
+#include <jive/vsdg/binary-normal-form.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators/binary-normal-form.h>
 #include <jive/vsdg/region.h>
 
 namespace jive {

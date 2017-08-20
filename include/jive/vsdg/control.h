@@ -12,8 +12,8 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/gamma.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/nullary.h>
-#include <jive/vsdg/operators/unary.h>
+#include <jive/vsdg/nullary.h>
+#include <jive/vsdg/unary.h>
 
 #include <unordered_map>
 

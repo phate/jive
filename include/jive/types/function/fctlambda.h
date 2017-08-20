@@ -11,9 +11,9 @@
 #include <vector>
 
 #include <jive/types/function/fcttype.h>
-#include <jive/vsdg/operators/structural.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/structural.h>
 #include <jive/vsdg/structural_node.h>
 
 namespace jive {
