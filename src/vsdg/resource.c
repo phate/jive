@@ -34,9 +34,9 @@ jive_resource_class_union(const jive_resource_class * self, const jive_resource_
 	for(;;) {
 		if (self == other) return self;
 		if (self->depth() > other->depth())
-			self = self->parent;
+			self = self->parent();
 		else
-			other = other->parent;
+			other = other->parent();
 	}
 }
 
@@ -56,8 +56,8 @@ jive_resource_class_relax(const jive_resource_class * self)
 	/* hopefully this function is transitionary --
 	currently everything that is needed is the
 	class directly below the root */
-	while (self->parent && !jive_resource_class_is_abstract(self->parent))
-		self = self->parent;
+	while (self->parent() && !jive_resource_class_is_abstract(self->parent()))
+		self = self->parent();
 	return self;
 }
 

@@ -52,19 +52,19 @@ public:
 		const std::string & name,
 		size_t l,
 		const struct jive_resource_name * const * ns,
-		const jive_resource_class * p,
+		const jive_resource_class * parent,
 		jive_resource_class_priority pr,
 		const jive_resource_class_demotion * dm,
 		const jive::base::type * type)
 	: class_(cls)
 	, limit(l)
 	, names(ns)
-	, parent(p)
 	, priority(pr)
 	, demotions(dm)
-	, depth_(p ? p->depth()+1 : 0)
+	, depth_(parent ? parent->depth()+1 : 0)
 	, name_(name)
 	, type_(type)
+	, parent_(parent)
 	{}
 
 	inline size_t
@@ -86,6 +86,12 @@ public:
 		return *type_;
 	}
 
+	inline const jive_resource_class *
+	parent() const noexcept
+	{
+		return parent_;
+	}
+
 	const jive_resource_class_class * class_;
 	
 	/** \brief Upper limit on number of available entities in this class */
@@ -94,8 +100,6 @@ public:
 	/** \brief Names of available resources (if limit not 0) */
 	const struct jive_resource_name * const * names;
 	
-	/** \brief Parent resource class */
-	const jive_resource_class * parent;
 	
 	/** \brief Priority for register allocator */
 	jive_resource_class_priority priority;
@@ -110,6 +114,9 @@ private:
 
 	/** \brief Port and gate type corresponding to this resource */
 	const jive::base::type * type_;
+
+	/** \brief Parent resource class */
+	const jive_resource_class * parent_;
 };
 
 struct jive_resource_class_class {
@@ -137,7 +144,7 @@ jive_resource_class_issubclass(const jive_resource_class * self,
 	while (self) {
 		if (self == super_class)
 			return true;
-		self = self->parent;
+		self = self->parent();
 	}
 	return false;
 }
@@ -257,7 +264,7 @@ public:
 				overflow = cls;
 			}
 			
-			cls = cls->parent;
+			cls = cls->parent();
 		}
 		return overflow;
 	}
@@ -273,7 +280,7 @@ public:
 				break;
 			}
 			
-			cls = cls->parent;
+			cls = cls->parent();
 		}
 		return cls;
 	}
@@ -284,7 +291,7 @@ public:
 	{
 		while (cls) {
 			sub_single(cls, amount);
-			cls = cls->parent;
+			cls = cls->parent();
 		}
 	}
 
@@ -320,7 +327,7 @@ public:
 			if (count + 1 > new_resource_class->limit && new_resource_class->limit) {
 				return new_resource_class;
 			}
-			new_resource_class = new_resource_class->parent;
+			new_resource_class = new_resource_class->parent();
 		}
 		return nullptr;
 	}
