@@ -70,8 +70,7 @@ const jive_resource_class_class JIVE_ABSTRACT_RESOURCE = {
 };
 
 const jive_resource_class jive_root_resource_class(
-	&JIVE_ABSTRACT_RESOURCE, "root", 0,
-	nullptr, nullptr,
+	&JIVE_ABSTRACT_RESOURCE, "root", {}, nullptr,
 	jive_resource_class_priority_lowest,
 	no_demotion, nullptr);
 

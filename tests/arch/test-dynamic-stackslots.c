@@ -32,7 +32,7 @@ static int test_main(void)
 	
 	cls1 = jive_fixed_stackslot_class_get(4, 4, 0);
 	assert(cls1->parent() == &jive_stackslot_class_4_4);
-	assert(cls1->limit == 1 && cls1->names[0] != 0);
+	assert(cls1->nresources() == 1);
 	
 	cls2 = jive_fixed_stackslot_class_get(4, 4, 0);
 	assert(cls1 == cls2);

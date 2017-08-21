@@ -41,8 +41,7 @@ public:
 	jive_register_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
-		size_t limit,
-		const struct jive_resource_name * const * names,
+		const std::unordered_set<const jive_resource_name*> & resources,
 		const jive_resource_class * parent,
 		jive_resource_class_priority priority,
 		const jive_resource_class_demotion * demotions,
@@ -50,7 +49,7 @@ public:
 		size_t n,
 		size_t aw,
 		size_t lw)
-	: jive_resource_class(cls, name, limit, names, parent, priority, demotions, type)
+	: jive_resource_class(cls, name, resources, parent, priority, demotions, type)
 	, nbits(n)
 	, int_arithmetic_width(aw)
 	, loadstore_width(lw)

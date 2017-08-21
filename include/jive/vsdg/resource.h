@@ -14,6 +14,7 @@
 #include <jive/common.h>
 
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace jive {
@@ -41,6 +42,8 @@ typedef enum {
 	jive_resource_class_priority_lowest = 7
 } jive_resource_class_priority;
 
+class jive_resource_name;
+
 class jive_resource_class {
 public:
 	virtual
@@ -50,21 +53,19 @@ public:
 	jive_resource_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
-		size_t l,
-		const struct jive_resource_name * const * ns,
+		const std::unordered_set<const jive_resource_name*> resources,
 		const jive_resource_class * parent,
 		jive_resource_class_priority pr,
 		const jive_resource_class_demotion * dm,
 		const jive::base::type * type)
 	: class_(cls)
-	, limit(l)
-	, names(ns)
 	, priority(pr)
 	, demotions(dm)
 	, depth_(parent ? parent->depth()+1 : 0)
 	, name_(name)
 	, type_(type)
 	, parent_(parent)
+	, resources_(resources)
 	{}
 
 	inline size_t
@@ -92,14 +93,19 @@ public:
 		return parent_;
 	}
 
+	inline size_t
+	nresources() const noexcept
+	{
+		return resources_.size();
+	}
+
+	inline const std::unordered_set<const jive_resource_name*> &
+	resources() const noexcept
+	{
+		return resources_;
+	}
+
 	const jive_resource_class_class * class_;
-	
-	/** \brief Upper limit on number of available entities in this class */
-	size_t limit;
-	
-	/** \brief Names of available resources (if limit not 0) */
-	const struct jive_resource_name * const * names;
-	
 	
 	/** \brief Priority for register allocator */
 	jive_resource_class_priority priority;
@@ -117,6 +123,9 @@ private:
 
 	/** \brief Parent resource class */
 	const jive_resource_class * parent_;
+
+	/** \brief Available resources */
+	std::unordered_set<const jive_resource_name*> resources_;
 };
 
 struct jive_resource_class_class {
@@ -160,14 +169,6 @@ jive_resource_class_isinstance(const jive_resource_class * self,
 		tmp = tmp->parent;
 	}
 	return false;
-}
-
-static inline void
-jive_resource_class_get_resource_names(const jive_resource_class * self,
-	size_t * count, const jive_resource_name * const ** names)
-{
-	*count = self->limit;
-	*names = self->names;
 }
 
 static inline const jive::base::type *
@@ -260,7 +261,7 @@ public:
 		const jive_resource_class * overflow = 0;
 		while (cls) {
 			size_t count = add_single(cls, amount);
-			if (count > cls->limit && cls->limit && ! overflow) {
+			if (count > cls->nresources() && cls->nresources() && ! overflow) {
 				overflow = cls;
 			}
 			
@@ -276,7 +277,7 @@ public:
 	{
 		while (cls) {
 			size_t count = get(cls);
-			if (count + amount > cls->limit && cls->limit) {
+			if (count + amount > cls->nresources() && cls->nresources()) {
 				break;
 			}
 			
@@ -324,7 +325,7 @@ public:
 	
 		while (new_resource_class != common_resource_class) {
 			size_t count = get(new_resource_class);
-			if (count + 1 > new_resource_class->limit && new_resource_class->limit) {
+			if (count + 1 > new_resource_class->nresources() && new_resource_class->nresources()) {
 				return new_resource_class;
 			}
 			new_resource_class = new_resource_class->parent();

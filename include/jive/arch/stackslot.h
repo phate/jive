@@ -44,15 +44,14 @@ public:
 	jive_stackslot_size_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
-		size_t limit,
-		const struct jive_resource_name * const * names,
+		const std::unordered_set<const jive_resource_name*> & resources,
 		const jive_resource_class * parent,
 		jive_resource_class_priority priority,
 		const jive_resource_class_demotion * demotions,
 		const jive::base::type * type,
 		size_t s,
 		size_t a)
-	: jive_resource_class(cls, name, limit, names, parent, priority, demotions, type)
+	: jive_resource_class(cls, name, resources, parent, priority, demotions, type)
 	, size(s)
 	, alignment(a)
 	{}
@@ -69,8 +68,7 @@ public:
 	jive_fixed_stackslot_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
-		size_t limit,
-		const struct jive_resource_name * const * names,
+		const std::unordered_set<const jive_resource_name*> & resources,
 		const jive_resource_class * parent,
 		jive_resource_class_priority priority,
 		const jive_resource_class_demotion * demotions,
@@ -78,7 +76,7 @@ public:
 		size_t size,
 		size_t alignment,
 		const jive_resource_name * s)
-	: jive_stackslot_size_class(cls, name, limit, names, parent, priority, demotions, type, size,
+	: jive_stackslot_size_class(cls, name, resources, parent, priority, demotions, type, size,
 		alignment)
 	, slot(s)
 	{}
@@ -112,8 +110,7 @@ public:
 	jive_callslot_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
-		size_t limit,
-		const struct jive_resource_name * const * names,
+		const std::unordered_set<const jive_resource_name*> & resources,
 		const jive_resource_class * parent,
 		jive_resource_class_priority priority,
 		const jive_resource_class_demotion * demotions,
@@ -122,7 +119,7 @@ public:
 		size_t alignment,
 		size_t o,
 		const jive_resource_name * s)
-	: jive_stackslot_size_class(cls, name, limit, names, parent, priority, demotions, type, size,
+	: jive_stackslot_size_class(cls, name, resources, parent, priority, demotions, type, size,
 		alignment)
 	, offset(o)
 	, slot(s)
