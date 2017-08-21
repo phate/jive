@@ -54,14 +54,10 @@ jive_i386_call_node_substitute(
 	}
 	
 	/* mark caller-saved regs as clobbered */
-	auto clobber_eax = dynamic_cast<jive::simple_output*>(
-		call_instr->add_output(&jive_i386_regcls_gpr_eax.base));
-	auto clobber_edx = dynamic_cast<jive::simple_output*>(
-		call_instr->add_output(&jive_i386_regcls_gpr_edx.base));
-	auto clobber_ecx = dynamic_cast<jive::simple_output*>(
-		call_instr->add_output(&jive_i386_regcls_gpr_ecx.base));
-	auto clobber_flags = dynamic_cast<jive::simple_output*>(
-		call_instr->add_output(&jive_i386_regcls_flags.base));
+	auto clobber_eax = call_instr->add_output(&jive_i386_regcls_gpr_eax);
+	auto clobber_edx = call_instr->add_output(&jive_i386_regcls_gpr_edx);
+	auto clobber_ecx = call_instr->add_output(&jive_i386_regcls_gpr_ecx);
+	auto clobber_flags = call_instr->add_output(&jive_i386_regcls_flags);
 	(void) clobber_edx;
 	(void) clobber_ecx;
 	(void) clobber_flags;
@@ -75,7 +71,7 @@ jive_i386_call_node_substitute(
 		const jive_resource_class * value_cls = value->rescls();
 		if (value_cls == &jive_root_resource_class) {
 			/* FIXME: assumes  int32 */
-			value_cls = &jive_i386_regcls_gpr.base;
+			value_cls = &jive_i386_regcls_gpr;
 		}
 		
 		const jive_resource_class * slot_cls = jive_callslot_class_get(4, 4, offset);

@@ -13,6 +13,9 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
 
+jive_resource_class::~jive_resource_class()
+{}
+
 jive_resource_name::~jive_resource_name()
 {}
 
@@ -66,17 +69,11 @@ const jive_resource_class_class JIVE_ABSTRACT_RESOURCE = {
 	is_abstract : true
 };
 
-const jive_resource_class jive_root_resource_class = {
-	class_ : &JIVE_ABSTRACT_RESOURCE,
-	name : "root",
-	limit : 0,
-	names : NULL,
-	parent : 0,
-	depth : 0,
-	priority : jive_resource_class_priority_lowest,
-	demotions : no_demotion,
-	type : NULL
-};
+const jive_resource_class jive_root_resource_class(
+	&JIVE_ABSTRACT_RESOURCE, "root", 0,
+	nullptr, 0, 0,
+	jive_resource_class_priority_lowest,
+	no_demotion, nullptr);
 
 static inline size_t
 max(size_t a, size_t b)

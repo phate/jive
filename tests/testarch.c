@@ -18,11 +18,11 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/splitnode.h>
 
-const jive_register_name jive_testarch_reg_r0("r0", &jive_testarch_regcls_r0.base, 0);
-const jive_register_name jive_testarch_reg_r2("r2", &jive_testarch_regcls_r2.base, 2);
-const jive_register_name jive_testarch_reg_r1("r1", &jive_testarch_regcls_r1.base, 1);
-const jive_register_name jive_testarch_reg_r3("r3", &jive_testarch_regcls_r3.base, 3);
-const jive_register_name jive_testarch_reg_cc("cc", &jive_testarch_regcls_cc.base, 0);
+const jive_register_name jive_testarch_reg_r0("r0", &jive_testarch_regcls_r0, 0);
+const jive_register_name jive_testarch_reg_r2("r2", &jive_testarch_regcls_r2, 2);
+const jive_register_name jive_testarch_reg_r1("r1", &jive_testarch_regcls_r1, 1);
+const jive_register_name jive_testarch_reg_r3("r3", &jive_testarch_regcls_r3, 3);
+const jive_register_name jive_testarch_reg_cc("cc", &jive_testarch_regcls_cc, 0);
 
 static const jive_resource_name * jive_testarch_regcls_r0_names [] = {&jive_testarch_reg_r0};
 static const jive_resource_name * jive_testarch_regcls_r1_names [] = {&jive_testarch_reg_r1};
@@ -37,8 +37,8 @@ static const jive_resource_name * jive_testarch_regcls_gpr_names [] = {
 	&jive_testarch_reg_r0, &jive_testarch_reg_r1, &jive_testarch_reg_r2, &jive_testarch_reg_r3};
 static const jive_resource_name * jive_testarch_regcls_cc_names [] = {&jive_testarch_reg_cc};
 
-#define CLS(x) &jive_testarch_regcls_##x.base
-#define STACK4 &jive_stackslot_class_4_4.base
+#define CLS(x) &jive_testarch_regcls_##x
+#define STACK4 &jive_stackslot_class_4_4
 #define VIA (const jive_resource_class * const[])
 
 static const jive::bits::type bits16(16);
@@ -47,132 +47,90 @@ const jive_resource_class_demotion  tmparray0[] = {
 			{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 			{NULL, NULL}
 		};
+const jive_register_class jive_testarch_regcls_r0(
+	&JIVE_REGISTER_RESOURCE, "r0", 1,
+	jive_testarch_regcls_r0_names,
+	&jive_testarch_regcls_evenreg, 4,
+	jive_resource_class_priority_reg_low,
+	tmparray0, &bits32, 32, 0, 0);
 
-const jive_register_class jive_testarch_regcls_r0 = {
-	base : {
-		class_ : &JIVE_REGISTER_RESOURCE,
-		name : "r0",
-		limit : 1, names : jive_testarch_regcls_r0_names,
-		parent : &jive_testarch_regcls_evenreg.base, depth : 4,
-		priority : jive_resource_class_priority_reg_low,
-		demotions : tmparray0,
-		type : &bits32
-	},
-	nbits : 32
-};
 const jive_resource_class_demotion  tmparray1[] = {
 			{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 			{NULL, NULL}
 		};
-const jive_register_class jive_testarch_regcls_r1 = {
-	base : {
-		class_ : &JIVE_REGISTER_RESOURCE,
-		name : "r1",
-		limit : 1, names : jive_testarch_regcls_r1_names,
-		parent : &jive_testarch_regcls_oddreg.base, depth : 4,
-		priority : jive_resource_class_priority_reg_low,
-		demotions : tmparray1,
-		type : &bits32
-	},
-	nbits : 32
-};
+const jive_register_class jive_testarch_regcls_r1(
+	&JIVE_REGISTER_RESOURCE, "r1", 1,
+	jive_testarch_regcls_r1_names,
+	&jive_testarch_regcls_oddreg, 4,
+	jive_resource_class_priority_reg_low,
+	tmparray1, &bits32, 32, 0, 0);
+
 const jive_resource_class_demotion  tmparray2[] = {
 			{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 			{NULL, NULL}
 		};
-const jive_register_class jive_testarch_regcls_r2 = {
-	base : {
-		class_ : &JIVE_REGISTER_RESOURCE,
-		name : "r2",
-		limit : 1, names : jive_testarch_regcls_r2_names,
-		parent : &jive_testarch_regcls_evenreg.base, depth : 4,
-		priority : jive_resource_class_priority_reg_low,
-		demotions : tmparray2,
-		type : &bits32
-	},
-	nbits : 32
-};
+const jive_register_class jive_testarch_regcls_r2(
+	&JIVE_REGISTER_RESOURCE, "r2", 1,
+	jive_testarch_regcls_r2_names,
+	&jive_testarch_regcls_evenreg, 4,
+	jive_resource_class_priority_reg_low,
+	tmparray2, &bits32, 32, 0, 0);
+
 const jive_resource_class_demotion  tmparray3[] = {
 			{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 			{NULL, NULL}
 		};
-const jive_register_class jive_testarch_regcls_r3 = {
-	base : {
-		class_ : &JIVE_REGISTER_RESOURCE,
-		name : "r3",
-		limit : 1, names : jive_testarch_regcls_r3_names,
-		parent : &jive_testarch_regcls_oddreg.base, depth : 4,
-		priority : jive_resource_class_priority_reg_low,
-		demotions : tmparray3,
-		type : &bits32
-	},
-	nbits : 32
-};
+const jive_register_class jive_testarch_regcls_r3(
+	&JIVE_REGISTER_RESOURCE, "r3", 1,
+	jive_testarch_regcls_r3_names,
+	&jive_testarch_regcls_oddreg, 4,
+	jive_resource_class_priority_reg_low,
+	tmparray3, &bits32, 32, 0, 0);
+
 const jive_resource_class_demotion  tmparray4[] = {
 			{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 			{NULL, NULL}
 		};
-const jive_register_class jive_testarch_regcls_evenreg = {
-	base : {
-		class_ : &JIVE_REGISTER_RESOURCE,
-		name : "even",
-		limit : 2, names : jive_testarch_regcls_evenreg_names,
-		parent : &jive_testarch_regcls_gpr.base, depth : 3,
-		priority : jive_resource_class_priority_reg_low,
-		demotions : tmparray4,
-		type : &bits32
-	},
-	nbits : 32
-};
+const jive_register_class jive_testarch_regcls_evenreg(
+	&JIVE_REGISTER_RESOURCE, "even", 2,
+	jive_testarch_regcls_evenreg_names,
+	&jive_testarch_regcls_gpr, 3,
+	jive_resource_class_priority_reg_low,
+	tmparray4, &bits32, 32, 0, 0);
+
 const jive_resource_class_demotion  tmparray5[] = {
 			{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 			{NULL, NULL}
 		};
-const jive_register_class jive_testarch_regcls_oddreg = {
-	base : {
-		class_ : &JIVE_REGISTER_RESOURCE,
-		name : "odd",
-		limit : 2, names : jive_testarch_regcls_oddreg_names,
-		parent : &jive_testarch_regcls_gpr.base, depth : 3,
-		priority : jive_resource_class_priority_reg_low,
-		demotions : tmparray5,
-		type : &bits32
-	},
-	nbits : 32
-};
+const jive_register_class jive_testarch_regcls_oddreg(
+	&JIVE_REGISTER_RESOURCE, "odd", 2,
+	jive_testarch_regcls_oddreg_names,
+	&jive_testarch_regcls_gpr, 3,
+	jive_resource_class_priority_reg_low,
+	tmparray5, &bits32, 32, 0, 0);
+
 const jive_resource_class_demotion  tmparray6[] = {
 			{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 			{NULL, NULL}
 		};
-const jive_register_class jive_testarch_regcls_gpr = {
-	base : {
-		class_ : &JIVE_REGISTER_RESOURCE,
-		name : "gpr",
-		limit : 4, names : jive_testarch_regcls_gpr_names,
-		parent : &jive_root_register_class, depth : 2,
-		priority : jive_resource_class_priority_reg_low,
-		demotions : tmparray6,
-		type : &bits32
-	},
-	nbits : 32
-};
+const jive_register_class jive_testarch_regcls_gpr(
+		&JIVE_REGISTER_RESOURCE, "gpr", 4,
+		jive_testarch_regcls_gpr_names,
+		&jive_root_register_class, 2,
+		jive_resource_class_priority_reg_low,
+		tmparray6, &bits32, 32, 0, 0);
+
 const jive_resource_class_demotion  tmparray7[] = {
 			{CLS(gpr), VIA {CLS(cc), CLS(gpr), NULL}},
 			{STACK4, VIA {CLS(cc), CLS(gpr), STACK4, NULL}},
 			{NULL, NULL}
 		};
-const jive_register_class jive_testarch_regcls_cc = {
-	base : {
-		class_ : &JIVE_REGISTER_RESOURCE,
-		name : "cc",
-		limit : 1, names : jive_testarch_regcls_cc_names,
-		parent : &jive_root_register_class, depth : 2,
-		priority : jive_resource_class_priority_reg_high,
-		demotions : tmparray7,
-		type : &bits16
-	},
-	nbits : 32
-};
+const jive_register_class jive_testarch_regcls_cc(
+	&JIVE_REGISTER_RESOURCE, "cc", 1,
+	jive_testarch_regcls_cc_names,
+	&jive_root_register_class, 2,
+	jive_resource_class_priority_reg_high,
+	tmparray7, &bits16, 32, 0, 0);
 
 namespace jive {
 namespace testarch {
@@ -355,9 +313,9 @@ jive_testarch_reg_classifier::classify_type(
 {
 	rescls = jive_resource_class_relax(rescls);
 	
-	if (rescls == &jive_testarch_regcls_gpr.base) {
+	if (rescls == &jive_testarch_regcls_gpr) {
 		return (1 << jive_testarch_classify_gpr);
-	} else if (rescls == &jive_testarch_regcls_cc.base) {
+	} else if (rescls == &jive_testarch_regcls_cc) {
 		return (1 << jive_testarch_classify_cc);
 	} else {
 		return 0;
@@ -456,7 +414,7 @@ public:
 	
 		if (index >= 2) {
 			auto node = jive_splitnode_create(subroutine.region, o, o->gate()->rescls(),
-				&jive_testarch_regcls_gpr.base);
+				&jive_testarch_regcls_gpr);
 			o = node->output(0);
 		}
 		return o;
@@ -513,8 +471,8 @@ jive_testarch_subroutine_begin(jive::graph * graph,
 		snprintf(argname, sizeof(argname), "arg%zd", n + 1);
 		const jive_resource_class * cls;
 		switch (n) {
-			case 0: cls = &jive_testarch_regcls_r1.base; break;
-			case 1: cls = &jive_testarch_regcls_r2.base; break;
+			case 0: cls = &jive_testarch_regcls_r1; break;
+			case 1: cls = &jive_testarch_regcls_r2; break;
 			default: cls = jive_fixed_stackslot_class_get(4, 4, (n - 1) * 4);
 		}
 		sig.arguments.emplace_back(jive::subroutine_machine_signature::argument{argname, cls, true});
@@ -525,8 +483,8 @@ jive_testarch_subroutine_begin(jive::graph * graph,
 		snprintf(resname, sizeof(resname), "ret%zd", n + 1);
 		const jive_resource_class * cls;
 		switch (n) {
-			case 0: cls = &jive_testarch_regcls_r1.base; break;
-			case 1: cls = &jive_testarch_regcls_r2.base; break;
+			case 0: cls = &jive_testarch_regcls_r1; break;
+			case 1: cls = &jive_testarch_regcls_r2; break;
 			default: cls = jive_fixed_stackslot_class_get(4, 4, (n - 1) * 4);
 		}
 		sig.results.emplace_back(jive::subroutine_machine_signature::result{resname, cls});
@@ -535,8 +493,7 @@ jive_testarch_subroutine_begin(jive::graph * graph,
 	typedef jive::subroutine_machine_signature::passthrough pt;
 	sig.passthroughs.emplace_back(
 		pt{"mem", nullptr, false});
-	sig.passthroughs.emplace_back(
-		pt{"stackptr", &jive_testarch_regcls_r0.base, false});
+	sig.passthroughs.emplace_back(pt{"stackptr", &jive_testarch_regcls_r0, false});
 	
 	sig.abi_class = &JIVE_TESTARCH_SUBROUTINE_ABI;
 	

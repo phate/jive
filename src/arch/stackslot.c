@@ -17,7 +17,16 @@
 
 #include <unordered_map>
 
+jive_stackslot_size_class::~jive_stackslot_size_class()
+{}
+
+jive_fixed_stackslot_class::~jive_fixed_stackslot_class()
+{}
+
 jive_stackslot::~jive_stackslot()
+{}
+
+jive_callslot_class::~jive_callslot_class()
 {}
 
 jive_callslot::~jive_callslot()
@@ -44,33 +53,19 @@ const jive_resource_class_class JIVE_STACK_CALLSLOT_RESOURCE = {
 static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
 static const jive::mem::type stackvar_type;
 
-const jive_resource_class jive_root_stackslot_class = {
-	class_ : &JIVE_ABSTRACT_RESOURCE,
-	name : "stackslot",
-	limit : 0,
-	names : NULL,
-	parent : &jive_root_resource_class,
-	depth : 1,
-	priority : jive_resource_class_priority_lowest,
-	demotions : no_demotion,
-	type : NULL
-};
+const jive_resource_class jive_root_stackslot_class(
+	&JIVE_ABSTRACT_RESOURCE, "stackslot", 0,
+	nullptr, &jive_root_resource_class, 1,
+	jive_resource_class_priority_lowest,
+	no_demotion, nullptr);
 
 #define MAKE_STACKSLOT_CLASS(SIZE, ALIGNMENT) \
-const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT = { \
-	base : { \
-		class_ : &JIVE_STACK_RESOURCE, \
-		name : "stack_s" #SIZE "a" #ALIGNMENT, \
-		limit : 0, names : NULL, \
-		parent : &jive_root_stackslot_class, \
-		depth : 2, \
-		priority : jive_resource_class_priority_mem_generic,\
-		demotions : no_demotion, \
-		type : &stackvar_type \
-	}, \
-	size : SIZE, \
-	alignment : ALIGNMENT \
-}
+const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT(\
+	&JIVE_STACK_RESOURCE, "stack_s" #SIZE "a" #ALIGNMENT, \
+		0, NULL, &jive_root_stackslot_class, \
+		2, jive_resource_class_priority_mem_generic,\
+		no_demotion, &stackvar_type, SIZE, ALIGNMENT \
+);
 
 MAKE_STACKSLOT_CLASS(1, 1);
 MAKE_STACKSLOT_CLASS(2, 2);
@@ -104,24 +99,15 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 	if (!name)
 		return 0;
 	
-	jive_stackslot_size_class * cls = new jive_stackslot_size_class;
+	jive_stackslot_size_class * cls = new jive_stackslot_size_class(
+		&JIVE_STACK_RESOURCE, name, 0, nullptr, &jive_root_stackslot_class,
+		jive_root_stackslot_class.depth+1, jive_resource_class_priority_mem_generic,
+		no_demotion, &stackvar_type, size, alignment);
 	if (!cls) {
 		free(name);
 		return 0;
 	}
-	
-	cls->base.class_ = &JIVE_STACK_RESOURCE;
-	cls->base.name = name;
-	cls->base.limit = 0;
-	cls->base.names = NULL;
-	cls->base.parent = &jive_root_stackslot_class;
-	cls->base.depth = cls->base.parent->depth + 1;
-	cls->base.priority = jive_resource_class_priority_mem_generic;
-	cls->base.demotions = no_demotion;
-	cls->base.type = &stackvar_type;
-	cls->size = size;
-	cls->alignment = alignment;
-	
+
 	return cls;
 }
 
@@ -138,31 +124,22 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 	if (!name)
 		return 0;
 	
-	jive_fixed_stackslot_class * cls = new jive_fixed_stackslot_class;
+	jive_fixed_stackslot_class * cls = new jive_fixed_stackslot_class(&JIVE_STACK_FRAMESLOT_RESOURCE,
+		name, 1, nullptr, parent, parent->depth+1, jive_resource_class_priority_mem_unique,
+		no_demotion, &stackvar_type, parent->size, parent->alignment, nullptr);
 	if (!cls) {
 		free(name);
 		return 0;
 	}
 	
-	jive_stackslot * slot = new jive_stackslot(name, &cls->base.base, offset);
+	jive_stackslot * slot = new jive_stackslot(name, cls, offset);
 	if (!slot) {
 		free(name);
 		delete cls;
 		return 0;
 	}
 
-	cls->base.base.class_ = &JIVE_STACK_FRAMESLOT_RESOURCE;
-	cls->base.base.name = name;
-	cls->base.base.limit = 1;
-	cls->base.base.names = &cls->slot;
-	cls->base.base.parent = &parent->base;
-	cls->base.base.depth = parent->base.depth + 1;
-	cls->base.base.priority = jive_resource_class_priority_mem_unique;
-	cls->base.base.demotions = no_demotion;
-	cls->base.base.type = &stackvar_type;
-	cls->base.size = parent->size;
-	cls->base.alignment = parent->alignment;
-	
+	cls->names = &cls->slot;
 	cls->slot = slot;
 	
 	return cls;
@@ -178,32 +155,22 @@ jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 	if (!name)
 		return 0;
 	
-	jive_callslot_class * cls = new jive_callslot_class;
+	jive_callslot_class * cls = new jive_callslot_class(&JIVE_STACK_CALLSLOT_RESOURCE, name, 1,
+		nullptr, parent, parent->depth+1, jive_resource_class_priority_mem_unique, no_demotion,
+		&stackvar_type, parent->size, parent->alignment, offset, nullptr);
 	if (!cls) {
 		free(name);
 		return 0;
 	}
 	
-	jive_callslot * slot = new jive_callslot(name, &cls->base.base, offset);
+	jive_callslot * slot = new jive_callslot(name, cls, offset);
 	if (!slot) {
 		free(name);
 		delete cls;
 		return 0;
 	}
 
-	cls->base.base.class_ = &JIVE_STACK_CALLSLOT_RESOURCE;
-	cls->base.base.name = name;
-	cls->base.base.limit = 1;
-	cls->base.base.names = &cls->slot;
-	cls->base.base.parent = &parent->base;
-	cls->base.base.depth = parent->base.depth + 1;
-	cls->base.base.priority = jive_resource_class_priority_mem_unique;
-	cls->base.base.demotions = no_demotion;
-	cls->base.base.type = &stackvar_type;
-	cls->base.size = parent->size;
-	cls->base.alignment = parent->alignment;
-	
-	cls->offset = offset;
+	cls->names = &cls->slot;
 	cls->slot = slot;
 	
 	return cls;
@@ -218,18 +185,18 @@ struct jive_slot_alignment {
 	~jive_slot_alignment() noexcept
 	{
 		if (cls && !jive_stackslot_size_class_static(cls->size, cls->alignment)) {
-			free((char *)cls->base.name);
+			free((char *)cls->name);
 			delete cls;
 		}
 
 		for (auto i = stackslot_offset_map.begin(); i != stackslot_offset_map.end(); i++) {
-			free((char *)i->second->base.base.name);
+			free((char *)i->second->name);
 			delete i->second->slot;
 			delete i->second;
 		}
 
 		for (auto i = callslot_offset_map.begin(); i != callslot_offset_map.end(); i++) {
-			free((char *)i->second->base.base.name);
+			free((char *)i->second->name);
 			delete i->second->slot;
 			delete i->second;
 		}
@@ -402,7 +369,7 @@ jive_stackslot_size_class_get(size_t size, size_t alignment)
 	const jive_stackslot_size_class * cls;
 	cls = jive_stackslot_class_map_lookup_or_create_by_alignment(&class_map, size, alignment);
 	if (cls)
-		return &cls->base;
+		return cls;
 	else
 		return 0;
 }
@@ -413,7 +380,7 @@ jive_fixed_stackslot_class_get(size_t size, size_t alignment, ssize_t offset)
 	const jive_fixed_stackslot_class * cls;
 	cls = jive_stackslot_class_map_lookup_or_create_by_offset(&class_map, size, alignment, offset);
 	if (cls)
-		return &cls->base.base;
+		return cls;
 	else
 		return 0;
 }
@@ -424,7 +391,7 @@ jive_callslot_class_get(size_t size, size_t alignment, ssize_t offset)
 	const jive_callslot_class * cls;
 	cls = jive_callslot_class_map_lookup_or_create_by_offset(&class_map, size, alignment, offset);
 	if (cls)
-		return &cls->base.base;
+		return cls;
 	else
 		return 0;
 }

@@ -11,10 +11,13 @@
 jive_register_name::~jive_register_name()
 {}
 
+jive_register_class::~jive_register_class()
+{}
+
 const struct jive::base::type *
 jive_register_class_get_type(const jive_register_class * self)
 {
-	return jive_resource_class_get_type(&self->base);
+	return jive_resource_class_get_type(self);
 }
 
 static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
@@ -25,14 +28,8 @@ const jive_resource_class_class JIVE_REGISTER_RESOURCE = {
 	is_abstract : false
 };
 
-const jive_resource_class jive_root_register_class = {
-	class_ : &JIVE_ABSTRACT_RESOURCE,
-	name : "register",
-	limit : 0,
-	names : NULL,
-	parent : &jive_root_resource_class,
-	depth : 1,
-	priority : jive_resource_class_priority_lowest,
-	demotions : no_demotion,
-	type : NULL
-};
+const jive_resource_class jive_root_register_class(
+	&JIVE_ABSTRACT_RESOURCE, "register", 0,
+	nullptr, &jive_root_resource_class, 1,
+	jive_resource_class_priority_lowest,
+	no_demotion, nullptr);

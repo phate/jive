@@ -24,7 +24,6 @@ namespace base {
 }
 
 typedef struct jive_rescls_prio_array jive_rescls_prio_array;
-typedef struct jive_resource_class jive_resource_class;
 typedef struct jive_resource_class_class jive_resource_class_class;
 typedef struct jive_resource_class_count jive_resource_class_count;
 typedef struct jive_resource_class_count_bucket jive_resource_class_count_bucket;
@@ -42,7 +41,33 @@ typedef enum {
 	jive_resource_class_priority_lowest = 7
 } jive_resource_class_priority;
 
-struct jive_resource_class {
+class jive_resource_class {
+public:
+	virtual
+	~jive_resource_class();
+
+	inline
+	jive_resource_class(
+		const jive_resource_class_class * cls,
+		const char * n,
+		size_t l,
+		const struct jive_resource_name * const * ns,
+		const jive_resource_class * p,
+		size_t d,
+		jive_resource_class_priority pr,
+		const jive_resource_class_demotion * dm,
+		const jive::base::type * t)
+	: class_(cls)
+	, name(n)
+	, limit(l)
+	, names(ns)
+	, parent(p)
+	, depth(d)
+	, priority(pr)
+	, demotions(dm)
+	, type(t)
+	{}
+
 	const jive_resource_class_class * class_;
 	
 	const char * name;

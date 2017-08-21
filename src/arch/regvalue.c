@@ -36,7 +36,7 @@ regvalue_op::narguments() const noexcept
 const jive::base::type &
 regvalue_op::argument_type(size_t index) const noexcept
 {
-	return *regcls()->base.type;
+	return *regcls()->type;
 }
 
 size_t
@@ -48,12 +48,12 @@ regvalue_op::nresults() const noexcept
 const jive::base::type &
 regvalue_op::result_type(size_t index) const noexcept
 {
-	return *regcls()->base.type;
+	return *regcls()->type;
 }
 std::string
 regvalue_op::debug_string() const
 {
-	return regcls()->base.name;
+	return regcls()->name;
 }
 
 std::unique_ptr<jive::operation>

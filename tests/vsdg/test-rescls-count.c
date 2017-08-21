@@ -18,35 +18,29 @@ void test_rescls_count_addsub()
 	
 	const jive_resource_class * overflow;
 	
-	overflow = count.add(&jive_testarch_regcls_r0.base);
+	overflow = count.add(&jive_testarch_regcls_r0);
 	assert(!overflow);
 	
-	overflow = count.check_add(&jive_testarch_regcls_r1.base);
+	overflow = count.check_add(&jive_testarch_regcls_r1);
 	assert(!overflow);
 	
-	overflow = count.check_add(&jive_testarch_regcls_r0.base);
+	overflow = count.check_add(&jive_testarch_regcls_r0);
 	assert(overflow);
 	
-	overflow = count.add(&jive_testarch_regcls_evenreg.base);
+	overflow = count.add(&jive_testarch_regcls_evenreg);
 	assert(!overflow);
 	
-	overflow = count.check_add(&jive_testarch_regcls_r2.base);
-	assert(overflow == &jive_testarch_regcls_evenreg.base);
+	overflow = count.check_add(&jive_testarch_regcls_r2);
+	assert(overflow == &jive_testarch_regcls_evenreg);
 	
-	overflow = count.check_change(
-		&jive_testarch_regcls_evenreg.base,
-		&jive_testarch_regcls_oddreg.base);
+	overflow = count.check_change(&jive_testarch_regcls_evenreg, &jive_testarch_regcls_oddreg);
 	assert(!overflow);
 	
-	overflow = count.check_change(
-		&jive_testarch_regcls_evenreg.base,
-		&jive_testarch_regcls_r2.base);
+	overflow = count.check_change(&jive_testarch_regcls_evenreg, &jive_testarch_regcls_r2);
 	assert(!overflow);
 	
-	overflow = count.check_change(
-		&jive_testarch_regcls_evenreg.base,
-		&jive_testarch_regcls_r0.base);
-	assert(overflow == &jive_testarch_regcls_r0.base);
+	overflow = count.check_change(&jive_testarch_regcls_evenreg, &jive_testarch_regcls_r0);
+	assert(overflow == &jive_testarch_regcls_r0);
 }
 
 void test_rescls_count_compound()
@@ -55,28 +49,28 @@ void test_rescls_count_compound()
 	
 	assert(a == b);
 	
-	a.add(&jive_testarch_regcls_r0.base);
-	a.add(&jive_testarch_regcls_r1.base);
-	b.add(&jive_testarch_regcls_r0.base);
+	a.add(&jive_testarch_regcls_r0);
+	a.add(&jive_testarch_regcls_r1);
+	b.add(&jive_testarch_regcls_r0);
 	assert(a != b);
 	
 	c = b;
 	assert(b == c);
 	
-	c.add(&jive_testarch_regcls_r1.base);
+	c.add(&jive_testarch_regcls_r1);
 	assert(a == c);
 	
 	a.clear();
 	b.clear();
 	c.clear();
 	
-	a.add(&jive_testarch_regcls_r0.base);
-	a.add(&jive_testarch_regcls_r1.base);
-	b.add(&jive_testarch_regcls_r1.base);
-	b.add(&jive_testarch_regcls_r2.base);
+	a.add(&jive_testarch_regcls_r0);
+	a.add(&jive_testarch_regcls_r1);
+	b.add(&jive_testarch_regcls_r1);
+	b.add(&jive_testarch_regcls_r2);
 	a.update_intersection(b);
-	c.add(&jive_testarch_regcls_r1.base);
-	c.add(&jive_testarch_regcls_evenreg.base);
+	c.add(&jive_testarch_regcls_r1);
+	c.add(&jive_testarch_regcls_evenreg);
 	assert(a.counts().size()== 6);
 	assert(a == c);
 	
@@ -84,15 +78,15 @@ void test_rescls_count_compound()
 	b.clear();
 	c.clear();
 	
-	a.add(&jive_testarch_regcls_r0.base);
-	a.add(&jive_testarch_regcls_r1.base);
-	b.add(&jive_testarch_regcls_r1.base);
-	b.add(&jive_testarch_regcls_r2.base);
+	a.add(&jive_testarch_regcls_r0);
+	a.add(&jive_testarch_regcls_r1);
+	b.add(&jive_testarch_regcls_r1);
+	b.add(&jive_testarch_regcls_r2);
 	a.update_union(b);
-	c.add(&jive_testarch_regcls_r0.base);
-	c.add(&jive_testarch_regcls_r1.base);
-	c.add(&jive_testarch_regcls_r2.base);
-	c.sub(&jive_testarch_regcls_evenreg.base);
+	c.add(&jive_testarch_regcls_r0);
+	c.add(&jive_testarch_regcls_r1);
+	c.add(&jive_testarch_regcls_r2);
+	c.sub(&jive_testarch_regcls_evenreg);
 	assert(a.counts().size() == 8);
 	assert(a == c);
 }
@@ -101,8 +95,8 @@ void test_rescls_count_prio()
 {
 	jive_resource_class_count a;
 	
-	a.add(&jive_testarch_regcls_r0.base);
-	a.add(&jive_testarch_regcls_r1.base);
+	a.add(&jive_testarch_regcls_r0);
+	a.add(&jive_testarch_regcls_r1);
 	
 	jive_rescls_prio_array prio;
 	jive_rescls_prio_array_compute(&prio, &a);
@@ -111,11 +105,11 @@ void test_rescls_count_prio()
 	reference.count[jive_resource_class_priority_lowest] = 2;
 	assert( jive_rescls_prio_array_compare(&prio, &reference) == 0);
 	
-	a.sub(&jive_testarch_regcls_r1.base);
+	a.sub(&jive_testarch_regcls_r1);
 	jive_rescls_prio_array_compute(&prio, &a);
 	assert( jive_rescls_prio_array_compare(&prio, &reference) == -1);
 	
-	a.add(&jive_testarch_regcls_cc.base);
+	a.add(&jive_testarch_regcls_cc);
 	jive_rescls_prio_array_compute(&prio, &a);
 	assert( jive_rescls_prio_array_compare(&prio, &reference) == +1);
 }

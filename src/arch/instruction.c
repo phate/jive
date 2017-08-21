@@ -59,7 +59,7 @@ const jive_resource_class *
 instruction_op::argument_cls(size_t index) const noexcept
 {
 	if (index < icls()->ninputs()) {
-		return &icls()->input(index)->base;
+		return icls()->input(index);
 	} else {
 		return &jive_root_resource_class;
 	}
@@ -75,7 +75,7 @@ const jive_resource_class *
 instruction_op::result_cls(size_t index) const noexcept
 {
 	if (index < icls()->noutputs()) {
-		return &icls()->output(index)->base;
+		return icls()->output(index);
 	} else {
 		return &jive_root_resource_class;
 	}

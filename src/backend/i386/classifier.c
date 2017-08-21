@@ -34,9 +34,9 @@ jive_i386_reg_classifier::classify_type(
 {
 	rescls = jive_resource_class_relax(rescls);
 	
-	if (rescls == &jive_i386_regcls_gpr.base)
+	if (rescls == &jive_i386_regcls_gpr)
 		return (1 << jive_i386_classify_gpr);
-	else if (rescls == &jive_i386_regcls_flags.base)
+	else if (rescls == &jive_i386_regcls_flags)
 		return (1 << jive_i386_classify_flags);
 
 	const jive::bits::type * btype = dynamic_cast<const jive::bits::type*>(type);
