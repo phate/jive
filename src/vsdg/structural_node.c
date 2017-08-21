@@ -136,7 +136,7 @@ structural_output::structural_output(
 	jive::structural_node * node,
 	size_t index,
 	const struct jive_resource_class * rescls)
-	: output(index, node->region(), *jive_resource_class_get_type(rescls), rescls)
+	: output(index, node->region(), rescls->type(), rescls)
 	, node_(node)
 {
 	results.first = results.last = nullptr;

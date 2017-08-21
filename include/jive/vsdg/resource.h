@@ -170,12 +170,6 @@ jive_resource_class_isinstance(const jive_resource_class * self,
 	return false;
 }
 
-static inline const jive::base::type *
-jive_resource_class_get_type(const jive_resource_class * self)
-{
-	return &self->type();
-}
-
 static inline bool
 jive_resource_class_is_abstract(const jive_resource_class * self)
 {

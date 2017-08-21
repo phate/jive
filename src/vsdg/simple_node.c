@@ -304,7 +304,7 @@ jive::simple_output *
 simple_node::add_output(const struct jive_resource_class * rescls)
 {
 	outputs_.emplace_back(std::make_unique<jive::simple_output>(
-		this, noutputs(), *jive_resource_class_get_type(rescls), rescls));
+		this, noutputs(), rescls->type(), rescls));
 	auto output = this->output(noutputs()-1);
 
 	graph()->on_output_create(output);

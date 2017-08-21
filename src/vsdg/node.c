@@ -88,7 +88,7 @@ input::input(
 	, gate_(nullptr)
 	, origin_(origin)
 	, region_(region)
-	, type_(jive_resource_class_get_type(rescls)->copy())
+	, type_(rescls->type().copy())
 	, rescls_(rescls)
 {
 	gate_input_list.prev = gate_input_list.next = nullptr;
@@ -96,9 +96,8 @@ input::input(
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
 
-	auto type = jive_resource_class_get_type(rescls);
-	if (*type != origin->type())
-		throw jive::type_error(type->debug_string(), origin->type().debug_string());
+	if (rescls->type() != origin->type())
+		throw jive::type_error(rescls->type().debug_string(), origin->type().debug_string());
 
 	origin->add_user(this);
 }
@@ -235,7 +234,7 @@ gate::gate(
 	: name_(name)
 	, graph_(graph)
 	, rescls_(rescls)
-	, type_(jive_resource_class_get_type(rescls)->copy())
+	, type_(rescls->type().copy())
 {
 	inputs.first = inputs.last = nullptr;
 	outputs.first = outputs.last = nullptr;
