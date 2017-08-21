@@ -121,7 +121,7 @@ jive_resource_class_count::debug_string() const
 			os << ", ";
 		}
 		first = false;
-		os << item.first->name << ":" << item.second;
+		os << item.first->name() << ":" << item.second;
 	}
 	return os.str();
 }

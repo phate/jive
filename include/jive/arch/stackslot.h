@@ -43,7 +43,7 @@ public:
 	inline
 	jive_stackslot_size_class(
 		const jive_resource_class_class * cls,
-		const char * name,
+		const std::string & name,
 		size_t limit,
 		const struct jive_resource_name * const * names,
 		const jive_resource_class * parent,
@@ -68,7 +68,7 @@ public:
 	inline
 	jive_fixed_stackslot_class(
 		const jive_resource_class_class * cls,
-		const char * name,
+		const std::string & name,
 		size_t limit,
 		const struct jive_resource_name * const * names,
 		const jive_resource_class * parent,
@@ -111,7 +111,7 @@ public:
 	inline
 	jive_callslot_class(
 		const jive_resource_class_class * cls,
-		const char * name,
+		const std::string & name,
 		size_t limit,
 		const struct jive_resource_name * const * names,
 		const jive_resource_class * parent,

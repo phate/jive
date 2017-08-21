@@ -40,7 +40,7 @@ public:
 	inline
 	jive_register_class(
 		const jive_resource_class_class * cls,
-		const char * name,
+		const std::string & name,
 		size_t limit,
 		const struct jive_resource_name * const * names,
 		const jive_resource_class * parent,

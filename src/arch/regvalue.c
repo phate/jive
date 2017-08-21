@@ -53,7 +53,7 @@ regvalue_op::result_type(size_t index) const noexcept
 std::string
 regvalue_op::debug_string() const
 {
-	return regcls()->name;
+	return regcls()->name();
 }
 
 std::unique_ptr<jive::operation>

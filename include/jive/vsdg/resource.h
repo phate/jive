@@ -49,7 +49,7 @@ public:
 	inline
 	jive_resource_class(
 		const jive_resource_class_class * cls,
-		const char * n,
+		const std::string & name,
 		size_t l,
 		const struct jive_resource_name * const * ns,
 		const jive_resource_class * p,
@@ -57,7 +57,6 @@ public:
 		const jive_resource_class_demotion * dm,
 		const jive::base::type * t)
 	: class_(cls)
-	, name(n)
 	, limit(l)
 	, names(ns)
 	, parent(p)
@@ -65,6 +64,7 @@ public:
 	, demotions(dm)
 	, type(t)
 	, depth_(p ? p->depth()+1 : 0)
+	, name_(name)
 	{}
 
 	inline size_t
@@ -73,9 +73,13 @@ public:
 		return depth_;
 	}
 
+	inline const std::string &
+	name() const noexcept
+	{
+		return name_;
+	}
+
 	const jive_resource_class_class * class_;
-	
-	const char * name;
 	
 	/** \brief Upper limit on number of available entities in this class */
 	size_t limit;
@@ -98,6 +102,7 @@ public:
 private:
 	/** \brief Number of steps from root resource class */
 	size_t depth_;
+	std::string name_;
 };
 
 struct jive_resource_class_class {

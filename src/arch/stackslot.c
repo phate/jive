@@ -92,22 +92,10 @@ jive_stackslot_size_class_static(size_t size, size_t alignment)
 static jive_stackslot_size_class *
 jive_stackslot_size_class_create(size_t size, size_t alignment)
 {
-	char tmpname[80];
-	snprintf(tmpname, sizeof(tmpname), "stack_s%zda%zd", size, alignment);
-	
-	char * name = strdup(tmpname);
-	if (!name)
-		return 0;
-	
-	jive_stackslot_size_class * cls = new jive_stackslot_size_class(
-		&JIVE_STACK_RESOURCE, name, 0, nullptr, &jive_root_stackslot_class,
-		jive_resource_class_priority_mem_generic, no_demotion, &stackvar_type, size, alignment);
-	if (!cls) {
-		free(name);
-		return 0;
-	}
-
-	return cls;
+	auto name = jive::detail::strfmt("stack_s", size, "a", alignment);
+	return new jive_stackslot_size_class( &JIVE_STACK_RESOURCE, name, 0, nullptr,
+		&jive_root_stackslot_class, jive_resource_class_priority_mem_generic, no_demotion,
+		&stackvar_type, size, alignment);
 }
 
 jive_stackslot *
@@ -116,26 +104,18 @@ jive_stackslot_create(const jive_resource_class * parent, long offset);
 static jive_fixed_stackslot_class *
 jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int offset)
 {
-	char tmpname[80];
-	snprintf(tmpname, sizeof(tmpname), "stack_s%zda%zd@%d", parent->size, parent->alignment, offset);
+	auto name = jive::detail::strfmt("stack_s", parent->size, "a", parent->alignment, "@", offset);
 	
-	char * name = strdup(tmpname);
-	if (!name)
-		return 0;
-	
-	jive_fixed_stackslot_class * cls = new jive_fixed_stackslot_class(&JIVE_STACK_FRAMESLOT_RESOURCE,
-		name, 1, nullptr, parent, jive_resource_class_priority_mem_unique,
-		no_demotion, &stackvar_type, parent->size, parent->alignment, nullptr);
-	if (!cls) {
-		free(name);
-		return 0;
-	}
-	
-	jive_stackslot * slot = new jive_stackslot(name, cls, offset);
+	auto cls = new jive_fixed_stackslot_class(&JIVE_STACK_FRAMESLOT_RESOURCE, name, 1, nullptr,
+		parent, jive_resource_class_priority_mem_unique, no_demotion, &stackvar_type, parent->size,
+		parent->alignment, nullptr);
+	if (!cls)
+		return nullptr;
+
+	auto slot = new jive_stackslot(name, cls, offset);
 	if (!slot) {
-		free(name);
 		delete cls;
-		return 0;
+		return nullptr;
 	}
 
 	cls->names = &cls->slot;
@@ -147,26 +127,18 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 static jive_callslot_class *
 jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 {
-	char tmpname[80];
-	snprintf(tmpname, sizeof(tmpname), "call_s%zda%zd@%d", parent->size, parent->alignment, offset);
-	
-	char * name = strdup(tmpname);
-	if (!name)
-		return 0;
-	
-	jive_callslot_class * cls = new jive_callslot_class(&JIVE_STACK_CALLSLOT_RESOURCE, name, 1,
-		nullptr, parent, jive_resource_class_priority_mem_unique, no_demotion,
-		&stackvar_type, parent->size, parent->alignment, offset, nullptr);
-	if (!cls) {
-		free(name);
-		return 0;
-	}
-	
+	auto name = jive::detail::strfmt("call_s", parent->size, "a", parent->alignment, "@", offset);
+
+	auto cls = new jive_callslot_class(&JIVE_STACK_CALLSLOT_RESOURCE, name, 1, nullptr, parent,
+		jive_resource_class_priority_mem_unique, no_demotion, &stackvar_type, parent->size,
+		parent->alignment, offset, nullptr);
+	if (!cls)
+		return nullptr;
+
 	jive_callslot * slot = new jive_callslot(name, cls, offset);
 	if (!slot) {
-		free(name);
 		delete cls;
-		return 0;
+		return nullptr;
 	}
 
 	cls->names = &cls->slot;
@@ -184,18 +156,15 @@ struct jive_slot_alignment {
 	~jive_slot_alignment() noexcept
 	{
 		if (cls && !jive_stackslot_size_class_static(cls->size, cls->alignment)) {
-			free((char *)cls->name);
 			delete cls;
 		}
 
 		for (auto i = stackslot_offset_map.begin(); i != stackslot_offset_map.end(); i++) {
-			free((char *)i->second->name);
 			delete i->second->slot;
 			delete i->second;
 		}
 
 		for (auto i = callslot_offset_map.begin(); i != callslot_offset_map.end(); i++) {
-			free((char *)i->second->name);
 			delete i->second->slot;
 			delete i->second;
 		}
