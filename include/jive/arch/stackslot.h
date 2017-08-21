@@ -93,7 +93,7 @@ public:
 
 	inline
 	jive_stackslot(
-		const char * name,
+		const std::string & name,
 		const jive_resource_class * rescls,
 		int o)
 	: jive_resource_name(name, rescls)
@@ -139,7 +139,7 @@ public:
 
 	inline
 	jive_callslot(
-		const char * name,
+		const std::string & name,
 		const jive_resource_class * rescls,
 		int o)
 	: jive_resource_name(name, rescls)

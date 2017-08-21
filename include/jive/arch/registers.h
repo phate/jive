@@ -22,7 +22,7 @@ public:
 
 	inline
 	jive_register_name(
-		const char * name,
+		const std::string & name,
 		const jive_resource_class * rescls,
 		int c)
 	: jive_resource_name(name, rescls)

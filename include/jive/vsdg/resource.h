@@ -176,15 +176,20 @@ public:
 	~jive_resource_name();
 
 	inline
-	jive_resource_name(
-		const char * n,
-		const jive_resource_class * rescls)
-	: name(n)
-	, resource_class(rescls)
+	jive_resource_name(const std::string & name, const jive_resource_class * rescls)
+	: resource_class(rescls)
+	, name_(name)
 	{}
 
-	const char * name;
+	inline const std::string &
+	name() const noexcept
+	{
+		return name_;
+	}
+
 	const jive_resource_class * resource_class;
+private:
+	std::string name_;
 };
 
 class jive_resource_class_count {
