@@ -46,7 +46,7 @@ const jive::base::type &
 instruction_op::argument_type(size_t index) const noexcept
 {
 	if (index < icls()->ninputs())
-		return *jive_register_class_get_type(icls()->input(index));
+		return icls()->input(index)->type();
 
 	static const jive::imm::type immtype;
 	if (index < (icls()->ninputs() + icls()->nimmediates()))
@@ -85,7 +85,7 @@ const jive::base::type &
 instruction_op::result_type(size_t index) const noexcept
 {
 	if (index < icls()->noutputs())
-		return *jive_register_class_get_type(icls()->output(index));
+		return icls()->output(index)->type();
 
 	return *ostates_[index - icls()->noutputs()];
 }

@@ -68,9 +68,6 @@ public:
 	size_t loadstore_width;
 };
 
-const struct jive::base::type *
-jive_register_class_get_type(const jive_register_class * self);
-
 extern const jive_resource_class jive_root_register_class;
 extern const jive_resource_class_class JIVE_REGISTER_RESOURCE;
 

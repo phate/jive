@@ -18,12 +18,6 @@ register_name::~register_name()
 jive_register_class::~jive_register_class()
 {}
 
-const struct jive::base::type *
-jive_register_class_get_type(const jive_register_class * self)
-{
-	return &self->type();
-}
-
 static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
 
 const jive_resource_class_class JIVE_REGISTER_RESOURCE = {
