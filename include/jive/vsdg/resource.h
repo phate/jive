@@ -55,16 +55,16 @@ public:
 		const jive_resource_class * p,
 		jive_resource_class_priority pr,
 		const jive_resource_class_demotion * dm,
-		const jive::base::type * t)
+		const jive::base::type * type)
 	: class_(cls)
 	, limit(l)
 	, names(ns)
 	, parent(p)
 	, priority(pr)
 	, demotions(dm)
-	, type(t)
 	, depth_(p ? p->depth()+1 : 0)
 	, name_(name)
+	, type_(type)
 	{}
 
 	inline size_t
@@ -77,6 +77,13 @@ public:
 	name() const noexcept
 	{
 		return name_;
+	}
+
+	inline const jive::base::type &
+	type() const noexcept
+	{
+		JIVE_DEBUG_ASSERT(type_ != nullptr);
+		return *type_;
 	}
 
 	const jive_resource_class_class * class_;
@@ -96,13 +103,13 @@ public:
 	/** \brief Paths for "demoting" this resource to a different one */
 	const jive_resource_class_demotion * demotions;
 	
-	/** \brief Port and gate type corresponding to this resource */
-	const jive::base::type * type;
-
 private:
 	/** \brief Number of steps from root resource class */
 	size_t depth_;
 	std::string name_;
+
+	/** \brief Port and gate type corresponding to this resource */
+	const jive::base::type * type_;
 };
 
 struct jive_resource_class_class {
@@ -159,7 +166,7 @@ jive_resource_class_get_resource_names(const jive_resource_class * self,
 static inline const jive::base::type *
 jive_resource_class_get_type(const jive_resource_class * self)
 {
-	return self->type;
+	return &self->type();
 }
 
 static inline bool
