@@ -24,12 +24,19 @@ public:
 	jive_register_name(
 		const std::string & name,
 		const jive_resource_class * rescls,
-		int c)
+		size_t code)
 	: jive_resource_name(name, rescls)
-	, code(c)
+	, code_(code)
 	{}
 
-	int code;
+	inline size_t
+	code() const noexcept
+	{
+		return code_;
+	}
+
+private:
+	size_t code_;
 };
 
 class jive_register_class : public jive_resource_class {
