@@ -146,18 +146,6 @@ jive_resource_class_intersection(const jive_resource_class * self,
 	const jive_resource_class * other);
 
 static inline bool
-jive_resource_class_issubclass(const jive_resource_class * self,
-	const jive_resource_class * super_class)
-{
-	while (self) {
-		if (self == super_class)
-			return true;
-		self = self->parent();
-	}
-	return false;
-}
-
-static inline bool
 jive_resource_class_isinstance(const jive_resource_class * self,
 	const jive_resource_class_class * cls)
 {
