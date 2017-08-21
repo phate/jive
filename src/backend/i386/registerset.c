@@ -11,26 +11,26 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/types/float/flttype.h>
 
-const jive_register_name jive_i386_reg_cc("cc", &jive_i386_regcls_flags, 0);
-const jive_register_name jive_i386_reg_eax("eax", &jive_i386_regcls_gpr_eax, 0);
-const jive_register_name jive_i386_reg_ecx("ecx", &jive_i386_regcls_gpr_ecx, 1);
-const jive_register_name jive_i386_reg_edx("edx", &jive_i386_regcls_gpr_edx, 2);
-const jive_register_name jive_i386_reg_ebx("ebx", &jive_i386_regcls_gpr_ebx, 3);
-const jive_register_name jive_i386_reg_esi("esi", &jive_i386_regcls_gpr_esi, 6);
-const jive_register_name jive_i386_reg_edi("edi", &jive_i386_regcls_gpr_edi, 7);
-const jive_register_name jive_i386_reg_ebp("ebp", &jive_i386_regcls_gpr_ebp, 5);
-const jive_register_name jive_i386_reg_esp("esp", &jive_i386_regcls_gpr_esp, 4);
+const jive::register_name jive_i386_reg_cc("cc", &jive_i386_regcls_flags, 0);
+const jive::register_name jive_i386_reg_eax("eax", &jive_i386_regcls_gpr_eax, 0);
+const jive::register_name jive_i386_reg_ecx("ecx", &jive_i386_regcls_gpr_ecx, 1);
+const jive::register_name jive_i386_reg_edx("edx", &jive_i386_regcls_gpr_edx, 2);
+const jive::register_name jive_i386_reg_ebx("ebx", &jive_i386_regcls_gpr_ebx, 3);
+const jive::register_name jive_i386_reg_esi("esi", &jive_i386_regcls_gpr_esi, 6);
+const jive::register_name jive_i386_reg_edi("edi", &jive_i386_regcls_gpr_edi, 7);
+const jive::register_name jive_i386_reg_ebp("ebp", &jive_i386_regcls_gpr_ebp, 5);
+const jive::register_name jive_i386_reg_esp("esp", &jive_i386_regcls_gpr_esp, 4);
 
-const jive_register_name jive_i386_reg_st0("st0", &jive_i386_regcls_fp_st0, 0);
+const jive::register_name jive_i386_reg_st0("st0", &jive_i386_regcls_fp_st0, 0);
 
-const jive_register_name jive_i386_reg_xmm0("xmm0", &jive_i386_regcls_sse_xmm0, 0);
-const jive_register_name jive_i386_reg_xmm1("xmm1", &jive_i386_regcls_sse_xmm1, 1);
-const jive_register_name jive_i386_reg_xmm2("xmm2", &jive_i386_regcls_sse_xmm2, 2);
-const jive_register_name jive_i386_reg_xmm3("xmm3", &jive_i386_regcls_sse_xmm3, 3);
-const jive_register_name jive_i386_reg_xmm4("xmm4", &jive_i386_regcls_sse_xmm4, 4);
-const jive_register_name jive_i386_reg_xmm5("xmm5", &jive_i386_regcls_sse_xmm5, 5);
-const jive_register_name jive_i386_reg_xmm6("xmm6", &jive_i386_regcls_sse_xmm6, 6);
-const jive_register_name jive_i386_reg_xmm7("xmm7", &jive_i386_regcls_sse_xmm7, 7);
+const jive::register_name jive_i386_reg_xmm0("xmm0", &jive_i386_regcls_sse_xmm0, 0);
+const jive::register_name jive_i386_reg_xmm1("xmm1", &jive_i386_regcls_sse_xmm1, 1);
+const jive::register_name jive_i386_reg_xmm2("xmm2", &jive_i386_regcls_sse_xmm2, 2);
+const jive::register_name jive_i386_reg_xmm3("xmm3", &jive_i386_regcls_sse_xmm3, 3);
+const jive::register_name jive_i386_reg_xmm4("xmm4", &jive_i386_regcls_sse_xmm4, 4);
+const jive::register_name jive_i386_reg_xmm5("xmm5", &jive_i386_regcls_sse_xmm5, 5);
+const jive::register_name jive_i386_reg_xmm6("xmm6", &jive_i386_regcls_sse_xmm6, 6);
+const jive::register_name jive_i386_reg_xmm7("xmm7", &jive_i386_regcls_sse_xmm7, 7);
 
 #define CLS(x) &jive_i386_regcls_##x
 #define STACK4 &jive_stackslot_class_4_4

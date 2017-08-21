@@ -20,16 +20,16 @@ public: \
 	virtual void \
 	encode(	\
 		struct jive_section * target, \
-		const jive_register_name * inputs[], \
-		const jive_register_name * outputs[], \
+		const jive::register_name * inputs[], \
+		const jive::register_name * outputs[], \
 		const jive_codegen_imm immediates[], \
 		jive_instruction_encoding_flags * flags) const override; \
 \
 	virtual void \
 	write_asm( \
 		struct jive_buffer * target, \
-		const jive_register_name * inputs[], \
-		const jive_register_name * outputs[], \
+		const jive::register_name * inputs[], \
+		const jive::register_name * outputs[], \
 		const jive_asmgen_imm immediates[], \
 		jive_instruction_encoding_flags * flags) const override; \
 \

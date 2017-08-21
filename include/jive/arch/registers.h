@@ -13,19 +13,18 @@ namespace jive {
 namespace base {
 	class type;
 }
-}
 
-class jive_register_name : public jive::resource_name {
+class register_name : public resource_name {
 public:
 	virtual
-	~jive_register_name();
+	~register_name();
 
 	inline
-	jive_register_name(
+	register_name(
 		const std::string & name,
 		const jive_resource_class * rescls,
 		size_t code)
-	: jive::resource_name(name, rescls)
+	: resource_name(name, rescls)
 	, code_(code)
 	{}
 
@@ -38,6 +37,8 @@ public:
 private:
 	size_t code_;
 };
+
+}
 
 class jive_register_class : public jive_resource_class {
 public:

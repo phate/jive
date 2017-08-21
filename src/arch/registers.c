@@ -8,8 +8,12 @@
 
 #include <jive/vsdg/basetype.h>
 
-jive_register_name::~jive_register_name()
+namespace jive {
+
+register_name::~register_name()
 {}
+
+}
 
 jive_register_class::~jive_register_class()
 {}
