@@ -30,6 +30,6 @@ const jive_resource_class_class JIVE_REGISTER_RESOURCE = {
 
 const jive_resource_class jive_root_register_class(
 	&JIVE_ABSTRACT_RESOURCE, "register", 0,
-	nullptr, &jive_root_resource_class, 1,
+	nullptr, &jive_root_resource_class,
 	jive_resource_class_priority_lowest,
 	no_demotion, nullptr);

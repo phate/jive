@@ -47,13 +47,12 @@ public:
 		size_t limit,
 		const struct jive_resource_name * const * names,
 		const jive_resource_class * parent,
-		size_t depth,
 		jive_resource_class_priority priority,
 		const jive_resource_class_demotion * demotions,
 		const jive::base::type * type,
 		size_t s,
 		size_t a)
-	: jive_resource_class(cls, name, limit, names, parent, depth, priority, demotions, type)
+	: jive_resource_class(cls, name, limit, names, parent, priority, demotions, type)
 	, size(s)
 	, alignment(a)
 	{}
@@ -73,15 +72,14 @@ public:
 		size_t limit,
 		const struct jive_resource_name * const * names,
 		const jive_resource_class * parent,
-		size_t depth,
 		jive_resource_class_priority priority,
 		const jive_resource_class_demotion * demotions,
 		const jive::base::type * type,
 		size_t size,
 		size_t alignment,
 		const jive_resource_name * s)
-	: jive_stackslot_size_class(cls, name, limit, names, parent, depth, priority, demotions, type,
-		size, alignment)
+	: jive_stackslot_size_class(cls, name, limit, names, parent, priority, demotions, type, size,
+		alignment)
 	, slot(s)
 	{}
 	
@@ -117,7 +115,6 @@ public:
 		size_t limit,
 		const struct jive_resource_name * const * names,
 		const jive_resource_class * parent,
-		size_t depth,
 		jive_resource_class_priority priority,
 		const jive_resource_class_demotion * demotions,
 		const jive::base::type * type,
@@ -125,8 +122,8 @@ public:
 		size_t alignment,
 		size_t o,
 		const jive_resource_name * s)
-	: jive_stackslot_size_class(cls, name, limit, names, parent, depth, priority, demotions, type,
-		size, alignment)
+	: jive_stackslot_size_class(cls, name, limit, names, parent, priority, demotions, type, size,
+		alignment)
 	, offset(o)
 	, slot(s)
 	{}

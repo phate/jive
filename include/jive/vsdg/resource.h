@@ -53,7 +53,6 @@ public:
 		size_t l,
 		const struct jive_resource_name * const * ns,
 		const jive_resource_class * p,
-		size_t d,
 		jive_resource_class_priority pr,
 		const jive_resource_class_demotion * dm,
 		const jive::base::type * t)
@@ -62,11 +61,17 @@ public:
 	, limit(l)
 	, names(ns)
 	, parent(p)
-	, depth(d)
 	, priority(pr)
 	, demotions(dm)
 	, type(t)
+	, depth_(p ? p->depth()+1 : 0)
 	{}
+
+	inline size_t
+	depth() const noexcept
+	{
+		return depth_;
+	}
 
 	const jive_resource_class_class * class_;
 	
@@ -81,9 +86,6 @@ public:
 	/** \brief Parent resource class */
 	const jive_resource_class * parent;
 	
-	/** \brief Number of steps from root */
-	size_t depth;
-	
 	/** \brief Priority for register allocator */
 	jive_resource_class_priority priority;
 	
@@ -92,6 +94,10 @@ public:
 	
 	/** \brief Port and gate type corresponding to this resource */
 	const jive::base::type * type;
+
+private:
+	/** \brief Number of steps from root resource class */
+	size_t depth_;
 };
 
 struct jive_resource_class_class {

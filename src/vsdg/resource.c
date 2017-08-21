@@ -33,7 +33,7 @@ jive_resource_class_union(const jive_resource_class * self, const jive_resource_
 {
 	for(;;) {
 		if (self == other) return self;
-		if (self->depth > other->depth)
+		if (self->depth() > other->depth())
 			self = self->parent;
 		else
 			other = other->parent;
@@ -71,7 +71,7 @@ const jive_resource_class_class JIVE_ABSTRACT_RESOURCE = {
 
 const jive_resource_class jive_root_resource_class(
 	&JIVE_ABSTRACT_RESOURCE, "root", 0,
-	nullptr, 0, 0,
+	nullptr, nullptr,
 	jive_resource_class_priority_lowest,
 	no_demotion, nullptr);
 

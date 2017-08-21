@@ -44,14 +44,13 @@ public:
 		size_t limit,
 		const struct jive_resource_name * const * names,
 		const jive_resource_class * parent,
-		size_t depth,
 		jive_resource_class_priority priority,
 		const jive_resource_class_demotion * demotions,
 		const jive::base::type * type,
 		size_t n,
 		size_t aw,
 		size_t lw)
-	: jive_resource_class(cls, name, limit, names, parent, depth, priority, demotions, type)
+	: jive_resource_class(cls, name, limit, names, parent, priority, demotions, type)
 	, nbits(n)
 	, int_arithmetic_width(aw)
 	, loadstore_width(lw)

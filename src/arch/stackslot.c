@@ -55,7 +55,7 @@ static const jive::mem::type stackvar_type;
 
 const jive_resource_class jive_root_stackslot_class(
 	&JIVE_ABSTRACT_RESOURCE, "stackslot", 0,
-	nullptr, &jive_root_resource_class, 1,
+	nullptr, &jive_root_resource_class,
 	jive_resource_class_priority_lowest,
 	no_demotion, nullptr);
 
@@ -63,7 +63,7 @@ const jive_resource_class jive_root_stackslot_class(
 const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT(\
 	&JIVE_STACK_RESOURCE, "stack_s" #SIZE "a" #ALIGNMENT, \
 		0, NULL, &jive_root_stackslot_class, \
-		2, jive_resource_class_priority_mem_generic,\
+		jive_resource_class_priority_mem_generic,\
 		no_demotion, &stackvar_type, SIZE, ALIGNMENT \
 );
 
@@ -101,8 +101,7 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 	
 	jive_stackslot_size_class * cls = new jive_stackslot_size_class(
 		&JIVE_STACK_RESOURCE, name, 0, nullptr, &jive_root_stackslot_class,
-		jive_root_stackslot_class.depth+1, jive_resource_class_priority_mem_generic,
-		no_demotion, &stackvar_type, size, alignment);
+		jive_resource_class_priority_mem_generic, no_demotion, &stackvar_type, size, alignment);
 	if (!cls) {
 		free(name);
 		return 0;
@@ -125,7 +124,7 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 		return 0;
 	
 	jive_fixed_stackslot_class * cls = new jive_fixed_stackslot_class(&JIVE_STACK_FRAMESLOT_RESOURCE,
-		name, 1, nullptr, parent, parent->depth+1, jive_resource_class_priority_mem_unique,
+		name, 1, nullptr, parent, jive_resource_class_priority_mem_unique,
 		no_demotion, &stackvar_type, parent->size, parent->alignment, nullptr);
 	if (!cls) {
 		free(name);
@@ -156,7 +155,7 @@ jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 		return 0;
 	
 	jive_callslot_class * cls = new jive_callslot_class(&JIVE_STACK_CALLSLOT_RESOURCE, name, 1,
-		nullptr, parent, parent->depth+1, jive_resource_class_priority_mem_unique, no_demotion,
+		nullptr, parent, jive_resource_class_priority_mem_unique, no_demotion,
 		&stackvar_type, parent->size, parent->alignment, offset, nullptr);
 	if (!cls) {
 		free(name);

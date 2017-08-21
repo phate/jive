@@ -50,7 +50,7 @@ const jive_resource_class_demotion  tmparray0[] = {
 const jive_register_class jive_testarch_regcls_r0(
 	&JIVE_REGISTER_RESOURCE, "r0", 1,
 	jive_testarch_regcls_r0_names,
-	&jive_testarch_regcls_evenreg, 4,
+	&jive_testarch_regcls_evenreg,
 	jive_resource_class_priority_reg_low,
 	tmparray0, &bits32, 32, 0, 0);
 
@@ -61,7 +61,7 @@ const jive_resource_class_demotion  tmparray1[] = {
 const jive_register_class jive_testarch_regcls_r1(
 	&JIVE_REGISTER_RESOURCE, "r1", 1,
 	jive_testarch_regcls_r1_names,
-	&jive_testarch_regcls_oddreg, 4,
+	&jive_testarch_regcls_oddreg,
 	jive_resource_class_priority_reg_low,
 	tmparray1, &bits32, 32, 0, 0);
 
@@ -72,7 +72,7 @@ const jive_resource_class_demotion  tmparray2[] = {
 const jive_register_class jive_testarch_regcls_r2(
 	&JIVE_REGISTER_RESOURCE, "r2", 1,
 	jive_testarch_regcls_r2_names,
-	&jive_testarch_regcls_evenreg, 4,
+	&jive_testarch_regcls_evenreg,
 	jive_resource_class_priority_reg_low,
 	tmparray2, &bits32, 32, 0, 0);
 
@@ -83,7 +83,7 @@ const jive_resource_class_demotion  tmparray3[] = {
 const jive_register_class jive_testarch_regcls_r3(
 	&JIVE_REGISTER_RESOURCE, "r3", 1,
 	jive_testarch_regcls_r3_names,
-	&jive_testarch_regcls_oddreg, 4,
+	&jive_testarch_regcls_oddreg,
 	jive_resource_class_priority_reg_low,
 	tmparray3, &bits32, 32, 0, 0);
 
@@ -94,7 +94,7 @@ const jive_resource_class_demotion  tmparray4[] = {
 const jive_register_class jive_testarch_regcls_evenreg(
 	&JIVE_REGISTER_RESOURCE, "even", 2,
 	jive_testarch_regcls_evenreg_names,
-	&jive_testarch_regcls_gpr, 3,
+	&jive_testarch_regcls_gpr,
 	jive_resource_class_priority_reg_low,
 	tmparray4, &bits32, 32, 0, 0);
 
@@ -105,7 +105,7 @@ const jive_resource_class_demotion  tmparray5[] = {
 const jive_register_class jive_testarch_regcls_oddreg(
 	&JIVE_REGISTER_RESOURCE, "odd", 2,
 	jive_testarch_regcls_oddreg_names,
-	&jive_testarch_regcls_gpr, 3,
+	&jive_testarch_regcls_gpr,
 	jive_resource_class_priority_reg_low,
 	tmparray5, &bits32, 32, 0, 0);
 
@@ -116,7 +116,7 @@ const jive_resource_class_demotion  tmparray6[] = {
 const jive_register_class jive_testarch_regcls_gpr(
 		&JIVE_REGISTER_RESOURCE, "gpr", 4,
 		jive_testarch_regcls_gpr_names,
-		&jive_root_register_class, 2,
+		&jive_root_register_class,
 		jive_resource_class_priority_reg_low,
 		tmparray6, &bits32, 32, 0, 0);
 
@@ -128,7 +128,7 @@ const jive_resource_class_demotion  tmparray7[] = {
 const jive_register_class jive_testarch_regcls_cc(
 	&JIVE_REGISTER_RESOURCE, "cc", 1,
 	jive_testarch_regcls_cc_names,
-	&jive_root_register_class, 2,
+	&jive_root_register_class,
 	jive_resource_class_priority_reg_high,
 	tmparray7, &bits16, 32, 0, 0);
 
