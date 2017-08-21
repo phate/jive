@@ -16,8 +16,12 @@
 jive_resource_class::~jive_resource_class()
 {}
 
-jive_resource_name::~jive_resource_name()
+namespace jive {
+
+resource_name::~resource_name()
 {}
+
+}
 
 static inline size_t
 jive_ptr_hash(const void * ptr)

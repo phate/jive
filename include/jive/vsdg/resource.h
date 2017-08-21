@@ -22,6 +22,7 @@ namespace base {
 	class type;
 }
 	class gate;
+	class resource_name;
 }
 
 typedef struct jive_rescls_prio_array jive_rescls_prio_array;
@@ -42,8 +43,6 @@ typedef enum {
 	jive_resource_class_priority_lowest = 7
 } jive_resource_class_priority;
 
-class jive_resource_name;
-
 class jive_resource_class {
 public:
 	virtual
@@ -53,7 +52,7 @@ public:
 	jive_resource_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
-		const std::unordered_set<const jive_resource_name*> resources,
+		const std::unordered_set<const jive::resource_name*> resources,
 		const jive_resource_class * parent,
 		jive_resource_class_priority pr,
 		const jive_resource_class_demotion * dm,
@@ -99,7 +98,7 @@ public:
 		return resources_.size();
 	}
 
-	inline const std::unordered_set<const jive_resource_name*> &
+	inline const std::unordered_set<const jive::resource_name*> &
 	resources() const noexcept
 	{
 		return resources_;
@@ -125,7 +124,7 @@ private:
 	const jive_resource_class * parent_;
 
 	/** \brief Available resources */
-	std::unordered_set<const jive_resource_name*> resources_;
+	std::unordered_set<const jive::resource_name*> resources_;
 };
 
 struct jive_resource_class_class {
@@ -190,13 +189,15 @@ jive_resource_class_relax(const jive_resource_class * self);
 extern const jive_resource_class_class JIVE_ABSTRACT_RESOURCE;
 extern const jive_resource_class jive_root_resource_class;
 
-class jive_resource_name {
+namespace jive {
+
+class resource_name {
 public:
 	virtual
-	~jive_resource_name();
+	~resource_name();
 
 	inline
-	jive_resource_name(const std::string & name, const jive_resource_class * rescls)
+	resource_name(const std::string & name, const jive_resource_class * rescls)
 	: resource_class(rescls)
 	, name_(name)
 	{}
@@ -211,6 +212,8 @@ public:
 private:
 	std::string name_;
 };
+
+}
 
 class jive_resource_class_count {
 public:
