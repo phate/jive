@@ -19,10 +19,8 @@ typedef struct jive_stackvar_input jive_stackvar_input;
 typedef struct jive_stackvar_output jive_stackvar_output;
 typedef struct jive_stackvar_type jive_stackvar_type;
 
-typedef struct jive_callslot jive_callslot;
 typedef struct jive_callslot_class jive_callslot_class;
 typedef struct jive_fixed_stackslot_class jive_fixed_stackslot_class;
-typedef struct jive_stackslot jive_stackslot;
 typedef struct jive_stackslot_size_class jive_stackslot_size_class;
 
 extern const jive_resource_class jive_root_stackslot_class;
@@ -58,8 +56,20 @@ struct jive_fixed_stackslot_class {
 	const jive_resource_name * slot;
 };
 
-struct jive_stackslot {
-	jive_resource_name base;
+class jive_stackslot : public jive_resource_name {
+public:
+	virtual
+	~jive_stackslot();
+
+	inline
+	jive_stackslot(
+		const char * name,
+		const jive_resource_class * rescls,
+		int o)
+	: jive_resource_name(name, rescls)
+	, offset(o)
+	{}
+
 	int offset;
 };
 
@@ -70,8 +80,20 @@ struct jive_callslot_class {
 	const jive_resource_name * slot;
 };
 
-struct jive_callslot {
-	jive_resource_name base;
+class jive_callslot : public jive_resource_name {
+public:
+	virtual
+	~jive_callslot();
+
+	inline
+	jive_callslot(
+		const char * name,
+		const jive_resource_class * rescls,
+		int o)
+	: jive_resource_name(name, rescls)
+	, offset(o)
+	{}
+
 	int offset;
 };
 

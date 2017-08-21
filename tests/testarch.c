@@ -18,57 +18,24 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/splitnode.h>
 
-const jive_register_name jive_testarch_reg_r0 = {
-	base : {name : "r0", resource_class : &jive_testarch_regcls_r0.base },
-	code : 0
-};
-const jive_register_name jive_testarch_reg_r2 = {
-	base : {name : "r2", resource_class : &jive_testarch_regcls_r2.base },
-	code : 2
-};
-const jive_register_name jive_testarch_reg_r1 = {
-	base : {name : "r1", resource_class : &jive_testarch_regcls_r1.base },
-	code : 1
-};
-const jive_register_name jive_testarch_reg_r3 = {
-	base : {name : "r3", resource_class : &jive_testarch_regcls_r3.base },
-	code : 3
-};
-const jive_register_name jive_testarch_reg_cc = {
-	base : {name : "cc", resource_class : &jive_testarch_regcls_cc.base },
-	code : 0
-};
+const jive_register_name jive_testarch_reg_r0("r0", &jive_testarch_regcls_r0.base, 0);
+const jive_register_name jive_testarch_reg_r2("r2", &jive_testarch_regcls_r2.base, 2);
+const jive_register_name jive_testarch_reg_r1("r1", &jive_testarch_regcls_r1.base, 1);
+const jive_register_name jive_testarch_reg_r3("r3", &jive_testarch_regcls_r3.base, 3);
+const jive_register_name jive_testarch_reg_cc("cc", &jive_testarch_regcls_cc.base, 0);
 
-static const jive_resource_name * jive_testarch_regcls_r0_names [] = {
-	&jive_testarch_reg_r0.base
-};
-static const jive_resource_name * jive_testarch_regcls_r1_names [] = {
-	&jive_testarch_reg_r1.base
-};
-static const jive_resource_name * jive_testarch_regcls_r2_names [] = {
-	&jive_testarch_reg_r2.base
-};
-static const jive_resource_name * jive_testarch_regcls_r3_names [] = {
-	&jive_testarch_reg_r3.base
-};
+static const jive_resource_name * jive_testarch_regcls_r0_names [] = {&jive_testarch_reg_r0};
+static const jive_resource_name * jive_testarch_regcls_r1_names [] = {&jive_testarch_reg_r1};
+static const jive_resource_name * jive_testarch_regcls_r2_names [] = {&jive_testarch_reg_r2};
+static const jive_resource_name * jive_testarch_regcls_r3_names [] = {&jive_testarch_reg_r3};
 
 static const jive_resource_name * jive_testarch_regcls_evenreg_names [] = {
-	&jive_testarch_reg_r0.base,
-	&jive_testarch_reg_r2.base
-};
+	&jive_testarch_reg_r0, &jive_testarch_reg_r2};
 static const jive_resource_name * jive_testarch_regcls_oddreg_names [] = {
-	&jive_testarch_reg_r1.base,
-	&jive_testarch_reg_r3.base
-};
+	&jive_testarch_reg_r1, &jive_testarch_reg_r3};
 static const jive_resource_name * jive_testarch_regcls_gpr_names [] = {
-	&jive_testarch_reg_r0.base,
-	&jive_testarch_reg_r1.base,
-	&jive_testarch_reg_r2.base,
-	&jive_testarch_reg_r3.base
-};
-static const jive_resource_name * jive_testarch_regcls_cc_names [] = {
-	&jive_testarch_reg_cc.base,
-};
+	&jive_testarch_reg_r0, &jive_testarch_reg_r1, &jive_testarch_reg_r2, &jive_testarch_reg_r3};
+static const jive_resource_name * jive_testarch_regcls_cc_names [] = {&jive_testarch_reg_cc};
 
 #define CLS(x) &jive_testarch_regcls_##x.base
 #define STACK4 &jive_stackslot_class_4_4.base

@@ -30,7 +30,6 @@ typedef struct jive_resource_class_count jive_resource_class_count;
 typedef struct jive_resource_class_count_bucket jive_resource_class_count_bucket;
 typedef struct jive_resource_class_count_item jive_resource_class_count_item;
 typedef struct jive_resource_class_demotion jive_resource_class_demotion;
-typedef struct jive_resource_name jive_resource_name;
 
 typedef enum {
 	jive_resource_class_priority_invalid = 0,
@@ -140,7 +139,19 @@ jive_resource_class_relax(const jive_resource_class * self);
 extern const jive_resource_class_class JIVE_ABSTRACT_RESOURCE;
 extern const jive_resource_class jive_root_resource_class;
 
-struct jive_resource_name {
+class jive_resource_name {
+public:
+	virtual
+	~jive_resource_name();
+
+	inline
+	jive_resource_name(
+		const char * n,
+		const jive_resource_class * rescls)
+	: name(n)
+	, resource_class(rescls)
+	{}
+
 	const char * name;
 	const jive_resource_class * resource_class;
 };

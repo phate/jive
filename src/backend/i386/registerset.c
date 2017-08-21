@@ -11,130 +11,66 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/types/float/flttype.h>
 
-const jive_register_name jive_i386_reg_cc = {base : {name : "cc",
-	resource_class : &jive_i386_regcls_flags.base}, code : 0};
-const jive_register_name jive_i386_reg_eax = {base : {name : "eax",
-	resource_class : &jive_i386_regcls_gpr_eax.base}, code : 0};
-const jive_register_name jive_i386_reg_ecx = {base : {name : "ecx",
-	resource_class : &jive_i386_regcls_gpr_ecx.base}, code : 1};
-const jive_register_name jive_i386_reg_edx = {base : {name : "edx",
-	resource_class : &jive_i386_regcls_gpr_edx.base}, code : 2};
-const jive_register_name jive_i386_reg_ebx = {base : {name : "ebx",
-	resource_class : &jive_i386_regcls_gpr_ebx.base}, code : 3};
-const jive_register_name jive_i386_reg_esi = {base : {name : "esi",
-	resource_class : &jive_i386_regcls_gpr_esi.base}, code : 6};
-const jive_register_name jive_i386_reg_edi = {base : {name : "edi",
-	resource_class : &jive_i386_regcls_gpr_edi.base}, code : 7};
-const jive_register_name jive_i386_reg_ebp = {base : {name : "ebp",
-	resource_class : &jive_i386_regcls_gpr_ebp.base}, code : 5};
-const jive_register_name jive_i386_reg_esp = {base : {name : "esp",
-	resource_class : &jive_i386_regcls_gpr_esp.base}, code : 4};
+const jive_register_name jive_i386_reg_cc("cc", &jive_i386_regcls_flags.base, 0);
+const jive_register_name jive_i386_reg_eax("eax", &jive_i386_regcls_gpr_eax.base, 0);
+const jive_register_name jive_i386_reg_ecx("ecx", &jive_i386_regcls_gpr_ecx.base, 1);
+const jive_register_name jive_i386_reg_edx("edx", &jive_i386_regcls_gpr_edx.base, 2);
+const jive_register_name jive_i386_reg_ebx("ebx", &jive_i386_regcls_gpr_ebx.base, 3);
+const jive_register_name jive_i386_reg_esi("esi", &jive_i386_regcls_gpr_esi.base, 6);
+const jive_register_name jive_i386_reg_edi("edi", &jive_i386_regcls_gpr_edi.base, 7);
+const jive_register_name jive_i386_reg_ebp("ebp", &jive_i386_regcls_gpr_ebp.base, 5);
+const jive_register_name jive_i386_reg_esp("esp", &jive_i386_regcls_gpr_esp.base, 4);
 
-const jive_register_name jive_i386_reg_st0 = {base : {name : "st0",
-	resource_class : &jive_i386_regcls_fp_st0.base}, code : 0};
+const jive_register_name jive_i386_reg_st0("st0", &jive_i386_regcls_fp_st0.base, 0);
 
-const jive_register_name jive_i386_reg_xmm0 = {base : {name : "xmm0",
-	resource_class : &jive_i386_regcls_sse_xmm0.base}, code : 0};
-const jive_register_name jive_i386_reg_xmm1 = {base : {name : "xmm1",
-	resource_class : &jive_i386_regcls_sse_xmm1.base}, code : 1};
-const jive_register_name jive_i386_reg_xmm2 = {base : {name : "xmm2",
-	resource_class : &jive_i386_regcls_sse_xmm2.base}, code : 2};
-const jive_register_name jive_i386_reg_xmm3 = {base : {name : "xmm3",
-	resource_class : &jive_i386_regcls_sse_xmm3.base}, code : 3};
-const jive_register_name jive_i386_reg_xmm4 = {base : {name : "xmm4",
-	resource_class : &jive_i386_regcls_sse_xmm4.base}, code : 4};
-const jive_register_name jive_i386_reg_xmm5 = {base : {name : "xmm5",
-	resource_class : &jive_i386_regcls_sse_xmm5.base}, code : 5};
-const jive_register_name jive_i386_reg_xmm6 = {base : {name : "xmm6",
-	resource_class : &jive_i386_regcls_sse_xmm6.base}, code : 6};
-const jive_register_name jive_i386_reg_xmm7 = {base : {name : "xmm7",
-	resource_class : &jive_i386_regcls_sse_xmm7.base}, code : 7};
+const jive_register_name jive_i386_reg_xmm0("xmm0", &jive_i386_regcls_sse_xmm0.base, 0);
+const jive_register_name jive_i386_reg_xmm1("xmm1", &jive_i386_regcls_sse_xmm1.base, 1);
+const jive_register_name jive_i386_reg_xmm2("xmm2", &jive_i386_regcls_sse_xmm2.base, 2);
+const jive_register_name jive_i386_reg_xmm3("xmm3", &jive_i386_regcls_sse_xmm3.base, 3);
+const jive_register_name jive_i386_reg_xmm4("xmm4", &jive_i386_regcls_sse_xmm4.base, 4);
+const jive_register_name jive_i386_reg_xmm5("xmm5", &jive_i386_regcls_sse_xmm5.base, 5);
+const jive_register_name jive_i386_reg_xmm6("xmm6", &jive_i386_regcls_sse_xmm6.base, 6);
+const jive_register_name jive_i386_reg_xmm7("xmm7", &jive_i386_regcls_sse_xmm7.base, 7);
 
-static const jive_resource_name * jive_i386_regcls_flags_names [] = {
-	&jive_i386_reg_cc.base
-};
+static const jive_resource_name * jive_i386_regcls_flags_names [] = {&jive_i386_reg_cc};
 
 static const jive_resource_name * jive_i386_regcls_gpr_names [] = {
-	&jive_i386_reg_eax.base,
-	&jive_i386_reg_ecx.base,
-	&jive_i386_reg_ebx.base,
-	&jive_i386_reg_edx.base,
-	&jive_i386_reg_esi.base,
-	&jive_i386_reg_edi.base,
-	&jive_i386_reg_ebp.base,
-	&jive_i386_reg_esp.base,
+	&jive_i386_reg_eax, &jive_i386_reg_ecx,
+	&jive_i386_reg_ebx, &jive_i386_reg_edx,
+	&jive_i386_reg_esi, &jive_i386_reg_edi,
+	&jive_i386_reg_ebp, &jive_i386_reg_esp,
 };
 
 static const jive_resource_name * jive_i386_regcls_gpr_byte_names [] = {
-	&jive_i386_reg_eax.base,
-	&jive_i386_reg_ecx.base,
-	&jive_i386_reg_ebx.base,
-	&jive_i386_reg_edx.base,
+	&jive_i386_reg_eax, &jive_i386_reg_ecx,
+	&jive_i386_reg_ebx, &jive_i386_reg_edx,
 };
 
-static const jive_resource_name * jive_i386_regcls_eax_names [] = {
-	&jive_i386_reg_eax.base
-};
-static const jive_resource_name * jive_i386_regcls_ecx_names [] = {
-	&jive_i386_reg_ecx.base
-};
-static const jive_resource_name * jive_i386_regcls_ebx_names [] = {
-	&jive_i386_reg_ebx.base
-};
-static const jive_resource_name * jive_i386_regcls_edx_names [] = {
-	&jive_i386_reg_edx.base
-};
-static const jive_resource_name * jive_i386_regcls_esi_names [] = {
-	&jive_i386_reg_esi.base
-};
-static const jive_resource_name * jive_i386_regcls_edi_names [] = {
-	&jive_i386_reg_edi.base
-};
-static const jive_resource_name * jive_i386_regcls_ebp_names [] = {
-	&jive_i386_reg_ebp.base
-};
-static const jive_resource_name * jive_i386_regcls_esp_names [] = {
-	&jive_i386_reg_esp.base
-};
+static const jive_resource_name * jive_i386_regcls_eax_names [] = {&jive_i386_reg_eax};
+static const jive_resource_name * jive_i386_regcls_ecx_names [] = {&jive_i386_reg_ecx};
+static const jive_resource_name * jive_i386_regcls_ebx_names [] = {&jive_i386_reg_ebx};
+static const jive_resource_name * jive_i386_regcls_edx_names [] = {&jive_i386_reg_edx};
+static const jive_resource_name * jive_i386_regcls_esi_names [] = {&jive_i386_reg_esi};
+static const jive_resource_name * jive_i386_regcls_edi_names [] = {&jive_i386_reg_edi};
+static const jive_resource_name * jive_i386_regcls_ebp_names [] = {&jive_i386_reg_ebp};
+static const jive_resource_name * jive_i386_regcls_esp_names [] = {&jive_i386_reg_esp};
 
-static const jive_resource_name * jive_i386_regcls_fp_names [] = {
-	&jive_i386_reg_st0.base
-};
+static const jive_resource_name * jive_i386_regcls_fp_names [] = {&jive_i386_reg_st0};
 
 static const jive_resource_name * jive_i386_regcls_sse_names [] = {
-	&jive_i386_reg_xmm0.base,
-	&jive_i386_reg_xmm1.base,
-	&jive_i386_reg_xmm2.base,
-	&jive_i386_reg_xmm3.base,
-	&jive_i386_reg_xmm4.base,
-	&jive_i386_reg_xmm5.base,
-	&jive_i386_reg_xmm6.base,
-	&jive_i386_reg_xmm7.base
+	&jive_i386_reg_xmm0, &jive_i386_reg_xmm1,
+	&jive_i386_reg_xmm2, &jive_i386_reg_xmm3,
+	&jive_i386_reg_xmm4, &jive_i386_reg_xmm5,
+	&jive_i386_reg_xmm6, &jive_i386_reg_xmm7
 };
-static const jive_resource_name * jive_i386_regcls_sse_xmm0_names [] = {
-	&jive_i386_reg_xmm0.base
-};
-static const jive_resource_name * jive_i386_regcls_sse_xmm1_names [] = {
-	&jive_i386_reg_xmm1.base
-};
-static const jive_resource_name * jive_i386_regcls_sse_xmm2_names [] = {
-	&jive_i386_reg_xmm2.base
-};
-static const jive_resource_name * jive_i386_regcls_sse_xmm3_names [] = {
-	&jive_i386_reg_xmm3.base
-};
-static const jive_resource_name * jive_i386_regcls_sse_xmm4_names [] = {
-	&jive_i386_reg_xmm4.base
-};
-static const jive_resource_name * jive_i386_regcls_sse_xmm5_names [] = {
-	&jive_i386_reg_xmm5.base
-};
-static const jive_resource_name * jive_i386_regcls_sse_xmm6_names [] = {
-	&jive_i386_reg_xmm6.base
-};
-static const jive_resource_name * jive_i386_regcls_sse_xmm7_names [] = {
-	&jive_i386_reg_xmm7.base
-};
+static const jive_resource_name * jive_i386_regcls_sse_xmm0_names [] = {&jive_i386_reg_xmm0};
+static const jive_resource_name * jive_i386_regcls_sse_xmm1_names [] = {&jive_i386_reg_xmm1};
+static const jive_resource_name * jive_i386_regcls_sse_xmm2_names [] = {&jive_i386_reg_xmm2};
+static const jive_resource_name * jive_i386_regcls_sse_xmm3_names [] = {&jive_i386_reg_xmm3};
+static const jive_resource_name * jive_i386_regcls_sse_xmm4_names [] = {&jive_i386_reg_xmm4};
+static const jive_resource_name * jive_i386_regcls_sse_xmm5_names [] = {&jive_i386_reg_xmm5};
+static const jive_resource_name * jive_i386_regcls_sse_xmm6_names [] = {&jive_i386_reg_xmm6};
+static const jive_resource_name * jive_i386_regcls_sse_xmm7_names [] = {&jive_i386_reg_xmm7};
 
 #define CLS(x) &jive_i386_regcls_##x.base
 #define STACK4 &jive_stackslot_class_4_4.base

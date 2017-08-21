@@ -16,11 +16,21 @@ namespace base {
 }
 
 typedef struct jive_register_class jive_register_class;
-typedef struct jive_register_name jive_register_name;
 
-struct jive_register_name {
-	jive_resource_name base;
-	
+class jive_register_name : public jive_resource_name {
+public:
+	virtual
+	~jive_register_name();
+
+	inline
+	jive_register_name(
+		const char * name,
+		const jive_resource_class * rescls,
+		int c)
+	: jive_resource_name(name, rescls)
+	, code(c)
+	{}
+
 	int code;
 };
 

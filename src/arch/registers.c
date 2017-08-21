@@ -8,6 +8,9 @@
 
 #include <jive/vsdg/basetype.h>
 
+jive_register_name::~jive_register_name()
+{}
+
 const struct jive::base::type *
 jive_register_class_get_type(const jive_register_class * self)
 {

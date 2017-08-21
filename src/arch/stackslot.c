@@ -17,6 +17,12 @@
 
 #include <unordered_map>
 
+jive_stackslot::~jive_stackslot()
+{}
+
+jive_callslot::~jive_callslot()
+{}
+
 const jive_resource_class_class JIVE_STACK_RESOURCE = {
 	parent : &JIVE_ABSTRACT_RESOURCE,
 	name : "stack",
@@ -138,17 +144,13 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 		return 0;
 	}
 	
-	jive_stackslot * slot = new jive_stackslot;
+	jive_stackslot * slot = new jive_stackslot(name, &cls->base.base, offset);
 	if (!slot) {
 		free(name);
 		delete cls;
 		return 0;
 	}
-	
-	slot->base.name = name;
-	slot->base.resource_class = &cls->base.base;
-	slot->offset = offset;
-	
+
 	cls->base.base.class_ = &JIVE_STACK_FRAMESLOT_RESOURCE;
 	cls->base.base.name = name;
 	cls->base.base.limit = 1;
@@ -161,7 +163,7 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 	cls->base.size = parent->size;
 	cls->base.alignment = parent->alignment;
 	
-	cls->slot = &slot->base;
+	cls->slot = slot;
 	
 	return cls;
 }
@@ -182,17 +184,13 @@ jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 		return 0;
 	}
 	
-	jive_callslot * slot = new jive_callslot;
+	jive_callslot * slot = new jive_callslot(name, &cls->base.base, offset);
 	if (!slot) {
 		free(name);
 		delete cls;
 		return 0;
 	}
-	
-	slot->base.name = name;
-	slot->base.resource_class = &cls->base.base;
-	slot->offset = offset;
-	
+
 	cls->base.base.class_ = &JIVE_STACK_CALLSLOT_RESOURCE;
 	cls->base.base.name = name;
 	cls->base.base.limit = 1;
@@ -206,7 +204,7 @@ jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 	cls->base.alignment = parent->alignment;
 	
 	cls->offset = offset;
-	cls->slot = &slot->base;
+	cls->slot = slot;
 	
 	return cls;
 }

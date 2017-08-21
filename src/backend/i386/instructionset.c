@@ -162,7 +162,7 @@ jive_buffer_putdisp(jive_buffer * target, const jive_asmgen_imm * disp,
 {
 	jive_buffer_putimm(target, disp);
 	jive_buffer_putstr(target, "(%");
-	jive_buffer_putstr(target, reg->base.name);
+	jive_buffer_putstr(target, reg->name);
 	jive_buffer_putstr(target, ")");
 }
 
@@ -213,7 +213,7 @@ jive_i386_asm_int_load_imm(const jive::instruction_class * icls,
 	jive_buffer_putstr(target, "\t$");
 	jive_buffer_putimm(target, &immediates[0]);
 	jive_buffer_putstr(target, ", %");
-	jive_buffer_putstr(target, outputs[0]->base.name);
+	jive_buffer_putstr(target, outputs[0]->name);
 }
 
 static inline void
@@ -291,7 +291,7 @@ jive_i386_asm_load_disp(const jive::instruction_class * icls,
 	jive_buffer_putstr(target, "\t");
 	jive_buffer_putdisp(target, &immediates[0], inputs[0]);
 	jive_buffer_putstr(target, ", %");
-	jive_buffer_putstr(target, outputs[0]->base.name);
+	jive_buffer_putstr(target, outputs[0]->name);
 }
 
 static void
@@ -306,7 +306,7 @@ jive_i386_asm_load_abs(const jive::instruction_class * icls,
 	jive_buffer_putstr(target, "\t");
 	jive_buffer_putimm(target, &immediates[0]);
 	jive_buffer_putstr(target, ", %");
-	jive_buffer_putstr(target, outputs[0]->base.name);
+	jive_buffer_putstr(target, outputs[0]->name);
 }
 
 static void
@@ -319,7 +319,7 @@ jive_i386_asm_store(const jive::instruction_class * icls,
 {
 	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
-	jive_buffer_putstr(target, inputs[1]->base.name);
+	jive_buffer_putstr(target, inputs[1]->name);
 	jive_buffer_putstr(target, ", ");
 	jive_buffer_putdisp(target, &immediates[0], inputs[0]);
 }
@@ -351,9 +351,9 @@ jive_i386_asm_regreg(const jive::instruction_class * icls,
 {
 	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
-	jive_buffer_putstr(target, inputs[1]->base.name);
+	jive_buffer_putstr(target, inputs[1]->name);
 	jive_buffer_putstr(target, ", %");
-	jive_buffer_putstr(target, inputs[0]->base.name);
+	jive_buffer_putstr(target, inputs[0]->name);
 }
 
 static void
@@ -393,10 +393,10 @@ jive_i386_asm_imul(const jive::instruction_class * icls,
 {
 	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
-	jive_buffer_putstr(target, inputs[1]->base.name);
+	jive_buffer_putstr(target, inputs[1]->name);
 	
 	jive_buffer_putstr(target, ", %");
-	jive_buffer_putstr(target, inputs[0]->base.name);
+	jive_buffer_putstr(target, inputs[0]->name);
 }
 
 static void
@@ -444,7 +444,7 @@ jive_i386_asm_mul(const jive::instruction_class * icls,
 {
 	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
-	jive_buffer_putstr(target, inputs[1]->base.name);
+	jive_buffer_putstr(target, inputs[1]->name);
 }
 
 static void
@@ -474,7 +474,7 @@ jive_i386_asm_div_reg(const jive::instruction_class * icls,
 {
 	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
-	jive_buffer_putstr(target, inputs[2]->base.name);
+	jive_buffer_putstr(target, inputs[2]->name);
 }
 
 static void
@@ -527,7 +527,7 @@ jive_i386_asm_shift_regreg(const jive::instruction_class * icls,
 {
 	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%cl, %");
-	jive_buffer_putstr(target, inputs[0]->base.name);
+	jive_buffer_putstr(target, inputs[0]->name);
 }
 
 static void
@@ -601,7 +601,7 @@ jive_i386_asm_regimm(const jive::instruction_class * icls,
 	jive_buffer_putstr(target, "\t$");
 	jive_buffer_putimm(target, &immediates[0]);
 	jive_buffer_putstr(target, ", %");
-	jive_buffer_putstr(target, inputs[0]->base.name);
+	jive_buffer_putstr(target, inputs[0]->name);
 }
 
 static void
@@ -642,9 +642,9 @@ jive_i386_asm_mul_regimm(const jive::instruction_class * icls,
 	jive_buffer_putstr(target, "\t$");
 	jive_buffer_putimm(target, &immediates[0]);
 	jive_buffer_putstr(target, ", %");
-	jive_buffer_putstr(target, inputs[0]->base.name);
+	jive_buffer_putstr(target, inputs[0]->name);
 	jive_buffer_putstr(target, ", %");
-	jive_buffer_putstr(target, outputs[0]->base.name);
+	jive_buffer_putstr(target, outputs[0]->name);
 }
 
 static void
@@ -673,7 +673,7 @@ jive_i386_asm_unaryreg(const jive::instruction_class * icls,
 {
 	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
-	jive_buffer_putstr(target, inputs[0]->base.name);
+	jive_buffer_putstr(target, inputs[0]->name);
 }
 
 static void
@@ -714,9 +714,9 @@ jive_i386_asm_regmove(const jive::instruction_class * icls,
 {
 	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t%");
-	jive_buffer_putstr(target, inputs[0]->base.name);
+	jive_buffer_putstr(target, inputs[0]->name);
 	jive_buffer_putstr(target, ", %");
-	jive_buffer_putstr(target, outputs[0]->base.name);
+	jive_buffer_putstr(target, outputs[0]->name);
 }
 
 static void
@@ -768,7 +768,7 @@ jive_i386_asm_call_reg(const jive::instruction_class * icls,
 {
 	jive_buffer_putstr(target, icls->mnemonic().c_str());
 	jive_buffer_putstr(target, "\t*%");
-	jive_buffer_putstr(target, inputs[0]->base.name);
+	jive_buffer_putstr(target, inputs[0]->name);
 }
 
 static void

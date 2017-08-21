@@ -13,6 +13,9 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
 
+jive_resource_name::~jive_resource_name()
+{}
+
 static inline size_t
 jive_ptr_hash(const void * ptr)
 {
