@@ -46,13 +46,13 @@ split_operation::result_type(size_t index) const noexcept
 	return out_class_->type();
 }
 
-const jive_resource_class *
+const jive::resource_class *
 split_operation::argument_cls(size_t index) const noexcept
 {
 	return in_class_;
 }
 
-const jive_resource_class *
+const jive::resource_class *
 split_operation::result_cls(size_t index) const noexcept
 {
 	return out_class_;
@@ -83,8 +83,8 @@ split_operation::copy() const
 jive::node *
 jive_splitnode_create(jive::region * region,
 	jive::output * in_origin,
-	const struct jive_resource_class * in_class,
-	const struct jive_resource_class * out_class)
+	const struct jive::resource_class * in_class,
+	const struct jive::resource_class * out_class)
 {
 	jive::split_operation op(in_class, out_class);
 	

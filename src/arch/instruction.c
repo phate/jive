@@ -55,7 +55,7 @@ instruction_op::argument_type(size_t index) const noexcept
 	return *istates_[index - (icls()->ninputs() + icls()->nimmediates())];
 }
 
-const jive_resource_class *
+const resource_class *
 instruction_op::argument_cls(size_t index) const noexcept
 {
 	if (index < icls()->ninputs()) {
@@ -71,7 +71,7 @@ instruction_op::nresults() const noexcept
 	return icls()->noutputs() + ostates_.size();
 }
 
-const jive_resource_class *
+const resource_class *
 instruction_op::result_cls(size_t index) const noexcept
 {
 	if (index < icls()->noutputs()) {

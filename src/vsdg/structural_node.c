@@ -67,7 +67,7 @@ structural_input::structural_input(
 	jive::structural_node * node,
 	size_t index,
 	jive::output * origin,
-	const struct jive_resource_class * rescls)
+	const resource_class * rescls)
 	: input(index, origin, node->region(), rescls)
 	, node_(node)
 {
@@ -135,7 +135,7 @@ structural_output::structural_output(
 structural_output::structural_output(
 	jive::structural_node * node,
 	size_t index,
-	const struct jive_resource_class * rescls)
+	const resource_class * rescls)
 	: output(index, node->region(), rescls->type(), rescls)
 	, node_(node)
 {
@@ -265,7 +265,7 @@ structural_node::add_input(jive::gate * gate, jive::output * origin)
 }
 
 jive::structural_input *
-structural_node::add_input(const struct jive_resource_class * rescls, jive::output * origin)
+structural_node::add_input(const resource_class * rescls, jive::output * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
@@ -314,7 +314,7 @@ structural_node::add_output(jive::gate * gate)
 }
 
 jive::structural_output *
-structural_node::add_output(const struct jive_resource_class * rescls)
+structural_node::add_output(const resource_class * rescls)
 {
 	outputs_.emplace_back(std::unique_ptr<structural_output>(
 		new structural_output(this, noutputs(), rescls)));

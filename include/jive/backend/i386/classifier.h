@@ -16,7 +16,7 @@ public:
 	classify_any() const override;
 
 	virtual jive_regselect_mask
-	classify_type(const jive::base::type * type, const jive_resource_class * rescls) const override;
+	classify_type(const jive::base::type * type, const jive::resource_class * rescls) const override;
 
 	virtual jive_regselect_mask
 	classify_fixed_unary(const jive::bits::unary_op & op) const override;

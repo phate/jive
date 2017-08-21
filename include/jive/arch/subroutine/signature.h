@@ -30,17 +30,17 @@ public:
 
 	struct passthrough {
 		std::string name;
-		const jive_resource_class * rescls;
+		const jive::resource_class * rescls;
 		bool may_spill;
 	};
 	struct argument {
 		std::string name;
-		const jive_resource_class * rescls;
+		const jive::resource_class * rescls;
 		bool may_spill;
 	};
 	struct result {
 		std::string name;
-		const jive_resource_class * rescls;
+		const jive::resource_class * rescls;
 	};
 
 	std::vector<passthrough> passthroughs;

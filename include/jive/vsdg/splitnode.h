@@ -14,9 +14,9 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/unary.h>
 
-struct jive_resource_class;
-
 namespace jive {
+
+class resource_class;
 
 class split_operation final : public base::unary_op {
 public:
@@ -25,8 +25,8 @@ public:
 
 	constexpr inline
 	split_operation(
-		const jive_resource_class * in_class,
-		const jive_resource_class * out_class) noexcept
+		const jive::resource_class * in_class,
+		const jive::resource_class * out_class) noexcept
 		: in_class_(in_class)
 		, out_class_(out_class)
 	{
@@ -42,13 +42,13 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
-	virtual const jive_resource_class *
+	virtual const jive::resource_class *
 	argument_cls(size_t index) const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
 
-	virtual const jive_resource_class *
+	virtual const jive::resource_class *
 	result_cls(size_t index) const noexcept override;
 
 	/* reduction methods */
@@ -61,15 +61,15 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	inline const jive_resource_class * in_class() const noexcept { return in_class_; }
-	inline const jive_resource_class * out_class() const noexcept { return out_class_; }
+	inline const jive::resource_class * in_class() const noexcept { return in_class_; }
+	inline const jive::resource_class * out_class() const noexcept { return out_class_; }
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	const jive_resource_class * in_class_;
-	const jive_resource_class * out_class_;
+	const jive::resource_class * in_class_;
+	const jive::resource_class * out_class_;
 };
 
 }
@@ -77,7 +77,7 @@ private:
 jive::node *
 jive_splitnode_create(struct jive::region * region,
 	jive::output * in_origin,
-	const struct jive_resource_class * in_class,
-	const struct jive_resource_class * out_class);
+	const struct jive::resource_class * in_class,
+	const struct jive::resource_class * out_class);
 
 #endif

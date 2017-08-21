@@ -315,7 +315,7 @@ jive_variable_merge(jive_variable * self, jive_variable * other)
 	if ((other == 0) || (self == 0) || (other == self))
 		return;
 	
-	const jive_resource_class * new_rescls;
+	const jive::resource_class * new_rescls;
 	new_rescls = jive_resource_class_intersection( self->rescls, other->rescls);
 	JIVE_DEBUG_ASSERT(new_rescls);
 	
@@ -360,9 +360,9 @@ jive_variable_merge(jive_variable * self, jive_variable * other)
 }
 
 void
-jive_variable_set_resource_class(jive_variable * self, const jive_resource_class * new_rescls)
+jive_variable_set_resource_class(jive_variable * self, const jive::resource_class * new_rescls)
 {
-	const jive_resource_class * old_rescls = self->rescls;
+	auto old_rescls = self->rescls;
 	if (new_rescls == old_rescls)
 		return;
 	self->rescls = new_rescls;
@@ -373,7 +373,7 @@ jive_variable_set_resource_class(jive_variable * self, const jive_resource_class
 void
 jive_variable_recompute_rescls(jive_variable * self)
 {
-	const jive_resource_class * rescls = &jive_root_resource_class;
+	auto rescls = &jive_root_resource_class;
 	jive_ssavar * ssavar;
 	JIVE_LIST_ITERATE(self->ssavars, ssavar, variable_ssavar_list) {
 		jive::input * input;

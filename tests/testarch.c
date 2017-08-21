@@ -26,7 +26,7 @@ const jive::register_name jive_testarch_reg_cc("cc", &jive_testarch_regcls_cc, 0
 
 #define CLS(x) &jive_testarch_regcls_##x
 #define STACK4 &jive_stackslot_class_4_4
-#define VIA (const jive_resource_class * const[])
+#define VIA (const jive::resource_class * const[])
 
 static const jive::bits::type bits16(16);
 static const jive::bits::type bits32(32);
@@ -223,12 +223,12 @@ DEFINE_TESTARCH_INSTRUCTION(ret, {}, {}, 0, jive_instruction_flags_none, nullptr
 
 static jive_xfer_description
 create_xfer(jive::region * region, jive::simple_output * origin,
-	const jive_resource_class * in_class, const jive_resource_class * out_class)
+	const jive::resource_class * in_class, const jive::resource_class * out_class)
 {
 	jive_xfer_description xfer;
 	
-	const jive_resource_class * in_relaxed = jive_resource_class_relax(in_class);
-	const jive_resource_class * out_relaxed = jive_resource_class_relax(out_class);
+	auto in_relaxed = jive_resource_class_relax(in_class);
+	auto out_relaxed = jive_resource_class_relax(out_class);
 	
 	if (in_relaxed == CLS(gpr) && out_relaxed == CLS(gpr)) {
 		jive::output * tmparray8[] = {origin};
@@ -280,7 +280,7 @@ jive_testarch_reg_classifier::classify_any() const
 
 jive_regselect_mask
 jive_testarch_reg_classifier::classify_type(
-	const jive::base::type * type, const jive_resource_class * rescls) const
+	const jive::base::type * type, const jive::resource_class * rescls) const
 {
 	rescls = jive_resource_class_relax(rescls);
 	
@@ -440,7 +440,7 @@ jive_testarch_subroutine_begin(jive::graph * graph,
 	for (size_t n = 0; n < nparameters; n++) {
 		char argname[80];
 		snprintf(argname, sizeof(argname), "arg%zd", n + 1);
-		const jive_resource_class * cls;
+		const jive::resource_class * cls;
 		switch (n) {
 			case 0: cls = &jive_testarch_regcls_r1; break;
 			case 1: cls = &jive_testarch_regcls_r2; break;
@@ -452,7 +452,7 @@ jive_testarch_subroutine_begin(jive::graph * graph,
 	for (size_t n = 0; n < nreturns; n++) {
 		char resname[80];
 		snprintf(resname, sizeof(resname), "ret%zd", n + 1);
-		const jive_resource_class * cls;
+		const jive::resource_class * cls;
 		switch (n) {
 			case 0: cls = &jive_testarch_regcls_r1; break;
 			case 1: cls = &jive_testarch_regcls_r2; break;

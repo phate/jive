@@ -11,8 +11,6 @@
 #include <string>
 #include <vector>
 
-class jive_resource_class;
-
 namespace jive {
 
 namespace base {
@@ -23,6 +21,7 @@ class node;
 class node_normal_form;
 class output;
 class region;
+class resource_class;
 
 class operation {
 public:
@@ -36,7 +35,7 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept = 0;
 	// FIXME: specific to register allocator, should go away
-	virtual const jive_resource_class *
+	virtual const jive::resource_class *
 	argument_cls(size_t index) const noexcept;
 
 	virtual size_t
@@ -44,7 +43,7 @@ public:
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept = 0;
 	// FIXME: specific to register allocator, should go away
-	virtual const jive_resource_class *
+	virtual const jive::resource_class *
 	result_cls(size_t index) const noexcept;
 
 	virtual std::string

@@ -182,14 +182,14 @@ jive_i386_subroutine_begin(jive::graph * graph,
 	for (size_t n = 0; n < nparameters; n++) {
 		char argname[80];
 		snprintf(argname, sizeof(argname), "arg%zd", n + 1);
-		const jive_resource_class * cls = jive_fixed_stackslot_class_get(4, 4, (n + 1) * 4);
+		auto cls = jive_fixed_stackslot_class_get(4, 4, (n + 1) * 4);
 		sig.arguments.emplace_back(jive::subroutine_machine_signature::argument{argname, cls, true});
 	}
 	
 	for (size_t n = 0; n < nreturns; n++) {
 		char resname[80];
 		snprintf(resname, sizeof(resname), "ret%zd", n + 1);
-		const jive_resource_class * cls;
+		const jive::resource_class * cls;
 		switch (n) {
 			case 0: cls = &jive_i386_regcls_gpr_eax; break;
 			default: cls = jive_fixed_stackslot_class_get(4, 4, n * 4);
@@ -197,7 +197,7 @@ jive_i386_subroutine_begin(jive::graph * graph,
 		sig.results.emplace_back(jive::subroutine_machine_signature::result{resname, cls});
 	}
 	
-	const jive_resource_class * stackslot_cls = jive_fixed_stackslot_class_get(4, 4, 0);
+	auto stackslot_cls = jive_fixed_stackslot_class_get(4, 4, 0);
 
 	typedef jive::subroutine_machine_signature::passthrough pt;
 	sig.passthroughs.emplace_back(pt{"mem", nullptr, false});

@@ -26,7 +26,7 @@ const jive_resource_class_class JIVE_REGISTER_RESOURCE = {
 	is_abstract : false
 };
 
-const jive_resource_class jive_root_register_class(
+const jive::resource_class jive_root_register_class(
 	&JIVE_ABSTRACT_RESOURCE, "register", {},
 	&jive_root_resource_class, jive_resource_class_priority_lowest,
 	no_demotion, nullptr);

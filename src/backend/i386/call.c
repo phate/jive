@@ -68,13 +68,13 @@ jive_i386_call_node_substitute(
 	for (size_t n = 0; n < nargs; n++) {
 		auto value = dynamic_cast<jive::simple_output*>(node->input(n+1)->origin());
 		
-		const jive_resource_class * value_cls = value->rescls();
+		auto value_cls = value->rescls();
 		if (value_cls == &jive_root_resource_class) {
 			/* FIXME: assumes  int32 */
 			value_cls = &jive_i386_regcls_gpr;
 		}
 		
-		const jive_resource_class * slot_cls = jive_callslot_class_get(4, 4, offset);
+		auto slot_cls = jive_callslot_class_get(4, 4, offset);
 		
 		offset += 4;
 		

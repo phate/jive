@@ -16,7 +16,7 @@
 #include <jive/vsdg.h>
 
 static void
-get_slot_memory_reference(const jive_resource_class * rescls,
+get_slot_memory_reference(const jive::resource_class * rescls,
 	jive::immediate * displacement, jive::output ** base,
 	jive::output * sp, jive::output * fp)
 {
@@ -31,7 +31,7 @@ get_slot_memory_reference(const jive_resource_class * rescls,
 
 jive_xfer_description
 jive_i386_create_xfer(jive::region * region, jive::simple_output * origin,
-	const jive_resource_class * in_class, const jive_resource_class * out_class)
+	const jive::resource_class * in_class, const jive::resource_class * out_class)
 {
 	jive_xfer_description xfer;
 	

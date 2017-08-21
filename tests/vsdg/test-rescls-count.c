@@ -16,9 +16,7 @@ void test_rescls_count_addsub()
 {
 	jive_resource_class_count count;
 	
-	const jive_resource_class * overflow;
-	
-	overflow = count.add(&jive_testarch_regcls_r0);
+	auto overflow = count.add(&jive_testarch_regcls_r0);
 	assert(!overflow);
 	
 	overflow = count.check_add(&jive_testarch_regcls_r1);

@@ -34,7 +34,7 @@ const jive::register_name jive_i386_reg_xmm7("xmm7", &jive_i386_regcls_sse_xmm7,
 
 #define CLS(x) &jive_i386_regcls_##x
 #define STACK4 &jive_stackslot_class_4_4
-#define VIA (const jive_resource_class * const[])
+#define VIA (const jive::resource_class * const[])
 
 static const jive::bits::type bits16(16);
 static const jive::bits::type bits32(32);

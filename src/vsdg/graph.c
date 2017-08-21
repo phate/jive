@@ -91,7 +91,7 @@ graph::create_gate(const std::string & name, const jive::base::type & type)
 }
 
 jive::gate *
-graph::create_gate(const std::string & name, const jive_resource_class * rescls)
+graph::create_gate(const std::string & name, const jive::resource_class * rescls)
 {
 	return new jive::gate(this, name, rescls);
 }

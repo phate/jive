@@ -43,17 +43,19 @@ typedef enum {
 	jive_resource_class_priority_lowest = 7
 } jive_resource_class_priority;
 
-class jive_resource_class {
+namespace jive {
+
+class resource_class {
 public:
 	virtual
-	~jive_resource_class();
+	~resource_class();
 
 	inline
-	jive_resource_class(
+	resource_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource_name*> resources,
-		const jive_resource_class * parent,
+		const jive::resource_class * parent,
 		jive_resource_class_priority pr,
 		const jive_resource_class_demotion * dm,
 		const jive::base::type * type)
@@ -86,7 +88,7 @@ public:
 		return *type_;
 	}
 
-	inline const jive_resource_class *
+	inline const jive::resource_class *
 	parent() const noexcept
 	{
 		return parent_;
@@ -121,11 +123,13 @@ private:
 	const jive::base::type * type_;
 
 	/** \brief Parent resource class */
-	const jive_resource_class * parent_;
+	const jive::resource_class * parent_;
 
 	/** \brief Available resources */
 	std::unordered_set<const jive::resource_name*> resources_;
 };
+
+}
 
 struct jive_resource_class_class {
 	const jive_resource_class_class * parent;
@@ -134,19 +138,19 @@ struct jive_resource_class_class {
 };
 
 struct jive_resource_class_demotion {
-	const jive_resource_class * target;
-	const jive_resource_class * const * path;
+	const jive::resource_class * target;
+	const jive::resource_class * const * path;
 };
 
-const jive_resource_class *
-jive_resource_class_union(const jive_resource_class * self, const jive_resource_class * other);
+const jive::resource_class *
+jive_resource_class_union(const jive::resource_class * self, const jive::resource_class * other);
 
-const jive_resource_class *
-jive_resource_class_intersection(const jive_resource_class * self,
-	const jive_resource_class * other);
+const jive::resource_class *
+jive_resource_class_intersection(const jive::resource_class * self,
+	const jive::resource_class * other);
 
 static inline bool
-jive_resource_class_isinstance(const jive_resource_class * self,
+jive_resource_class_isinstance(const jive::resource_class * self,
 	const jive_resource_class_class * cls)
 {
 	const jive_resource_class_class * tmp = self->class_;
@@ -159,17 +163,17 @@ jive_resource_class_isinstance(const jive_resource_class * self,
 }
 
 static inline bool
-jive_resource_class_is_abstract(const jive_resource_class * self)
+jive_resource_class_is_abstract(const jive::resource_class * self)
 {
 	return self->class_->is_abstract;
 }
 
 /** \brief Find largest resource class of same general type containing this class */
-const jive_resource_class *
-jive_resource_class_relax(const jive_resource_class * self);
+const jive::resource_class *
+jive_resource_class_relax(const jive::resource_class * self);
 
 extern const jive_resource_class_class JIVE_ABSTRACT_RESOURCE;
-extern const jive_resource_class jive_root_resource_class;
+extern const jive::resource_class jive_root_resource_class;
 
 namespace jive {
 
@@ -179,7 +183,7 @@ public:
 	~resource_name();
 
 	inline
-	resource_name(const std::string & name, const jive_resource_class * rescls)
+	resource_name(const std::string & name, const jive::resource_class * rescls)
 	: resource_class(rescls)
 	, name_(name)
 	{}
@@ -190,7 +194,7 @@ public:
 		return name_;
 	}
 
-	const jive_resource_class * resource_class;
+	const jive::resource_class * resource_class;
 private:
 	std::string name_;
 };
@@ -199,7 +203,7 @@ private:
 
 class jive_resource_class_count {
 public:
-	typedef std::unordered_map<const jive_resource_class *, size_t> counts_repr;
+	typedef std::unordered_map<const jive::resource_class *, size_t> counts_repr;
 
 	inline jive_resource_class_count()
 		: counts_(0)
@@ -232,7 +236,7 @@ public:
 	}
 
 	/* get use count for given class */
-	inline size_t get(const jive_resource_class * cls) const noexcept
+	inline size_t get(const jive::resource_class * cls) const noexcept
 	{
 		auto i = counts_.find(cls);
 		return (i != counts_.end()) ? i->second : 0;
@@ -240,10 +244,10 @@ public:
 
 	/* add to use count for given class, report narrowest overflowing class
 	 * (or nullptr if no overflow) */
-	inline const jive_resource_class *
-	add(const jive_resource_class * cls, size_t amount = 1)
+	inline const jive::resource_class *
+	add(const jive::resource_class * cls, size_t amount = 1)
 	{
-		const jive_resource_class * overflow = 0;
+		const jive::resource_class * overflow = 0;
 		while (cls) {
 			size_t count = add_single(cls, amount);
 			if (count > cls->nresources() && cls->nresources() && ! overflow) {
@@ -257,8 +261,8 @@ public:
 
 	/* check if adding use count for class would lead to overflow, report
 	 * narrowest class (or nullptr if no overflow) */
-	inline const jive_resource_class *
-	check_add(const jive_resource_class * cls, size_t amount = 1) const noexcept
+	inline const jive::resource_class *
+	check_add(const jive::resource_class * cls, size_t amount = 1) const noexcept
 	{
 		while (cls) {
 			size_t count = get(cls);
@@ -273,7 +277,7 @@ public:
 
 	/* subtract use count for class */
 	inline void
-	sub(const jive_resource_class * cls, size_t amount = 1)
+	sub(const jive::resource_class * cls, size_t amount = 1)
 	{
 		while (cls) {
 			sub_single(cls, amount);
@@ -282,8 +286,8 @@ public:
 	}
 
 	/* same as sub(old_cls) followed by add(new_cls) */
-	inline const jive_resource_class *
-	change(const jive_resource_class * old_cls, const jive_resource_class * new_cls)
+	inline const jive::resource_class *
+	change(const jive::resource_class * old_cls, const jive::resource_class * new_cls)
 	{
 		sub(old_cls);
 		return add(new_cls);
@@ -291,10 +295,10 @@ public:
 
 	/* check whether a "change" operation would result in overflow (without
 	 * actually performing the change) */
-	inline const jive_resource_class *
+	inline const jive::resource_class *
 	check_change(
-		const jive_resource_class * old_resource_class,
-		const jive_resource_class * new_resource_class) const noexcept
+		const jive::resource_class * old_resource_class,
+		const jive::resource_class * new_resource_class) const noexcept
 	{
 		if (!old_resource_class) {
 			return check_add(new_resource_class);
@@ -303,7 +307,7 @@ public:
 			return nullptr;
 		}
 	
-		const jive_resource_class * common_resource_class =
+		const jive::resource_class * common_resource_class =
 			jive_resource_class_union(
 				old_resource_class,
 				new_resource_class);
@@ -368,7 +372,7 @@ public:
 
 private:
 	inline size_t
-	add_single(const jive_resource_class * cls, size_t amount)
+	add_single(const jive::resource_class * cls, size_t amount)
 	{
 		counts_repr::iterator i;
 		bool was_inserted;
@@ -380,7 +384,7 @@ private:
 	}
 
 	inline void
-	sub_single(const jive_resource_class * cls, size_t amount)
+	sub_single(const jive::resource_class * cls, size_t amount)
 	{
 		auto i = counts_.find(cls);
 		i->second -= amount;

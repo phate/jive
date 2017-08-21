@@ -53,7 +53,7 @@ const jive_resource_class_class JIVE_STACK_CALLSLOT_RESOURCE = {
 static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
 static const jive::mem::type stackvar_type;
 
-const jive_resource_class jive_root_stackslot_class(
+const jive::resource_class jive_root_stackslot_class(
 	&JIVE_ABSTRACT_RESOURCE, "stackslot", {},
 	&jive_root_resource_class, jive_resource_class_priority_lowest,
 	no_demotion, nullptr);
@@ -97,7 +97,7 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 }
 
 jive_stackslot *
-jive_stackslot_create(const jive_resource_class * parent, long offset);
+jive_stackslot_create(const jive::resource_class * parent, long offset);
 
 static jive_fixed_stackslot_class *
 jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int offset)
@@ -327,7 +327,7 @@ jive_callslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * se
 
 static jive_stackslot_class_map class_map;
 
-const jive_resource_class *
+const jive::resource_class *
 jive_stackslot_size_class_get(size_t size, size_t alignment)
 {
 	const jive_stackslot_size_class * cls;
@@ -338,7 +338,7 @@ jive_stackslot_size_class_get(size_t size, size_t alignment)
 		return 0;
 }
 
-const jive_resource_class *
+const jive::resource_class *
 jive_fixed_stackslot_class_get(size_t size, size_t alignment, ssize_t offset)
 {
 	const jive_fixed_stackslot_class * cls;
@@ -349,7 +349,7 @@ jive_fixed_stackslot_class_get(size_t size, size_t alignment, ssize_t offset)
 		return 0;
 }
 
-const jive_resource_class *
+const jive::resource_class *
 jive_callslot_class_get(size_t size, size_t alignment, ssize_t offset)
 {
 	const jive_callslot_class * cls;

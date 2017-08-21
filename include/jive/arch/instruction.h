@@ -59,7 +59,7 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
-	virtual const jive_resource_class *
+	virtual const jive::resource_class *
 	argument_cls(size_t index) const noexcept override;
 
 	virtual size_t
@@ -68,7 +68,7 @@ public:
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
 
-	virtual const jive_resource_class *
+	virtual const jive::resource_class *
 	result_cls(size_t index) const noexcept override;
 	virtual std::string
 	debug_string() const override;

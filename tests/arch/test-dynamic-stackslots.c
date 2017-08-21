@@ -11,9 +11,7 @@
 
 static int test_main(void)
 {
-	const jive_resource_class * cls1, * cls2;
-	
-	cls1 = jive_stackslot_size_class_get(1, 1);
+	auto cls1 = jive_stackslot_size_class_get(1, 1);
 	assert(cls1 == &jive_stackslot_class_1_1);
 	
 	cls1 = jive_stackslot_size_class_get(2, 2);
@@ -27,7 +25,7 @@ static int test_main(void)
 	
 	cls1 = jive_stackslot_size_class_get(8, 4);
 	assert(cls1);
-	cls2 = jive_stackslot_size_class_get(8, 4);
+	auto cls2 = jive_stackslot_size_class_get(8, 4);
 	assert(cls1 == cls2);
 	
 	cls1 = jive_fixed_stackslot_class_get(4, 4, 0);

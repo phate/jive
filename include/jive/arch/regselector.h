@@ -29,12 +29,13 @@ class flt_binary_operation;
 class flt_compare_operation;
 };
 
-struct jive_resource_class;
-
 namespace jive {
 namespace base {
 	class type;
 }
+
+class resource_class;
+
 }
 
 typedef int jive_regselect_index;
@@ -50,7 +51,7 @@ public:
 	classify_any() const = 0;
 
 	virtual jive_regselect_mask
-	classify_type(const jive::base::type * type, const jive_resource_class * rescls) const = 0;
+	classify_type(const jive::base::type * type, const jive::resource_class * rescls) const = 0;
 
 	virtual jive_regselect_mask
 	classify_fixed_unary(const jive::bits::unary_op & op) const = 0;

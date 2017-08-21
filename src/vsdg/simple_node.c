@@ -61,7 +61,7 @@ simple_input::simple_input(
 	jive::node * node,
 	size_t index,
 	jive::output * origin,
-	const struct jive_resource_class * rescls)
+	const resource_class * rescls)
 	: input(index, origin, node->region(), rescls)
 	, node_(node)
 {}
@@ -94,7 +94,7 @@ simple_output::simple_output(
 	jive::node * node,
 	size_t index,
 	const jive::base::type & type,
-	const struct jive_resource_class * rescls)
+	const resource_class * rescls)
 	: output(index, node->region(), type, rescls)
 	, node_(node)
 {}
@@ -249,7 +249,7 @@ simple_node::add_input(jive::gate * gate, jive::output * origin)
 }
 
 jive::simple_input *
-simple_node::add_input(const struct jive_resource_class * rescls, jive::output * origin)
+simple_node::add_input(const resource_class * rescls, jive::output * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
@@ -301,7 +301,7 @@ simple_node::add_output(jive::gate * gate)
 }
 
 jive::simple_output *
-simple_node::add_output(const struct jive_resource_class * rescls)
+simple_node::add_output(const resource_class * rescls)
 {
 	outputs_.emplace_back(std::make_unique<jive::simple_output>(
 		this, noutputs(), rescls->type(), rescls));

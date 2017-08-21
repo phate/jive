@@ -13,10 +13,10 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
 
-jive_resource_class::~jive_resource_class()
-{}
-
 namespace jive {
+
+resource_class::~resource_class()
+{}
 
 resource_name::~resource_name()
 {}
@@ -32,8 +32,8 @@ jive_ptr_hash(const void * ptr)
 	return hash ^ (hash >> 7) ^ (hash >> 4);
 }
 
-const jive_resource_class *
-jive_resource_class_union(const jive_resource_class * self, const jive_resource_class * other)
+const jive::resource_class *
+jive_resource_class_union(const jive::resource_class * self, const jive::resource_class * other)
 {
 	for(;;) {
 		if (self == other) return self;
@@ -44,18 +44,18 @@ jive_resource_class_union(const jive_resource_class * self, const jive_resource_
 	}
 }
 
-const jive_resource_class *
-jive_resource_class_intersection(const jive_resource_class * self,
-	const jive_resource_class * other)
+const jive::resource_class *
+jive_resource_class_intersection(const jive::resource_class * self,
+	const jive::resource_class * other)
 {
-	const jive_resource_class * u = jive_resource_class_union(self, other);
+	auto u = jive_resource_class_union(self, other);
 	if (u == self) return other;
 	else if (u == other) return self;
 	else return 0;
 }
 
-const jive_resource_class *
-jive_resource_class_relax(const jive_resource_class * self)
+const jive::resource_class *
+jive_resource_class_relax(const jive::resource_class * self)
 {
 	/* hopefully this function is transitionary --
 	currently everything that is needed is the
@@ -73,7 +73,7 @@ const jive_resource_class_class JIVE_ABSTRACT_RESOURCE = {
 	is_abstract : true
 };
 
-const jive_resource_class jive_root_resource_class(
+const jive::resource_class jive_root_resource_class(
 	&JIVE_ABSTRACT_RESOURCE, "root", {}, nullptr,
 	jive_resource_class_priority_lowest,
 	no_demotion, nullptr);

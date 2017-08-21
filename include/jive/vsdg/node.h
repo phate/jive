@@ -55,7 +55,7 @@ public:
 		size_t index,
 		jive::output * origin,
 		jive::region * region,
-		const struct jive_resource_class * rescls);
+		const struct jive::resource_class * rescls);
 
 	input(const input &) = delete;
 
@@ -85,7 +85,7 @@ public:
 		return gate_;
 	}
 
-	inline const struct jive_resource_class *
+	inline const struct jive::resource_class *
 	rescls() const noexcept
 	{
 		return rescls_;
@@ -130,7 +130,7 @@ private:
 	jive::output * origin_;
 	jive::region * region_;
 	std::unique_ptr<jive::base::type> type_;
-	const struct jive_resource_class * rescls_;
+	const struct jive::resource_class * rescls_;
 };
 
 /* outputs */
@@ -162,7 +162,7 @@ public:
 		size_t index,
 		jive::region * region,
 		const jive::base::type & type,
-		const struct jive_resource_class * rescls);
+		const struct jive::resource_class * rescls);
 
 	output(const output &) = delete;
 
@@ -199,7 +199,7 @@ public:
 		return gate_;
 	}
 
-	inline const struct jive_resource_class *
+	inline const struct jive::resource_class *
 	rescls() const noexcept
 	{
 		return rescls_;
@@ -259,7 +259,7 @@ private:
 	jive::region * region_;
 	std::unordered_set<jive::input*> users_;
 	std::unique_ptr<jive::base::type> type_;
-	const struct jive_resource_class * rescls_;
+	const struct jive::resource_class * rescls_;
 };
 
 /**	@}	*/
@@ -282,7 +282,7 @@ public:
 	gate(
 		jive::graph * graph,
 		const std::string & name,
-		const struct jive_resource_class * rescls);
+		const struct jive::resource_class * rescls);
 
 	const jive::base::type &
 	type() const noexcept
@@ -308,7 +308,7 @@ public:
 		return name_;
 	}
 
-	inline const struct jive_resource_class *
+	inline const struct jive::resource_class *
 	rescls() const noexcept
 	{
 		return rescls_;
@@ -335,7 +335,7 @@ public:
 private:
 	std::string name_;
 	jive::graph * graph_;
-	const struct jive_resource_class * rescls_;
+	const struct jive::resource_class * rescls_;
 
 	/*
 		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the
@@ -390,7 +390,7 @@ public:
 	add_input(jive::gate * gate, jive::output * origin) = 0;
 
 	virtual jive::input *
-	add_input(const struct jive_resource_class * rescls, jive::output * origin) = 0;
+	add_input(const struct jive::resource_class * rescls, jive::output * origin) = 0;
 
 	virtual void
 	remove_input(size_t index) = 0;
@@ -399,7 +399,7 @@ public:
 	add_output(const jive::base::type * type) = 0;
 
 	virtual jive::output *
-	add_output(const struct jive_resource_class * rescls) = 0;
+	add_output(const struct jive::resource_class * rescls) = 0;
 
 	virtual jive::output *
 	add_output(jive::gate * gate) = 0;

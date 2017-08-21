@@ -83,7 +83,7 @@ input::input(
 	size_t index,
 	jive::output * origin,
 	jive::region * region,
-	const struct jive_resource_class * rescls)
+	const resource_class * rescls)
 	: index_(index)
 	, gate_(nullptr)
 	, origin_(origin)
@@ -171,7 +171,7 @@ output::output(
 	size_t index,
 	jive::region * region,
 	const jive::base::type & type,
-	const struct jive_resource_class * rescls)
+	const resource_class * rescls)
 	: index_(index)
 	, gate_(nullptr)
 	, region_(region)
@@ -230,7 +230,7 @@ gate::gate(
 gate::gate(
 	jive::graph * graph,
 	const std::string & name,
-	const struct jive_resource_class * rescls)
+	const resource_class * rescls)
 	: name_(name)
 	, graph_(graph)
 	, rescls_(rescls)
@@ -293,7 +293,7 @@ jive_node_get_use_count_input(const jive::node * self, jive_resource_class_count
 			if (duplicate) continue;
 		}
 		
-		const jive_resource_class * rescls;
+		const jive::resource_class * rescls;
 		if (input->gate()) rescls = input->gate()->rescls();
 		else rescls = input->rescls();
 		
@@ -309,7 +309,7 @@ jive_node_get_use_count_output(const jive::node * self, jive_resource_class_coun
 	for (size_t n = 0; n < self->noutputs(); n++) {
 		auto output = self->output(n);
 		
-		const jive_resource_class * rescls;
+		const jive::resource_class * rescls;
 		if (output->gate()) rescls = output->gate()->rescls();
 		else rescls = output->rescls();
 		

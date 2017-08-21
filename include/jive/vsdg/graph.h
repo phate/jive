@@ -64,7 +64,7 @@ public:
 	create_gate(const std::string & name, const jive::base::type & type);
 
 	jive::gate *
-	create_gate(const std::string & name, const jive_resource_class * rescls);
+	create_gate(const std::string & name, const jive::resource_class * rescls);
 
 	inline jive::gate *
 	create_gate(const jive::gate * gate)

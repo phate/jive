@@ -19,15 +19,15 @@ typedef struct jive_stackvar_input jive_stackvar_input;
 typedef struct jive_stackvar_output jive_stackvar_output;
 typedef struct jive_stackvar_type jive_stackvar_type;
 
-extern const jive_resource_class jive_root_stackslot_class;
+extern const jive::resource_class jive_root_stackslot_class;
 
-const jive_resource_class *
+const jive::resource_class *
 jive_stackslot_size_class_get(size_t size, size_t alignment);
 
-const jive_resource_class *
+const jive::resource_class *
 jive_fixed_stackslot_class_get(size_t size, size_t alignment, ssize_t offset);
 
-const jive_resource_class *
+const jive::resource_class *
 jive_callslot_class_get(size_t size, size_t alignment, ssize_t offset);
 
 const jive::resource_name *
@@ -35,7 +35,7 @@ jive_stackslot_name_get(size_t size, size_t alignment, ssize_t offset);
 
 /* resource classes and names*/
 
-class jive_stackslot_size_class : public jive_resource_class {
+class jive_stackslot_size_class : public jive::resource_class {
 public:
 	virtual
 	~jive_stackslot_size_class();
@@ -45,13 +45,13 @@ public:
 		const jive_resource_class_class * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource_name*> & resources,
-		const jive_resource_class * parent,
+		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
 		const jive_resource_class_demotion * demotions,
 		const jive::base::type * type,
 		size_t s,
 		size_t a)
-	: jive_resource_class(cls, name, resources, parent, priority, demotions, type)
+	: jive::resource_class(cls, name, resources, parent, priority, demotions, type)
 	, size(s)
 	, alignment(a)
 	{}
@@ -69,7 +69,7 @@ public:
 		const jive_resource_class_class * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource_name*> & resources,
-		const jive_resource_class * parent,
+		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
 		const jive_resource_class_demotion * demotions,
 		const jive::base::type * type,
@@ -92,7 +92,7 @@ public:
 	inline
 	jive_stackslot(
 		const std::string & name,
-		const jive_resource_class * rescls,
+		const jive::resource_class * rescls,
 		int o)
 	: jive::resource_name(name, rescls)
 	, offset(o)
@@ -111,7 +111,7 @@ public:
 		const jive_resource_class_class * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource_name*> & resources,
-		const jive_resource_class * parent,
+		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
 		const jive_resource_class_demotion * demotions,
 		const jive::base::type * type,
@@ -137,7 +137,7 @@ public:
 	inline
 	jive_callslot(
 		const std::string & name,
-		const jive_resource_class * rescls,
+		const jive::resource_class * rescls,
 		int o)
 	: jive::resource_name(name, rescls)
 	, offset(o)
