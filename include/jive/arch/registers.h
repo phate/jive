@@ -52,7 +52,7 @@ public:
 		const std::unordered_set<const jive::resource_name*> & resources,
 		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
-		const jive::resource_class_demotion * demotions,
+		const std::vector<jive::resource_class_demotion> & demotions,
 		const jive::base::type * type,
 		size_t n,
 		size_t aw,

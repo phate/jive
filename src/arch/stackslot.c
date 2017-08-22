@@ -50,19 +50,18 @@ const jive_resource_class_class JIVE_STACK_CALLSLOT_RESOURCE = {
 	is_abstract : false
 };
 
-static const jive::resource_class_demotion no_demotion[] = {{nullptr, {}}};
 static const jive::mem::type stackvar_type;
 
 const jive::resource_class jive_root_stackslot_class(
 	&JIVE_ABSTRACT_RESOURCE, "stackslot", {},
 	&jive_root_resource_class, jive_resource_class_priority_lowest,
-	no_demotion, nullptr);
+	{}, nullptr);
 
 #define MAKE_STACKSLOT_CLASS(SIZE, ALIGNMENT) \
 const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT(\
 	&JIVE_STACK_RESOURCE, "stack_s" #SIZE "a" #ALIGNMENT, {}, \
 	&jive_root_stackslot_class, jive_resource_class_priority_mem_generic,\
-	no_demotion, &stackvar_type, SIZE, ALIGNMENT \
+	{}, &stackvar_type, SIZE, ALIGNMENT \
 );
 
 MAKE_STACKSLOT_CLASS(1, 1);
@@ -92,8 +91,8 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 {
 	auto name = jive::detail::strfmt("stack_s", size, "a", alignment);
 	return new jive_stackslot_size_class( &JIVE_STACK_RESOURCE, name, {},
-		&jive_root_stackslot_class, jive_resource_class_priority_mem_generic, no_demotion,
-		&stackvar_type, size, alignment);
+		&jive_root_stackslot_class, jive_resource_class_priority_mem_generic,
+		{}, &stackvar_type, size, alignment);
 }
 
 jive_stackslot *
@@ -109,7 +108,7 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 		return nullptr;
 
 	auto cls = new jive_fixed_stackslot_class(&JIVE_STACK_FRAMESLOT_RESOURCE, name, {slot},
-		parent, jive_resource_class_priority_mem_unique, no_demotion, &stackvar_type, parent->size,
+		parent, jive_resource_class_priority_mem_unique, {}, &stackvar_type, parent->size,
 		parent->alignment, slot);
 	if (!cls) {
 		delete slot;
@@ -131,7 +130,7 @@ jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 		return nullptr;
 
 	auto cls = new jive_callslot_class(&JIVE_STACK_CALLSLOT_RESOURCE, name, {slot}, parent,
-		jive_resource_class_priority_mem_unique, no_demotion, &stackvar_type, parent->size,
+		jive_resource_class_priority_mem_unique, {}, &stackvar_type, parent->size,
 		parent->alignment, offset, slot);
 	if (!cls) {
 		delete slot;

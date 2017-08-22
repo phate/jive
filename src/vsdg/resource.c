@@ -65,8 +65,6 @@ jive_resource_class_relax(const jive::resource_class * self)
 	return self;
 }
 
-static const jive::resource_class_demotion no_demotion[] = {{nullptr, {}}};
-
 const jive_resource_class_class JIVE_ABSTRACT_RESOURCE = {
 	parent : 0,
 	name : "root",
@@ -76,7 +74,7 @@ const jive_resource_class_class JIVE_ABSTRACT_RESOURCE = {
 const jive::resource_class jive_root_resource_class(
 	&JIVE_ABSTRACT_RESOURCE, "root", {}, nullptr,
 	jive_resource_class_priority_lowest,
-	no_demotion, nullptr);
+	{}, nullptr);
 
 static inline size_t
 max(size_t a, size_t b)

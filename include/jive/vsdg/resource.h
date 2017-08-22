@@ -84,16 +84,16 @@ public:
 		const std::unordered_set<const jive::resource_name*> resources,
 		const jive::resource_class * parent,
 		jive_resource_class_priority pr,
-		const resource_class_demotion * dm,
+		const std::vector<resource_class_demotion> & demotions,
 		const jive::base::type * type)
 	: class_(cls)
 	, priority(pr)
-	, demotions(dm)
 	, depth_(parent ? parent->depth()+1 : 0)
 	, name_(name)
 	, type_(type)
 	, parent_(parent)
 	, resources_(resources)
+	, demotions_(demotions)
 	{}
 
 	inline size_t
@@ -133,13 +133,16 @@ public:
 		return resources_;
 	}
 
+	inline const std::vector<resource_class_demotion> &
+	demotions() const noexcept
+	{
+		return demotions_;
+	}
+
 	const jive_resource_class_class * class_;
 	
 	/** \brief Priority for register allocator */
 	jive_resource_class_priority priority;
-	
-	/** \brief Paths for "demoting" this resource to a different one */
-	const resource_class_demotion * demotions;
 	
 private:
 	/** \brief Number of steps from root resource class */
@@ -154,6 +157,9 @@ private:
 
 	/** \brief Available resources */
 	std::unordered_set<const jive::resource_name*> resources_;
+
+	/** \brief Paths for "demoting" this resource to a different one */
+	std::vector<resource_class_demotion> demotions_;
 };
 
 }
