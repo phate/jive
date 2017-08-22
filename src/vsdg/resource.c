@@ -23,15 +23,6 @@ resource_name::~resource_name()
 
 }
 
-static inline size_t
-jive_ptr_hash(const void * ptr)
-{
-	/* FIXME: hm, ideally I would like to "rotate" instead of "shifting"... */
-	size_t hash = (size_t) ptr;
-	hash ^= (hash >> 20) ^ (hash >> 12);
-	return hash ^ (hash >> 7) ^ (hash >> 4);
-}
-
 const jive::resource_class *
 jive_resource_class_union(const jive::resource_class * self, const jive::resource_class * other)
 {
