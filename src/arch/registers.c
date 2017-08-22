@@ -18,7 +18,7 @@ register_name::~register_name()
 jive_register_class::~jive_register_class()
 {}
 
-static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
+static const jive::resource_class_demotion no_demotion[] = {{nullptr, {}}};
 
 const jive_resource_class_class JIVE_REGISTER_RESOURCE = {
 	parent : &JIVE_ABSTRACT_RESOURCE,

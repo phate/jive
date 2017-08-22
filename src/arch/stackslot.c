@@ -50,7 +50,7 @@ const jive_resource_class_class JIVE_STACK_CALLSLOT_RESOURCE = {
 	is_abstract : false
 };
 
-static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
+static const jive::resource_class_demotion no_demotion[] = {{nullptr, {}}};
 static const jive::mem::type stackvar_type;
 
 const jive::resource_class jive_root_stackslot_class(

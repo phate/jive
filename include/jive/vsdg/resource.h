@@ -22,6 +22,7 @@ namespace base {
 	class type;
 }
 	class gate;
+	class resource_class;
 	class resource_name;
 }
 
@@ -30,7 +31,6 @@ typedef struct jive_resource_class_class jive_resource_class_class;
 typedef struct jive_resource_class_count jive_resource_class_count;
 typedef struct jive_resource_class_count_bucket jive_resource_class_count_bucket;
 typedef struct jive_resource_class_count_item jive_resource_class_count_item;
-typedef struct jive_resource_class_demotion jive_resource_class_demotion;
 
 typedef enum {
 	jive_resource_class_priority_invalid = 0,
@@ -45,6 +45,33 @@ typedef enum {
 
 namespace jive {
 
+class resource_class_demotion final {
+public:
+	inline
+	resource_class_demotion(
+		const resource_class * target,
+		const std::vector<const resource_class*> & path)
+	: target_(target)
+	, path_(path)
+	{}
+
+	inline const resource_class *
+	target() const noexcept
+	{
+		return target_;
+	}
+
+	inline const std::vector<const resource_class*>
+	path() const noexcept
+	{
+		return path_;
+	}
+
+private:
+	const resource_class * target_;
+	std::vector<const resource_class*> path_;
+};
+
 class resource_class {
 public:
 	virtual
@@ -57,7 +84,7 @@ public:
 		const std::unordered_set<const jive::resource_name*> resources,
 		const jive::resource_class * parent,
 		jive_resource_class_priority pr,
-		const jive_resource_class_demotion * dm,
+		const resource_class_demotion * dm,
 		const jive::base::type * type)
 	: class_(cls)
 	, priority(pr)
@@ -112,7 +139,7 @@ public:
 	jive_resource_class_priority priority;
 	
 	/** \brief Paths for "demoting" this resource to a different one */
-	const jive_resource_class_demotion * demotions;
+	const resource_class_demotion * demotions;
 	
 private:
 	/** \brief Number of steps from root resource class */
@@ -135,11 +162,6 @@ struct jive_resource_class_class {
 	const jive_resource_class_class * parent;
 	const char * name;
 	bool is_abstract;
-};
-
-struct jive_resource_class_demotion {
-	const jive::resource_class * target;
-	const jive::resource_class * const * path;
 };
 
 const jive::resource_class *

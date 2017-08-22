@@ -65,7 +65,7 @@ jive_resource_class_relax(const jive::resource_class * self)
 	return self;
 }
 
-static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
+static const jive::resource_class_demotion no_demotion[] = {{nullptr, {}}};
 
 const jive_resource_class_class JIVE_ABSTRACT_RESOURCE = {
 	parent : 0,
