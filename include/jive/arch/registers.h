@@ -38,15 +38,13 @@ private:
 	size_t code_;
 };
 
-}
-
-class jive_register_class : public jive::resource_class {
+class register_class : public jive::resource_class {
 public:
 	virtual
-	~jive_register_class();
+	~register_class();
 
 	inline
-	jive_register_class(
+	register_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource_name*> & resources,
@@ -67,6 +65,8 @@ public:
 	size_t int_arithmetic_width;
 	size_t loadstore_width;
 };
+
+}
 
 extern const jive::resource_class jive_root_register_class;
 extern const jive_resource_class_class JIVE_REGISTER_RESOURCE;

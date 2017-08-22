@@ -11,15 +11,15 @@
 #include <jive/arch/regselector.h>
 #include <jive/arch/subroutine.h>
 
-extern const jive_register_class jive_testarch_regcls_cc;
-extern const jive_register_class jive_testarch_regcls_gpr;
+extern const jive::register_class jive_testarch_regcls_cc;
+extern const jive::register_class jive_testarch_regcls_gpr;
 
-extern const jive_register_class jive_testarch_regcls_r0;
-extern const jive_register_class jive_testarch_regcls_r1;
-extern const jive_register_class jive_testarch_regcls_r2;
-extern const jive_register_class jive_testarch_regcls_r3;
-extern const jive_register_class jive_testarch_regcls_evenreg;
-extern const jive_register_class jive_testarch_regcls_oddreg;
+extern const jive::register_class jive_testarch_regcls_r0;
+extern const jive::register_class jive_testarch_regcls_r1;
+extern const jive::register_class jive_testarch_regcls_r2;
+extern const jive::register_class jive_testarch_regcls_r3;
+extern const jive::register_class jive_testarch_regcls_evenreg;
+extern const jive::register_class jive_testarch_regcls_oddreg;
 
 extern const jive::register_name jive_testarch_reg_r0;
 extern const jive::register_name jive_testarch_reg_r1;
@@ -122,7 +122,7 @@ public:
 	virtual size_t
 	nclasses() const noexcept override;
 
-	virtual const jive_register_class * const *
+	virtual const jive::register_class * const *
 	classes() const noexcept override;
 };
 

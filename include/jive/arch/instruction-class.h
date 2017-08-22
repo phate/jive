@@ -158,8 +158,8 @@ public:
 		const std::string & name,
 		int code,
 		const std::string & mnemonic,
-		const std::vector<const jive_register_class*> & inputs,
-		const std::vector<const jive_register_class*> & outputs,
+		const std::vector<const jive::register_class*> & inputs,
+		const std::vector<const jive::register_class*> & outputs,
 		size_t nimmediates,
 		jive_instruction_flags flags,
 		const jive::instruction_class * inverse_jump)
@@ -219,7 +219,7 @@ public:
 		return inputs_.size();
 	}
 
-	inline const jive_register_class *
+	inline const jive::register_class *
 	input(size_t n) const noexcept
 	{
 		JIVE_DEBUG_ASSERT(n < ninputs());
@@ -232,7 +232,7 @@ public:
 		return outputs_.size();
 	}
 
-	inline const jive_register_class *
+	inline const jive::register_class *
 	output(size_t n) const noexcept
 	{
 		JIVE_DEBUG_ASSERT(n < noutputs());
@@ -274,8 +274,8 @@ private:
 	std::string mnemonic_;
 	jive_instruction_flags flags_;
 	const jive::instruction_class * inverse_jump_;
-	std::vector<const jive_register_class*> inputs_;
-	std::vector<const jive_register_class*> outputs_;
+	std::vector<const jive::register_class*> inputs_;
+	std::vector<const jive::register_class*> outputs_;
 };
 
 }

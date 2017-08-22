@@ -13,10 +13,10 @@ namespace jive {
 register_name::~register_name()
 {}
 
-}
-
-jive_register_class::~jive_register_class()
+register_class::~register_class()
 {}
+
+}
 
 const jive_resource_class_class JIVE_REGISTER_RESOURCE = {
 	parent : &JIVE_ABSTRACT_RESOURCE,

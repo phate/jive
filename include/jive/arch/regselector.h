@@ -77,7 +77,7 @@ public:
 	virtual size_t
 	nclasses() const noexcept = 0;
 
-	virtual const jive_register_class * const *
+	virtual const jive::register_class * const *
 	classes() const noexcept = 0;
 };
 
@@ -95,10 +95,10 @@ jive_regselector_init(jive_regselector * self, jive::graph * graph,
 void
 jive_regselector_process(jive_regselector * self);
 
-const jive_register_class *
+const jive::register_class *
 jive_regselector_map_output(const jive_regselector * self, jive::simple_output * output);
 
-const jive_register_class *
+const jive::register_class *
 jive_regselector_map_input(const jive_regselector * self, jive::simple_input * input);
 
 void

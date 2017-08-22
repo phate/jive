@@ -106,7 +106,9 @@ jive_regselector_option_create_(const jive_negotiator * self)
 }
 
 static uint32_t
-jive_regselector_classify_regcls(const jive_regselector * self, const jive_register_class * regcls)
+jive_regselector_classify_regcls(
+	const jive_regselector * self,
+	const jive::register_class * regcls)
 {
 	uint32_t option_mask = 0;
 	size_t n = 0;
@@ -125,7 +127,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive::node * nod
 	
 	jive_regselector_option option;
 	if (auto op = dynamic_cast<const jive::regvalue_op *>(gen_op)) {
-		const jive_register_class * regcls = op->regcls();
+		auto regcls = op->regcls();
 		option.mask = jive_regselector_classify_regcls(self, regcls);
 		jive_negotiator_annotate_simple_output(&self->base,
 			dynamic_cast<jive::simple_output*>(node->output(0)), &option);
@@ -223,7 +225,7 @@ static const jive_negotiator_class JIVE_REGSELECTOR_CLASS = {
 	process_region : jive_negotiator_process_region_
 };
 
-static const jive_register_class *
+static const jive::register_class *
 jive_regselector_map_port(const jive_regselector * self, const jive_negotiator_port * port)
 {
 	if (!port) return NULL;
@@ -254,7 +256,7 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 	//	region = region->parent();
 
 	if (auto op = dynamic_cast<const jive::regvalue_op *>(&node->operation())) {
-		const jive_register_class * regcls = op->regcls();
+		auto regcls = op->regcls();
 		auto origin = node->input(1)->origin()->node();
 
 		if (dynamic_cast<const jive::base::binary_op *>(&origin->operation())) {
@@ -314,7 +316,7 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 		jive_negotiator_port * port = jive_negotiator_map_input(&self->base, input);
 		if (!port)
 			continue;
-		const jive_register_class * regcls = jive_regselector_map_port(self, port);
+		auto regcls = jive_regselector_map_port(self, port);
 		if (!regcls)
 			continue;
 		
@@ -357,14 +359,14 @@ jive_regselector_process(jive_regselector * self)
 	jive_negotiator_remove_split_nodes(&self->base);
 }
 
-const jive_register_class *
+const jive::register_class *
 jive_regselector_map_output(const jive_regselector * self, jive::simple_output * output)
 {
 	const jive_negotiator_port * port = jive_negotiator_map_output(&self->base, output);
 	return jive_regselector_map_port(self, port);
 }
 
-const jive_register_class *
+const jive::register_class *
 jive_regselector_map_input(const jive_regselector * self, jive::simple_input * input)
 {
 	const jive_negotiator_port * port = jive_negotiator_map_input(&self->base, input);

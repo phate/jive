@@ -28,43 +28,43 @@ const jive::register_name jive_testarch_reg_cc("cc", &jive_testarch_regcls_cc, 0
 static const jive::bits::type bits16(16);
 static const jive::bits::type bits32(32);
 
-const jive_register_class jive_testarch_regcls_r0(
+const jive::register_class jive_testarch_regcls_r0(
 	&JIVE_REGISTER_RESOURCE, "r0", {&jive_testarch_reg_r0},
 	&jive_testarch_regcls_evenreg, jive_resource_class_priority_reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
-const jive_register_class jive_testarch_regcls_r1(
+const jive::register_class jive_testarch_regcls_r1(
 	&JIVE_REGISTER_RESOURCE, "r1", {&jive_testarch_reg_r1},
 	&jive_testarch_regcls_oddreg, jive_resource_class_priority_reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
-const jive_register_class jive_testarch_regcls_r2(
+const jive::register_class jive_testarch_regcls_r2(
 	&JIVE_REGISTER_RESOURCE, "r2", {&jive_testarch_reg_r2},
 	&jive_testarch_regcls_evenreg, jive_resource_class_priority_reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
-const jive_register_class jive_testarch_regcls_r3(
+const jive::register_class jive_testarch_regcls_r3(
 	&JIVE_REGISTER_RESOURCE, "r3", {&jive_testarch_reg_r3},
 	&jive_testarch_regcls_oddreg, jive_resource_class_priority_reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
-const jive_register_class jive_testarch_regcls_evenreg(
+const jive::register_class jive_testarch_regcls_evenreg(
 	&JIVE_REGISTER_RESOURCE, "even", {&jive_testarch_reg_r0, &jive_testarch_reg_r2},
 	&jive_testarch_regcls_gpr, jive_resource_class_priority_reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
-const jive_register_class jive_testarch_regcls_oddreg(
+const jive::register_class jive_testarch_regcls_oddreg(
 	&JIVE_REGISTER_RESOURCE, "odd", {&jive_testarch_reg_r1, &jive_testarch_reg_r3},
 	&jive_testarch_regcls_gpr, jive_resource_class_priority_reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
-const jive_register_class jive_testarch_regcls_gpr(
+const jive::register_class jive_testarch_regcls_gpr(
 	&JIVE_REGISTER_RESOURCE, "gpr",
 	{&jive_testarch_reg_r0, &jive_testarch_reg_r1, &jive_testarch_reg_r2, &jive_testarch_reg_r3},
 	&jive_root_register_class, jive_resource_class_priority_reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
-const jive_register_class jive_testarch_regcls_cc(
+const jive::register_class jive_testarch_regcls_cc(
 	&JIVE_REGISTER_RESOURCE, "cc", {&jive_testarch_reg_cc},
 	&jive_root_register_class, jive_resource_class_priority_reg_high,
 	{{CLS(gpr), {CLS(cc), CLS(gpr)}}, {STACK4, {CLS(cc), CLS(gpr), STACK4}}},
@@ -307,10 +307,10 @@ jive_testarch_reg_classifier::nclasses() const noexcept
 	return 2;
 }
 
-const jive_register_class * const *
+const jive::register_class * const *
 jive_testarch_reg_classifier::classes() const noexcept
 {
-	static const jive_register_class * classes [] = {
+	static const jive::register_class * classes [] = {
 		[jive_testarch_classify_gpr] = &jive_testarch_regcls_gpr,
 		[jive_testarch_classify_cc] = &jive_testarch_regcls_cc,
 	};

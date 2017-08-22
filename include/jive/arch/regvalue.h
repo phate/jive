@@ -21,7 +21,7 @@ public:
 	~regvalue_op() noexcept;
 
 	inline explicit constexpr
-	regvalue_op(const jive_register_class * regcls) noexcept
+	regvalue_op(const register_class * regcls) noexcept
 		: regcls_(regcls)
 	{
 	}
@@ -43,13 +43,17 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const jive_register_class * regcls() const { return regcls_; }
+	inline const register_class *
+	regcls() const
+	{
+		return regcls_;
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	const jive_register_class * regcls_;
+	const register_class * regcls_;
 };
 
 }
@@ -64,6 +68,6 @@ private:
 	returns the output handle of an existing constant.
 */
 jive::output *
-jive_regvalue(jive::output * value, const jive_register_class * regcls);
+jive_regvalue(jive::output * value, const jive::register_class * regcls);
 
 #endif

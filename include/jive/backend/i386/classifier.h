@@ -42,7 +42,7 @@ public:
 	virtual size_t
 	nclasses() const noexcept override;
 
-	virtual const jive_register_class * const *
+	virtual const jive::register_class * const *
 	classes() const noexcept override;
 };
 

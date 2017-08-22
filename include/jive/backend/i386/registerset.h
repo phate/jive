@@ -9,37 +9,37 @@
 
 #include <jive/arch/registers.h>
 
-extern const jive_register_class jive_i386_regcls_gpr;
-extern const jive_register_class jive_i386_regcls_fp;
-extern const jive_register_class jive_i386_regcls_mmx;
-extern const jive_register_class jive_i386_regcls_sse;
-extern const jive_register_class jive_i386_regcls_flags;
+extern const jive::register_class jive_i386_regcls_gpr;
+extern const jive::register_class jive_i386_regcls_fp;
+extern const jive::register_class jive_i386_regcls_mmx;
+extern const jive::register_class jive_i386_regcls_sse;
+extern const jive::register_class jive_i386_regcls_flags;
 
 /* gpr sub classes */
 /* registers that are byte-addressible */
-extern const jive_register_class jive_i386_regcls_gpr_byte;
+extern const jive::register_class jive_i386_regcls_gpr_byte;
 
-extern const jive_register_class jive_i386_regcls_gpr_eax;
-extern const jive_register_class jive_i386_regcls_gpr_ebx;
-extern const jive_register_class jive_i386_regcls_gpr_ecx;
-extern const jive_register_class jive_i386_regcls_gpr_edx;
-extern const jive_register_class jive_i386_regcls_gpr_esi;
-extern const jive_register_class jive_i386_regcls_gpr_edi;
-extern const jive_register_class jive_i386_regcls_gpr_esp;
-extern const jive_register_class jive_i386_regcls_gpr_ebp;
+extern const jive::register_class jive_i386_regcls_gpr_eax;
+extern const jive::register_class jive_i386_regcls_gpr_ebx;
+extern const jive::register_class jive_i386_regcls_gpr_ecx;
+extern const jive::register_class jive_i386_regcls_gpr_edx;
+extern const jive::register_class jive_i386_regcls_gpr_esi;
+extern const jive::register_class jive_i386_regcls_gpr_edi;
+extern const jive::register_class jive_i386_regcls_gpr_esp;
+extern const jive::register_class jive_i386_regcls_gpr_ebp;
 
 /* fp sub classes */
-extern const jive_register_class jive_i386_regcls_fp_st0;
+extern const jive::register_class jive_i386_regcls_fp_st0;
 
 /* sse sub classes */
-extern const jive_register_class jive_i386_regcls_sse_xmm0;
-extern const jive_register_class jive_i386_regcls_sse_xmm1;
-extern const jive_register_class jive_i386_regcls_sse_xmm2;
-extern const jive_register_class jive_i386_regcls_sse_xmm3;
-extern const jive_register_class jive_i386_regcls_sse_xmm4;
-extern const jive_register_class jive_i386_regcls_sse_xmm5;
-extern const jive_register_class jive_i386_regcls_sse_xmm6;
-extern const jive_register_class jive_i386_regcls_sse_xmm7;
+extern const jive::register_class jive_i386_regcls_sse_xmm0;
+extern const jive::register_class jive_i386_regcls_sse_xmm1;
+extern const jive::register_class jive_i386_regcls_sse_xmm2;
+extern const jive::register_class jive_i386_regcls_sse_xmm3;
+extern const jive::register_class jive_i386_regcls_sse_xmm4;
+extern const jive::register_class jive_i386_regcls_sse_xmm5;
+extern const jive::register_class jive_i386_regcls_sse_xmm6;
+extern const jive::register_class jive_i386_regcls_sse_xmm7;
 
 extern const jive::register_name jive_i386_reg_cc;
 extern const jive::register_name jive_i386_reg_eax;

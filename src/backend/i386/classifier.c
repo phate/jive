@@ -107,10 +107,10 @@ jive_i386_reg_classifier::nclasses() const noexcept
 	return 4;
 }
 
-const jive_register_class * const *
+const jive::register_class * const *
 jive_i386_reg_classifier::classes() const noexcept
 {
-	static const jive_register_class * classes [] =  {
+	static const jive::register_class * classes [] =  {
 		[jive_i386_classify_flags] = &jive_i386_regcls_flags,
 		[jive_i386_classify_gpr] = &jive_i386_regcls_gpr,
 		[jive_i386_classify_fp] = &jive_i386_regcls_fp,
