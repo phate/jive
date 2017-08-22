@@ -10,8 +10,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/simple_node.h>
 
-#include <string.h>
-
 namespace jive {
 namespace unn {
 
@@ -29,9 +27,7 @@ unify_op::operator==(const operation & other) const noexcept
 std::string
 unify_op::debug_string() const
 {
-	char tmp[32];
-	snprintf(tmp, sizeof(tmp), "UNIFY(%zd)", option());
-	return tmp;
+	return detail::strfmt("UNIFY(", option(), ")");
 }
 
 const jive::base::type &

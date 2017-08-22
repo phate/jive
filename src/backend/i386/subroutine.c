@@ -6,8 +6,6 @@
 
 #include <jive/backend/i386/subroutine.h>
 
-#include <stdio.h>
-
 #include <jive/arch/address-transform.h>
 #include <jive/arch/addresstype.h>
 #include <jive/arch/stackslot.h>
@@ -180,16 +178,14 @@ jive_i386_subroutine_begin(jive::graph * graph,
 {
 	jive::subroutine_machine_signature sig;
 	for (size_t n = 0; n < nparameters; n++) {
-		char argname[80];
-		snprintf(argname, sizeof(argname), "arg%zd", n + 1);
+		auto argname = jive::detail::strfmt("arg", n+1);
 		auto cls = jive_fixed_stackslot_class_get(4, 4, (n + 1) * 4);
 		sig.arguments.emplace_back(jive::subroutine_machine_signature::argument{argname, cls, true});
 	}
 	
 	for (size_t n = 0; n < nreturns; n++) {
-		char resname[80];
-		snprintf(resname, sizeof(resname), "ret%zd", n + 1);
 		const jive::resource_class * cls;
+		auto resname = jive::detail::strfmt("ret", n+1);
 		switch (n) {
 			case 0: cls = &jive_i386_regcls_gpr_eax; break;
 			default: cls = jive_fixed_stackslot_class_get(4, 4, n * 4);

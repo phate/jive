@@ -6,9 +6,6 @@
 
 #include <jive/types/record.h>
 
-#include <stdio.h>
-#include <string.h>
-
 #include <jive/arch/address-transform.h>
 #include <jive/arch/address.h>
 #include <jive/arch/load.h>
@@ -35,9 +32,7 @@ select_operation::operator==(const operation & other) const noexcept
 std::string
 select_operation::debug_string() const
 {
-	char tmp[32];
-	snprintf(tmp, sizeof(tmp), "SELECT(%zd)", element());
-	return tmp;
+	return detail::strfmt("SELECT(", element(), ")");
 }
 
 const jive::base::type &

@@ -25,9 +25,7 @@ struct type_of_value {
 struct format_value {
 	std::string operator()(const value_repr & repr) const
 	{
-		char tmp[80];
-		snprintf(tmp, sizeof(tmp), "%f", repr);
-		return std::string(tmp);
+		return jive::detail::strfmt(repr);
 	}
 };
 

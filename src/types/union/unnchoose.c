@@ -12,9 +12,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/simple_node.h>
 
-#include <stdio.h>
-#include <string.h>
-
 static constexpr jive_unop_reduction_path_t jive_choose_reduction_load = 128;
 
 namespace jive {
@@ -34,9 +31,7 @@ choose_operation::operator==(const operation & other) const noexcept
 std::string
 choose_operation::debug_string() const
 {
-	char tmp[32];
-	snprintf(tmp, sizeof(tmp), "CHOOSE(%zd)", element());
-	return tmp;
+	return detail::strfmt("CHOOSE(", element(), ")");
 }
 
 const jive::base::type &

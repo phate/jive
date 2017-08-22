@@ -6,8 +6,6 @@
 
 #include "testarch.h"
 
-#include <stdio.h>
-
 #include <jive/common.h>
 
 #include <jive/arch/instructionset.h>
@@ -438,9 +436,8 @@ jive_testarch_subroutine_begin(jive::graph * graph,
 	jive::subroutine_machine_signature sig;
 	
 	for (size_t n = 0; n < nparameters; n++) {
-		char argname[80];
-		snprintf(argname, sizeof(argname), "arg%zd", n + 1);
 		const jive::resource_class * cls;
+		auto argname = jive::detail::strfmt("arg", n+1);
 		switch (n) {
 			case 0: cls = &jive_testarch_regcls_r1; break;
 			case 1: cls = &jive_testarch_regcls_r2; break;
@@ -450,9 +447,8 @@ jive_testarch_subroutine_begin(jive::graph * graph,
 	}
 	
 	for (size_t n = 0; n < nreturns; n++) {
-		char resname[80];
-		snprintf(resname, sizeof(resname), "ret%zd", n + 1);
 		const jive::resource_class * cls;
+		auto resname = jive::detail::strfmt("ret", n+1);
 		switch (n) {
 			case 0: cls = &jive_testarch_regcls_r1; break;
 			case 1: cls = &jive_testarch_regcls_r2; break;

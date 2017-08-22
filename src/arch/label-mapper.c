@@ -6,8 +6,6 @@
 
 #include <jive/arch/label-mapper.h>
 
-#include <stdio.h>
-
 #include <unordered_map>
 
 typedef struct jive_anon_label jive_anon_label;
@@ -47,11 +45,7 @@ jive_label_name_mapper_simple_map_anon_symbol_(
 		entry = i->second;
 	else {
 		entry.symbol = symbol;
-		
-		char name[80];
-		snprintf(name, sizeof(name), ".L%zd", ++self->int_label_seqno);
-		entry.name = name;
-
+		entry.name = jive::detail::strfmt(".L", ++self->int_label_seqno);
 		self->anon_labels[symbol] = entry;
 	}
 	

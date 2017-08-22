@@ -6,9 +6,6 @@
 
 #include <jive/arch/address.h>
 
-#include <stdio.h>
-#include <string.h>
-
 #include <jive/arch/addresstype.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/bitstring/constant.h>
@@ -392,9 +389,7 @@ label_to_address_op::result_type(size_t index) const noexcept
 std::string
 label_to_address_op::debug_string() const
 {
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "addrof:label%p", label());
-	return tmp;
+	return detail::strfmt("addrof:label", label());
 }
 
 std::unique_ptr<jive::operation>
@@ -439,9 +434,7 @@ label_to_bitstring_op::result_type(size_t index) const noexcept
 std::string
 label_to_bitstring_op::debug_string() const
 {
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "addrof:label%p", label());
-	return tmp;
+	return detail::strfmt("addrof:lable", label());
 }
 
 std::unique_ptr<jive::operation>

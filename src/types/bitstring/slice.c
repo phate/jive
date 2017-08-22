@@ -6,9 +6,6 @@
 
 #include <jive/types/bitstring/slice.h>
 
-#include <stdio.h>
-#include <string.h>
-
 #include <jive/common.h>
 
 #include <jive/types/bitstring/arithmetic.h>
@@ -35,9 +32,7 @@ slice_op::operator==(const operation & other) const noexcept
 std::string
 slice_op::debug_string() const
 {
-	char tmp[32];
-	snprintf(tmp, sizeof(tmp), "SLICE[%zd:%zd)", low(), high());
-	return tmp;
+	return detail::strfmt("SLICE[", low(), ":", high(), ")");
 }
 
 const jive::base::type &

@@ -9,9 +9,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 
-#include <stdio.h>
-#include <string.h>
-
 namespace jive {
 namespace bits {
 
@@ -22,9 +19,7 @@ type::~type() noexcept {}
 std::string
 type::debug_string() const
 {
-	char tmp[16];
-	snprintf(tmp, sizeof(tmp), "bits%zd", nbits());
-	return std::string(tmp);
+	return detail::strfmt("bits", nbits());
 }
 
 bool
