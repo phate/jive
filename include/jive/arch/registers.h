@@ -52,18 +52,26 @@ public:
 		jive_resource_class_priority priority,
 		const std::vector<jive::resource_class_demotion> & demotions,
 		const jive::base::type * type,
-		size_t n,
+		size_t nbits,
 		size_t aw,
 		size_t lw)
 	: jive::resource_class(cls, name, resources, parent, priority, demotions, type)
-	, nbits(n)
 	, int_arithmetic_width(aw)
 	, loadstore_width(lw)
+	, nbits_(nbits)
 	{}
 
-	size_t nbits;
+	inline size_t
+	nbits() const noexcept
+	{
+		return nbits_;
+	}
+
 	size_t int_arithmetic_width;
 	size_t loadstore_width;
+
+private:
+	size_t nbits_;
 };
 
 }
