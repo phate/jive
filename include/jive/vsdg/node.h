@@ -353,7 +353,6 @@ private:
 
 typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 
-struct jive_resource_class_count;
 struct jive_substitution_map;
 
 namespace jive {
@@ -550,16 +549,6 @@ jive_node_get_gate_output(const jive::node * self, const char * name)
 	}
 	return nullptr;
 }
-
-void
-jive_node_get_use_count_input(
-	const jive::node * self,
-	struct jive_resource_class_count * use_count);
-
-void
-jive_node_get_use_count_output(
-	const jive::node * self,
-	struct jive_resource_class_count * use_count);
 
 static inline std::vector<jive::output*>
 jive_node_arguments(const jive::node * self)

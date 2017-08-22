@@ -6,7 +6,6 @@ TESTS+=\
 	vsdg/test-graph \
 	vsdg/test-nodes \
 	vsdg/test-phi \
-	vsdg/test-rescls-count \
 	vsdg/test-statesplit \
 	vsdg/test-theta \
 	vsdg/test-typemismatch \

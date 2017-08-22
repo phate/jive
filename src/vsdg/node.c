@@ -272,51 +272,6 @@ register_node_normal_form(void)
 		typeid(jive::operation), jive_node_get_default_normal_form_);
 }
 
-void
-jive_node_get_use_count_input(const jive::node * self, jive_resource_class_count * use_count)
-{
-	use_count->clear();
-	
-	for (size_t n = 0; n < self->ninputs(); n++) {
-		auto input = dynamic_cast<jive::simple_input*>(self->input(n));
-		
-		/* filter out multiple inputs using the same value
-		FIXME: this assumes that all inputs have the same resource
-		class requirement! */
-		if (!input->gate()) {
-			bool duplicate = false;
-			size_t k;
-			for(k = 0; k<n; k++) {
-				if (self->input(k)->origin() == input->origin())
-					duplicate = true;
-			}
-			if (duplicate) continue;
-		}
-		
-		const jive::resource_class * rescls;
-		if (input->gate()) rescls = input->gate()->rescls();
-		else rescls = input->rescls();
-		
-		use_count->add(rescls);
-	}
-}
-
-void
-jive_node_get_use_count_output(const jive::node * self, jive_resource_class_count * use_count)
-{
-	use_count->clear();
-	
-	for (size_t n = 0; n < self->noutputs(); n++) {
-		auto output = self->output(n);
-		
-		const jive::resource_class * rescls;
-		if (output->gate()) rescls = output->gate()->rescls();
-		else rescls = output->rescls();
-		
-		use_count->add(rescls);
-	}
-}
-
 namespace jive {
 
 node::node(std::unique_ptr<jive::operation> op, jive::region * region, size_t depth)
