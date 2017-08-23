@@ -212,10 +212,10 @@ public:
 			throw jive::compiler_error("Incorrect number of values.");
 		JIVE_DEBUG_ASSERT(values.size() != 0);
 
-		auto type = &values[0]->type();
+		const auto & type = values[0]->type();
 		auto output = node_->add_output(type);
 		for (size_t n = 0; n < nsubregions(); n++)
-			node_->subregion(n)->add_result(values[n], output, *type);
+			node_->subregion(n)->add_result(values[n], output, type);
 
 		return std::shared_ptr<exitvar>(new exitvar(output));
 	}

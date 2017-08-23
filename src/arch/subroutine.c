@@ -156,7 +156,7 @@ jive_subroutine_end(jive_subroutine & self)
 	for (const auto & res : self.builder_state->results)
 		self.region->add_result(res.output, nullptr, res.gate);
 
-	self.node->add_output(&jive::mem::type::instance());
+	self.node->add_output(jive::mem::type::instance());
 
 	return self.node;
 }

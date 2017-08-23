@@ -38,13 +38,7 @@ public:
 		jive::region * region,
 		size_t index,
 		jive::structural_input * input,
-		const jive::base::type & type);
-
-	argument(
-		jive::region * region,
-		size_t index,
-		jive::structural_input * input,
-		jive::gate * gate);
+		const jive::port & port);
 
 	argument(const argument &) = delete;
 
@@ -137,10 +131,7 @@ public:
 	}
 
 	jive::argument *
-	add_argument(jive::structural_input * input, const jive::base::type & type);
-
-	jive::argument *
-	add_argument(jive::structural_input * input, jive::gate * gate);
+	add_argument(jive::structural_input * input, const jive::port & port);
 
 	void
 	remove_argument(size_t index);

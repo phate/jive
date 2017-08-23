@@ -44,31 +44,20 @@ argument::argument(
 	jive::region * region,
 	size_t index,
 	jive::structural_input * input,
-	const jive::base::type & type)
-	: output(index, region, type)
-	, input_(input)
-{
-	input_argument_list.prev = input_argument_list.next = nullptr;
-	if (input)
-		JIVE_LIST_PUSH_BACK(input->arguments, this, input_argument_list);
-}
-
-argument::argument(
-	jive::region * region,
-	size_t index,
-	jive::structural_input * input,
-	jive::gate * gate)
-	: output(index, region, gate)
+	const jive::port & port)
+	: output(index, region, port)
 	, input_(input)
 {
 	input_argument_list.prev = input_argument_list.next = nullptr;
 	if (input)
 		JIVE_LIST_PUSH_BACK(input->arguments, this, input_argument_list);
 
-	for (size_t n = 0; n < index; n++) {
-		jive::argument * other = region->argument(n);
-		if (!other->gate()) continue;
-		jive_gate_interference_add(region->graph(), gate, other->gate());
+	if (port.gate()) {
+		for (size_t n = 0; n < index; n++) {
+			auto other = region->argument(n);
+			if (!other->gate()) continue;
+			jive_gate_interference_add(region->graph(), port.gate(), other->gate());
+		}
 	}
 }
 
@@ -166,20 +155,9 @@ region::region(jive::structural_node * node)
 }
 
 jive::argument *
-region::add_argument(jive::structural_input * input, const jive::base::type & type)
+region::add_argument(jive::structural_input * input, const jive::port & port)
 {
-	jive::argument * argument = new jive::argument(this, narguments(), input, type);
-	arguments_.push_back(argument);
-
-	graph()->on_output_create(argument);
-
-	return argument;
-}
-
-jive::argument *
-region::add_argument(jive::structural_input * input, jive::gate * gate)
-{
-	jive::argument * argument = new jive::argument(this, narguments(), input, gate);
+	jive::argument * argument = new jive::argument(this, narguments(), input, port);
 	arguments_.push_back(argument);
 
 	graph()->on_output_create(argument);

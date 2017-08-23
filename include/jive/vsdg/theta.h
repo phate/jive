@@ -96,7 +96,7 @@ public:
 
 		node_->subregion(0)->add_result(predicate, nullptr, jive::ctl::type(2));
 		for (const auto & lv : loopvars_) {
-			auto output = node_->add_output(&lv->value()->type());
+			auto output = node_->add_output(lv->value()->type());
 			node_->subregion(0)->add_result(lv->value(), output, lv->value()->type());
 			lv->set_value(output);
 		}

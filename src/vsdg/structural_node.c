@@ -83,41 +83,19 @@ structural_output::~structural_output()
 structural_output::structural_output(
 	jive::structural_node * node,
 	size_t index,
-	const jive::base::type & type)
-	: output(index, node->region(), type)
+	const jive::port & port)
+	: output(index, node->region(), port)
 	, node_(node)
 {
 	results.first = results.last = nullptr;
 
-	node->graph()->on_output_create(this);
-}
-
-structural_output::structural_output(
-	jive::structural_node * node,
-	size_t index,
-	jive::gate * gate)
-	: output(index, node->region(), gate)
-	, node_(node)
-{
-	results.first = results.last = nullptr;
-
-	for (size_t n = 0; n < index; n++) {
-		auto other = node->output(n);
-		if (!other->gate()) continue;
-		jive_gate_interference_add(node->graph(), gate, other->gate());
+	if (port.gate()) {
+		for (size_t n = 0; n < index; n++) {
+			auto other = node->output(n);
+			if (!other->gate()) continue;
+			jive_gate_interference_add(node->graph(), port.gate(), other->gate());
+		}
 	}
-
-	node->graph()->on_output_create(this);
-}
-
-structural_output::structural_output(
-	jive::structural_node * node,
-	size_t index,
-	const resource_class * rescls)
-	: output(index, node->region(), rescls->type(), rescls)
-	, node_(node)
-{
-	results.first = results.last = nullptr;
 
 	node->graph()->on_output_create(this);
 }
@@ -240,26 +218,10 @@ structural_node::remove_input(size_t index)
 }
 
 jive::structural_output *
-structural_node::add_output(const jive::base::type * type)
+structural_node::add_output(const jive::port & port)
 {
 	outputs_.emplace_back(std::unique_ptr<structural_output>(
-		new structural_output(this, noutputs(), *type)));
-	return this->output(noutputs()-1);
-}
-
-jive::structural_output *
-structural_node::add_output(jive::gate * gate)
-{
-	outputs_.emplace_back(std::unique_ptr<structural_output>(
-		new structural_output(this, noutputs(), gate)));
-	return this->output(noutputs()-1);
-}
-
-jive::structural_output *
-structural_node::add_output(const resource_class * rescls)
-{
-	outputs_.emplace_back(std::unique_ptr<structural_output>(
-		new structural_output(this, noutputs(), rescls)));
+		new structural_output(this, noutputs(), port)));
 	return this->output(noutputs()-1);
 }
 
@@ -331,7 +293,7 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 		} else if (output(n)->rescls() != &jive_root_resource_class) {
 			new_output = new_node->add_output(output(n)->rescls());
 		} else {
-			new_output = new_node->add_output(&output(n)->type());
+			new_output = new_node->add_output(output(n)->type());
 		}
 		smap.insert(output(n), new_output);
 	}

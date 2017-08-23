@@ -139,22 +139,7 @@ public:
 	output(
 		size_t index,
 		jive::region * region,
-		const jive::base::type & type);
-
-	output(
-		size_t index,
-		jive::region * region,
-		jive::gate * gate);
-
-	/*
-		FIXME: The type parameter is currently necessary, since the jive_root_resource_class has no
-		       type.
-	*/
-	output(
-		size_t index,
-		jive::region * region,
-		const jive::base::type & type,
-		const struct jive::resource_class * rescls);
+		const jive::port & port);
 
 	output(const output &) = delete;
 
@@ -188,13 +173,13 @@ public:
 	inline jive::gate *
 	gate() const noexcept
 	{
-		return gate_;
+		return port_.gate();
 	}
 
-	inline const struct jive::resource_class *
+	inline const jive::resource_class *
 	rescls() const noexcept
 	{
-		return rescls_;
+		return port_.rescls();
 	}
 
 	inline user_iterator
@@ -212,13 +197,19 @@ public:
 	inline const jive::base::type &
 	type() const noexcept
 	{
-		return *type_;
+		return port_.type();
 	}
 
 	inline jive::region *
 	region() const noexcept
 	{
 		return region_;
+	}
+
+	inline const jive::port &
+	port() const noexcept
+	{
+		return port_;
 	}
 
 	virtual jive::node *
@@ -247,11 +238,9 @@ private:
 	add_user(jive::input * user);
 
 	size_t index_;
-	jive::gate * gate_;
+	jive::port port_;
 	jive::region * region_;
 	std::unordered_set<jive::input*> users_;
-	std::unique_ptr<jive::base::type> type_;
-	const struct jive::resource_class * rescls_;
 };
 
 /**	@}	*/
@@ -381,13 +370,7 @@ public:
 	remove_input(size_t index) = 0;
 
 	virtual jive::output *
-	add_output(const jive::base::type * type) = 0;
-
-	virtual jive::output *
-	add_output(const struct jive::resource_class * rescls) = 0;
-
-	virtual jive::output *
-	add_output(jive::gate * gate) = 0;
+	add_output(const jive::port & port) = 0;
 
 	virtual void
 	remove_output(size_t index) = 0;

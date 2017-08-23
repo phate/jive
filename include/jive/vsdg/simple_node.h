@@ -42,15 +42,10 @@ public:
 	virtual
 	~simple_output() noexcept;
 
-	simple_output(jive::node * node, size_t index, const jive::base::type & type);
-
-	simple_output(jive::node * node, size_t index, jive::gate * gate);
-
 	simple_output(
 		jive::node * node,
 		size_t index,
-		const jive::base::type & type,
-		const struct jive::resource_class * rescls);
+		const jive::port & port);
 
 public:
 	virtual jive::node *
@@ -97,13 +92,7 @@ public:
 	remove_input(size_t index) override;
 
 	virtual jive::simple_output *
-	add_output(const jive::base::type * type) override;
-
-	virtual jive::simple_output *
-	add_output(const struct jive::resource_class * rescls) override;
-
-	virtual jive::simple_output *
-	add_output(jive::gate * gate) override;
+	add_output(const jive::port & port) override;
 
 	virtual void
 	remove_output(size_t index) override;

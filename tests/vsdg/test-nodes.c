@@ -25,8 +25,8 @@ test_node_copy(void)
 	auto n1 = jive::test::structural_node_create(graph.root(), 3);
 	auto i1 = n1->add_input(stype, s);
 	auto i2 = n1->add_input(vtype, v);
-	auto o1 = n1->add_output(&stype);
-	auto o2 = n1->add_output(&vtype);
+	auto o1 = n1->add_output(stype);
+	auto o2 = n1->add_output(vtype);
 
 	auto a1 = n1->subregion(0)->add_argument(i1, stype);
 	auto a2 = n1->subregion(0)->add_argument(i2, vtype);

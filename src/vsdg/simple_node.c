@@ -58,30 +58,21 @@ simple_input::node() const noexcept
 
 /* outputs */
 
-simple_output::simple_output(jive::node * node, size_t index, const jive::base::type & type)
-	: output(index, node->region(), type)
-	, node_(node)
-{}
-
-simple_output::simple_output(jive::node * node, size_t index, jive::gate * gate)
-	: output(index, node->region(), gate)
-	, node_(node)
-{
-	for (size_t n = 0; n < index; n++) {
-		auto other = node->output(n);
-		if (!other->gate()) continue;
-		jive_gate_interference_add(node->graph(), gate, other->gate());
-	}
-}
-
 simple_output::simple_output(
 	jive::node * node,
 	size_t index,
-	const jive::base::type & type,
-	const resource_class * rescls)
-	: output(index, node->region(), type, rescls)
-	, node_(node)
-{}
+	const jive::port & port)
+: output(index, node->region(), port)
+, node_(node)
+{
+	if (port.gate()) {
+		for (size_t n = 0; n < index; n++) {
+			auto other = node->output(n);
+			if (!other->gate()) continue;
+			jive_gate_interference_add(node->graph(), port.gate(), other->gate());
+		}
+	}
+}
 
 simple_output::~simple_output() noexcept
 {
@@ -142,10 +133,8 @@ simple_node::simple_node(
 		}
 	}
 
-	for (size_t n = 0; n < operation().nresults(); n++) {
-		outputs_.emplace_back(std::make_unique<jive::simple_output>(this, n,
-			operation().result(n).type(), operation().result(n).rescls()));
-	}
+	for (size_t n = 0; n < operation().nresults(); n++)
+		outputs_.emplace_back(std::make_unique<jive::simple_output>(this, n, operation().result(n)));
 
 	JIVE_DEBUG_ASSERT(operation().narguments() == inputs_.size());
 
@@ -233,33 +222,10 @@ simple_node::remove_input(size_t index)
 }
 
 jive::simple_output *
-simple_node::add_output(const jive::base::type * type)
+simple_node::add_output(const jive::port & port)
 {
-	outputs_.emplace_back(std::make_unique<jive::simple_output>(this, noutputs(), *type));
+	outputs_.emplace_back(std::make_unique<jive::simple_output>(this, noutputs(), port));
 	auto output = outputs_[noutputs()-1].get();
-
-	graph()->on_output_create(output);
-
-	return output;
-}
-
-jive::simple_output *
-simple_node::add_output(jive::gate * gate)
-{
-	outputs_.emplace_back(std::make_unique<jive::simple_output>(this, noutputs(), gate));
-	auto output = this->output(noutputs()-1);
-
-	graph()->on_output_create(output);
-
-	return output;
-}
-
-jive::simple_output *
-simple_node::add_output(const resource_class * rescls)
-{
-	outputs_.emplace_back(std::make_unique<jive::simple_output>(
-		this, noutputs(), rescls->type(), rescls));
-	auto output = this->output(noutputs()-1);
 
 	graph()->on_output_create(output);
 

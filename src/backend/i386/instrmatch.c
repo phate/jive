@@ -497,7 +497,7 @@ match_gpr_load(jive::node * node)
 		if (output->gate())
 			rep = instr->add_output(output->gate());
 		else
-			rep = instr->add_output(&output->type());
+			rep = instr->add_output(output->type());
 		output->replace(rep);
 	}
 }
@@ -534,7 +534,7 @@ match_gpr_store(jive::node * node)
 		if (output->gate())
 			rep = instr->add_output(output->gate());
 		else
-			rep = instr->add_output(&output->type());
+			rep = instr->add_output(output->type());
 		output->replace(rep);
 	}
 }

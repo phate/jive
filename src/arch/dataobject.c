@@ -168,7 +168,7 @@ jive_dataobj_internal(
 	for (const auto & item : data_items)
 		node->add_input(item->type(), item);
 
-	return node->add_output(&jive::addr::type::instance());
+	return node->add_output(jive::addr::type::instance());
 }
 
 jive::output *

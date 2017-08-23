@@ -43,7 +43,7 @@ test_recursive_prune()
 	auto n4 = jive::test::simple_node_create(n3->subregion(0), {&t}, {a1}, {&t});
 	auto n5 = jive::test::simple_node_create(n3->subregion(0), {&t}, {a1}, {&t});
 	n3->subregion(0)->add_result(n4->output(0), nullptr, t);
-	auto o1 = n3->add_output(&t);
+	auto o1 = n3->add_output(t);
 
 	auto n6 = jive::test::structural_node_create(n3->subregion(0), 1);
 

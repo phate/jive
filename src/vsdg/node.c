@@ -96,41 +96,16 @@ output::~output()
 output::output(
 	size_t index,
 	jive::region * region,
-	const jive::base::type & type)
-	: index_(index)
-	, gate_(nullptr)
-	, region_(region)
-	, type_(type.copy())
-	, rescls_(&jive_root_resource_class)
+	const jive::port & port)
+: index_(index)
+, port_(port)
+, region_(region)
 {
 	gate_output_list.prev = gate_output_list.next = nullptr;
-}
 
-output::output(
-	size_t index,
-	jive::region * region,
-	jive::gate * gate)
-	: index_(index)
-	, gate_(gate)
-	, region_(region)
-	, type_(gate->type().copy())
-	, rescls_(gate->rescls())
-{
-	gate_output_list.prev = gate_output_list.next = nullptr;
-	JIVE_LIST_PUSH_BACK(gate->outputs, this, gate_output_list);
+	if (port.gate())
+		JIVE_LIST_PUSH_BACK(port.gate()->outputs, this, gate_output_list);
 }
-
-output::output(
-	size_t index,
-	jive::region * region,
-	const jive::base::type & type,
-	const resource_class * rescls)
-	: index_(index)
-	, gate_(nullptr)
-	, region_(region)
-	, type_(type.copy())
-	, rescls_(rescls)
-{}
 
 std::string
 output::debug_string() const

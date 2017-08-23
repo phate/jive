@@ -122,7 +122,7 @@ public:
 
 		for (size_t n = 0; n < results.size(); n++)
 			node_->subregion(0)->add_result(results[n], nullptr, ftype.result_type(n));
-		node_->add_output(&ftype);
+		node_->add_output(ftype);
 
 		auto node = node_;
 		node_ = nullptr;

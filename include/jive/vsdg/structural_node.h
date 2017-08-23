@@ -52,17 +52,7 @@ private:
 	structural_output(
 		jive::structural_node * node,
 		size_t index,
-		const jive::base::type & type);
-
-	structural_output(
-		jive::structural_node * node,
-		size_t index,
-		jive::gate * gate);
-
-	structural_output(
-		jive::structural_node * node,
-		size_t index,
-		const struct jive::resource_class * rescls);
+		const jive::port & port);
 
 public:
 	virtual jive::node *
@@ -125,13 +115,7 @@ public:
 	remove_input(size_t index) override;
 
 	virtual jive::structural_output *
-	add_output(const jive::base::type * type) override;
-
-	virtual jive::structural_output *
-	add_output(const struct jive::resource_class * rescls) override;
-
-	virtual jive::structural_output *
-	add_output(jive::gate * gate) override;
+	add_output(const jive::port & port) override;
 
 	virtual void
 	remove_output(size_t index) override;
