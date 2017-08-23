@@ -20,10 +20,13 @@ unify_op::~unify_op() noexcept
 bool
 unify_op::operator==(const operation & other) const noexcept
 {
-	const unify_op * op =
-		dynamic_cast<const unify_op *>(&other);
-	return op && type_ == op->type_ && option_ == op->option_;
+	auto op = dynamic_cast<const unify_op*>(&other);
+	return op
+	    && option_ == op->option_
+	    && result_ == op->result_
+	    && argument_ == op->argument_;
 }
+
 std::string
 unify_op::debug_string() const
 {
@@ -33,13 +36,28 @@ unify_op::debug_string() const
 const jive::base::type &
 unify_op::argument_type(size_t index) const noexcept
 {
-	return *type_.declaration()->elements[option()];
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_.type();
+}
+
+const jive::port &
+unify_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return argument_;
 }
 
 const jive::base::type &
 unify_op::result_type(size_t index) const noexcept
 {
-	return type_;
+	return result_.type();
+}
+
+const jive::port &
+unify_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
 }
 
 jive_unop_reduction_path_t
@@ -70,9 +88,8 @@ empty_unify_op::~empty_unify_op() noexcept
 bool
 empty_unify_op::operator==(const operation & other) const noexcept
 {
-	const empty_unify_op * op =
-		dynamic_cast<const empty_unify_op *>(&other);
-	return op && op->declaration() == declaration();
+	auto op = dynamic_cast<const empty_unify_op *>(&other);
+	return op && op->port_ == port_;
 }
 std::string
 empty_unify_op::debug_string() const
@@ -83,7 +100,15 @@ empty_unify_op::debug_string() const
 const jive::base::type &
 empty_unify_op::result_type(size_t index) const noexcept
 {
-	return type_;
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return port_.type();
+}
+
+const jive::port &
+empty_unify_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return port_;
 }
 
 std::unique_ptr<jive::operation>

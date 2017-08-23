@@ -15,26 +15,25 @@ namespace unn {
 
 class choose_operation final : public base::unary_op {
 public:
-	inline
-	choose_operation(
-		const jive::unn::type & type,
-		size_t element) noexcept
-		: type_(type)
-		, element_(element)
-	{
-	}
-
-	inline
-	choose_operation(const choose_operation & other) noexcept = default;
-
-	inline
-	choose_operation(choose_operation && other) noexcept = default;
-
 	virtual
 	~choose_operation() noexcept;
 
+	inline
+	choose_operation(const jive::unn::type & type, size_t element) noexcept
+	: element_(element)
+	, result_(*type.declaration()->elements[element])
+	, argument_(type)
+	{}
+
+	inline
+	choose_operation(const choose_operation & other) = default;
+
+	inline
+	choose_operation(choose_operation && other) = default;
+
 	virtual bool
 	operator==(const operation & other) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -42,8 +41,14 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
 
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
@@ -56,14 +61,18 @@ public:
 		jive::output * arg) const override;
 
 	inline size_t
-	element() const noexcept { return element_; }
+	element() const noexcept
+	{
+		return element_;
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	type type_;
 	size_t element_;
+	jive::port result_;
+	jive::port argument_;
 };
 
 }

@@ -26,6 +26,12 @@ structural_op::argument_type(size_t index) const noexcept
 	JIVE_ASSERT(0 && "structural_op has no arguments.");
 }
 
+const jive::port &
+structural_op::argument(size_t index) const noexcept
+{
+	JIVE_ASSERT(0 && "Structural operations have no arguments.");
+}
+
 size_t
 structural_op::nresults() const noexcept
 {
@@ -36,6 +42,12 @@ const jive::base::type &
 structural_op::result_type(size_t index) const noexcept
 {
 	JIVE_ASSERT(0 && "structural_op has no arguments.");
+}
+
+const jive::port &
+structural_op::result(size_t index) const noexcept
+{
+	JIVE_ASSERT(0 && "Structural operations have no results.");
 }
 
 }

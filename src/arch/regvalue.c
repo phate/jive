@@ -22,9 +22,8 @@ regvalue_op::~regvalue_op() noexcept
 bool
 regvalue_op::operator==(const operation & other) const noexcept
 {
-	const regvalue_op * op =
-		dynamic_cast<const regvalue_op *>(&other);
-	return op && op->regcls() == regcls();
+	auto op = dynamic_cast<const regvalue_op *>(&other);
+	return op && op->port_ == port_;
 }
 
 size_t
@@ -36,7 +35,15 @@ regvalue_op::narguments() const noexcept
 const jive::base::type &
 regvalue_op::argument_type(size_t index) const noexcept
 {
-	return regcls()->type();
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return port_.type();
+}
+
+const jive::port &
+regvalue_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return port_;
 }
 
 size_t
@@ -48,8 +55,17 @@ regvalue_op::nresults() const noexcept
 const jive::base::type &
 regvalue_op::result_type(size_t index) const noexcept
 {
-	return regcls()->type();
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return port_.type();
 }
+
+const jive::port &
+regvalue_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return port_;
+}
+
 std::string
 regvalue_op::debug_string() const
 {

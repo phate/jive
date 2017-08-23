@@ -21,21 +21,19 @@ public:
 	virtual ~concat_op() noexcept;
 
 	explicit inline
-	concat_op(std::vector<type> argument_types)
-		: argument_types_(std::move(argument_types))
-		, result_type_(aggregate_arguments(argument_types_))
+	concat_op(std::vector<type> types)
+	: binary_op()
+	, result_(aggregate_arguments(types))
 	{
+		for (const auto & type : types)
+			arguments_.push_back({type});
 	}
 
 	inline
-	concat_op(const concat_op & other)
-		: argument_types_(other.argument_types_)
-		, result_type_(other.result_type_)
-	{
-	}
+	concat_op(const concat_op & other) = default;
 
 	inline
-	concat_op(concat_op && other) noexcept = default;
+	concat_op(concat_op && other) = default;
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -46,11 +44,18 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	/* reduction methods */
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
@@ -69,12 +74,6 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const std::vector<type> &
-	argument_types() const noexcept
-	{
-		return argument_types_;
-	}
-
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
@@ -83,8 +82,8 @@ private:
 	aggregate_arguments(
 		const std::vector<type>& argument_types) noexcept;
 
-	std::vector<type> argument_types_;
-	type result_type_;
+	jive::port result_;
+	std::vector<jive::port> arguments_;
 };
 
 }

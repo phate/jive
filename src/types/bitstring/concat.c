@@ -316,20 +316,28 @@ concat_op::~concat_op() noexcept
 bool
 concat_op::operator==(const operation & other) const noexcept
 {
-	const concat_op * op = dynamic_cast<const concat_op *>(&other);
-	return op && op->argument_types_ == argument_types_;
+	auto op = dynamic_cast<const concat_op*>(&other);
+	return op && op->result_ == result_ && op->arguments_ == arguments_;
 }
 
 size_t
 concat_op::narguments() const noexcept
 {
-	return argument_types_.size();
+	return arguments_.size();
 }
 
 const jive::base::type &
 concat_op::argument_type(size_t index) const noexcept
 {
-	return argument_types_[index];
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index].type();
+}
+
+const jive::port &
+concat_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index];
 }
 
 size_t
@@ -341,8 +349,17 @@ concat_op::nresults() const noexcept
 const jive::base::type &
 concat_op::result_type(size_t index) const noexcept
 {
-	return result_type_;
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_.type();
 }
+
+const jive::port &
+concat_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
+}
+
 jive_binop_reduction_path_t
 concat_op::can_reduce_operand_pair(
 	const jive::output * arg1,

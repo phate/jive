@@ -47,8 +47,14 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
 
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
@@ -99,8 +105,14 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
 
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
@@ -148,11 +160,18 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -163,14 +182,17 @@ public:
 	}
 
 	inline const jive::bits::type &
-	index_type() const noexcept { return index_type_; }
+	index_type() const noexcept
+	{
+		return *static_cast<const jive::bits::type*>(&index_.type());
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
+	jive::port index_;
 	std::unique_ptr<base::type> element_type_;
-	jive::bits::type index_type_;
 };
 
 class arrayindex_op : public simple_op {
@@ -192,11 +214,18 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -207,14 +236,17 @@ public:
 	}
 
 	inline const jive::bits::type &
-	index_type() const noexcept { return index_type_; }
+	index_type() const noexcept
+	{
+		return *static_cast<const jive::bits::type*>(&index_.type());
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
+	jive::port index_;
 	std::unique_ptr<base::type> element_type_;
-	jive::bits::type index_type_;
 };
 
 class label_to_address_op : public base::nullary_op {
@@ -234,6 +266,9 @@ public:
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -252,20 +287,23 @@ public:
 	virtual
 	~label_to_bitstring_op() noexcept;
 
-	inline constexpr
+	inline
 	label_to_bitstring_op(
 		const jive_label * label,
 		size_t nbits) noexcept
-		: label_(label)
-		, result_type_(nbits)
-	{
-	}
+	: base::nullary_op()
+	, result_(jive::bits::type(nbits))
+	, label_(label)
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
@@ -274,14 +312,17 @@ public:
 	label() const noexcept { return label_; }
 
 	size_t
-	nbits() const noexcept { return result_type_.nbits(); }
+	nbits() const noexcept
+	{
+		return static_cast<const jive::bits::type*>(&result_.type())->nbits();
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
+	jive::port result_;
 	const jive_label * label_;
-	jive::bits::type result_type_;
 };
 
 class value_repr final {

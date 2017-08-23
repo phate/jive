@@ -21,51 +21,64 @@ call_operation::call_operation(
 	const jive_calling_convention * calling_convention,
 	const std::vector<std::unique_ptr<jive::base::type>> & argument_types,
 	const std::vector<std::unique_ptr<jive::base::type>> & result_types)
-	: calling_convention_(calling_convention)
-	, argument_types_(detail::unique_ptr_vector_copy(argument_types))
-	, result_types_(detail::unique_ptr_vector_copy(result_types))
+: calling_convention_(calling_convention)
 {
-}
-
-call_operation::call_operation(const call_operation & other)
-	: call_operation(other.calling_convention_, other.argument_types_, other.result_types_)
-{
+	for (const auto & type : argument_types)
+		arguments_.push_back({std::move(type->copy())});
+	for (const auto & type : result_types)
+		results_.push_back({std::move(type->copy())});
 }
 
 bool
 call_operation::operator==(const operation & other) const noexcept
 {
-	const call_operation * op =
-		dynamic_cast<const call_operation *>(&other);
-	return op &&
-		op->calling_convention() == calling_convention() &&
-		detail::ptr_container_equals(op->argument_types(), argument_types()) &&
-		detail::ptr_container_equals(op->result_types(), result_types());
+	auto op = dynamic_cast<const call_operation *>(&other);
+	return op
+	    && op->calling_convention() == calling_convention()
+	    && op->arguments_ == arguments_
+	    && op->results_ == results_;
 }
 
 size_t
 call_operation::narguments() const noexcept
 {
-	return argument_types_.size();
+	return arguments_.size();
 }
 
 const jive::base::type &
 call_operation::argument_type(size_t index) const noexcept
 {
-	return *argument_types_[index];
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index].type();
+}
+
+const jive::port &
+call_operation::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index];
 }
 
 size_t
 call_operation::nresults() const noexcept
 {
-	return result_types_.size();
+	return results_.size();
 }
 
 const jive::base::type &
 call_operation::result_type(size_t index) const noexcept
 {
-	return *result_types_[index];
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return results_[index].type();
 }
+
+const jive::port &
+call_operation::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return results_[index];
+}
+
 std::string
 call_operation::debug_string() const
 {

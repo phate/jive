@@ -43,9 +43,9 @@ negotiator_split_operation::operator==(const operation& gen_other) const noexcep
 	
 	return
 		other &&
-		input_type() == other->input_type() &&
+		argument_ == other->argument_ &&
 		input_option() == other->input_option() &&
-		output_type() == other->output_type() &&
+		result_ == other->result_ &&
 		output_option() == other->output_option() &&
 		negotiator() == other->negotiator();
 }
@@ -53,13 +53,29 @@ negotiator_split_operation::operator==(const operation& gen_other) const noexcep
 const base::type &
 negotiator_split_operation::argument_type(size_t index) const noexcept
 {
-	return *input_type_;
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_.type();
+}
+
+const jive::port &
+negotiator_split_operation::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_;
 }
 
 const base::type &
 negotiator_split_operation::result_type(size_t index) const noexcept
 {
-	return *output_type_;
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_.type();
+}
+
+const jive::port &
+negotiator_split_operation::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
 }
 
 std::string

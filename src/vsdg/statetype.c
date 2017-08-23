@@ -20,11 +20,11 @@ mux_op::~mux_op() noexcept {}
 bool
 mux_op::operator==(const operation & other) const noexcept
 {
-	const mux_op * op = dynamic_cast<const mux_op *>(&other);
-	return op &&
-		op->narguments_ == narguments_ &&
-		op->nresults_ == nresults_ &&
-		*op->state_type_ == *state_type_;
+	auto op = dynamic_cast<const mux_op*>(&other);
+	return op
+	    && op->narguments_ == narguments_
+	    && op->nresults_ == nresults_
+	    && op->port_ == port_;
 }
 
 size_t
@@ -36,7 +36,15 @@ mux_op::narguments() const noexcept
 const jive::base::type &
 mux_op::argument_type(size_t index) const noexcept
 {
-	return *state_type_;
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return port_.type();
+}
+
+const jive::port &
+mux_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return port_;
 }
 
 size_t
@@ -48,8 +56,17 @@ mux_op::nresults() const noexcept
 const jive::base::type &
 mux_op::result_type(size_t index) const noexcept
 {
-	return *state_type_;
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return port_.type();
 }
+
+const jive::port &
+mux_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return port_;
+}
+
 std::string
 mux_op::debug_string() const
 {

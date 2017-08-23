@@ -16,21 +16,23 @@ namespace bits {
 
 class slice_op : public base::unary_op {
 public:
-	inline constexpr
+	inline
 	slice_op(
 		const jive::bits::type & argument_type,
-		size_t low, size_t high) noexcept
-		: argument_type_(argument_type)
-		, result_type_(high - low)
-		, low_(low)
-	{
-	}
+		size_t low,
+		size_t high) noexcept
+	: unary_op()
+	, low_(low)
+	, result_(jive::bits::type(high-low))
+	, argument_(argument_type)
+	{}
 
 	virtual
 	~slice_op() noexcept;
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -38,8 +40,14 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
 
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
@@ -52,10 +60,16 @@ public:
 		jive::output * arg) const override;
 
 	inline size_t
-	low() const noexcept { return low_; }
+	low() const noexcept
+	{
+		return low_;
+	}
 
 	inline size_t
-	high() const noexcept { return low_ + result_type_.nbits(); }
+	high() const noexcept
+	{
+		return low_ + static_cast<const jive::bits::type*>(&result_.type())->nbits();
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
@@ -63,13 +77,13 @@ public:
 	inline const type &
 	argument_type() const noexcept
 	{
-		return argument_type_;
+		return *static_cast<const jive::bits::type*>(&argument_.type());
 	}
 
 private:
-	jive::bits::type argument_type_;
-	jive::bits::type result_type_;
 	size_t low_;
+	jive::port result_;
+	jive::port argument_;
 };
 
 }

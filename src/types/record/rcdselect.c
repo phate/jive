@@ -19,16 +19,18 @@ namespace jive {
 namespace rcd {
 
 select_operation::~select_operation() noexcept
-{
-}
+{}
 
 bool
 select_operation::operator==(const operation & other) const noexcept
 {
-	const select_operation * op =
-		dynamic_cast<const select_operation *>(&other);
-	return op && type_ == op->type_ && element_ == op->element_;
+	auto op = dynamic_cast<const select_operation*>(&other);
+	return op
+	    && op->element_ == element_
+	    && op->result_ == result_
+	    && op->argument_ == argument_;
 }
+
 std::string
 select_operation::debug_string() const
 {
@@ -38,13 +40,29 @@ select_operation::debug_string() const
 const jive::base::type &
 select_operation::argument_type(size_t index) const noexcept
 {
-	return type_;
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_.type();
+}
+
+const jive::port &
+select_operation::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_;
 }
 
 const jive::base::type &
 select_operation::result_type(size_t index) const noexcept
 {
-	return type_.declaration()->element(element());
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_.type();
+}
+
+const jive::port &
+select_operation::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
 }
 
 jive_unop_reduction_path_t

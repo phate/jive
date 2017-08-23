@@ -14,26 +14,25 @@ namespace rcd {
 
 class select_operation final : public base::unary_op {
 public:
-	inline
-	select_operation(
-		const jive::rcd::type & type,
-		size_t element) noexcept
-		: type_(type)
-		, element_(element)
-	{
-	}
-
-	inline
-	select_operation(const select_operation & other) noexcept = default;
-
-	inline
-	select_operation(select_operation && other) noexcept = default;
-
 	virtual
 	~select_operation() noexcept;
 
+	inline
+	select_operation(const jive::rcd::type & type, size_t element) noexcept
+	: element_(element)
+	, result_(type.declaration()->element(element))
+	, argument_(type)
+	{}
+
+	inline
+	select_operation(const select_operation & other) = default;
+
+	inline
+	select_operation(select_operation && other) = default;
+
 	virtual bool
 	operator==(const operation & other) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -41,8 +40,14 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
 
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
@@ -61,8 +66,9 @@ public:
 	copy() const override;
 
 private:
-	type type_;
 	size_t element_;
+	jive::port result_;
+	jive::port argument_;
 };
 
 }

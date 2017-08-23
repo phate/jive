@@ -20,26 +20,25 @@ struct declaration;
 
 class unify_op final : public base::unary_op {
 public:
-	inline
-	unify_op(
-		const jive::unn::type & type,
-		size_t option) noexcept
-		: type_(type)
-		, option_(option)
-	{
-	}
-
-	inline
-	unify_op(const unify_op & other) noexcept = default;
-
-	inline
-	unify_op(unify_op && other) noexcept = default;
-
 	virtual
 	~unify_op() noexcept;
 
+	inline
+	unify_op(const jive::unn::type & type, size_t option) noexcept
+	: option_(option)
+	, result_(type)
+	, argument_(*type.declaration()->elements[option])
+	{}
+
+	inline
+	unify_op(const unify_op & other) = default;
+
+	inline
+	unify_op(unify_op && other) = default;
+
 	virtual bool
 	operator==(const operation & other) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -47,8 +46,14 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual  const jive::port &
+	result(size_t index) const noexcept override;
 
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
@@ -64,14 +69,18 @@ public:
 	option() const noexcept { return option_; }
 	
 	inline const jive::unn::declaration *
-	declaration() const noexcept { return type_.declaration(); }
+	declaration() const noexcept
+	{
+		return static_cast<const jive::unn::type*>(&result_.type())->declaration();
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	type type_;
 	size_t option_;
+	jive::port result_;
+	jive::port argument_;
 };
 
 class empty_unify_op final : public base::nullary_op {
@@ -79,28 +88,34 @@ public:
 	virtual
 	~empty_unify_op() noexcept;
 
-	inline constexpr
-	empty_unify_op(
-		const jive::unn::declaration * declaration) noexcept
-		 : type_(declaration)
+	inline
+	empty_unify_op(const jive::unn::declaration * declaration) noexcept
+	: port_(jive::unn::type(declaration))
 	{}
 
 	inline const jive::unn::declaration *
-	declaration() const noexcept { return type_.declaration(); }
+	declaration() const noexcept
+	{
+		return static_cast<const jive::unn::type*>(&port_.type())->declaration();
+	}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	type type_;
+	jive::port port_;
 };
 
 }

@@ -32,18 +32,7 @@ public:
 		const std::vector<std::unique_ptr<jive::base::type>> & argument_types,
 		const std::vector<std::unique_ptr<jive::base::type>> & result_types);
 
-	inline
-	call_operation(
-		const jive_calling_convention * calling_convention,
-		std::vector<std::unique_ptr<jive::base::type>> && argument_types,
-		std::vector<std::unique_ptr<jive::base::type>> && result_types) noexcept
-		: calling_convention_(calling_convention)
-		, argument_types_(std::move(argument_types))
-		, result_types_(std::move(result_types))
-	{
-	}
-
-	call_operation(const call_operation & other);
+	call_operation(const call_operation & other) = default;
 
 	call_operation(call_operation && other) = default;
 
@@ -56,30 +45,31 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
 	inline const jive_calling_convention *
 	calling_convention() const noexcept { return calling_convention_; }
 
-	inline const std::vector<std::unique_ptr<jive::base::type>> &
-	argument_types() const noexcept { return argument_types_; }
-
-	inline const std::vector<std::unique_ptr<jive::base::type>> &
-	result_types() const noexcept { return result_types_; }
-
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
+	std::vector<jive::port> results_;
+	std::vector<jive::port> arguments_;
 	const jive_calling_convention * calling_convention_;
-	std::vector<std::unique_ptr<jive::base::type>> argument_types_;
-	std::vector<std::unique_ptr<jive::base::type>> result_types_;
 };
 
 }

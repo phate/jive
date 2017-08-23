@@ -23,18 +23,17 @@ public:
 	virtual
 	~split_operation() noexcept;
 
-	constexpr inline
+	inline
 	split_operation(
-		const jive::resource_class * in_class,
-		const jive::resource_class * out_class) noexcept
-		: in_class_(in_class)
-		, out_class_(out_class)
-	{
-	}
-
+		const resource_class * in_class,
+		const resource_class * out_class) noexcept
+	: result_(out_class)
+	, argument_(in_class)
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -45,11 +44,17 @@ public:
 	virtual const jive::resource_class *
 	argument_cls(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
 
 	virtual const jive::resource_class *
 	result_cls(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
 
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
@@ -61,15 +66,24 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	inline const jive::resource_class * in_class() const noexcept { return in_class_; }
-	inline const jive::resource_class * out_class() const noexcept { return out_class_; }
+	inline const resource_class *
+	in_class() const noexcept
+	{
+		return argument_.rescls();
+	}
+
+	inline const resource_class *
+	out_class() const noexcept
+	{
+		return result_.rescls();
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	const jive::resource_class * in_class_;
-	const jive::resource_class * out_class_;
+	jive::port result_;
+	jive::port argument_;
 };
 
 }

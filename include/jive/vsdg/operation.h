@@ -134,6 +134,9 @@ public:
 	virtual const jive::resource_class *
 	argument_cls(size_t index) const noexcept;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept = 0;
+
 	virtual size_t
 	nresults() const noexcept = 0;
 	virtual const jive::base::type &
@@ -141,6 +144,9 @@ public:
 	// FIXME: specific to register allocator, should go away
 	virtual const jive::resource_class *
 	result_cls(size_t index) const noexcept;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept = 0;
 
 	virtual std::string
 	debug_string() const = 0;

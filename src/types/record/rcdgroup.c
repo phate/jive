@@ -15,27 +15,33 @@ namespace jive {
 namespace rcd {
 
 group_op::~group_op() noexcept
-{
-}
+{}
 
 bool
 group_op::operator==(const operation & other) const noexcept
 {
-	const group_op * op =
-		dynamic_cast<const group_op *>(&other);
-	return op && op->declaration() == declaration();
+	auto op = dynamic_cast<const group_op*>(&other);
+	return op && op->result_ == result_ && op->arguments_ == arguments_;
 }
 
 size_t
 group_op::narguments() const noexcept
 {
-	return declaration()->nelements();
+	return arguments_.size();
 }
 
 const jive::base::type &
 group_op::argument_type(size_t index) const noexcept
 {
-	return declaration()->element(index);
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index].type();
+}
+
+const jive::port &
+group_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index];
 }
 
 size_t
@@ -47,8 +53,17 @@ group_op::nresults() const noexcept
 const jive::base::type &
 group_op::result_type(size_t index) const noexcept
 {
-	return result_type_;
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_.type();
 }
+
+const jive::port &
+group_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
+}
+
 std::string
 group_op::debug_string() const
 {

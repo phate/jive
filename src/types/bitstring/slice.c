@@ -26,9 +26,13 @@ slice_op::~slice_op() noexcept
 bool
 slice_op::operator==(const operation & other) const noexcept
 {
-	const slice_op * op = dynamic_cast<const slice_op *>(&other);
-	return op && op->argument_type_ == argument_type_ && op->low() == low() && op->high() == high();
+	auto op = dynamic_cast<const slice_op*>(&other);
+	return op
+	    && op->low_ == low_
+	    && op->result_ == result_
+	    && op->argument_ == argument_;
 }
+
 std::string
 slice_op::debug_string() const
 {
@@ -38,13 +42,29 @@ slice_op::debug_string() const
 const jive::base::type &
 slice_op::argument_type(size_t index) const noexcept
 {
-	return argument_type_;
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_.type();
+}
+
+const jive::port &
+slice_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_;
 }
 
 const jive::base::type &
 slice_op::result_type(size_t index) const noexcept
 {
-	return result_type_;
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_.type();
+}
+
+const jive::port &
+slice_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
 }
 
 jive_unop_reduction_path_t

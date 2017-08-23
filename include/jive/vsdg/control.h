@@ -59,8 +59,14 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(const jive::output * arg) const noexcept override;
@@ -77,7 +83,7 @@ public:
 	inline uint64_t
 	nalternatives() const noexcept
 	{
-		return otype_.nalternatives();
+		return static_cast<const jive::ctl::type*>(&result_.type())->nalternatives();
 	}
 
 	inline uint64_t
@@ -109,8 +115,8 @@ public:
 	}
 
 private:
-	jive::ctl::type otype_;
-	jive::bits::type itype_;
+	jive::port result_;
+	jive::port argument_;
 	uint64_t default_alternative_;
 	std::unordered_map<uint64_t, uint64_t> mapping_;
 };

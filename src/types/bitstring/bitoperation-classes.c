@@ -27,7 +27,15 @@ unary_op::narguments() const noexcept
 const jive::base::type &
 unary_op::argument_type(size_t index) const noexcept
 {
-	return type_;
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return port_.type();
+}
+
+const jive::port &
+unary_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return port_;
 }
 
 size_t
@@ -39,7 +47,14 @@ unary_op::nresults() const noexcept
 const jive::base::type &
 unary_op::result_type(size_t index) const noexcept
 {
-	return type_;
+	return port_.type();
+}
+
+const jive::port &
+unary_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return port_;
 }
 
 jive_binop_reduction_path_t
@@ -78,7 +93,15 @@ binary_op::narguments() const noexcept
 const jive::base::type &
 binary_op::argument_type(size_t index) const noexcept
 {
-	return type_;
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return port_.type();
+}
+
+const jive::port &
+binary_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return port_;
 }
 
 size_t
@@ -90,7 +113,15 @@ binary_op::nresults() const noexcept
 const jive::base::type &
 binary_op::result_type(size_t index) const noexcept
 {
-	return type_;
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return port_.type();
+}
+
+const jive::port &
+binary_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return port_;
 }
 
 jive_binop_reduction_path_t
@@ -135,7 +166,15 @@ compare_op::narguments() const noexcept
 const jive::base::type &
 compare_op::argument_type(size_t index) const noexcept
 {
-	return type_;
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return port_.type();
+}
+
+const jive::port &
+compare_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return port_;
 }
 
 size_t
@@ -147,8 +186,17 @@ compare_op::nresults() const noexcept
 const jive::base::type &
 compare_op::result_type(size_t index) const noexcept
 {
+	JIVE_DEBUG_ASSERT(index < nresults());
 	static const jive::bits::type bit(1);
 	return bit;
+}
+
+const jive::port &
+compare_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	static const jive::port port(jive::bits::type(1));
+	return port;
 }
 
 jive_binop_reduction_path_t
@@ -164,8 +212,8 @@ compare_op::can_reduce_operand_pair(
 	if (arg2->node())
 		c2_op = dynamic_cast<const bits::constant_op*>(&arg2->node()->operation());
 
-	value_repr arg1_repr = c1_op ? c1_op->value() : value_repr::repeat(type_.nbits(), 'D');
-	value_repr arg2_repr = c2_op ? c2_op->value() : value_repr::repeat(type_.nbits(), 'D');
+	value_repr arg1_repr = c1_op ? c1_op->value() : value_repr::repeat(type().nbits(), 'D');
+	value_repr arg2_repr = c2_op ? c2_op->value() : value_repr::repeat(type().nbits(), 'D');
 
 	switch (reduce_constants(arg1_repr, arg2_repr)) {
 		case compare_result::static_false:

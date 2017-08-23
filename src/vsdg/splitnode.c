@@ -37,25 +37,43 @@ split_operation::debug_string() const
 const jive::base::type &
 split_operation::argument_type(size_t index) const noexcept
 {
-	return in_class_->type();
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_.type();
+}
+
+const jive::port &
+split_operation::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_;
 }
 
 const jive::base::type &
 split_operation::result_type(size_t index) const noexcept
 {
-	return out_class_->type();
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_.type();
+}
+
+const jive::port &
+split_operation::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
 }
 
 const jive::resource_class *
 split_operation::argument_cls(size_t index) const noexcept
 {
-	return in_class_;
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return argument_.rescls();
 }
 
 const jive::resource_class *
 split_operation::result_cls(size_t index) const noexcept
 {
-	return out_class_;
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_.rescls();
 }
 
 

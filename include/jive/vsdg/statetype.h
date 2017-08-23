@@ -24,19 +24,13 @@ public:
 
 	inline
 	mux_op(const type & state_type, size_t narguments, size_t nresults)
-		: state_type_(state_type.copy())
-		, narguments_(narguments)
-		, nresults_(nresults)
-	{
-	}
+	: port_(state_type)
+	, nresults_(nresults)
+	, narguments_(narguments)
+	{}
 
 	inline
-	mux_op(const mux_op & other)
-		: state_type_(other.state_type_->copy())
-		, narguments_(other.narguments_)
-		, nresults_(other.nresults_)
-	{
-	}
+	mux_op(const mux_op &) = default;
 
 	inline
 	mux_op(mux_op && other) = default;
@@ -50,11 +44,18 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -62,9 +63,9 @@ public:
 	copy() const override;
 
 private:
-	std::unique_ptr<base::type> state_type_;
-	size_t narguments_;
+	jive::port port_;
 	size_t nresults_;
+	size_t narguments_;
 };
 
 }

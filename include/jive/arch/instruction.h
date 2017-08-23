@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include <jive/arch/immediate-node.h>
+#include <jive/arch/immediate-type.h>
 #include <jive/arch/instruction-class.h>
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/registers.h>
@@ -33,22 +34,21 @@ public:
 		const jive::instruction_class * icls,
 		const std::vector<const jive::state::type*> & istates,
 		const std::vector<const jive::state::type*> & ostates)
-		: icls_(icls)
-		, istates_(istates.size())
-		, ostates_(ostates.size())
+	: icls_(icls)
 	{
-		std::transform(istates.begin(), istates.end(), istates_.begin(),
-			[](const auto & t){ return t->copy(); });
-		std::transform(ostates.begin(), ostates.end(), ostates_.begin(),
-			[](const auto & t){ return t->copy(); });
-	}
+		static const jive::imm::type immtype;
+		for (size_t n = 0; n < icls->ninputs(); n++)
+			arguments_.push_back(icls->input(n));
+		for (size_t n = 0; n < icls->nimmediates(); n++)
+			arguments_.push_back(immtype);
+		for (const auto & type : istates)
+			arguments_.push_back({std::move(type->copy())});
 
-	inline
-	instruction_op(const instruction_op & other)
-		: icls_(other.icls_)
-		, istates_(detail::unique_ptr_vector_copy(other.istates_))
-		, ostates_(detail::unique_ptr_vector_copy(other.ostates_))
-	{}
+		for (size_t n = 0; n < icls->noutputs(); n++)
+			results_.push_back({icls->output(n)});
+		for (const auto & type : ostates)
+			results_.push_back({std::move(type->copy())});
+	}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -62,6 +62,9 @@ public:
 	virtual const jive::resource_class *
 	argument_cls(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
@@ -70,6 +73,10 @@ public:
 
 	virtual const jive::resource_class *
 	result_cls(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -83,9 +90,9 @@ public:
 	copy() const override;
 
 private:
+	std::vector<jive::port> results_;
+	std::vector<jive::port> arguments_;
 	const jive::instruction_class * icls_;
-	std::vector<std::unique_ptr<base::type>> istates_;
-	std::vector<std::unique_ptr<base::type>> ostates_;
 };
 
 }

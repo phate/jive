@@ -32,6 +32,9 @@ public:
 	virtual const type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 };
@@ -73,14 +76,14 @@ public:
 	inline
 	domain_const_op(const value_repr & value)
 		: value_(value)
-		, type_(TypeOfValue()(value_))
+		, result_({TypeOfValue()(value_)})
 	{
 	}
 
 	inline
 	domain_const_op(value_repr && value) noexcept
 		: value_(std::move(value))
-		, type_(TypeOfValue()(value_))
+		, result_({TypeOfValue()(value_)})
 	{
 	}
 
@@ -93,9 +96,8 @@ public:
 	virtual bool
 	operator==(const operation & other) const noexcept override
 	{
-		const domain_const_op * op =
-			dynamic_cast<const domain_const_op *>(&other);
-		return op && op->type_ == type_ && op->value_ == value_;
+		auto op = dynamic_cast<const domain_const_op *>(&other);
+		return op && op->result_ == result_ && op->value_ == value_;
 	}
 
 	virtual std::string
@@ -107,7 +109,13 @@ public:
 	virtual const type &
 	result_type(size_t index) const noexcept override
 	{
-		return type_;
+		return result_.type();
+	}
+
+	virtual const port &
+	result(size_t index) const noexcept override
+	{
+		return result_;
 	}
 
 	inline const value_repr &
@@ -123,7 +131,7 @@ public:
 
 private:
 	value_repr value_;
-	Type type_;
+	jive::port result_;
 };
 
 }

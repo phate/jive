@@ -21,8 +21,11 @@ public:
 
 	inline
 	group_op(std::shared_ptr<const rcd::declaration> & declaration) noexcept
-		: result_type_(declaration)
-	{}
+	: result_(jive::rcd::type(declaration))
+	{
+		for (size_t n = 0; n < declaration->nelements(); n++)
+			arguments_.push_back({declaration->element(n)});
+	}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -33,25 +36,33 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
 	inline const std::shared_ptr<const rcd::declaration> &
 	declaration() const noexcept
 	{
-		return result_type_.declaration();
+		return static_cast<const jive::rcd::type*>(&result_.type())->declaration();
 	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	const jive::rcd::type result_type_;
+	jive::port result_;
+	std::vector<jive::port> arguments_;
 };
 
 }

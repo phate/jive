@@ -18,46 +18,60 @@ simple_op::~simple_op() noexcept {}
 simple_op::simple_op(
 	const std::vector<const jive::base::type*> & argument_types,
 	const std::vector<const jive::base::type*> & result_types)
-	: argument_types_(jive::detail::unique_ptr_vector_copy(argument_types))
-	, result_types_(jive::detail::unique_ptr_vector_copy(result_types))
-{}
-
-simple_op::simple_op(const jive::test::simple_op & other)
-	: argument_types_(jive::detail::unique_ptr_vector_copy(other.argument_types_))
-	, result_types_(jive::detail::unique_ptr_vector_copy(other.result_types_))
-{}
+{
+	for (const auto & type : argument_types)
+		arguments_.push_back({*type->copy()});
+	for (const auto & type : result_types)
+		results_.push_back({*type->copy()});
+}
 
 bool
 simple_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const jive::test::simple_op*>(&other);
-	return op &&
-		jive::detail::ptr_container_equals(argument_types_, op->argument_types_) &&
-		jive::detail::ptr_container_equals(result_types_, op->result_types_);
+	return op
+	    && arguments_ == op->arguments_
+	    && results_ == op->results_;
 }
 
 size_t
 simple_op::narguments() const noexcept
 {
-	return argument_types_.size();
+	return arguments_.size();
 }
 
 const jive::base::type &
 simple_op::argument_type(size_t index) const noexcept
 {
-	return *argument_types_[index];
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index].type();
+}
+
+const jive::port &
+simple_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index];
 }
 
 size_t
 simple_op::nresults() const noexcept
 {
-	return result_types_.size();
+	return results_.size();
 }
 
 const jive::base::type &
 simple_op::result_type(size_t index) const noexcept
 {
-	return *result_types_[index];
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return results_[index].type();
+}
+
+const jive::port &
+simple_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return results_[index];
 }
 
 std::string

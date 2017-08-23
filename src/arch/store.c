@@ -44,45 +44,67 @@ store_op::~store_op() noexcept
 bool
 store_op::operator==(const operation & other) const noexcept
 {
-	const store_op * op =
-		dynamic_cast<const store_op *>(&other);
-	return (
-		op &&
-		op->address_type() == address_type() &&
-		op->data_type() == data_type() &&
-		detail::ptr_container_equals(op->state_types_, state_types_)
-	);
+	auto op = dynamic_cast<const store_op *>(&other);
+	return op
+	    && op->address_ == address_
+	    && op->value_ == value_
+	    && op->states_ == states_;
 }
 
 size_t
 store_op::narguments() const noexcept
 {
-	return 2 + state_types_.size();
+	return 2 + states_.size();
 }
 
 const jive::base::type &
 store_op::argument_type(size_t index) const noexcept
 {
-	if (index == 0) {
+	JIVE_DEBUG_ASSERT(index < narguments());
+
+	if (index == 0)
 		return address_type();
-	} else if (index == 1) {
+
+	if (index == 1)
 		return data_type();
-	} else {
-		return *state_types_[index - 2];
-	}
+
+	return states_[index-2].type();
+}
+
+const jive::port &
+store_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+
+	if (index == 0)
+		return address_;
+
+	if (index == 1)
+		return value_;
+
+	return states_[index-2];
 }
 
 size_t
 store_op::nresults() const noexcept
 {
-	return state_types_.size();
+	return states_.size();
 }
 
 const jive::base::type &
 store_op::result_type(size_t index) const noexcept
 {
-	return *state_types_[index];
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return states_[index].type();
 }
+
+const jive::port &
+store_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return states_[index];
+}
+
 std::string
 store_op::debug_string() const
 {

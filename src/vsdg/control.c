@@ -34,11 +34,11 @@ match_op::match_op(
 	const std::unordered_map<uint64_t, uint64_t> & mapping,
 	uint64_t default_alternative,
 	size_t nalternatives)
-	: base::unary_op()
-	, otype_(nalternatives)
-	, itype_(nbits)
-	, default_alternative_(default_alternative)
-	, mapping_(mapping)
+: base::unary_op()
+, result_(type(nalternatives))
+, argument_(jive::bits::type(nbits))
+, default_alternative_(default_alternative)
+, mapping_(mapping)
 {}
 
 bool
@@ -46,8 +46,8 @@ match_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const match_op*>(&other);
 	return op
-	    && op->itype_ == itype_
-	    && op->otype_ == otype_
+	    && op->result_ == result_
+	    && op->argument_ == argument_
 	    && op->default_alternative_ == default_alternative_
 	    && op->mapping_ == mapping_;
 }
@@ -55,13 +55,29 @@ match_op::operator==(const operation & other) const noexcept
 const jive::base::type &
 match_op::argument_type(size_t index) const noexcept
 {
-	return itype_;
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_.type();
+}
+
+const jive::port &
+match_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_;
 }
 
 const jive::base::type &
 match_op::result_type(size_t index) const noexcept
 {
-	return otype_;
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_.type();
+}
+
+const jive::port &
+match_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
 }
 
 jive_unop_reduction_path_t

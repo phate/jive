@@ -17,6 +17,7 @@ namespace jive {
 namespace flt {
 
 static const type type_instance;
+static const jive::port p(type_instance);
 
 unary_op::~unary_op() noexcept
 {
@@ -25,13 +26,29 @@ unary_op::~unary_op() noexcept
 const jive::base::type &
 unary_op::argument_type(size_t index) const noexcept
 {
+	JIVE_DEBUG_ASSERT(index < narguments());
 	return type_instance;
+}
+
+const jive::port &
+unary_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return p;
 }
 
 const jive::base::type &
 unary_op::result_type(size_t index) const noexcept
 {
+	JIVE_DEBUG_ASSERT(index < nresults());
 	return type_instance;
+}
+
+const jive::port &
+unary_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return p;
 }
 
 jive_unop_reduction_path_t
@@ -71,7 +88,15 @@ binary_op::narguments() const noexcept
 const jive::base::type &
 binary_op::argument_type(size_t index) const noexcept
 {
+	JIVE_DEBUG_ASSERT(index < narguments());
 	return type_instance;
+}
+
+const jive::port &
+binary_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return p;
 }
 
 size_t
@@ -83,7 +108,15 @@ binary_op::nresults() const noexcept
 const jive::base::type &
 binary_op::result_type(size_t index) const noexcept
 {
+	JIVE_DEBUG_ASSERT(index < nresults());
 	return type_instance;
+}
+
+const jive::port &
+binary_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return p;
 }
 
 /* reduction methods */
@@ -134,7 +167,15 @@ compare_op::narguments() const noexcept
 const jive::base::type &
 compare_op::argument_type(size_t index) const noexcept
 {
+	JIVE_DEBUG_ASSERT(index < narguments());
 	return type_instance;
+}
+
+const jive::port &
+compare_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return p;
 }
 
 size_t
@@ -146,8 +187,17 @@ compare_op::nresults() const noexcept
 const jive::base::type &
 compare_op::result_type(size_t index) const noexcept
 {
+	JIVE_DEBUG_ASSERT(index < nresults());
 	static const jive::bits::type bit(1);
 	return bit;
+}
+
+const jive::port &
+compare_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	static const jive::port p(jive::bits::type(1));
+	return p;
 }
 
 jive_binop_reduction_path_t

@@ -45,6 +45,13 @@ flattened_binary_op::argument_type(size_t index) const noexcept
 	return op_->argument_type(0);
 }
 
+const jive::port &
+flattened_binary_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return op_->argument(index);
+}
+
 size_t
 flattened_binary_op::nresults() const noexcept
 {
@@ -56,6 +63,14 @@ flattened_binary_op::result_type(size_t index) const noexcept
 {
 	return op_->result_type(0);
 }
+
+const jive::port &
+flattened_binary_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return op_->result(index);
+}
+
 std::string
 flattened_binary_op::debug_string() const
 {

@@ -381,9 +381,9 @@ address_to_bitstring_operation::~address_to_bitstring_operation() noexcept
 address_to_bitstring_operation::address_to_bitstring_operation(
 	size_t nbits,
 	std::unique_ptr<jive::base::type> original_type)
-	: nbits_(nbits)
-	, result_type_(convert_address_to_bitstring_type(*original_type, nbits))
-	, original_type_(std::move(original_type))
+: nbits_(nbits)
+, result_(*convert_address_to_bitstring_type(*original_type, nbits))
+, argument_(*original_type)
 {}
 
 jive_unop_reduction_path_t
@@ -401,7 +401,7 @@ address_to_bitstring_operation::can_reduce_operand(
 		if (op->nbits() != nbits())
 			return jive_unop_reduction_none;
 
-		if (op->original_type() != original_type())
+		if (op->original_type() != argument_.type())
 			return jive_unop_reduction_none;
 
 		return jive_unop_reduction_inverse;
@@ -427,21 +427,39 @@ address_to_bitstring_operation::reduce_operand(
 const jive::base::type &
 address_to_bitstring_operation::argument_type(size_t index) const noexcept
 {
-	return *original_type_.get();
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_.type();
+}
+
+const jive::port &
+address_to_bitstring_operation::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_;
 }
 
 const jive::base::type &
 address_to_bitstring_operation::result_type(size_t index) const noexcept
 {
-	return *result_type_.get();
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_.type();
+}
+
+const jive::port &
+address_to_bitstring_operation::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
 }
 
 bool
 address_to_bitstring_operation::operator==(const operation & other) const noexcept
 {
-	const address_to_bitstring_operation * o =
-		dynamic_cast<const address_to_bitstring_operation *>(&other);
-	return o && nbits() == o->nbits();
+	auto op = dynamic_cast<const address_to_bitstring_operation *>(&other);
+	return op
+	    && nbits() == op->nbits()
+	    && result_ == op->result_
+	    && argument_ == op->argument_;
 }
 std::string
 address_to_bitstring_operation::debug_string() const
@@ -463,8 +481,8 @@ bitstring_to_address_operation::bitstring_to_address_operation(
 	size_t nbits,
 	std::unique_ptr<jive::base::type> original_type)
 	: nbits_(nbits)
-	, argument_type_(convert_address_to_bitstring_type(*original_type, nbits))
-	, original_type_(std::move(original_type))
+	, result_(*original_type)
+	, argument_(*convert_address_to_bitstring_type(*original_type, nbits))
 {}
 
 jive_unop_reduction_path_t
@@ -482,7 +500,7 @@ bitstring_to_address_operation::can_reduce_operand(
 		if (op->nbits() != nbits())
 			return jive_unop_reduction_none;
 
-		if (op->original_type() != original_type())
+		if (op->original_type() != result_.type())
 			return jive_unop_reduction_none;
 
 		return jive_unop_reduction_inverse;
@@ -509,21 +527,37 @@ bitstring_to_address_operation::reduce_operand(
 const jive::base::type &
 bitstring_to_address_operation::argument_type(size_t index) const noexcept
 {
-	return *argument_type_.get();
+	return argument_.type();
+}
+
+const jive::port &
+bitstring_to_address_operation::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return argument_;
 }
 
 const jive::base::type &
 bitstring_to_address_operation::result_type(size_t index) const noexcept
 {
-	return *original_type_.get();
+	return result_.type();
+}
+
+const jive::port &
+bitstring_to_address_operation::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
 }
 
 bool
 bitstring_to_address_operation::operator==(const operation & other) const noexcept
 {
-	const bitstring_to_address_operation * o =
-		dynamic_cast<const bitstring_to_address_operation *>(&other);
-	return o && nbits() == o->nbits();
+	auto op = dynamic_cast<const bitstring_to_address_operation *>(&other);
+	return op
+	    && nbits() == op->nbits()
+	    && result_ == op->result_
+	    && argument_ == op->argument_;
 }
 std::string
 bitstring_to_address_operation::debug_string() const

@@ -28,23 +28,14 @@ public:
 		const jive::value::type & address_type,
 		const Types & state_types,
 		const jive::value::type & data_type)
-		: address_type_(address_type.copy())
-		, state_types_(state_types.size())
-		, data_type_(data_type.copy())
+		: value_(data_type)
+		, address_(address_type)
 	{
-		std::transform(state_types.begin(), state_types.end(), state_types_.begin(),
-			[](const auto & t){ return t->copy(); });
+		for (const auto & type : state_types)
+			states_.push_back({std::move(type->copy())});
 	}
 
-	inline
-	store_op(const store_op & other)
-		: address_type_(other.address_type_->copy())
-		, state_types_(other.state_types_.size())
-		, data_type_(other.data_type_->copy())
-	{
-		std::transform(other.state_types_.begin(), other.state_types_.end(), state_types_.begin(),
-			[](const auto & t){ return t->copy(); });
-	}
+	store_op(const store_op & other) = default;
 
 	inline
 	store_op(store_op && other) noexcept = default;
@@ -58,33 +49,40 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
 	inline const jive::value::type &
 	address_type() const noexcept
 	{
-		return *static_cast<value::type*>(address_type_.get());
+		return *static_cast<const value::type*>(&address_.type());
 	}
 
 	inline const jive::value::type &
 	data_type() const noexcept
 	{
-		return *static_cast<value::type*>(data_type_.get());
+		return *static_cast<const value::type*>(&value_.type());
 	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	std::unique_ptr<base::type> address_type_;
-	std::vector<std::unique_ptr<base::type>> state_types_;
-	std::unique_ptr<base::type> data_type_;
+	jive::port value_;
+	jive::port address_;
+	std::vector<jive::port> states_;
 };
 
 }

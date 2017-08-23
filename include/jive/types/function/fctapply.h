@@ -30,22 +30,33 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
 	inline const type &
-	function_type() const noexcept { return function_type_; }
+	function_type() const noexcept
+	{
+		return *static_cast<const jive::fct::type*>(&argument(0).type());
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	type function_type_;
+	std::vector<jive::port> results_;
+	std::vector<jive::port> arguments_;
 };
 
 }

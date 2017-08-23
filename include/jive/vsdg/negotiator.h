@@ -74,24 +74,23 @@ public:
 		const jive_negotiator_option & input_option,
 		const jive::base::type & output_type,
 		const jive_negotiator_option & output_option)
-		: negotiator_(negotiator)
-		, input_type_(input_type.copy())
-		, input_option_(input_option.copy())
-		, output_type_(output_type.copy())
-		, output_option_(output_option.copy())
-	{
-	}
+	: unary_op()
+	, result_(output_type)
+	, argument_(input_type)
+	, negotiator_(negotiator)
+	, input_option_(input_option.copy())
+	, output_option_(output_option.copy())
+	{}
 
 	inline
-	negotiator_split_operation(
-		const negotiator_split_operation & other)
-		: negotiator_(other.negotiator())
-		, input_type_(other.input_type().copy())
-		, input_option_(other.input_option().copy())
-		, output_type_(other.output_type().copy())
-		, output_option_(other.output_option().copy())
-	{
-	}
+	negotiator_split_operation(const negotiator_split_operation & other)
+	: unary_op(other)
+	, result_(other.result_)
+	, argument_(other.argument_)
+	, negotiator_(other.negotiator())
+	, input_option_(other.input_option().copy())
+	, output_option_(other.output_option().copy())
+	{}
 
 	virtual bool
 	operator==(const operation& other) const noexcept override;
@@ -99,8 +98,15 @@ public:
 	virtual const base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual const base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -117,13 +123,19 @@ public:
 	negotiator() const noexcept { return negotiator_; }
 
 	inline const jive::base::type &
-	input_type() const noexcept { return *input_type_; }
+	input_type() const noexcept
+	{
+		return argument_.type();
+	}
 
 	inline const jive_negotiator_option &
 	input_option() const noexcept { return *input_option_; }
 
 	inline const jive::base::type &
-	output_type() const noexcept { return *output_type_; }
+	output_type() const noexcept
+	{
+		return result_.type();
+	}
 
 	inline const jive_negotiator_option &
 	output_option() const noexcept { return *output_option_; }
@@ -132,10 +144,10 @@ public:
 	copy() const override;
 
 private:
+	jive::port result_;
+	jive::port argument_;
 	jive_negotiator * negotiator_;
-	std::unique_ptr<jive::base::type> input_type_;
 	std::unique_ptr<jive_negotiator_option> input_option_;
-	std::unique_ptr<jive::base::type> output_type_;
 	std::unique_ptr<jive_negotiator_option> output_option_;
 };
 

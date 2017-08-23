@@ -28,66 +28,65 @@ instruction_op::~instruction_op() noexcept
 bool
 instruction_op::operator==(const operation & other) const noexcept
 {
-	const instruction_op * op = dynamic_cast<const instruction_op *>(&other);
-	return
-		op &&
-		op->icls() == icls() &&
-		detail::ptr_container_equals(op->istates_, istates_) &&
-		detail::ptr_container_equals(op->ostates_, ostates_);
+	auto op = dynamic_cast<const instruction_op *>(&other);
+	return op
+	    && op->icls() == icls()
+	    && op->results_ == results_
+	    && op->arguments_ == arguments_;
 }
 
 size_t
 instruction_op::narguments() const noexcept
 {
-	return icls()->ninputs() + icls()->nimmediates() + istates_.size();
+	return arguments_.size();
 }
 
 const jive::base::type &
 instruction_op::argument_type(size_t index) const noexcept
 {
-	if (index < icls()->ninputs())
-		return icls()->input(index)->type();
-
-	static const jive::imm::type immtype;
-	if (index < (icls()->ninputs() + icls()->nimmediates()))
-		return immtype;
-
-	return *istates_[index - (icls()->ninputs() + icls()->nimmediates())];
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index].type();
 }
 
 const resource_class *
 instruction_op::argument_cls(size_t index) const noexcept
 {
-	if (index < icls()->ninputs()) {
-		return icls()->input(index);
-	} else {
-		return &jive_root_resource_class;
-	}
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index].rescls();
+}
+
+const jive::port &
+instruction_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index];
 }
 
 size_t
 instruction_op::nresults() const noexcept
 {
-	return icls()->noutputs() + ostates_.size();
+	return results_.size();
 }
 
 const resource_class *
 instruction_op::result_cls(size_t index) const noexcept
 {
-	if (index < icls()->noutputs()) {
-		return icls()->output(index);
-	} else {
-		return &jive_root_resource_class;
-	}
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return results_[index].rescls();
 }
 
 const jive::base::type &
 instruction_op::result_type(size_t index) const noexcept
 {
-	if (index < icls()->noutputs())
-		return icls()->output(index)->type();
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return results_[index].type();
+}
 
-	return *ostates_[index - icls()->noutputs()];
+const jive::port &
+instruction_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return results_[index];
 }
 
 std::string

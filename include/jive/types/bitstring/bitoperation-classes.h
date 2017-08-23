@@ -21,7 +21,10 @@ class unary_op : public base::unary_op {
 public:
 	virtual ~unary_op() noexcept;
 
-	inline unary_op(const jive::bits::type & type) noexcept : type_(type) {}
+	inline
+	unary_op(const jive::bits::type & type) noexcept
+	: port_(type)
+	{}
 
 	/* type signature methods */
 	virtual size_t
@@ -30,13 +33,23 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
 
-	inline const jive::bits::type & type() const noexcept { return type_; }
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
+	inline const jive::bits::type &
+	type() const noexcept
+	{
+		return *static_cast<const jive::bits::type*>(&port_.type());
+	}
 
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
@@ -53,7 +66,7 @@ public:
 		const value_repr & arg) const = 0;
 
 private:
-	jive::bits::type type_;
+	jive::port port_;
 };
 
 /* Represents a binary operation (possibly normalized n-ary if associative)
@@ -63,9 +76,10 @@ class binary_op : public base::binary_op {
 public:
 	virtual ~binary_op() noexcept;
 
-	inline binary_op(const jive::bits::type & type, size_t arity = 2) noexcept
-		: type_(type)
-		, arity_(arity)
+	inline
+	binary_op(const jive::bits::type & type, size_t arity = 2) noexcept
+	: arity_(arity)
+	, port_(type)
 	{}
 
 	/* type signature methods */
@@ -75,11 +89,17 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
 
 	/* reduction methods */
 	virtual jive_binop_reduction_path_t
@@ -99,14 +119,21 @@ public:
 		const value_repr & arg2) const = 0;
 
 
-	inline const jive::bits::type & type() const noexcept { return type_; }
+	inline const jive::bits::type &
+	type() const noexcept
+	{
+		return *static_cast<const jive::bits::type*>(&port_.type());
+	}
 
 	inline size_t
-	arity() const noexcept { return arity_; }
+	arity() const noexcept
+	{
+		return arity_;
+	}
 
 private:
-	jive::bits::type type_;
 	size_t arity_;
+	jive::port port_;
 };
 
 enum class compare_result {
@@ -118,11 +145,9 @@ enum class compare_result {
 class compare_op : public base::binary_op {
 public:
 	inline
-	compare_op(
-		const jive::bits::type & type) noexcept
-		: type_(type)
-	{
-	}
+	compare_op(const jive::bits::type & type) noexcept
+	: port_(type)
+	{}
 
 	virtual ~compare_op() noexcept;
 
@@ -133,11 +158,17 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
 
 	/* reduction methods */
 	virtual jive_binop_reduction_path_t
@@ -157,11 +188,14 @@ public:
 		const value_repr & arg2) const = 0;
 
 	inline const jive::bits::type &
-	type() const noexcept { return type_; }
+	type() const noexcept
+	{
+		return *static_cast<const jive::bits::type*>(&port_.type());
+	}
 
 private:
-	jive::bits::type type_;
 	size_t arity_;
+	jive::port port_;
 };
 
 }

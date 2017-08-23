@@ -44,10 +44,26 @@ memberof_op::argument_type(size_t index) const noexcept
 	return jive::addr::type::instance();
 }
 
+const jive::port &
+memberof_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	static const jive::port p(addr::type::instance());
+	return p;
+}
+
 const jive::base::type &
 memberof_op::result_type(size_t index) const noexcept
 {
 	return jive::addr::type::instance();
+}
+
+const jive::port &
+memberof_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	static const jive::port p(addr::type::instance());
+	return p;
 }
 
 jive_unop_reduction_path_t
@@ -128,10 +144,26 @@ containerof_op::argument_type(size_t index) const noexcept
 	return jive::addr::type::instance();
 }
 
+const jive::port &
+containerof_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	static const jive::port p(addr::type::instance());
+	return p;
+}
+
 const jive::base::type &
 containerof_op::result_type(size_t index) const noexcept
 {
 	return jive::addr::type::instance();
+}
+
+const jive::port &
+containerof_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	static const jive::port p(addr::type::instance());
+	return p;
 }
 
 jive_unop_reduction_path_t
@@ -191,34 +223,28 @@ arraysubscript_op::~arraysubscript_op()
 {
 }
 
-arraysubscript_op::arraysubscript_op(
-	const arraysubscript_op & other)
-	: element_type_(other.element_type_->copy())
-	, index_type_(other.index_type())
-{
-}
+arraysubscript_op::arraysubscript_op(const arraysubscript_op & other)
+: index_(other.index_)
+, element_type_(other.element_type_->copy())
+{}
+
+arraysubscript_op::arraysubscript_op(arraysubscript_op && other) noexcept
+: index_(std::move(other.index_))
+, element_type_(std::move(other.element_type_))
+{}
 
 arraysubscript_op::arraysubscript_op(
-	arraysubscript_op && other) noexcept
-	: element_type_(std::move(other.element_type_))
-	, index_type_(other.index_type())
-{
-}
-
-arraysubscript_op::arraysubscript_op(
-	const jive::value::type& type,
-	const jive::bits::type& index_type)
-	: element_type_(type.copy())
-	, index_type_(index_type)
-{
-}
+	const jive::value::type & type,
+	const jive::bits::type & index_type)
+: index_(std::move(index_type.copy()))
+, element_type_(type.copy())
+{}
 
 bool
 arraysubscript_op::operator==(const operation & other) const noexcept
 {
-	const arraysubscript_op * op =
-		dynamic_cast<const arraysubscript_op *>(&other);
-	return op && op->element_type() == element_type() && op->index_type() == index_type();
+	auto op = dynamic_cast<const arraysubscript_op*>(&other);
+	return op && op->element_type() == element_type() && op->index_ == index_;
 }
 
 size_t
@@ -233,8 +259,20 @@ arraysubscript_op::argument_type(size_t index) const noexcept
 	if (index == 0) {
 		return jive::addr::type::instance();
 	} else {
-		return index_type_;
+		return index_.type();
 	}
+}
+
+const jive::port &
+arraysubscript_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	if (index == 0) {
+		static const jive::port p(addr::type::instance());
+		return p;
+	}
+
+	return index_;
 }
 
 size_t
@@ -248,6 +286,15 @@ arraysubscript_op::result_type(size_t index) const noexcept
 {
 	return jive::addr::type::instance();
 }
+
+const jive::port &
+arraysubscript_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	static const jive::port p(addr::type::instance());
+	return p;
+}
+
 std::string
 arraysubscript_op::debug_string() const
 {
@@ -286,34 +333,31 @@ arrayindex_op::~arrayindex_op() noexcept
 {
 }
 
-arrayindex_op::arrayindex_op(
-	const arrayindex_op & other)
-	: element_type_(other.element_type().copy()),
-	index_type_(other.index_type())
-{
-}
+arrayindex_op::arrayindex_op(const arrayindex_op & other)
+: simple_op(other)
+, index_(other.index_)
+, element_type_(other.element_type().copy())
+{}
 
-arrayindex_op::arrayindex_op(
-	arrayindex_op && other) noexcept
-	: element_type_(std::move(other.element_type_)),
-	index_type_(other.index_type())
-{
-}
+arrayindex_op::arrayindex_op(arrayindex_op && other) noexcept
+: simple_op(other)
+, index_(std::move(other.index_))
+, element_type_(std::move(other.element_type_))
+{}
 
 arrayindex_op::arrayindex_op(
 	const jive::value::type & element_type,
 	const jive::bits::type & index_type)
-	: element_type_(element_type.copy())
-	, index_type_(index_type)
-{
-}
+: simple_op()
+, index_(std::move(index_type.copy()))
+, element_type_(element_type.copy())
+{}
 
 bool
 arrayindex_op::operator==(const operation & other) const noexcept
 {
-	const arrayindex_op * op =
-		dynamic_cast<const arrayindex_op *>(&other);
-	return op && op->element_type() == element_type() && op->index_type() == index_type();
+	auto op = dynamic_cast<const arrayindex_op*>(&other);
+	return op && op->element_type() == element_type() && op->index_ == index_;
 }
 
 size_t
@@ -328,6 +372,14 @@ arrayindex_op::argument_type(size_t index) const noexcept
 	return jive::addr::type::instance();
 }
 
+const jive::port &
+arrayindex_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	static const jive::port p(addr::type::instance());
+	return p;
+}
+
 size_t
 arrayindex_op::nresults() const noexcept
 {
@@ -337,8 +389,15 @@ arrayindex_op::nresults() const noexcept
 const jive::base::type &
 arrayindex_op::result_type(size_t index) const noexcept
 {
-	return index_type_;
+	return index_.type();
 }
+
+const jive::port &
+arrayindex_op::result(size_t index) const noexcept
+{
+	return index_;
+}
+
 std::string
 arrayindex_op::debug_string() const
 {
@@ -386,6 +445,15 @@ label_to_address_op::result_type(size_t index) const noexcept
 {
 	return jive::addr::type::instance();
 }
+
+const jive::port &
+label_to_address_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	static const jive::port p(addr::type::instance());
+	return p;
+}
+
 std::string
 label_to_address_op::debug_string() const
 {
@@ -421,16 +489,23 @@ label_to_bitstring_op::~label_to_bitstring_op() noexcept
 bool
 label_to_bitstring_op::operator==(const operation & other) const noexcept
 {
-	const label_to_bitstring_op * op =
-		dynamic_cast<const label_to_bitstring_op *>(&other);
-	return op && op->label() == label() && op->nbits() == nbits();
+	auto op = dynamic_cast<const label_to_bitstring_op*>(&other);
+	return op && op->label() == label() && op->result_ == result_;
 }
 
 const jive::base::type &
 label_to_bitstring_op::result_type(size_t index) const noexcept
 {
-	return result_type_;
+	return result_.type();
 }
+
+const jive::port &
+label_to_bitstring_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
+}
+
 std::string
 label_to_bitstring_op::debug_string() const
 {

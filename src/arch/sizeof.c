@@ -37,6 +37,15 @@ sizeof_op::result_type(size_t index) const noexcept
 	static const jive::bits::type type(32);
 	return type;
 }
+
+const jive::port &
+sizeof_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	static const jive::port port(jive::bits::type(32));
+	return port;
+}
+
 std::string
 sizeof_op::debug_string() const
 {

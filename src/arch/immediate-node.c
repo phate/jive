@@ -36,6 +36,16 @@ immediate_op::result_type(size_t index) const noexcept
 	static const jive::imm::type type;
 	return type;
 }
+
+const jive::port &
+immediate_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	static const jive::imm::type type;
+	static const jive::port p(type);
+	return p;
+}
+
 std::string
 immediate_op::debug_string() const
 {
