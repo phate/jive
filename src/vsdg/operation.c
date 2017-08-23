@@ -40,12 +40,6 @@ port::port(const resource_class * rescls)
 operation::~operation() noexcept {}
 
 const jive::resource_class *
-operation::argument_cls(size_t index) const noexcept
-{
-	return &jive_root_resource_class;
-}
-
-const jive::resource_class *
 operation::result_cls(size_t index) const noexcept
 {
 	return &jive_root_resource_class;

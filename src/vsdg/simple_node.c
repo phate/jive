@@ -149,9 +149,9 @@ simple_node::simple_node(
 			operation().narguments(), ", received ", operands.size(), " arguments."));
 
 	for (size_t n = 0; n < operation().narguments(); n++) {
-		if (operation().argument_cls(n) != &jive_root_resource_class) {
+		if (operation().argument(n).rescls() != &jive_root_resource_class) {
 			inputs_.emplace_back(std::make_unique<jive::simple_input>(
-				this, n, operands[n], operation().argument_cls(n)));
+				this, n, operands[n], operation().argument(n).rescls()));
 		} else {
 			inputs_.emplace_back(std::make_unique<jive::simple_input>(
 				this, n, operands[n], operation().argument_type(n)));

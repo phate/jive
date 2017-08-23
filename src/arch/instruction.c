@@ -48,13 +48,6 @@ instruction_op::argument_type(size_t index) const noexcept
 	return arguments_[index].type();
 }
 
-const resource_class *
-instruction_op::argument_cls(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return arguments_[index].rescls();
-}
-
 const jive::port &
 instruction_op::argument(size_t index) const noexcept
 {

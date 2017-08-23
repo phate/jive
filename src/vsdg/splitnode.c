@@ -63,13 +63,6 @@ split_operation::result(size_t index) const noexcept
 }
 
 const jive::resource_class *
-split_operation::argument_cls(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return argument_.rescls();
-}
-
-const jive::resource_class *
 split_operation::result_cls(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());

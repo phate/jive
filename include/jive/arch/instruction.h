@@ -59,9 +59,6 @@ public:
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
-	virtual const jive::resource_class *
-	argument_cls(size_t index) const noexcept override;
-
 	virtual const jive::port &
 	argument(size_t index) const noexcept override;
 
