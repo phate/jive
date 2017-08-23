@@ -292,7 +292,7 @@ jive_i386_subroutine_add_fp_dependency_(
 		if (input->origin() == frameptr)
 			return NULL;
 	}
-	return dynamic_cast<jive::simple_input*>(node->add_input(&frameptr->type(), frameptr));
+	return dynamic_cast<jive::simple_input*>(node->add_input(frameptr->type(), frameptr));
 }
 
 static jive::simple_input *
@@ -307,5 +307,5 @@ jive_i386_subroutine_add_sp_dependency_(
 		if (input->origin() == stackptr)
 			return NULL;
 	}
-	return dynamic_cast<jive::simple_input*>(node->add_input(&stackptr->type(), stackptr));
+	return dynamic_cast<jive::simple_input*>(node->add_input(stackptr->type(), stackptr));
 }

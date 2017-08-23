@@ -84,14 +84,7 @@ public:
 		size_t index,
 		jive::output * origin,
 		jive::structural_output * output,
-		const jive::base::type & type);
-
-	result(
-		jive::region * region,
-		size_t index,
-		jive::output * origin,
-		jive::structural_output * output,
-		jive::gate * gate);
+		const jive::port & port);
 
 	result(const result &) = delete;
 
@@ -166,10 +159,7 @@ public:
 	}
 
 	jive::result *
-	add_result(jive::output * origin, structural_output * output, const base::type & type);
-
-	jive::result *
-	add_result(jive::output * origin, structural_output * output, jive::gate * gate);
+	add_result(jive::output * origin, structural_output * output, const jive::port & port);
 
 	void
 	remove_result(size_t index);

@@ -82,7 +82,7 @@ public:
 		if (!node_)
 			return nullptr;
 
-		auto input = node_->add_input(&origin->type(), origin);
+		auto input = node_->add_input(origin->type(), origin);
 		auto argument = node_->subregion(0)->add_argument(input, origin->type());
 		loopvars_.push_back(std::shared_ptr<loopvar>(new loopvar(loopvar(argument))));
 		return loopvars_[loopvars_.size()-1];

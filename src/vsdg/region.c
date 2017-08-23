@@ -105,23 +105,8 @@ result::result(
 	size_t index,
 	jive::output * origin,
 	jive::structural_output * output,
-	const jive::base::type & type)
-	: input(index, origin, region, type)
-	, output_(output)
-{
-	output_result_list.prev = output_result_list.next = nullptr;
-
-	if (output)
-		JIVE_LIST_PUSH_BACK(output->results, this, output_result_list);
-}
-
-result::result(
-	jive::region * region,
-	size_t index,
-	jive::output * origin,
-	jive::structural_output * output,
-	jive::gate * gate)
-	: input(index, origin, region, gate)
+	const jive::port & port)
+	: input(index, origin, region, port)
 	, output_(output)
 {
 	output_result_list.prev = output_result_list.next = nullptr;
@@ -129,10 +114,12 @@ result::result(
 	if (output)
 		JIVE_LIST_PUSH_BACK(output->results, this, output_result_list);
 
-	for (size_t n = 0; n < index; n++) {
-		jive::result * other = region->result(n);
-		if (!other->gate()) continue;
-		jive_gate_interference_add(region->graph(), gate, other->gate());
+	if (port.gate()) {
+		for (size_t n = 0; n < index; n++) {
+			auto other = region->result(n);
+			if (!other->gate()) continue;
+			jive_gate_interference_add(region->graph(), port.gate(), other->gate());
+		}
 	}
 }
 
@@ -215,23 +202,9 @@ region::remove_argument(size_t index)
 }
 
 jive::result *
-region::add_result(jive::output * origin, structural_output * output, const base::type & type)
+region::add_result(jive::output * origin, structural_output * output, const jive::port & port)
 {
-	jive::result * result = new jive::result(this, nresults(), origin, output, type);
-	results_.push_back(result);
-
-	if (origin->region() != this)
-		throw jive::compiler_error("Invalid region result");
-
-	graph()->on_input_create(result);
-
-	return result;
-}
-
-jive::result *
-region::add_result(jive::output * origin, structural_output * output, jive::gate * gate)
-{
-	jive::result * result = new jive::result(this, nresults(), origin, output, gate);
+	jive::result * result = new jive::result(this, nresults(), origin, output, port);
 	results_.push_back(result);
 
 	if (origin->region() != this)

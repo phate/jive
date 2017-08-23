@@ -36,42 +36,20 @@ structural_input::structural_input(
 	jive::structural_node * node,
 	size_t index,
 	jive::output * origin,
-	const jive::base::type & type)
-	: input(index, origin, node->region(), type)
-	, node_(node)
-{
-	arguments.first = arguments.last = nullptr;
-	node->graph()->on_input_create(this);
-}
-
-structural_input::structural_input(
-	jive::structural_node * node,
-	size_t index,
-	jive::output * origin,
-	jive::gate * gate)
-	: input(index, origin, node->region(), gate)
+	const jive::port & port)
+	: input(index, origin, node->region(), port)
 	, node_(node)
 {
 	arguments.first = arguments.last = nullptr;
 
-	for (size_t n = 0; n < index; n++) {
-		jive::structural_input * other = node->input(n);
-		if (!other->gate()) continue;
-		jive_gate_interference_add(node->graph(), gate, other->gate());
+	if (port.gate()) {
+		for (size_t n = 0; n < index; n++) {
+			auto other = node->input(n);
+			if (!other->gate()) continue;
+			jive_gate_interference_add(node->graph(), port.gate(), other->gate());
+		}
 	}
 
-	node->graph()->on_input_create(this);
-}
-
-structural_input::structural_input(
-	jive::structural_node * node,
-	size_t index,
-	jive::output * origin,
-	const resource_class * rescls)
-	: input(index, origin, node->region(), rescls)
-	, node_(node)
-{
-	arguments.first = arguments.last = nullptr;
 	node->graph()->on_input_create(this);
 }
 
@@ -229,7 +207,7 @@ structural_node::output(size_t index) const noexcept
 }
 
 jive::structural_input *
-structural_node::add_input(const jive::base::type * type, jive::output * origin)
+structural_node::add_input(const jive::port & port, jive::output * origin)
 {
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
@@ -238,43 +216,7 @@ structural_node::add_input(const jive::base::type * type, jive::output * origin)
 		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 
 	inputs_.emplace_back(std::unique_ptr<structural_input>(
-		new structural_input(this, inputs_.size(), origin, *type)));
-	auto input = inputs_[inputs_.size()-1].get();
-
-	recompute_depth();
-
-	return input;
-}
-
-jive::structural_input *
-structural_node::add_input(jive::gate * gate, jive::output * origin)
-{
-	if (ninputs() == 0)
-		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
-
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-
-	inputs_.emplace_back(std::unique_ptr<structural_input>(
-		new structural_input(this, inputs_.size(), origin, gate)));
-	auto input = inputs_[inputs_.size()-1].get();
-
-	recompute_depth();
-
-	return input;
-}
-
-jive::structural_input *
-structural_node::add_input(const resource_class * rescls, jive::output * origin)
-{
-	if (ninputs() == 0)
-		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
-
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-
-	inputs_.emplace_back(std::unique_ptr<structural_input>(
-		new structural_input(this, inputs_.size(), origin, rescls)));
+		new structural_input(this, inputs_.size(), origin, port)));
 	auto input = inputs_[inputs_.size()-1].get();
 
 	recompute_depth();
@@ -369,7 +311,7 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 		} else if (input(n)->rescls() != &jive_root_resource_class) {
 			new_input = new_node->add_input(input(n)->rescls(), origin);
 		} else {
-			new_input = new_node->add_input(&input(n)->type(), origin);
+			new_input = new_node->add_input(input(n)->type(), origin);
 		}
 		smap.insert(input(n), new_input);
 	}

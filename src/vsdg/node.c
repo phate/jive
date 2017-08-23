@@ -35,69 +35,22 @@ input::input(
 	size_t index,
 	jive::output * origin,
 	jive::region * region,
-	const jive::base::type & type)
-	: index_(index)
-	, gate_(nullptr)
-	, origin_(origin)
-	, region_(region)
-	, type_(type.copy())
-	, rescls_(&jive_root_resource_class)
+	const jive::port & port)
+: index_(index)
+, port_(port)
+, origin_(origin)
+, region_(region)
 {
 	gate_input_list.prev = gate_input_list.next = nullptr;
 
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
 
-	if (type != origin->type())
-		throw jive::type_error(type.debug_string(), origin->type().debug_string());
+	if (port.type() != origin->type())
+		throw jive::type_error(port.type().debug_string(), origin->type().debug_string());
 
-	origin->add_user(this);
-}
-
-input::input(
-	size_t index,
-	jive::output * origin,
-	jive::region * region,
-	jive::gate * gate)
-	: index_(index)
-	, gate_(gate)
-	, origin_(origin)
-	, region_(region)
-	, type_(gate->type().copy())
-	, rescls_(gate->rescls())
-{
-	gate_input_list.prev = gate_input_list.next = nullptr;
-
-	if (region != origin->region())
-		throw jive::compiler_error("Invalid operand region.");
-
-	if (gate->type() != origin->type())
-		throw jive::type_error(gate->type().debug_string(), origin->type().debug_string());
-
-	JIVE_LIST_PUSH_BACK(gate->inputs, this, gate_input_list);
-
-	origin->add_user(this);
-}
-
-input::input(
-	size_t index,
-	jive::output * origin,
-	jive::region * region,
-	const resource_class * rescls)
-	: index_(index)
-	, gate_(nullptr)
-	, origin_(origin)
-	, region_(region)
-	, type_(rescls->type().copy())
-	, rescls_(rescls)
-{
-	gate_input_list.prev = gate_input_list.next = nullptr;
-
-	if (region != origin->region())
-		throw jive::compiler_error("Invalid operand region.");
-
-	if (rescls->type() != origin->type())
-		throw jive::type_error(rescls->type().debug_string(), origin->type().debug_string());
+	if (port.gate())
+		JIVE_LIST_PUSH_BACK(port.gate()->inputs, this, gate_input_list);
 
 	origin->add_user(this);
 }

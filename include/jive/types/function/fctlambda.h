@@ -106,7 +106,7 @@ public:
 		if (!node_)
 			return nullptr;
 
-		auto input = node_->add_input(&value->type(), value);
+		auto input = node_->add_input(value->type(), value);
 		return node_->subregion(0)->add_argument(input, value->type());
 	}
 

@@ -186,7 +186,7 @@ public:
 		auto region = predicate->region();
 		size_t nalternatives = ctl->nalternatives();
 		node_ = region->add_structural_node(jive::gamma_op(nalternatives), nalternatives);
-		node_->add_input(ctl, predicate);
+		node_->add_input(*ctl, predicate);
 	}
 
 	inline std::shared_ptr<jive::entryvar>
@@ -195,7 +195,7 @@ public:
 		if (!node_)
 			return nullptr;
 
-		auto input = node_->add_input(&origin->type(), origin);
+		auto input = node_->add_input(origin->type(), origin);
 		for (size_t n = 0; n < nsubregions(); n++)
 			node_->subregion(n)->add_argument(input, origin->type());
 

@@ -166,7 +166,7 @@ jive_dataobj_internal(
 
 	auto node = parent->add_structural_node(jive::dataobj_op(std::move(types)), 1);
 	for (const auto & item : data_items)
-		node->add_input(&item->type(), item);
+		node->add_input(item->type(), item);
 
 	return node->add_output(&jive::addr::type::instance());
 }

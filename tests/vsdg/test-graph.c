@@ -38,7 +38,7 @@ test_recursive_prune()
 	auto n2 = jive::test::simple_node_create(graph.root(), {&t}, {imp}, {&t});
 
 	auto n3 = jive::test::structural_node_create(graph.root(), 1);
-	n3->add_input(&t, imp);
+	n3->add_input(t, imp);
 	auto a1 = n3->subregion(0)->add_argument(nullptr, t);
 	auto n4 = jive::test::simple_node_create(n3->subregion(0), {&t}, {a1}, {&t});
 	auto n5 = jive::test::simple_node_create(n3->subregion(0), {&t}, {a1}, {&t});

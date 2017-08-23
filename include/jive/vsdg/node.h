@@ -43,19 +43,7 @@ public:
 		size_t index,
 		jive::output * origin,
 		jive::region * region,
-		const jive::base::type & type);
-
-	input(
-		size_t index,
-		jive::output * origin,
-		jive::region * region,
-		jive::gate * gate);
-
-	input(
-		size_t index,
-		jive::output * origin,
-		jive::region * region,
-		const struct jive::resource_class * rescls);
+		const jive::port & port);
 
 	input(const input &) = delete;
 
@@ -82,13 +70,13 @@ public:
 	inline jive::gate *
 	gate() const noexcept
 	{
-		return gate_;
+		return port_.gate();
 	}
 
-	inline const struct jive::resource_class *
+	inline const jive::resource_class *
 	rescls() const noexcept
 	{
-		return rescls_;
+		return port_.rescls();
 	}
 
 	void
@@ -97,13 +85,19 @@ public:
 	inline const jive::base::type &
 	type() const noexcept
 	{
-		return *type_;
+		return port_.type();
 	}
 
 	inline jive::region *
 	region() const noexcept
 	{
 		return region_;
+	}
+
+	inline const jive::port &
+	port() const noexcept
+	{
+		return port_;
 	}
 
 	virtual jive::node *
@@ -126,11 +120,9 @@ protected:
 
 private:
 	size_t index_;
-	jive::gate * gate_;
+	jive::port port_;
 	jive::output * origin_;
 	jive::region * region_;
-	std::unique_ptr<jive::base::type> type_;
-	const struct jive::resource_class * rescls_;
 };
 
 /* outputs */
@@ -383,13 +375,7 @@ public:
 	}
 
 	virtual jive::input *
-	add_input(const jive::base::type * type, jive::output * origin) = 0;
-
-	virtual jive::input *
-	add_input(jive::gate * gate, jive::output * origin) = 0;
-
-	virtual jive::input *
-	add_input(const struct jive::resource_class * rescls, jive::output * origin) = 0;
+	add_input(const jive::port & port, jive::output * origin) = 0;
 
 	virtual void
 	remove_input(size_t index) = 0;
