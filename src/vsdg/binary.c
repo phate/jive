@@ -39,12 +39,6 @@ flattened_binary_op::narguments() const noexcept
 	return narguments_;
 }
 
-const jive::base::type &
-flattened_binary_op::argument_type(size_t index) const noexcept
-{
-	return op_->argument_type(0);
-}
-
 const jive::port &
 flattened_binary_op::argument(size_t index) const noexcept
 {

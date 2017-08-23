@@ -154,7 +154,7 @@ simple_node::simple_node(
 				this, n, operands[n], operation().argument(n).rescls()));
 		} else {
 			inputs_.emplace_back(std::make_unique<jive::simple_input>(
-				this, n, operands[n], operation().argument_type(n)));
+				this, n, operands[n], operation().argument(n).type()));
 		}
 	}
 

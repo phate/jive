@@ -33,14 +33,6 @@ split_operation::debug_string() const
 	return "SPLIT";
 }
 
-/* type signature methods */
-const jive::base::type &
-split_operation::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_.type();
-}
-
 const jive::port &
 split_operation::argument(size_t index) const noexcept
 {

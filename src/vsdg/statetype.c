@@ -33,13 +33,6 @@ mux_op::narguments() const noexcept
 	return narguments_;
 }
 
-const jive::base::type &
-mux_op::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return port_.type();
-}
-
 const jive::port &
 mux_op::argument(size_t index) const noexcept
 {

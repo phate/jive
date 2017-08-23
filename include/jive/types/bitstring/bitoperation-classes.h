@@ -26,12 +26,8 @@ public:
 	: port_(type)
 	{}
 
-	/* type signature methods */
 	virtual size_t
 	narguments() const noexcept override;
-
-	virtual const jive::base::type &
-	argument_type(size_t index) const noexcept override;
 
 	virtual const jive::port &
 	argument(size_t index) const noexcept override;
@@ -82,12 +78,8 @@ public:
 	, port_(type)
 	{}
 
-	/* type signature methods */
 	virtual size_t
 	narguments() const noexcept override;
-
-	virtual const jive::base::type &
-	argument_type(size_t index) const noexcept override;
 
 	virtual const jive::port &
 	argument(size_t index) const noexcept override;
@@ -151,12 +143,8 @@ public:
 
 	virtual ~compare_op() noexcept;
 
-	/* type signature methods */
 	virtual size_t
 	narguments() const noexcept override;
-
-	virtual const jive::base::type &
-	argument_type(size_t index) const noexcept override;
 
 	virtual const jive::port &
 	argument(size_t index) const noexcept override;

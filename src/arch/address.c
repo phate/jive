@@ -38,12 +38,6 @@ memberof_op::debug_string() const
 	return detail::strfmt("MEMBEROF", record_decl().get(), index());
 }
 
-const jive::base::type &
-memberof_op::argument_type(size_t index) const noexcept
-{
-	return jive::addr::type::instance();
-}
-
 const jive::port &
 memberof_op::argument(size_t index) const noexcept
 {
@@ -136,12 +130,6 @@ std::string
 containerof_op::debug_string() const
 {
 	return detail::strfmt("CONTAINEROF", record_decl(), index());
-}
-
-const jive::base::type &
-containerof_op::argument_type(size_t index) const noexcept
-{
-	return jive::addr::type::instance();
 }
 
 const jive::port &
@@ -253,16 +241,6 @@ arraysubscript_op::narguments() const noexcept
 	return 2;
 }
 
-const jive::base::type &
-arraysubscript_op::argument_type(size_t index) const noexcept
-{
-	if (index == 0) {
-		return jive::addr::type::instance();
-	} else {
-		return index_.type();
-	}
-}
-
 const jive::port &
 arraysubscript_op::argument(size_t index) const noexcept
 {
@@ -364,12 +342,6 @@ size_t
 arrayindex_op::narguments() const noexcept
 {
 	return 2;
-}
-
-const jive::base::type &
-arrayindex_op::argument_type(size_t index) const noexcept
-{
-	return jive::addr::type::instance();
 }
 
 const jive::port &

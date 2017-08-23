@@ -42,9 +42,6 @@ public:
 	virtual size_t
 	narguments() const noexcept override;
 
-	virtual const base::type &
-	argument_type(size_t index) const noexcept override;
-
 	virtual size_t
 	nresults() const noexcept override;
 

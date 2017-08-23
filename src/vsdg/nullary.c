@@ -42,12 +42,6 @@ nullary_op::nresults() const noexcept
 	return 1;
 }
 
-const type &
-nullary_op::argument_type(size_t index) const noexcept
-{
-	JIVE_ASSERT(0 && "No arguments to nullary operation.");
-}
-
 const port &
 nullary_op::argument(size_t index) const noexcept
 {

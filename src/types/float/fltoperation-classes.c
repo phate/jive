@@ -23,13 +23,6 @@ unary_op::~unary_op() noexcept
 {
 }
 
-const jive::base::type &
-unary_op::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return type_instance;
-}
-
 const jive::port &
 unary_op::argument(size_t index) const noexcept
 {
@@ -83,13 +76,6 @@ size_t
 binary_op::narguments() const noexcept
 {
 	return 2;
-}
-
-const jive::base::type &
-binary_op::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return type_instance;
 }
 
 const jive::port &
@@ -162,13 +148,6 @@ size_t
 compare_op::narguments() const noexcept
 {
 	return 2;
-}
-
-const jive::base::type &
-compare_op::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return type_instance;
 }
 
 const jive::port &

@@ -35,13 +35,6 @@ choose_operation::debug_string() const
 	return detail::strfmt("CHOOSE(", element(), ")");
 }
 
-const jive::base::type &
-choose_operation::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_.type();
-}
-
 const jive::port &
 choose_operation::argument(size_t index) const noexcept
 {

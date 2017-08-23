@@ -52,13 +52,6 @@ match_op::operator==(const operation & other) const noexcept
 	    && op->mapping_ == mapping_;
 }
 
-const jive::base::type &
-match_op::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_.type();
-}
-
 const jive::port &
 match_op::argument(size_t index) const noexcept
 {

@@ -32,13 +32,6 @@ dataobj_op::narguments() const noexcept
 	return types_.size();
 }
 
-const base::type &
-dataobj_op::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return *types_[index];
-}
-
 size_t
 dataobj_op::nresults() const noexcept
 {

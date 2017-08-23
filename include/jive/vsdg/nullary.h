@@ -29,9 +29,6 @@ public:
 	virtual size_t
 	narguments() const noexcept override;
 
-	virtual const type &
-	argument_type(size_t index) const noexcept override;
-
 	virtual const port &
 	argument(size_t index) const noexcept override;
 

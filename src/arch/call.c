@@ -45,13 +45,6 @@ call_operation::narguments() const noexcept
 	return arguments_.size();
 }
 
-const jive::base::type &
-call_operation::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return arguments_[index].type();
-}
-
 const jive::port &
 call_operation::argument(size_t index) const noexcept
 {

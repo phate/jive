@@ -46,10 +46,6 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	/* type signature methods */
-	virtual const jive::base::type &
-	argument_type(size_t index) const noexcept override;
-
 	virtual const jive::port &
 	argument(size_t index) const noexcept override;
 
@@ -116,10 +112,6 @@ public:
 
 	virtual std::string
 	debug_string() const override;
-
-	/* type signature methods */
-	virtual const jive::base::type &
-	argument_type(size_t index) const noexcept override;
 
 	virtual const jive::port &
 	argument(size_t index) const noexcept override;

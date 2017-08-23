@@ -50,13 +50,6 @@ negotiator_split_operation::operator==(const operation& gen_other) const noexcep
 		negotiator() == other->negotiator();
 }
 
-const base::type &
-negotiator_split_operation::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_.type();
-}
-
 const jive::port &
 negotiator_split_operation::argument(size_t index) const noexcept
 {

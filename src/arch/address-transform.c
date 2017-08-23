@@ -424,13 +424,6 @@ address_to_bitstring_operation::reduce_operand(
 	return nullptr;
 }
 
-const jive::base::type &
-address_to_bitstring_operation::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_.type();
-}
-
 const jive::port &
 address_to_bitstring_operation::argument(size_t index) const noexcept
 {
@@ -522,12 +515,6 @@ bitstring_to_address_operation::reduce_operand(
 		return arg;
 
 	return nullptr;
-}
-
-const jive::base::type &
-bitstring_to_address_operation::argument_type(size_t index) const noexcept
-{
-	return argument_.type();
 }
 
 const jive::port &

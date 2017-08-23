@@ -39,13 +39,6 @@ slice_op::debug_string() const
 	return detail::strfmt("SLICE[", low(), ":", high(), ")");
 }
 
-const jive::base::type &
-slice_op::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_.type();
-}
-
 const jive::port &
 slice_op::argument(size_t index) const noexcept
 {

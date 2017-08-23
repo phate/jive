@@ -57,20 +57,6 @@ store_op::narguments() const noexcept
 	return 2 + states_.size();
 }
 
-const jive::base::type &
-store_op::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-
-	if (index == 0)
-		return address_type();
-
-	if (index == 1)
-		return data_type();
-
-	return states_[index-2].type();
-}
-
 const jive::port &
 store_op::argument(size_t index) const noexcept
 {

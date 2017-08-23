@@ -128,8 +128,6 @@ public:
 
 	virtual size_t
 	narguments() const noexcept = 0;
-	virtual const jive::base::type &
-	argument_type(size_t index) const noexcept = 0;
 
 	virtual const jive::port &
 	argument(size_t index) const noexcept = 0;

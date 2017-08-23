@@ -95,9 +95,6 @@ public:
 	virtual bool
 	operator==(const operation& other) const noexcept override;
 
-	virtual const base::type &
-	argument_type(size_t index) const noexcept override;
-
 	virtual const jive::port &
 	argument(size_t index) const noexcept override;
 

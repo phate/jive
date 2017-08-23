@@ -33,13 +33,6 @@ unify_op::debug_string() const
 	return detail::strfmt("UNIFY(", option(), ")");
 }
 
-const jive::base::type &
-unify_op::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_.type();
-}
-
 const jive::port &
 unify_op::argument(size_t index) const noexcept
 {

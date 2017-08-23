@@ -30,13 +30,6 @@ group_op::narguments() const noexcept
 	return arguments_.size();
 }
 
-const jive::base::type &
-group_op::argument_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return arguments_[index].type();
-}
-
 const jive::port &
 group_op::argument(size_t index) const noexcept
 {
