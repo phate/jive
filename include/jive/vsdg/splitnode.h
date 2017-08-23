@@ -47,9 +47,6 @@ public:
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
 
-	virtual const jive::resource_class *
-	result_cls(size_t index) const noexcept override;
-
 	virtual const jive::port &
 	result(size_t index) const noexcept override;
 

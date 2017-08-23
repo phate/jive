@@ -61,13 +61,6 @@ instruction_op::nresults() const noexcept
 	return results_.size();
 }
 
-const resource_class *
-instruction_op::result_cls(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return results_[index].rescls();
-}
-
 const jive::base::type &
 instruction_op::result_type(size_t index) const noexcept
 {
