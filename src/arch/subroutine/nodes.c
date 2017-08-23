@@ -23,13 +23,6 @@ subroutine_op::nresults() const noexcept
 	return 1;
 }
 
-const base::type &
-subroutine_op::result_type(size_t index) const noexcept
-{
-	/* FIXME: don't use memory type here */
-	static const jive::mem::type objstate_type;
-	return objstate_type;
-}
 std::string
 subroutine_op::debug_string() const
 {

@@ -38,11 +38,6 @@ dataobj_op::nresults() const noexcept
 	return 1;
 }
 
-const base::type &
-dataobj_op::result_type(size_t index) const noexcept
-{
-	return jive::addr::type::instance();
-}
 std::string
 dataobj_op::debug_string() const
 {

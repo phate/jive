@@ -30,13 +30,6 @@ immediate_op::operator==(const operation & other) const noexcept
 	return op && (op->value() == value());
 }
 
-const jive::base::type &
-immediate_op::result_type(size_t index) const noexcept
-{
-	static const jive::imm::type type;
-	return type;
-}
-
 const jive::port &
 immediate_op::result(size_t index) const noexcept
 {

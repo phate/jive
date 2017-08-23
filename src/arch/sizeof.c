@@ -28,20 +28,13 @@ sizeof_op::operator==(const operation & other) const noexcept
 	return op && op->type() == type();
 }
 
-const jive::base::type &
-sizeof_op::result_type(size_t index) const noexcept
-{
-	/* FIXME: either need a "universal" integer type,
-	or some way to specify the representation type for the
-	sizeof operator */
-	static const jive::bits::type type(32);
-	return type;
-}
-
 const jive::port &
 sizeof_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
+	/* FIXME: either need a "universal" integer type,
+	or some way to specify the representation type for the
+	sizeof operator */
 	static const jive::port port(jive::bits::type(32));
 	return port;
 }

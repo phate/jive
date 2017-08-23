@@ -40,13 +40,6 @@ split_operation::argument(size_t index) const noexcept
 	return argument_;
 }
 
-const jive::base::type &
-split_operation::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_.type();
-}
-
 const jive::port &
 split_operation::result(size_t index) const noexcept
 {

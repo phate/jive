@@ -77,13 +77,6 @@ store_op::nresults() const noexcept
 	return states_.size();
 }
 
-const jive::base::type &
-store_op::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return states_[index].type();
-}
-
 const jive::port &
 store_op::result(size_t index) const noexcept
 {

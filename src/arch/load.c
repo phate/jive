@@ -68,13 +68,6 @@ load_op::nresults() const noexcept
 	return 1;
 }
 
-const jive::base::type &
-load_op::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return value_.type();
-}
-
 const jive::port &
 load_op::result(size_t index) const noexcept
 {

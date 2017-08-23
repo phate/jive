@@ -98,9 +98,6 @@ public:
 	virtual const jive::port &
 	argument(size_t index) const noexcept override;
 
-	virtual const base::type &
-	result_type(size_t index) const noexcept override;
-
 	virtual const jive::port &
 	result(size_t index) const noexcept override;
 

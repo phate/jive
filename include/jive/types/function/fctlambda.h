@@ -44,8 +44,6 @@ public:
 	virtual size_t
 	nresults() const noexcept override;
 
-	virtual const jive::base::type &
-	result_type(size_t index) const noexcept override;
 	virtual std::string
 	debug_string() const override;
 
@@ -118,14 +116,13 @@ public:
 		if (!node_)
 			return nullptr;
 
-		const auto & op = node_->operation();
-		const auto & ftype = static_cast<const jive::fct::type*>(&op.result_type(0));
-		if (results.size() != ftype->nresults())
+		const auto & ftype = static_cast<const fct::lambda_op*>(&node_->operation())->function_type();
+		if (results.size() != ftype.nresults())
 			throw jive::compiler_error("Incorrect number of results.");
 
 		for (size_t n = 0; n < results.size(); n++)
-			node_->subregion(0)->add_result(results[n], nullptr, ftype->result_type(n));
-		node_->add_output(ftype);
+			node_->subregion(0)->add_result(results[n], nullptr, ftype.result_type(n));
+		node_->add_output(&ftype);
 
 		auto node = node_;
 		node_ = nullptr;

@@ -57,13 +57,6 @@ negotiator_split_operation::argument(size_t index) const noexcept
 	return argument_;
 }
 
-const base::type &
-negotiator_split_operation::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_.type();
-}
-
 const jive::port &
 negotiator_split_operation::result(size_t index) const noexcept
 {

@@ -45,13 +45,6 @@ regvalue_op::nresults() const noexcept
 	return 1;
 }
 
-const jive::base::type &
-regvalue_op::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return port_.type();
-}
-
 const jive::port &
 regvalue_op::result(size_t index) const noexcept
 {

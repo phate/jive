@@ -42,13 +42,6 @@ choose_operation::argument(size_t index) const noexcept
 	return argument_;
 }
 
-const jive::base::type &
-choose_operation::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_.type();
-}
-
 const jive::port &
 choose_operation::result(size_t index) const noexcept
 {

@@ -103,12 +103,6 @@ public:
 		return FormatValue()(value_);
 	}
 
-	virtual const type &
-	result_type(size_t index) const noexcept override
-	{
-		return result_.type();
-	}
-
 	virtual const port &
 	result(size_t index) const noexcept override
 	{

@@ -37,12 +37,6 @@ unary_op::nresults() const noexcept
 	return 1;
 }
 
-const jive::base::type &
-unary_op::result_type(size_t index) const noexcept
-{
-	return port_.type();
-}
-
 const jive::port &
 unary_op::result(size_t index) const noexcept
 {
@@ -94,13 +88,6 @@ size_t
 binary_op::nresults() const noexcept
 {
 	return 1;
-}
-
-const jive::base::type &
-binary_op::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return port_.type();
 }
 
 const jive::port &
@@ -160,14 +147,6 @@ size_t
 compare_op::nresults() const noexcept
 {
 	return 1;
-}
-
-const jive::base::type &
-compare_op::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	static const jive::bits::type bit(1);
-	return bit;
 }
 
 const jive::port &

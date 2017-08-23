@@ -47,13 +47,9 @@ public:
 	virtual size_t
 	nresults() const noexcept override;
 
-	virtual const jive::base::type &
-	result_type(size_t index) const noexcept override;
-
 	virtual const jive::port &
 	result(size_t index) const noexcept override;
 
-	/* reduction methods */
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
 		const jive::output * arg1,

@@ -160,7 +160,7 @@ simple_node::simple_node(
 
 	for (size_t n = 0; n < operation().nresults(); n++) {
 		outputs_.emplace_back(std::make_unique<jive::simple_output>(this, n,
-			operation().result_type(n), operation().result(n).rescls()));
+			operation().result(n).type(), operation().result(n).rescls()));
 	}
 
 	JIVE_DEBUG_ASSERT(operation().narguments() == inputs_.size());

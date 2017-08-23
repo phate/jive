@@ -52,12 +52,6 @@ flattened_binary_op::nresults() const noexcept
 	return 1;
 }
 
-const jive::base::type &
-flattened_binary_op::result_type(size_t index) const noexcept
-{
-	return op_->result_type(0);
-}
-
 const jive::port &
 flattened_binary_op::result(size_t index) const noexcept
 {

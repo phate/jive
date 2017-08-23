@@ -59,13 +59,6 @@ match_op::argument(size_t index) const noexcept
 	return argument_;
 }
 
-const jive::base::type &
-match_op::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_.type();
-}
-
 const jive::port &
 match_op::result(size_t index) const noexcept
 {

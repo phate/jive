@@ -46,12 +46,6 @@ memberof_op::argument(size_t index) const noexcept
 	return p;
 }
 
-const jive::base::type &
-memberof_op::result_type(size_t index) const noexcept
-{
-	return jive::addr::type::instance();
-}
-
 const jive::port &
 memberof_op::result(size_t index) const noexcept
 {
@@ -138,12 +132,6 @@ containerof_op::argument(size_t index) const noexcept
 	JIVE_DEBUG_ASSERT(index < narguments());
 	static const jive::port p(addr::type::instance());
 	return p;
-}
-
-const jive::base::type &
-containerof_op::result_type(size_t index) const noexcept
-{
-	return jive::addr::type::instance();
 }
 
 const jive::port &
@@ -259,12 +247,6 @@ arraysubscript_op::nresults() const noexcept
 	return 1;
 }
 
-const jive::base::type &
-arraysubscript_op::result_type(size_t index) const noexcept
-{
-	return jive::addr::type::instance();
-}
-
 const jive::port &
 arraysubscript_op::result(size_t index) const noexcept
 {
@@ -358,12 +340,6 @@ arrayindex_op::nresults() const noexcept
 	return 1;
 }
 
-const jive::base::type &
-arrayindex_op::result_type(size_t index) const noexcept
-{
-	return index_.type();
-}
-
 const jive::port &
 arrayindex_op::result(size_t index) const noexcept
 {
@@ -412,12 +388,6 @@ label_to_address_op::operator==(const operation & other) const noexcept
 	return op && op->label() == label();
 }
 
-const jive::base::type &
-label_to_address_op::result_type(size_t index) const noexcept
-{
-	return jive::addr::type::instance();
-}
-
 const jive::port &
 label_to_address_op::result(size_t index) const noexcept
 {
@@ -463,12 +433,6 @@ label_to_bitstring_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const label_to_bitstring_op*>(&other);
 	return op && op->label() == label() && op->result_ == result_;
-}
-
-const jive::base::type &
-label_to_bitstring_op::result_type(size_t index) const noexcept
-{
-	return result_.type();
 }
 
 const jive::port &

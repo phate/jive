@@ -46,13 +46,6 @@ mux_op::nresults() const noexcept
 	return nresults_;
 }
 
-const jive::base::type &
-mux_op::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return port_.type();
-}
-
 const jive::port &
 mux_op::result(size_t index) const noexcept
 {

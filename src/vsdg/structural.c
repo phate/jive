@@ -32,12 +32,6 @@ structural_op::nresults() const noexcept
 	return 0;
 }
 
-const jive::base::type &
-structural_op::result_type(size_t index) const noexcept
-{
-	JIVE_ASSERT(0 && "structural_op has no arguments.");
-}
-
 const jive::port &
 structural_op::result(size_t index) const noexcept
 {

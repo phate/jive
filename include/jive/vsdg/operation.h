@@ -134,8 +134,6 @@ public:
 
 	virtual size_t
 	nresults() const noexcept = 0;
-	virtual const jive::base::type &
-	result_type(size_t index) const noexcept = 0;
 
 	virtual const jive::port &
 	result(size_t index) const noexcept = 0;

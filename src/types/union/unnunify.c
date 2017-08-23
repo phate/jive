@@ -40,12 +40,6 @@ unify_op::argument(size_t index) const noexcept
 	return argument_;
 }
 
-const jive::base::type &
-unify_op::result_type(size_t index) const noexcept
-{
-	return result_.type();
-}
-
 const jive::port &
 unify_op::result(size_t index) const noexcept
 {
@@ -88,13 +82,6 @@ std::string
 empty_unify_op::debug_string() const
 {
 	return "UNIFY";
-}
-
-const jive::base::type &
-empty_unify_op::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return port_.type();
 }
 
 const jive::port &

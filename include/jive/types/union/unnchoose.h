@@ -40,13 +40,9 @@ public:
 	virtual const jive::port &
 	argument(size_t index) const noexcept override;
 
-	virtual const jive::base::type &
-	result_type(size_t index) const noexcept override;
-
 	virtual const jive::port &
 	result(size_t index) const noexcept override;
 
-	/* reduction methods */
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
 		const jive::output * arg) const noexcept override;

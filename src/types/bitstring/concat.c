@@ -339,13 +339,6 @@ concat_op::nresults() const noexcept
 	return 1;
 }
 
-const jive::base::type &
-concat_op::result_type(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_.type();
-}
-
 const jive::port &
 concat_op::result(size_t index) const noexcept
 {

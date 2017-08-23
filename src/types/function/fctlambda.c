@@ -42,12 +42,6 @@ lambda_op::nresults() const noexcept
 	return 1;
 }
 
-const jive::base::type &
-lambda_op::result_type(size_t index) const noexcept
-{
-	return function_type();
-}
-
 std::string
 lambda_op::debug_string() const
 {
