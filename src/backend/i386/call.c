@@ -33,24 +33,17 @@ jive_i386_call_node_substitute(
 	if (auto op = dynamic_cast<const jive::address::label_to_address_op *>(
 		&address->node()->operation())) {
 		jive::immediate imm(0, op->label());
-		call_instr = jive_instruction_node_create_extended(
-			region,
-			&jive::i386::instr_call::instance(),
-			0, &imm);
+		auto tmp = jive_immediate_create(region, &imm);
+		call_instr = jive::create_instruction(region, &jive::i386::instr_call::instance(), {tmp});
 	} else if (auto op = dynamic_cast<const jive::address::label_to_bitstring_op *>(
 		&address->node()->operation())) {
 		jive::immediate imm(0, op->label());
-		call_instr = jive_instruction_node_create_extended(
-			region,
-			&jive::i386::instr_call::instance(),
-			0, &imm);
+		auto tmp = jive_immediate_create(region, &imm);
+		call_instr = jive::create_instruction(region, &jive::i386::instr_call::instance(), {tmp});
 	} else {
-		jive::output *  tmparray0[] = {address};
 		/* FIXME: cast address to bitstring first */
-		call_instr = jive_instruction_node_create(
-			region,
-			&jive::i386::instr_call_reg::instance(),
-			tmparray0, NULL);
+		call_instr = jive::create_instruction(region, &jive::i386::instr_call_reg::instance(),
+			{address});
 	}
 	
 	/* mark caller-saved regs as clobbered */

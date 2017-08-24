@@ -18,8 +18,8 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/util/ptr-collection.h>
 #include <jive/vsdg/label.h>
-#include <jive/vsdg/node.h>
 #include <jive/vsdg/nullary.h>
+#include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/statetype.h>
 
 namespace jive {
@@ -32,8 +32,8 @@ public:
 	inline
 	instruction_op(
 		const jive::instruction_class * icls,
-		const std::vector<const jive::state::type*> & istates,
-		const std::vector<const jive::state::type*> & ostates)
+		const std::vector<jive::port> & iports,
+		const std::vector<jive::port> & oports)
 	: icls_(icls)
 	{
 		static const jive::imm::type immtype;
@@ -41,13 +41,19 @@ public:
 			arguments_.push_back(icls->input(n));
 		for (size_t n = 0; n < icls->nimmediates(); n++)
 			arguments_.push_back(immtype);
-		for (const auto & type : istates)
-			arguments_.push_back({std::move(type->copy())});
+		for (const auto & port : iports) {
+			if (!dynamic_cast<const jive::state::type*>(&port.type()))
+				throw type_error("state", port.type().debug_string());
+			arguments_.push_back(port);
+		}
 
 		for (size_t n = 0; n < icls->noutputs(); n++)
 			results_.push_back({icls->output(n)});
-		for (const auto & type : ostates)
-			results_.push_back({std::move(type->copy())});
+		for (const auto & port : oports) {
+			if (!dynamic_cast<const jive::state::type*>(&port.type()))
+				throw type_error("state", port.type().debug_string());
+			results_.push_back(port);
+		}
 	}
 
 	virtual bool
@@ -83,40 +89,27 @@ private:
 	const jive::instruction_class * icls_;
 };
 
-}
-
-jive::node *
-jive_instruction_node_create_simple(
-	struct jive::region * region,
-	const jive::instruction_class * icls,
-	jive::output * const * operands,
-	const int64_t * immediates);
-
-jive::node *
-jive_instruction_node_create_extended(
-	struct jive::region * region,
-	const jive::instruction_class * icls,
-	jive::output * const * operands,
-	const jive::immediate immediates[]);
-
-jive::node *
-jive_instruction_node_create(
-	struct jive::region * region,
+static inline jive::node *
+create_instruction(
+	jive::region * region,
 	const jive::instruction_class * icls,
 	const std::vector<jive::output*> & operands,
-	const std::vector<jive::immediate> & immediates,
-	const std::vector<const jive::state::type*> & itypes,
-	const std::vector<jive::output*> & istates,
-	const std::vector<const jive::state::type*> & otypes);
+	const std::vector<jive::port> & iports,
+	const std::vector<jive::port> & oports)
+{
+	jive::instruction_op op(icls, iports, oports);
+	return region->add_simple_node(op, operands);
+}
 
 static inline jive::node *
-jive_instruction_node_create(
-	struct jive::region * region,
+create_instruction(
+	jive::region * region,
 	const jive::instruction_class * icls,
-	jive::output * const * operands,
-	const int64_t * immediates)
+	const std::vector<jive::output*> & operands)
 {
-	return jive_instruction_node_create_simple(region, icls, operands, immediates);
+	return create_instruction(region, icls, operands, {}, {});
+}
+
 }
 
 #endif
