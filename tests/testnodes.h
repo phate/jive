@@ -26,9 +26,14 @@ public:
 	virtual
 	~simple_op() noexcept;
 
+	inline
 	simple_op(
-		const std::vector<const jive::base::type*> & argument_types,
-		const std::vector<const jive::base::type*> & result_types);
+		const std::vector<jive::port> & arguments,
+		const std::vector<jive::port> & results)
+	: jive::simple_op()
+	, results_(results)
+	, arguments_(arguments)
+	{}
 
 	inline
 	simple_op() noexcept {}
@@ -67,21 +72,21 @@ private:
 static inline jive::node *
 simple_node_create(
 	jive::region * region,
-	const std::vector<const jive::base::type*> & operand_types,
+	const std::vector<jive::port> & iports,
 	const std::vector<jive::output*> & operands,
-	const std::vector<const jive::base::type*> & result_types)
+	const std::vector<jive::port> & oports)
 {
-	return region->add_simple_node(jive::test::simple_op(operand_types, result_types), operands);
+	return region->add_simple_node(jive::test::simple_op(iports, oports), operands);
 }
 
 static inline std::vector<jive::output*>
 simple_node_normalized_create(
 	jive::region * r,
-	const std::vector<const jive::base::type*> & operand_types,
+	const std::vector<jive::port> & iports,
 	const std::vector<jive::output*> & operands,
-	const std::vector<const jive::base::type*> & result_types)
+	const std::vector<jive::port> & oports)
 {
-	jive::test::simple_op op(operand_types, result_types);
+	jive::test::simple_op op(iports, oports);
 	return jive::create_normalized(r, op, operands);
 }
 

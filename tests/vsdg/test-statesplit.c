@@ -20,7 +20,7 @@ static int test_main(void)
 	jive::graph graph;
 	
 	jive::test::statetype statetype;
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&statetype, &statetype});
+	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {statetype, statetype});
 
 	std::vector<jive::output*> outputs;
 	for (size_t n = 0; n < top->noutputs(); n++)
@@ -28,7 +28,7 @@ static int test_main(void)
 
 	auto merged = jive_state_merge(&statetype, 2, &outputs[0]);
 	auto split = jive_state_split(&statetype, merged, 2);
-	jive::test::simple_node_create(graph.root(), {&statetype, &statetype}, {split[0], split[1]}, {});
+	jive::test::simple_node_create(graph.root(), {statetype, statetype}, {split[0], split[1]}, {});
 
 	jive::view(graph.root(), stdout);
 

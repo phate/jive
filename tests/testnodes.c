@@ -15,16 +15,6 @@ namespace test {
 
 simple_op::~simple_op() noexcept {}
 
-simple_op::simple_op(
-	const std::vector<const jive::base::type*> & argument_types,
-	const std::vector<const jive::base::type*> & result_types)
-{
-	for (const auto & type : argument_types)
-		arguments_.push_back({*type->copy()});
-	for (const auto & type : result_types)
-		results_.push_back({*type->copy()});
-}
-
 bool
 simple_op::operator==(const operation & other) const noexcept
 {

@@ -32,7 +32,7 @@ test_address_transform(void)
 	jive::addr::type addr;
 	jive::mem::type mem;
 	jive::bits::type bits64(64);
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&bits64, &bits64, &mem});
+	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits64, bits64, mem});
 
 	auto address0 = jive_bitstring_to_address_create(top->output(0), 64, &addr);
 	auto address1 = jive_bitstring_to_address_create(top->output(1), 64, &addr);
@@ -65,7 +65,7 @@ test_address_transform(void)
 	auto o_addr = jive_address_to_bitstring_create(load, 64, &load->type());
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
-		{&bits64, &mem}, {o_addr, store->output(0)}, {&bits64});
+		{bits64, mem}, {o_addr, store->output(0)}, {bits64});
 	graph.export_port(bottom->output(0), "dummy");
 
 	jive::view(graph.root(), stdout);
@@ -134,12 +134,12 @@ test_apply_transform(void)
 
 	jive::addr::type addrtype;
 	jive::fct::type fcttype({&addrtype}, {&addrtype});
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&fcttype, &addrtype});
+	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {fcttype, addrtype});
 
 	auto address = top->output(1);
 	auto results = jive_apply_create(top->output(0), 1, &address);
 
-	auto bottom = jive::test::simple_node_create(graph.root(), {&addrtype}, {results.begin(),
+	auto bottom = jive::test::simple_node_create(graph.root(), {addrtype}, {results.begin(),
 		results.end()}, {});
 
 	jive::view(graph.root(), stdout);
@@ -170,7 +170,7 @@ test_containerof_transform(void)
 		new jive::rcd::declaration({&bits8, &bits16, &bits32, &bits32}));
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {},
-		std::vector<const jive::base::type*>(4, &bits32));
+		std::vector<jive::port>(4, bits32));
 
 	auto address0 = jive_bitstring_to_address_create(top->output(0), 32, &addrtype);
 	auto address1 = jive_bitstring_to_address_create(top->output(1), 32, &addrtype);
@@ -188,8 +188,7 @@ test_containerof_transform(void)
 	auto offset3 = jive_address_to_bitstring_create(container3, 32, &container3->type());
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
-		std::vector<const jive::base::type*>(4, &bits32), {offset0, offset1, offset2, offset3},
-		{&bits32});
+		std::vector<jive::port>(4, bits32), {offset0, offset1, offset2, offset3}, {bits32});
 	graph.export_port(bottom->output(0), "dummy");
 
 	jive::view(graph.root(), stdout);
@@ -248,7 +247,7 @@ test_memberof_transform(void)
 	std::shared_ptr<const jive::rcd::declaration> decl(
 		new jive::rcd::declaration({&bits8, &bits16, &bits32, &bits32}));
 
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&bits32});
+	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits32});
 
 	auto address = jive_bitstring_to_address_create(top->output(0), 32, &addrtype);
 
@@ -263,8 +262,8 @@ test_memberof_transform(void)
 	auto offset3 = jive_address_to_bitstring_create(member3, 32, &member3->type());
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
-		std::vector<const jive::base::type*>(4, &bits32), {offset0, offset1, offset2, offset3},
-		{&bits32});
+		std::vector<jive::port>(4, bits32), {offset0, offset1, offset2, offset3},
+		{bits32});
 	graph.export_port(bottom->output(0), "dummy");
 
 	jive::view(graph.root(), stdout);

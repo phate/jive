@@ -16,7 +16,7 @@ test_initialization()
 	jive::graph graph;
 	jive::test::valuetype vtype;
 	auto n1 = jive::test::simple_node_create(graph.root(), {}, {}, {});
-	auto n2 = jive::test::simple_node_create(graph.root(), {}, {}, {&vtype});
+	auto n2 = jive::test::simple_node_create(graph.root(), {}, {}, {vtype});
 
 	graph.export_port(n2->output(0), "dummy");
 
@@ -36,9 +36,9 @@ test_basic_traversal()
 {
 	jive::graph graph;
 	jive::test::valuetype type;
-	auto n1 = jive::test::simple_node_create(graph.root(), {}, {}, {&type, &type});
-	auto n2 = jive::test::simple_node_create(graph.root(), {&type, &type},
-		{n1->output(0), n1->output(1)}, {&type});
+	auto n1 = jive::test::simple_node_create(graph.root(), {}, {}, {type, type});
+	auto n2 = jive::test::simple_node_create(graph.root(), {type, type},
+		{n1->output(0), n1->output(1)}, {type});
 
 	graph.export_port(n2->output(0), "dummy");
 
@@ -61,11 +61,11 @@ test_order_enforcement_traversal()
 {
 	jive::graph graph;
 	jive::test::valuetype type;
-	auto n1 = jive::test::simple_node_create(graph.root(), {}, {}, {&type, &type});
-	auto n2 = jive::test::simple_node_create(graph.root(), {&type}, {n1->output(0)}, {&type});
-	auto n3 = jive::test::simple_node_create(graph.root(), {&type, &type},
+	auto n1 = jive::test::simple_node_create(graph.root(), {}, {}, {type, type});
+	auto n2 = jive::test::simple_node_create(graph.root(), {type}, {n1->output(0)}, {type});
+	auto n3 = jive::test::simple_node_create(graph.root(), {type, type},
 		{n2->output(0), n1->output(1)},
-		{&type});
+		{type});
 
 	jive::node * tmp;
 	{

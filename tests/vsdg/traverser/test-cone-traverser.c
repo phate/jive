@@ -29,10 +29,10 @@ prepare_graph()
 	
 	jive::region * region = g.graph->root();
 	jive::test::valuetype type;
-	g.a1 = jive::test::simple_node_create(region, {}, {}, {&type});
-	g.a2 = jive::test::simple_node_create(region, {&type}, {g.a1->output(0)}, {&type});
-	g.b1 = jive::test::simple_node_create(region, {}, {}, {&type});
-	g.b2 = jive::test::simple_node_create(region, {&type}, {g.b1->output(0)}, {&type});
+	g.a1 = jive::test::simple_node_create(region, {}, {}, {type});
+	g.a2 = jive::test::simple_node_create(region, {type}, {g.a1->output(0)}, {type});
+	g.b1 = jive::test::simple_node_create(region, {}, {}, {type});
+	g.b2 = jive::test::simple_node_create(region, {type}, {g.b1->output(0)}, {type});
 	
 	return g;
 }

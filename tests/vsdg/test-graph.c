@@ -34,14 +34,14 @@ test_recursive_prune()
 	jive::test::valuetype t;
 	auto imp = graph.import(t, "i");
 
-	auto n1 = jive::test::simple_node_create(graph.root(), {&t}, {imp}, {&t});
-	auto n2 = jive::test::simple_node_create(graph.root(), {&t}, {imp}, {&t});
+	auto n1 = jive::test::simple_node_create(graph.root(), {t}, {imp}, {t});
+	auto n2 = jive::test::simple_node_create(graph.root(), {t}, {imp}, {t});
 
 	auto n3 = jive::test::structural_node_create(graph.root(), 1);
 	n3->add_input(t, imp);
 	auto a1 = n3->subregion(0)->add_argument(nullptr, t);
-	auto n4 = jive::test::simple_node_create(n3->subregion(0), {&t}, {a1}, {&t});
-	auto n5 = jive::test::simple_node_create(n3->subregion(0), {&t}, {a1}, {&t});
+	auto n4 = jive::test::simple_node_create(n3->subregion(0), {t}, {a1}, {t});
+	auto n5 = jive::test::simple_node_create(n3->subregion(0), {t}, {a1}, {t});
 	n3->subregion(0)->add_result(n4->output(0), nullptr, t);
 	auto o1 = n3->add_output(t);
 
@@ -91,14 +91,14 @@ test_prune_replace(void)
 
 	jive::region * region = graph.root();
 	jive::test::valuetype type;
-	auto n1 = jive::test::simple_node_create(region, {}, {}, {&type});
-	auto n2 = jive::test::simple_node_create(region, {&type}, {n1->output(0)}, {&type});
-	auto n3 = jive::test::simple_node_create(region, {&type}, {n2->output(0)}, {&type});
+	auto n1 = jive::test::simple_node_create(region, {}, {}, {type});
+	auto n2 = jive::test::simple_node_create(region, {type}, {n1->output(0)}, {type});
+	auto n3 = jive::test::simple_node_create(region, {type}, {n2->output(0)}, {type});
 
 	graph.export_port(n2->output(0), "n2");
 	graph.export_port(n3->output(0), "n3");
 
-	auto n4 = jive::test::simple_node_create(region, {&type}, {n1->output(0)}, {&type});
+	auto n4 = jive::test::simple_node_create(region, {type}, {n1->output(0)}, {type});
 
 	n2->output(0)->replace(n4->output(0));
 	assert(n2->output(0)->nusers() == 0);
@@ -120,11 +120,11 @@ test_graph(void)
 	jive::region * region = graph.root();
 	
 	jive::test::valuetype type;
-	auto n1 = jive::test::simple_node_create(region, {}, {}, {&type});
+	auto n1 = jive::test::simple_node_create(region, {}, {}, {type});
 	assert(n1);
 	assert(n1->depth() == 0);
 
-	auto n2 = jive::test::simple_node_create(region, {&type}, {n1->output(0)}, {});
+	auto n2 = jive::test::simple_node_create(region, {type}, {n1->output(0)}, {});
 	assert(n2);
 	assert(n2->depth() == 1);
 	

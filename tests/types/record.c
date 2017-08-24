@@ -31,14 +31,14 @@ static int _test_rcdgroup(void)
 	auto decl_empty = std::make_shared<const jive::rcd::declaration>();
 	jive::rcd::type rcdtype_empty(decl_empty);
 
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&bits8, &bits16, &bits32});
+	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits8, bits16, bits32});
 	jive::output * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
 
 	auto g0 = jive_group_create(decl, 3, tmparray1);
 	auto g1 = jive_empty_group_create(&graph, decl_empty);
 
-	auto bottom = jive::test::simple_node_create(graph.root(), {&rcdtype, &rcdtype_empty}, {g0, g1},
-		{&bits8});
+	auto bottom = jive::test::simple_node_create(graph.root(), {rcdtype, rcdtype_empty}, {g0, g1},
+		{bits8});
 
 	graph.export_port(bottom->output(0), "dummy");
 
