@@ -88,7 +88,7 @@ jive_i386_call_node_substitute(
 		if (orig_input->port().gate()) {
 			call_instr->add_input(orig_input->port().gate(), orig_input->origin());
 		} else {
-			call_instr->add_input(orig_input->rescls(), orig_input->origin());
+			call_instr->add_input(orig_input->port().rescls(), orig_input->origin());
 		}
 	}
 	for (size_t n = op.nresults(); n < node->noutputs(); n++) {

@@ -67,12 +67,6 @@ public:
 		return origin_;
 	}
 
-	inline const jive::resource_class *
-	rescls() const noexcept
-	{
-		return port_.rescls();
-	}
-
 	void
 	divert_origin(jive::output * new_origin);
 
