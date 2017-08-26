@@ -164,12 +164,6 @@ public:
 		return port_.gate();
 	}
 
-	inline const jive::resource_class *
-	rescls() const noexcept
-	{
-		return port_.rescls();
-	}
-
 	inline user_iterator
 	begin() const noexcept
 	{

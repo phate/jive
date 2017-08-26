@@ -289,8 +289,8 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 			}
 
 			new_output = new_node->add_output(new_gate);
-		} else if (output(n)->rescls() != &jive_root_resource_class) {
-			new_output = new_node->add_output(output(n)->rescls());
+		} else if (output(n)->port().rescls() != &jive_root_resource_class) {
+			new_output = new_node->add_output(output(n)->port().rescls());
 		} else {
 			new_output = new_node->add_output(output(n)->type());
 		}

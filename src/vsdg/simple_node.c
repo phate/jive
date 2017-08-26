@@ -293,7 +293,7 @@ simple_node::copy(jive::region * region, jive::substitution_map & smap) const
 
 			new_node->add_output(target_gate);
 		} else {
-			new_node->add_output(this->output(n)->rescls());
+			new_node->add_output(this->output(n)->port().rescls());
 		}
 	}
 
