@@ -10,6 +10,8 @@
 
 namespace jive {
 
+class simple_node;
+
 /* inputs */
 
 class simple_input final : public input {
@@ -20,7 +22,7 @@ public:
 	~simple_input() noexcept;
 
 	simple_input(
-		jive::node * node,
+		jive::simple_node * node,
 		size_t index,
 		jive::output * origin,
 		const jive::port & port);
@@ -30,7 +32,7 @@ public:
 	node() const noexcept override;
 
 private:
-	jive::node * node_;
+	jive::simple_node * node_;
 };
 
 /* outputs */

@@ -33,7 +33,7 @@ simple_input::~simple_input() noexcept
 }
 
 simple_input::simple_input(
-	jive::node * node,
+	jive::simple_node * node,
 	size_t index,
 	jive::output * origin,
 	const jive::port & port)
