@@ -94,8 +94,8 @@ jive_i386_call_node_substitute(
 	for (size_t n = op.nresults(); n < node->noutputs(); n++) {
 		auto orig_output = dynamic_cast<jive::simple_output*>(node->output(n));
 		jive::output * new_output;
-		if (orig_output->gate()) {
-			new_output = call_instr->add_output(orig_output->gate());
+		if (orig_output->port().gate()) {
+			new_output = call_instr->add_output(orig_output->port().gate());
 		} else {
 			new_output = call_instr->add_output(orig_output->port().rescls());
 		}

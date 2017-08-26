@@ -66,12 +66,12 @@ structural_output::~structural_output()
 
 	node()->graph()->on_output_destroy(this);
 
-	if (gate()) {
+	if (port().gate()) {
 		for (size_t n = 0; n < node()->noutputs(); n++) {
 			auto other = node()->output(n);
-			if (other == this || !other->gate())
+			if (other == this || !other->port().gate())
 				continue;
-			jive_gate_interference_remove(node()->graph(), gate(), other->gate());
+			jive_gate_interference_remove(node()->graph(), port().gate(), other->port().gate());
 		}
 	}
 
@@ -91,8 +91,8 @@ structural_output::structural_output(
 	if (port.gate()) {
 		for (size_t n = 0; n < index; n++) {
 			auto other = node->output(n);
-			if (!other->gate()) continue;
-			jive_gate_interference_add(node->graph(), port.gate(), other->gate());
+			if (!other->port().gate()) continue;
+			jive_gate_interference_add(node->graph(), port.gate(), other->port().gate());
 		}
 	}
 
@@ -280,8 +280,8 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 	/* copy outputs */
 	for (size_t n = 0; n < noutputs(); n++) {
 		jive::structural_output * new_output;
-		if (output(n)->gate()) {
-			auto gate = output(n)->gate();
+		if (output(n)->port().gate()) {
+			auto gate = output(n)->port().gate();
 			auto new_gate = smap.lookup(gate);
 			if (!new_gate) {
 				new_gate = graph()->create_gate(gate);

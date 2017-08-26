@@ -88,8 +88,8 @@ output::~output()
 {
 	JIVE_DEBUG_ASSERT(nusers() == 0);
 
-	if (gate())
-		JIVE_LIST_REMOVE(gate()->outputs, this, gate_output_list);
+	if (port().gate())
+		JIVE_LIST_REMOVE(port().gate()->outputs, this, gate_output_list);
 }
 
 output::output(
@@ -109,8 +109,8 @@ output::output(
 std::string
 output::debug_string() const
 {
-	if (gate())
-		return gate()->debug_string();
+	if (port().gate())
+		return port().gate()->debug_string();
 
 	return detail::strfmt(index());
 }

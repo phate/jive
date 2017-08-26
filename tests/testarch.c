@@ -338,7 +338,7 @@ public:
 		auto o = subroutine.builder_state->arguments[index].output;
 	
 		if (index >= 2) {
-			auto node = jive_splitnode_create(subroutine.region, o, o->gate()->rescls(),
+			auto node = jive_splitnode_create(subroutine.region, o, o->port().gate()->rescls(),
 				&jive_testarch_regcls_gpr);
 			o = node->output(0);
 		}

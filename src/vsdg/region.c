@@ -26,12 +26,12 @@ argument::~argument() noexcept
 	if (input())
 		JIVE_LIST_REMOVE(input()->arguments, this, input_argument_list);
 
-	if (gate()) {
+	if (port().gate()) {
 		for (size_t n = 0; n < region()->narguments(); n++) {
 			jive::argument * other = region()->argument(n);
-			if (other == this || !other->gate())
+			if (other == this || !other->port().gate())
 				continue;
-			jive_gate_interference_remove(region()->graph(), gate(), other->gate());
+			jive_gate_interference_remove(region()->graph(), port().gate(), other->port().gate());
 		}
 	}
 
@@ -54,8 +54,8 @@ argument::argument(
 	if (port.gate()) {
 		for (size_t n = 0; n < index; n++) {
 			auto other = region->argument(n);
-			if (!other->gate()) continue;
-			jive_gate_interference_add(region->graph(), port.gate(), other->gate());
+			if (!other->port().gate()) continue;
+			jive_gate_interference_add(region->graph(), port.gate(), other->port().gate());
 		}
 	}
 }
@@ -245,8 +245,8 @@ region::copy(
 	if (copy_arguments) {
 		for (size_t n = 0; n < narguments(); n++) {
 			jive::argument * new_argument;
-			if (argument(n)->gate()) {
-				auto gate = argument(n)->gate();
+			if (argument(n)->port().gate()) {
+				auto gate = argument(n)->port().gate();
 				auto new_gate = smap.lookup(gate);
 				if (!new_gate) {
 					new_gate = graph()->create_gate(gate);

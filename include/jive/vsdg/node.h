@@ -158,12 +158,6 @@ public:
 			(*users_.begin())->divert_origin(new_origin);
 	}
 
-	inline jive::gate *
-	gate() const noexcept
-	{
-		return port_.gate();
-	}
-
 	inline user_iterator
 	begin() const noexcept
 	{
@@ -400,7 +394,7 @@ static inline jive::output *
 jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
-		if (self->output(n)->gate() == gate) {
+		if (self->output(n)->port().gate() == gate) {
 			return self->output(n);
 		}
 	}
@@ -412,7 +406,7 @@ jive_node_get_gate_output(const jive::node * self, const char * name)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
 		auto o = self->output(n);
-		if (o->gate() && o->gate()->name() == name)
+		if (o->port().gate() && o->port().gate()->name() == name)
 			return o;
 	}
 	return nullptr;

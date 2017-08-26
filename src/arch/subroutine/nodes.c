@@ -45,7 +45,7 @@ subroutine_op::get_passthrough_enter_by_name(
 	JIVE_DEBUG_ASSERT(enter);
 	for (size_t n = 0; n < enter->noutputs(); ++n) {
 		auto o = enter->output(n);
-		if (o->gate() && name == o->gate()->name())
+		if (o->port().gate() && name == o->port().gate()->name())
 			return dynamic_cast<simple_output*>(o);
 	}
 	return nullptr;
