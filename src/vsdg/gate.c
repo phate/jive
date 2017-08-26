@@ -8,6 +8,54 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/resource.h>
 
+jive_gate_interference *
+jive_gate_interference_create(jive::gate * first, jive::gate * second)
+{
+	jive_gate_interference * i = new jive_gate_interference;
+	i->first.gate = first;
+	i->first.whole = i;
+	i->second.gate = second;
+	i->second.whole = i;
+	i->count = 0;
+
+	first->interference.insert(&i->second);
+	second->interference.insert(&i->first);
+
+	return i;
+}
+
+void
+jive_gate_interference_destroy(jive_gate_interference * self)
+{
+	self->first.gate->interference.erase(&self->second);
+	self->second.gate->interference.erase(&self->first);
+	delete self;
+}
+
+void
+jive_gate_interference_add(jive::graph * graph, jive::gate * first, jive::gate * second)
+{
+	auto iter = first->interference.find(second);
+	if (iter != first->interference.end()) {
+		iter->whole->count++;
+	} else {
+		jive_gate_interference * i = jive_gate_interference_create(first, second);
+		i->count = 1;
+		graph->on_gate_interference_add(first, second);
+	}
+}
+
+void
+jive_gate_interference_remove(jive::graph * graph, jive::gate * first, jive::gate * second)
+{
+	jive_gate_interference * i = first->interference.find(second)->whole;
+	size_t count = -- (i->count);
+	if (!count) {
+		jive_gate_interference_destroy(i);
+		graph->on_gate_interference_remove(first, second);
+	}
+}
+
 namespace jive {
 
 gate::gate(

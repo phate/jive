@@ -17,7 +17,6 @@ LIBJIVE_SRC = \
 	src/vsdg/gamma-normal-form.c \
 	src/vsdg/gamma.c \
 	src/vsdg/gate.c \
-	src/vsdg/gate-interference.c \
 	src/vsdg/graph.c \
 	src/vsdg/label.c \
 	src/vsdg/negotiator.c \

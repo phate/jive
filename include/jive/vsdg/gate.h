@@ -6,17 +6,67 @@
 #ifndef JIVE_VSDG_GATE_H
 #define JIVE_VSDG_GATE_H
 
-#include <jive/vsdg/gate-interference.h>
+#include <jive/util/intrusive-hash.h>
+
+/* gate interference */
+
+namespace jive {
+	class gate;
+	class graph;
+}
+
+struct jive_gate_interference;
+
+typedef struct jive_gate_interference_part jive_gate_interference_part;
+struct jive_gate_interference_part {
+	jive::gate * gate;
+	jive_gate_interference * whole;
+private:
+	jive::detail::intrusive_hash_anchor<jive_gate_interference_part> hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		jive::gate*,
+		jive_gate_interference_part,
+		&jive_gate_interference_part::gate,
+		&jive_gate_interference_part::hash_chain
+	> hash_chain_accessor;
+};
+
+typedef struct jive_gate_interference jive_gate_interference;
+struct jive_gate_interference {
+	jive_gate_interference_part first;
+	jive_gate_interference_part second;
+	size_t count;
+};
+
+typedef jive::detail::intrusive_hash<
+	const jive::gate *,
+	jive_gate_interference_part,
+	jive_gate_interference_part::hash_chain_accessor
+> jive_gate_interference_hash;
+
+jive_gate_interference *
+jive_gate_interference_create(jive::gate * first, jive::gate * second);
+
+void
+jive_gate_interference_destroy(jive_gate_interference * self);
+
+void
+jive_gate_interference_add(jive::graph * graph, jive::gate * first, jive::gate * second);
+
+void
+jive_gate_interference_remove(jive::graph * graph, jive::gate * first, jive::gate * second);
 
 namespace jive {
 namespace base {
 	class type;
 }
 
-class graph;
 class input;
 class output;
 class resource_class;
+
+/* gate */
 
 class gate final {
 public:
