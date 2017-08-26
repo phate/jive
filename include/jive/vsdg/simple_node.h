@@ -10,6 +10,7 @@
 
 namespace jive {
 
+class simple_op;
 class simple_node;
 
 /* inputs */
@@ -113,7 +114,7 @@ private:
 std::vector<jive::output*>
 create_normalized(
 	jive::region * region,
-	const jive::operation & op,
+	const jive::simple_op & op,
 	const std::vector<jive::output*> & arguments);
 
 }

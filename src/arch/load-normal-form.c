@@ -101,7 +101,7 @@ load_normal_form::operands_are_normalized(
 std::vector<jive::output*>
 load_normal_form::normalized_create(
 	jive::region * region,
-	const jive::operation & op,
+	const jive::simple_op & op,
 	const std::vector<jive::output*> & args) const
 {
 	if (get_mutable() && get_reducible()) {

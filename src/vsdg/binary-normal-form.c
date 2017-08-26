@@ -213,7 +213,7 @@ binary_normal_form::operands_are_normalized(
 std::vector<jive::output*>
 binary_normal_form::normalized_create(
 	jive::region * region,
-	const jive::operation & base_op,
+	const jive::simple_op & base_op,
 	const std::vector<jive::output*> & args) const
 {
 	const jive::base::binary_op& op = *static_cast<const jive::base::binary_op *>(&base_op);
@@ -242,14 +242,13 @@ binary_normal_form::normalized_create(
 	/* FIXME: reorder for commutative operation */
 
 	/* FIXME: attempt distributive transform */
-	std::unique_ptr<operation> tmp_op;
+	std::unique_ptr<simple_op> tmp_op;
 	if (new_args.size() > 2) {
 		tmp_op.reset(new base::flattened_binary_op(op, new_args.size()));
 	}
-	const operation & new_op =
-		tmp_op ? *tmp_op : static_cast<const operation &>(op);
 
 	region = new_args[0]->region();
+	const auto & new_op = tmp_op ? *tmp_op : static_cast<const simple_op&>(op);
 	return simple_normal_form::normalized_create(region, new_op, new_args);
 }
 
@@ -363,7 +362,7 @@ flattened_binary_normal_form::operands_are_normalized(
 std::vector<jive::output*>
 flattened_binary_normal_form::normalized_create(
 	jive::region * region,
-	const jive::operation & base_op,
+	const jive::simple_op & base_op,
 	const std::vector<jive::output*> & arguments) const
 {
 	const base::flattened_binary_op & op =

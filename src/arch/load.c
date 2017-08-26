@@ -17,7 +17,7 @@ static jive::output *
 jive_load_node_normalized_create(
 	const jive::node_normal_form * nf,
 	jive::graph * graph,
-	const jive::operation & op,
+	const jive::simple_op & op,
 	jive::output * address,
 	size_t nstates, jive::output * const states[])
 {

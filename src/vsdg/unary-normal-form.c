@@ -83,7 +83,7 @@ unary_normal_form::operands_are_normalized(
 std::vector<jive::output*>
 unary_normal_form::normalized_create(
 	jive::region * region,
-	const jive::operation & op,
+	const jive::simple_op & op,
 	const std::vector<jive::output*> & arguments) const
 {
 	JIVE_DEBUG_ASSERT(arguments.size() == 1);

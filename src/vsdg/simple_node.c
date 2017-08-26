@@ -5,6 +5,7 @@
 
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple.h>
 #include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/simple-normal-form.h>
 #include <jive/vsdg/substitution.h>
@@ -307,12 +308,11 @@ simple_node::copy(jive::region * region, jive::substitution_map & smap) const
 std::vector<jive::output*>
 create_normalized(
 	jive::region * region,
-	const jive::operation & op,
+	const jive::simple_op & op,
 	const std::vector<jive::output*> & arguments)
 {
 	auto graph = region->graph();
-	/* FIXME: tighten jive::operation to jive::simple_op and replace dynamic with static cast */
-	auto nf = dynamic_cast<simple_normal_form*>(graph->node_normal_form(typeid(op)));
+	auto nf = static_cast<simple_normal_form*>(graph->node_normal_form(typeid(op)));
 	return nf->normalized_create(region, op, arguments);
 }
 

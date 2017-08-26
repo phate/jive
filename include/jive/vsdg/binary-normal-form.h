@@ -36,7 +36,7 @@ public:
 	virtual std::vector<jive::output*>
 	normalized_create(
 		jive::region * region,
-		const jive::operation & op,
+		const jive::simple_op & op,
 		const std::vector<jive::output*> & arguments) const override;
 
 	virtual void
@@ -98,7 +98,7 @@ public:
 	virtual std::vector<jive::output*>
 	normalized_create(
 		jive::region * region,
-		const jive::operation & op,
+		const jive::simple_op & op,
 		const std::vector<jive::output*> & arguments) const override;
 };
 

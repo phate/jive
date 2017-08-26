@@ -10,6 +10,8 @@
 
 namespace jive {
 
+class simple_op;
+
 class simple_normal_form : public node_normal_form {
 public:
 	virtual
@@ -31,7 +33,7 @@ public:
 	virtual std::vector<jive::output*>
 	normalized_create(
 		jive::region * region,
-		const jive::operation & op,
+		const jive::simple_op & op,
 		const std::vector<jive::output*> & arguments) const;
 
 	virtual void

@@ -21,7 +21,7 @@ static std::vector<jive::output*>
 jive_store_node_normalized_create(
 	const jive::node_normal_form * nf,
 	jive::graph * graph,
-	const jive::operation & op,
+	const jive::simple_op & op,
 	jive::output * address,
 	jive::output * value,
 	size_t nstates, jive::output * const states[])
