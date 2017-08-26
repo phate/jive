@@ -136,50 +136,6 @@ output::add_user(jive::input * user)
 	users_.insert(user);
 }
 
-/* gates */
-
-gate::gate(
-	jive::graph * graph,
-	const std::string & name,
-	const jive::base::type & type)
-	: name_(name)
-	, graph_(graph)
-	, rescls_(&jive_root_resource_class)
-	, type_(type.copy())
-{
-	inputs.first = inputs.last = nullptr;
-	outputs.first = outputs.last = nullptr;
-	may_spill = true;
-	graph_gate_list.prev = graph_gate_list.next = nullptr;
-
-	JIVE_LIST_PUSH_BACK(graph->gates, this, graph_gate_list);
-}
-
-gate::gate(
-	jive::graph * graph,
-	const std::string & name,
-	const resource_class * rescls)
-	: name_(name)
-	, graph_(graph)
-	, rescls_(rescls)
-	, type_(rescls->type().copy())
-{
-	inputs.first = inputs.last = nullptr;
-	outputs.first = outputs.last = nullptr;
-	may_spill = true;
-	graph_gate_list.prev = graph_gate_list.next = nullptr;
-
-	JIVE_LIST_PUSH_BACK(graph->gates, this, graph_gate_list);
-}
-
-gate::~gate() noexcept
-{
-	JIVE_DEBUG_ASSERT(inputs.first == nullptr && inputs.last == nullptr);
-	JIVE_DEBUG_ASSERT(outputs.first == nullptr && outputs.last == nullptr);
-
-	JIVE_LIST_REMOVE(graph()->gates, this, graph_gate_list);
-}
-
 }	//jive namespace
 
 jive::node_normal_form *
