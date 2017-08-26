@@ -45,7 +45,7 @@ public:
 	~simple_output() noexcept;
 
 	simple_output(
-		jive::node * node,
+		jive::simple_node * node,
 		size_t index,
 		const jive::port & port);
 
@@ -54,7 +54,7 @@ public:
 	node() const noexcept override;
 
 private:
-	jive::node * node_;
+	jive::simple_node * node_;
 };
 
 /* simple nodes */

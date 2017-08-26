@@ -58,7 +58,7 @@ simple_input::node() const noexcept
 /* outputs */
 
 simple_output::simple_output(
-	jive::node * node,
+	jive::simple_node * node,
 	size_t index,
 	const jive::port & port)
 : output(index, node->region(), port)
