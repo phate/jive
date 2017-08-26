@@ -131,13 +131,13 @@ public:
 
 	output(const output &) = delete;
 
-	output(const output &&) = delete;
+	output(output &&) = delete;
 
 	output &
 	operator=(const output &) = delete;
 
 	output &
-	operator=(const output &&) = delete;
+	operator=(output &&) = delete;
 
 	inline size_t
 	index() const noexcept
