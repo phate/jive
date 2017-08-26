@@ -47,13 +47,13 @@ public:
 
 	input(const input &) = delete;
 
-	input(const input &&) = delete;
+	input(input &&) = delete;
 
 	input &
 	operator=(const input &) = delete;
 
 	input &
-	operator=(const input &&) = delete;
+	operator=(input &&) = delete;
 
 	inline size_t
 	index() const noexcept
