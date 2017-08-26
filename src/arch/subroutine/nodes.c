@@ -67,7 +67,7 @@ subroutine_op::get_passthrough_leave_by_name(
 	JIVE_DEBUG_ASSERT(leave);
 	for (size_t n = 0; n < leave->ninputs(); ++n) {
 		auto i = dynamic_cast<jive::simple_input*>(leave->input(n));
-		if (i->gate() && name == i->gate()->name())
+		if (i->port().gate() && name == i->port().gate()->name())
 			return i;
 	}
 	return nullptr;

@@ -478,8 +478,8 @@ match_gpr_load(jive::node * node)
 	size_t n;
 	for (n = 1; n < node->ninputs(); n++) {
 		auto input = node->input(n);
-		if (input->gate())
-			instr->add_input(input->gate(), input->origin());
+		if (input->port().gate())
+			instr->add_input(input->port().gate(), input->origin());
 		else
 			instr->add_input(input->type(), input->origin());
 	}
@@ -514,8 +514,8 @@ match_gpr_store(jive::node * node)
 	size_t n;
 	for (n = 2; n < node->ninputs(); n++) {
 		auto input = node->input(n);
-		if (input->gate())
-			instr->add_input(input->gate(), input->origin());
+		if (input->port().gate())
+			instr->add_input(input->port().gate(), input->origin());
 		else
 			instr->add_input(input->type(), input->origin());
 	}

@@ -67,12 +67,6 @@ public:
 		return origin_;
 	}
 
-	inline jive::gate *
-	gate() const noexcept
-	{
-		return port_.gate();
-	}
-
 	inline const jive::resource_class *
 	rescls() const noexcept
 	{
@@ -396,7 +390,7 @@ static inline jive::input *
 jive_node_get_gate_input(const jive::node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
-		if (self->input(n)->gate() == gate) {
+		if (self->input(n)->port().gate() == gate) {
 			return self->input(n);
 		}
 	}
@@ -408,7 +402,7 @@ jive_node_get_gate_input(const jive::node * self, const char * name)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
 		auto i = self->input(n);
-		if (i->gate() && i->gate()->name() == name)
+		if (i->port().gate() && i->port().gate()->name() == name)
 			return i;
 	}
 	return nullptr;

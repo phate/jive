@@ -26,8 +26,8 @@ input::~input() noexcept
 {
 	origin()->remove_user(this);
 
-	if (gate())
-		JIVE_LIST_REMOVE(gate()->inputs, this, gate_input_list);
+	if (port().gate())
+		JIVE_LIST_REMOVE(port().gate()->inputs, this, gate_input_list);
 }
 
 input::input(
@@ -57,8 +57,8 @@ input::input(
 std::string
 input::debug_string() const
 {
-	if (gate())
-		return gate()->debug_string();
+	if (port().gate())
+		return port().gate()->debug_string();
 
 	return detail::strfmt(index());
 }

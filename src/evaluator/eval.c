@@ -511,7 +511,7 @@ eval(
 	const jive::input * port = nullptr;
 	for (size_t n = 0; n < graph->root()->nresults(); n++) {
 		auto result = graph->root()->result(n);
-		if (result->gate()->name() == name) {
+		if (result->port().gate()->name() == name) {
 			port = result;
 			break;
 		}

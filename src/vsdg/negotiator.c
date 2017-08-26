@@ -609,7 +609,7 @@ jive_negotiator_annotate_identity_node(
 	std::vector<jive::simple_input*> inputs;
 	for (size_t n = 0; n < node->ninputs(); n++) {
 		auto input = dynamic_cast<jive::simple_input*>(node->input(n));
-		if (!input->gate()) {
+		if (!input->port().gate()) {
 			inputs.push_back(input);
 		}
 	}
@@ -665,11 +665,11 @@ jive_negotiator_annotate_node_(jive_negotiator * self, jive::node * node)
 	size_t n;
 	for(n = 0; n < node->ninputs(); n++) {
 		auto input = dynamic_cast<jive::simple_input*>(node->input(n));
-		if (!input->gate()) continue;
-		if (!self->class_->option_gate_default(self, self->tmp_option, input->gate()))
+		if (!input->port().gate()) continue;
+		if (!self->class_->option_gate_default(self, self->tmp_option, input->port().gate()))
 			continue;
 		jive_negotiator_constraint * constraint =
-			jive_negotiator_annotate_gate(self, input->gate());
+			jive_negotiator_annotate_gate(self, input->port().gate());
 		jive_negotiator_connection * connection =
 			jive_negotiator_create_input_connection(self, input);
 		jive_negotiator_port * port =

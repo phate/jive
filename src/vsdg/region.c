@@ -75,12 +75,12 @@ result::~result() noexcept
 	if (output())
 		JIVE_LIST_REMOVE(output()->results, this, output_result_list);
 
-	if (gate()) {
+	if (port().gate()) {
 		for (size_t n = 0; n < region()->nresults(); n++) {
 			jive::result * other = region()->result(n);
-			if (other == this || !other->gate())
+			if (other == this || !other->port().gate())
 				continue;
-			jive_gate_interference_remove(region()->graph(), gate(), other->gate());
+			jive_gate_interference_remove(region()->graph(), port().gate(), other->port().gate());
 		}
 	}
 
@@ -105,8 +105,8 @@ result::result(
 	if (port.gate()) {
 		for (size_t n = 0; n < index; n++) {
 			auto other = region->result(n);
-			if (!other->gate()) continue;
-			jive_gate_interference_add(region->graph(), port.gate(), other->gate());
+			if (!other->port().gate()) continue;
+			jive_gate_interference_add(region->graph(), port.gate(), other->port().gate());
 		}
 	}
 }
@@ -276,8 +276,8 @@ region::copy(
 			if (!origin) origin = result(n)->origin();
 
 			auto output = dynamic_cast<jive::structural_output*>(smap.lookup(result(n)->output()));
-			if (result(n)->gate()) {
-				auto gate = result(n)->gate();
+			if (result(n)->port().gate()) {
+				auto gate = result(n)->port().gate();
 				auto new_gate = smap.lookup(gate);
 				if (!new_gate) {
 					new_gate = graph()->create_gate(gate);

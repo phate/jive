@@ -85,8 +85,8 @@ jive_i386_call_node_substitute(
 	
 	for (size_t n = node->noperands(); n < node->ninputs(); n++) {
 		auto orig_input = dynamic_cast<jive::simple_input*>(node->input(n));
-		if (orig_input->gate()) {
-			call_instr->add_input(orig_input->gate(), orig_input->origin());
+		if (orig_input->port().gate()) {
+			call_instr->add_input(orig_input->port().gate(), orig_input->origin());
 		} else {
 			call_instr->add_input(orig_input->rescls(), orig_input->origin());
 		}
