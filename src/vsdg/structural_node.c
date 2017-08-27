@@ -18,14 +18,8 @@ structural_input::~structural_input()
 
 	node()->graph()->on_input_destroy(this);
 
-	if (port().gate()) {
-		for (size_t n = 0; n < node()->ninputs(); n++) {
-			auto other = node()->input(n);
-			if (other == this || !other->port().gate())
-				continue;
-			jive_gate_interference_remove(node()->graph(), port().gate(), other->port().gate());
-		}
-	}
+	if (port().gate())
+		port().gate()->clear_interferences();
 
 	for (size_t n = index()+1; n < node()->ninputs(); n++)
 		static_cast<jive::structural_node*>(node())->input(n)->set_index(n-1);
@@ -45,7 +39,7 @@ structural_input::structural_input(
 		for (size_t n = 0; n < index; n++) {
 			auto other = node->input(n);
 			if (!other->port().gate()) continue;
-			jive_gate_interference_add(node->graph(), port.gate(), other->port().gate());
+			port.gate()->add_interference(other->port().gate());
 		}
 	}
 
@@ -66,14 +60,8 @@ structural_output::~structural_output()
 
 	node()->graph()->on_output_destroy(this);
 
-	if (port().gate()) {
-		for (size_t n = 0; n < node()->noutputs(); n++) {
-			auto other = node()->output(n);
-			if (other == this || !other->port().gate())
-				continue;
-			jive_gate_interference_remove(node()->graph(), port().gate(), other->port().gate());
-		}
-	}
+	if (port().gate())
+		port().gate()->clear_interferences();
 
 	for (size_t n = index()+1; n < node()->noutputs(); n++)
 		static_cast<jive::structural_node*>(node())->output(n)->set_index(n-1);
@@ -92,7 +80,7 @@ structural_output::structural_output(
 		for (size_t n = 0; n < index; n++) {
 			auto other = node->output(n);
 			if (!other->port().gate()) continue;
-			jive_gate_interference_add(node->graph(), port.gate(), other->port().gate());
+			port.gate()->add_interference(other->port().gate());
 		}
 	}
 

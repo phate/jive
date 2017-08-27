@@ -45,18 +45,6 @@ typedef jive::detail::intrusive_hash<
 	jive_gate_interference_part::hash_chain_accessor
 > jive_gate_interference_hash;
 
-jive_gate_interference *
-jive_gate_interference_create(jive::gate * first, jive::gate * second);
-
-void
-jive_gate_interference_destroy(jive_gate_interference * self);
-
-void
-jive_gate_interference_add(jive::graph * graph, jive::gate * first, jive::gate * second);
-
-void
-jive_gate_interference_remove(jive::graph * graph, jive::gate * first, jive::gate * second);
-
 namespace jive {
 namespace base {
 	class type;
@@ -112,6 +100,12 @@ public:
 		return rescls_;
 	}
 
+	void
+	add_interference(jive::gate * other);
+
+	void
+	clear_interferences();
+
 	struct {
 		jive::gate * prev;
 		jive::gate * next;
@@ -128,11 +122,11 @@ public:
 	}	outputs;
 
 	bool may_spill;
-	jive_gate_interference_hash interference;
 
 private:
 	std::string name_;
 	jive::graph * graph_;
+	jive_gate_interference_hash interference_;
 	const struct jive::resource_class * rescls_;
 
 	/*

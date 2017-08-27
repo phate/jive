@@ -26,14 +26,8 @@ argument::~argument() noexcept
 	if (input())
 		JIVE_LIST_REMOVE(input()->arguments, this, input_argument_list);
 
-	if (port().gate()) {
-		for (size_t n = 0; n < region()->narguments(); n++) {
-			jive::argument * other = region()->argument(n);
-			if (other == this || !other->port().gate())
-				continue;
-			jive_gate_interference_remove(region()->graph(), port().gate(), other->port().gate());
-		}
-	}
+	if (port().gate())
+		port().gate()->clear_interferences();
 
 	for (size_t n = index()+1; n < region()->narguments(); n++)
 		region()->argument(n)->set_index(n-1);
@@ -55,7 +49,7 @@ argument::argument(
 		for (size_t n = 0; n < index; n++) {
 			auto other = region->argument(n);
 			if (!other->port().gate()) continue;
-			jive_gate_interference_add(region->graph(), port.gate(), other->port().gate());
+			port.gate()->add_interference(other->port().gate());
 		}
 	}
 }
@@ -75,14 +69,8 @@ result::~result() noexcept
 	if (output())
 		JIVE_LIST_REMOVE(output()->results, this, output_result_list);
 
-	if (port().gate()) {
-		for (size_t n = 0; n < region()->nresults(); n++) {
-			jive::result * other = region()->result(n);
-			if (other == this || !other->port().gate())
-				continue;
-			jive_gate_interference_remove(region()->graph(), port().gate(), other->port().gate());
-		}
-	}
+	if (port().gate())
+		port().gate()->clear_interferences();
 
 	for (size_t n = index()+1; n < region()->nresults(); n++)
 		region()->result(n)->set_index(n-1);
@@ -106,7 +94,7 @@ result::result(
 		for (size_t n = 0; n < index; n++) {
 			auto other = region->result(n);
 			if (!other->port().gate()) continue;
-			jive_gate_interference_add(region->graph(), port.gate(), other->port().gate());
+			port.gate()->add_interference(other->port().gate());
 		}
 	}
 }

@@ -20,14 +20,8 @@ simple_input::~simple_input() noexcept
 {
 	node()->graph()->on_input_destroy(this);
 
-	if (port().gate()) {
-		for (size_t n = 0; n < node()->ninputs(); n++) {
-			auto other = dynamic_cast<jive::simple_input*>(node()->input(n));
-			if (other == this || !other->port().gate())
-				continue;
-			jive_gate_interference_remove(node()->graph(), port().gate(), other->port().gate());
-		}
-	}
+	if (port().gate())
+		port().gate()->clear_interferences();
 
 	for (size_t n = index()+1; n < node()->ninputs(); n++)
 		dynamic_cast<jive::simple_input*>(node()->input(n))->set_index(n-1);
@@ -45,7 +39,7 @@ simple_input::simple_input(
 		for (size_t n = 0; n < index; n++) {
 			auto other = dynamic_cast<jive::simple_input*>(node->input(n));
 			if (!other->port().gate()) continue;
-			jive_gate_interference_add(node->graph(), port.gate(), other->port().gate());
+			port.gate()->add_interference(other->port().gate());
 		}
 	}
 }
@@ -69,7 +63,7 @@ simple_output::simple_output(
 		for (size_t n = 0; n < index; n++) {
 			auto other = node->output(n);
 			if (!other->port().gate()) continue;
-			jive_gate_interference_add(node->graph(), port.gate(), other->port().gate());
+			port.gate()->add_interference(other->port().gate());
 		}
 	}
 }
@@ -78,14 +72,8 @@ simple_output::~simple_output() noexcept
 {
 	node_->graph()->on_output_destroy(this);
 
-	if (port().gate()) {
-		for (size_t n = 0; n < node()->noutputs(); n++) {
-			auto other = node()->output(n);
-			if (other == this || !other->port().gate())
-				continue;
-			jive_gate_interference_remove(node()->graph(), port().gate(), other->port().gate());
-		}
-	}
+	if (port().gate())
+		port().gate()->clear_interferences();
 
 	for (size_t n = index()+1; n < node()->noutputs(); n++)
 		dynamic_cast<jive::simple_output*>(node()->output(n))->set_index(n-1);
