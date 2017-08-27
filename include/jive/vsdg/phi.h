@@ -27,34 +27,6 @@ public:
 	copy() const override;
 };
 
-}
-
-static inline jive::region *
-jive_phi_region_cast(jive::region * region)
-{
-	/*
-		FIXME: remove this function
-	*/
-	if (region->node() && typeid(region->node()->operation()) == typeid(jive::phi_op))
-		return region;
-
-	return nullptr;
-}
-
-static inline const jive::region *
-jive_phi_region_const_cast(const jive::region * region)
-{
-	/*
-		FIXME: remove this function
-	*/
-	if (region->node() && typeid(region->node()->operation()) == typeid(jive::phi_op))
-		return region;
-
-	return nullptr;
-}
-
-namespace jive {
-
 class phi_builder;
 
 class recvar final {
