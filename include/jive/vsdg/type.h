@@ -4,8 +4,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_VSDG_BASETYPE_H
-#define JIVE_VSDG_BASETYPE_H
+#ifndef JIVE_VSDG_TYPE_H
+#define JIVE_VSDG_TYPE_H
 
 #include <memory>
 #include <string>

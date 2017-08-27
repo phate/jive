@@ -6,8 +6,6 @@
 
 #include <jive/arch/registers.h>
 
-#include <jive/vsdg/basetype.h>
-
 namespace jive {
 
 register_name::~register_name()

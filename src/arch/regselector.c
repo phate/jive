@@ -14,12 +14,12 @@
 #include <jive/common.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/float/flttype.h>
-#include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/nullary.h>
 #include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/traverser.h>
+#include <jive/vsdg/type.h>
 
 jive_reg_classifier::~jive_reg_classifier() noexcept
 {

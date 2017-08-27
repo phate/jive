@@ -8,7 +8,7 @@
 
 #include <jive/backend/i386/registerset.h>
 #include <jive/types/float/flttype.h>
-#include <jive/vsdg/basetype.h>
+#include <jive/vsdg/type.h>
 
 typedef enum jive_i386_classify_regcls {
 	jive_i386_classify_flags = 0,

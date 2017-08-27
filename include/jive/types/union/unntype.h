@@ -7,7 +7,7 @@
 #ifndef JIVE_TYPES_UNION_UNNTYPE_H
 #define JIVE_TYPES_UNION_UNNTYPE_H
 
-#include <jive/vsdg/basetype.h>
+#include <jive/vsdg/type.h>
 
 namespace jive {
 namespace unn {

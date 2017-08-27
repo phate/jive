@@ -3,10 +3,10 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/basetype.h>
 #include <jive/vsdg/gate.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/resource.h>
+#include <jive/vsdg/type.h>
 
 namespace jive {
 

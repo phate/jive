@@ -12,7 +12,6 @@
 
 #include <jive/common.h>
 #include <jive/util/list.h>
-#include <jive/vsdg/basetype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/section.h>
 

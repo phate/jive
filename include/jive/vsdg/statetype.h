@@ -10,7 +10,6 @@
 #include <memory>
 #include <vector>
 
-#include <jive/vsdg/basetype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/simple.h>
 

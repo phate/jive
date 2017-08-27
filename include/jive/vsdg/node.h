@@ -15,7 +15,6 @@
 
 #include <jive/util/intrusive-list.h>
 #include <jive/util/strfmt.h>
-#include <jive/vsdg/basetype.h>
 #include <jive/vsdg/gate.h>
 #include <jive/vsdg/operation.h>
 #include <jive/vsdg/resource.h>

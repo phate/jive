@@ -8,7 +8,6 @@
 #define JIVE_ARCH_MEMLAYOUT_H
 
 #include <jive/common.h>
-#include <jive/vsdg/basetype.h>
 
 #include <memory>
 #include <vector>

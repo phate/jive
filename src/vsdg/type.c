@@ -4,7 +4,7 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/basetype.h>
+#include <jive/vsdg/type.h>
 
 namespace jive {
 namespace base {

@@ -7,12 +7,12 @@
 #include <jive/vsdg/negotiator.h>
 
 #include <jive/common.h>
-#include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/traverser.h>
+#include <jive/vsdg/type.h>
 
 jive_negotiator_option::~jive_negotiator_option() noexcept
 {

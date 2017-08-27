@@ -8,9 +8,9 @@
 #define JIVE_VSDG_GRAPH_PRIVATE_H
 
 #include <jive/common.h>
-#include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/type.h>
 
 struct jive_tracker_slot_reservation {
 	jive_tracker_slot slot;

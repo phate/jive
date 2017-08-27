@@ -7,7 +7,7 @@
 #ifndef JIVE_VSDG_OPERATION_H
 #define JIVE_VSDG_OPERATION_H
 
-#include <jive/vsdg/basetype.h>
+#include <jive/vsdg/type.h>
 
 #include <memory>
 #include <string>

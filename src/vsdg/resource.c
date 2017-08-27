@@ -10,8 +10,8 @@
 
 #include <jive/internal/compiler.h>
 #include <jive/util/list.h>
-#include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/type.h>
 
 namespace jive {
 
