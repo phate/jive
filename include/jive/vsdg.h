@@ -14,6 +14,5 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/traverser.h>
-#include <jive/vsdg/types.h>
 
 #endif
