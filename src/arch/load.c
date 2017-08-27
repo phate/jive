@@ -108,36 +108,6 @@ register_node_normal_form(void)
 		typeid(jive::load_op), jive_load_get_default_normal_form_);
 }
 
-namespace {
-
-template<typename T>
-class ptr_array {
-public:
-	typedef const T value_type;
-	typedef const T * iterator;
-
-	inline ptr_array(const T * begin, const T * end) noexcept
-		: begin_(begin), end_(end)
-	{
-	}
-
-	inline iterator begin() const { return begin_; }
-	inline iterator end() const { return end_; }
-
-private:
-	const T * begin_;
-	const T * end_;
-};
-
-template<typename T>
-inline ptr_array<T>
-make_ptr_array(const T * begin, const T * end)
-{
-	return ptr_array<T>(begin, end);
-}
-
-}
-
 jive::output *
 jive_load_by_address_create(jive::output * address,
 	const jive::value::type * datatype,
