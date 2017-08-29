@@ -81,13 +81,13 @@ public:
 
 	result(const result &) = delete;
 
-	result(const result &&) = delete;
+	result(result &&) = delete;
 
 	result &
 	operator=(const result &) = delete;
 
 	result &
-	operator=(const result &&) = delete;
+	operator=(result &&) = delete;
 
 	virtual jive::node *
 	node() const noexcept override;
