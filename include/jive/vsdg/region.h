@@ -41,13 +41,13 @@ public:
 
 	argument(const argument &) = delete;
 
-	argument(const argument &&) = delete;
+	argument(argument &&) = delete;
 
 	argument &
 	operator=(const argument &) = delete;
 
 	argument &
-	operator=(const argument &&) = delete;
+	operator=(argument &&) = delete;
 
 	virtual jive::node *
 	node() const noexcept override;
