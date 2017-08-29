@@ -318,20 +318,17 @@ jive_apply_node_address_transform(const jive::node * node, size_t nbits)
 	if (!type_contains_address(fcttype))
 		return;
 
-	size_t narguments = node->ninputs()-1;
-
-	size_t n;
-	jive::output * arguments[narguments];
-	for (n = 1; n < node->ninputs(); n++) {
-		auto argument = dynamic_cast<jive::simple_input*>(node->input(n));
-		arguments[n-1] = jive_address_to_bitstring_create(
-			argument->origin(), nbits, &argument->type());
+	std::vector<jive::output*> arguments;
+	for (size_t n = 1; n < node->ninputs(); n++) {
+		auto argument = node->input(n);
+		arguments.push_back(jive_address_to_bitstring_create(
+			argument->origin(), nbits, &argument->type()));
 	}
 	auto function = jive_address_to_bitstring_create(fct->origin(), nbits, fcttype);
 
-	auto results = jive_apply_create(function, narguments, arguments);
+	auto results = jive::fct::create_apply(function, arguments);
 
-	for (n = 0; n < results.size(); n++) {
+	for (size_t n = 0; n < results.size(); n++) {
 		auto original = node->output(n);
 		auto substitute = jive_bitstring_to_address_create(results[n], nbits, &original->type());
 		original->replace(substitute);

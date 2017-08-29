@@ -162,10 +162,10 @@ unsigned int fib(unsigned int n){
 	auto two = jive_bitconstant_unsigned(lb.region(), 32, 2);
 
 	auto tmp = jive_bitsub(32, n, one);
-	tmp = jive_apply_create(dep, 1, &tmp)[0];
+	tmp = jive::fct::create_apply(dep, {tmp})[0];
 
 	auto tmp2 = jive_bitsub(32, n, two);
-	tmp2 = jive_apply_create(dep, 1, &tmp2)[0];
+	tmp2 = jive::fct::create_apply(dep, {tmp2})[0];
 
 	auto result = jive_bitsum(32, {tmp, tmp2});
 

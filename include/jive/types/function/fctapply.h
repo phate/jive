@@ -10,6 +10,7 @@
 #include <jive/types/function/fcttype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/simple.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace fct {
@@ -53,10 +54,20 @@ private:
 	std::vector<jive::port> arguments_;
 };
 
-}
+static inline std::vector<jive::output*>
+create_apply(jive::output * function, const std::vector<jive::output*> & arguments)
+{
+	auto ft = dynamic_cast<const type*>(&function->type());
+	if (!ft) throw type_error("fct", function->type().debug_string());
+
+	apply_op op(*ft);
+	std::vector<jive::output*> operands({function});
+	operands.insert(operands.end(), arguments.begin(), arguments.end());
+
+	return create_normalized(function->region(), op, operands);
 }
 
-std::vector<jive::output*>
-jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[]);
+}
+}
 
 #endif

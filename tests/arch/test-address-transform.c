@@ -136,8 +136,7 @@ test_apply_transform(void)
 	jive::fct::type fcttype({&addrtype}, {&addrtype});
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {fcttype, addrtype});
 
-	auto address = top->output(1);
-	auto results = jive_apply_create(top->output(0), 1, &address);
+	auto results = jive::fct::create_apply(top->output(0), {top->output(1)});
 
 	auto bottom = jive::test::simple_node_create(graph.root(), {addrtype}, {results.begin(),
 		results.end()}, {});
