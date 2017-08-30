@@ -7,6 +7,7 @@
 #define JIVE_TYPES_BITSTRING_ARITHMETIC_H
 
 #include <jive/types/bitstring/bitoperation-classes.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace bits {
@@ -426,58 +427,109 @@ public:
 	copy() const override;
 };
 
+static inline jive::output *
+create_and(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), and_op(nbits), {op1, op2})[0];
+}
+
+static inline jive::output *
+create_ashr(size_t nbits, jive::output * op, jive::output * shift)
+{
+	return create_normalized(op->region(), ashr_op(nbits), {op, shift})[0];
+}
+
+static inline jive::output *
+create_sub(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), sub_op(nbits), {op1, op2})[0];
+}
+
+static inline jive::output *
+create_neg(size_t nbits, jive::output * op)
+{
+	return create_normalized(op->region(), neg_op(nbits), {op})[0];
+}
+
+static inline jive::output *
+create_not(size_t nbits, jive::output * op)
+{
+	return create_normalized(op->region(), not_op(nbits), {op})[0];
+}
+
+static inline jive::output *
+create_or(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), or_op(nbits), {op1, op2})[0];
+}
+
+static inline jive::output *
+create_mul(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), mul_op(nbits), {op1, op2})[0];
+}
+
+static inline jive::output *
+create_smulh(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), smulh_op(nbits), {op1, op2})[0];
+}
+
+static inline jive::output *
+create_shl(size_t nbits, jive::output * op, jive::output * shift)
+{
+	return create_normalized(op->region(), shl_op(nbits), {op, shift})[0];
+}
+
+static inline jive::output *
+create_shr(size_t nbits, jive::output * op, jive::output * shift)
+{
+	return create_normalized(op->region(), shr_op(nbits), {op, shift})[0];
+}
+
+static inline jive::output *
+create_smod(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), smod_op(nbits), {op1, op2})[0];
+}
+
+static inline jive::output *
+create_sdiv(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), sdiv_op(nbits), {op1, op2})[0];
+}
+
+static inline jive::output *
+create_add(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), add_op(nbits), {op1, op2})[0];
+}
+
+static inline jive::output *
+create_umulh(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), umulh_op(nbits), {op1, op2})[0];
+}
+
+static inline jive::output *
+create_umod(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), umod_op(nbits), {op1, op2})[0];
+}
+
+static inline jive::output *
+create_udiv(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), udiv_op(nbits), {op1, op2})[0];
+}
+
+static inline jive::output *
+create_xor(size_t nbits, jive::output * op1, jive::output * op2)
+{
+	return create_normalized(op1->region(), xor_op(nbits), {op1, op2})[0];
+}
+
 }
 }
-
-jive::output *
-jive_bitand(size_t nbits, const std::vector<jive::output*> & operands);
-
-jive::output *
-jive_bitashr(size_t nbits, jive::output * operand, jive::output * shift);
-
-jive::output *
-jive_bitsub(size_t nbits, jive::output * op1, jive::output * op2);
-
-jive::output *
-jive_bitneg(size_t nbits, jive::output * operand);
-
-jive::output *
-jive_bitnot(size_t nbits, jive::output * operand);
-
-jive::output *
-jive_bitor(size_t nbits, const std::vector<jive::output*> & operands);
-
-jive::output *
-jive_bitmul(size_t nbits, const std::vector<jive::output*> & operands);
-
-jive::output *
-jive_bitsmulh(size_t nbits, jive::output * factor1, jive::output * factor2);
-
-jive::output *
-jive_bitsmod(size_t nbits, jive::output * operand1, jive::output * operand2);
-
-jive::output *
-jive_bitshl(size_t nbits, jive::output * operand, jive::output * shift);
-
-jive::output *
-jive_bitshr(size_t nbits, jive::output * operand, jive::output * shift);
-
-jive::output *
-jive_bitsdiv(size_t nbits, jive::output * dividend, jive::output * divisor);
-
-jive::output *
-jive_bitsum(size_t nbits, const std::vector<jive::output*> & operands);
-
-jive::output *
-jive_bitumulh(size_t nbits, jive::output * factor1, jive::output * factor2);
-
-jive::output *
-jive_bitumod(size_t nbits, jive::output * operand1, jive::output * operand2);
-
-jive::output *
-jive_bitudiv(size_t nbits, jive::output * dividend, jive::output * divisor);
-
-jive::output *
-jive_bitxor(size_t nbits, const std::vector<jive::output*> & operands);
 
 #endif
