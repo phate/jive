@@ -41,19 +41,13 @@ public:
 			arguments_.push_back(icls->input(n));
 		for (size_t n = 0; n < icls->nimmediates(); n++)
 			arguments_.push_back(immtype);
-		for (const auto & port : iports) {
-			if (!dynamic_cast<const jive::state::type*>(&port.type()))
-				throw type_error("state", port.type().debug_string());
+		for (const auto & port : iports)
 			arguments_.push_back(port);
-		}
 
 		for (size_t n = 0; n < icls->noutputs(); n++)
 			results_.push_back({icls->output(n)});
-		for (const auto & port : oports) {
-			if (!dynamic_cast<const jive::state::type*>(&port.type()))
-				throw type_error("state", port.type().debug_string());
+		for (const auto & port : oports)
 			results_.push_back(port);
-		}
 	}
 
 	virtual bool
