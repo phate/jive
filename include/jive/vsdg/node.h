@@ -249,12 +249,27 @@ public:
 	virtual bool
 	has_successors() const noexcept = 0;
 
-	virtual jive::input *
-	add_input(const jive::port & port, jive::output * origin) = 0;
+	inline size_t
+	ninputs() const noexcept
+	{
+		return inputs_.size();
+	}
 
-	virtual void
-	remove_input(size_t index) = 0;
+	inline jive::input *
+	input(size_t index) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(index < ninputs());
+		return inputs_[index].get();
+	}
 
+protected:
+	void
+	add_input(std::unique_ptr<jive::input> input);
+
+	void
+	remove_input(size_t index);
+
+public:
 	virtual jive::output *
 	add_output(const jive::port & port) = 0;
 
@@ -272,9 +287,6 @@ public:
 	{
 		return region_;
 	}
-
-	virtual size_t
-	ninputs() const noexcept = 0;
 
 	virtual size_t
 	noutputs() const noexcept = 0;
@@ -301,9 +313,6 @@ public:
 	*/
 	virtual jive::node *
 	copy(jive::region * region, jive::substitution_map & smap) const = 0;
-
-	virtual jive::input *
-	input(size_t index) const noexcept = 0;
 
 	virtual jive::output *
 	output(size_t index) const noexcept = 0;
@@ -346,6 +355,7 @@ private:
 	jive::graph * graph_;
 	jive::region * region_;
 	std::unique_ptr<jive::operation> operation_;
+	std::vector<std::unique_ptr<jive::input>> inputs_;
 };
 
 }

@@ -162,17 +162,16 @@ node::node(std::unique_ptr<jive::operation> op, jive::region * region, size_t de
 	, region_(region)
 	, operation_(std::move(op))
 {
-	if (operation().narguments() == 0)
-		JIVE_LIST_PUSH_BACK(region->top_nodes, this, region_top_node_list);
-	else
-		region_top_node_list.prev = region_top_node_list.next = nullptr;
-
-	region->nodes.push_back(this);
+	JIVE_LIST_PUSH_BACK(region->top_nodes, this, region_top_node_list);
 	JIVE_LIST_PUSH_BACK(region->bottom_nodes, this, region_bottom_list);
+	region->nodes.push_back(this);
 }
 
 node::~node()
 {
+	while (ninputs())
+		remove_input(ninputs()-1);
+
 	region_->nodes.erase(this);
 
 	JIVE_LIST_REMOVE(region()->bottom_nodes, this, region_bottom_list);
@@ -182,6 +181,34 @@ node::~node()
 
 	for (size_t n = 0; n < tracker_slots.size(); n++)
 		delete tracker_slots[n];
+}
+
+void
+node::add_input(std::unique_ptr<jive::input> input)
+{
+	if (ninputs() == 0)
+		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
+
+	auto origin = input->origin();
+	if (origin->node() && !origin->node()->has_users())
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
+
+	inputs_.push_back(std::move(input));
+}
+
+void
+node::remove_input(size_t index)
+{
+	JIVE_DEBUG_ASSERT(index < ninputs());
+
+	for (size_t n = index; n < ninputs()-1; n++) {
+		JIVE_DEBUG_ASSERT(input(n+1)->index() == n);
+		inputs_[n] = std::move(inputs_[n+1]);
+	}
+	inputs_.pop_back();
+
+	if (ninputs() == 0)
+		JIVE_LIST_PUSH_BACK(region()->top_nodes, this, region_top_node_list);
 }
 
 void

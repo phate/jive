@@ -96,23 +96,26 @@ public:
 		return subregions_[index].get();
 	}
 
-	virtual size_t
-	ninputs() const noexcept override;
+	inline jive::structural_input *
+	input(size_t index) const noexcept
+	{
+		return static_cast<structural_input*>(node::input(index));
+	}
 
-	virtual jive::structural_input *
-	input(size_t index) const noexcept override;
+	jive::structural_input *
+	add_input(const jive::port & port, jive::output * origin);
+
+	inline void
+	remove_input(size_t index)
+	{
+		node::remove_input(index);
+	}
 
 	virtual size_t
 	noutputs() const noexcept override;
 
 	virtual jive::structural_output *
 	output(size_t index) const noexcept override;
-
-	virtual jive::structural_input *
-	add_input(const jive::port & port, jive::output * origin) override;
-
-	virtual void
-	remove_input(size_t index) override;
 
 	virtual jive::structural_output *
 	add_output(const jive::port & port) override;
@@ -128,7 +131,6 @@ public:
 
 private:
 	std::vector<std::unique_ptr<jive::region>> subregions_;
-	std::vector<std::unique_ptr<structural_input>> inputs_;
 	std::vector<std::unique_ptr<structural_output>> outputs_;
 };
 

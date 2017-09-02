@@ -76,11 +76,11 @@ public:
 	virtual bool
 	has_successors() const noexcept override;
 
-	virtual size_t
-	ninputs() const noexcept override;
-
-	virtual jive::simple_input *
-	input(size_t index) const noexcept override;
+	inline jive::simple_input *
+	input(size_t index) const noexcept
+	{
+		return static_cast<simple_input*>(node::input(index));
+	}
 
 	virtual size_t
 	noutputs() const noexcept override;
@@ -95,19 +95,12 @@ public:
 	copy(jive::region * region, jive::substitution_map & smap) const override;
 
 private:
-	virtual jive::simple_input *
-	add_input(const jive::port & port, jive::output * origin) override;
-
-	virtual void
-	remove_input(size_t index) override;
-
 	virtual jive::simple_output *
 	add_output(const jive::port & port) override;
 
 	virtual void
 	remove_output(size_t index) override;
 
-	std::vector<std::unique_ptr<jive::simple_input>> inputs_;
 	std::vector<std::unique_ptr<jive::simple_output>> outputs_;
 };
 

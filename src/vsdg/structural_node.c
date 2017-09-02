@@ -101,9 +101,6 @@ structural_node::~structural_node()
 
 	subregions_.clear();
 
-	while (ninputs())
-		remove_input(ninputs()-1);
-
 	while(noutputs())
 		remove_output(noutputs()-1);
 }
@@ -146,19 +143,6 @@ structural_node::has_successors() const noexcept
 }
 
 size_t
-structural_node::ninputs() const noexcept
-{
-	return inputs_.size();
-}
-
-jive::structural_input *
-structural_node::input(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < ninputs());
-	return inputs_[index].get();
-}
-
-size_t
 structural_node::noutputs() const noexcept
 {
 	return outputs_.size();
@@ -174,34 +158,9 @@ structural_node::output(size_t index) const noexcept
 jive::structural_input *
 structural_node::add_input(const jive::port & port, jive::output * origin)
 {
-	if (ninputs() == 0)
-		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
-
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-
-	inputs_.emplace_back(std::unique_ptr<structural_input>(
-		new structural_input(this, inputs_.size(), origin, port)));
-	auto input = inputs_[inputs_.size()-1].get();
-
-	recompute_depth();
-
-	return input;
-}
-
-void
-structural_node::remove_input(size_t index)
-{
-	JIVE_DEBUG_ASSERT(index < inputs_.size());
-
-	for (size_t n = index; n < ninputs()-1; n++) {
-		JIVE_DEBUG_ASSERT(input(n+1)->index() == n);
-		inputs_[n] = std::move(inputs_[n+1]);
-	}
-	inputs_.pop_back();
-
-	if (ninputs() == 0)
-		JIVE_LIST_PUSH_BACK(region()->top_nodes, this, region_top_node_list);
+	node::add_input(std::unique_ptr<jive::input>(
+		new structural_input(this, ninputs(), origin, port)));
+	return input(ninputs()-1);
 }
 
 jive::structural_output *

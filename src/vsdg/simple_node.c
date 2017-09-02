@@ -91,9 +91,6 @@ simple_node::~simple_node()
 {
 	graph()->on_node_destroy(this);
 
-	while (ninputs())
-		remove_input(ninputs()-1);
-
 	while(noutputs())
 		remove_output(noutputs()-1);
 }
@@ -112,34 +109,14 @@ simple_node::simple_node(
 			operation().narguments(), ", received ", operands.size(), " arguments."));
 
 	for (size_t n = 0; n < operation().narguments(); n++) {
-		if (operation().argument(n).rescls() != &jive_root_resource_class) {
-			inputs_.emplace_back(std::make_unique<jive::simple_input>(
-				this, n, operands[n], operation().argument(n).rescls()));
-		} else {
-			inputs_.emplace_back(std::make_unique<jive::simple_input>(
-				this, n, operands[n], operation().argument(n).type()));
-		}
+		node::add_input(std::move(std::unique_ptr<jive::input>(
+			new simple_input(this, n, operands[n], operation().argument(n)))));
 	}
 
 	for (size_t n = 0; n < operation().nresults(); n++)
 		outputs_.emplace_back(std::make_unique<jive::simple_output>(this, n, operation().result(n)));
 
-	JIVE_DEBUG_ASSERT(operation().narguments() == inputs_.size());
-
 	graph()->on_node_create(this);
-}
-
-size_t
-simple_node::ninputs() const noexcept
-{
-	return inputs_.size();
-}
-
-jive::simple_input *
-simple_node::input(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < ninputs());
-	return inputs_[index].get();
 }
 
 size_t
@@ -177,27 +154,6 @@ simple_node::has_successors() const noexcept
 	}
 
 	return false;
-}
-
-jive::simple_input *
-simple_node::add_input(const jive::port & port, jive::output * origin)
-{
-	JIVE_ASSERT(0);
-}
-
-void
-simple_node::remove_input(size_t index)
-{
-	JIVE_DEBUG_ASSERT(index < inputs_.size());
-
-	for (size_t n = index; n < ninputs()-1; n++) {
-		JIVE_DEBUG_ASSERT(input(n+1)->index() == n);
-		inputs_[n] = std::move(inputs_[n+1]);
-	}
-	inputs_.pop_back();
-
-	if (ninputs() == 0)
-		JIVE_LIST_PUSH_BACK(region()->top_nodes, this, region_top_node_list);
 }
 
 jive::simple_output *
