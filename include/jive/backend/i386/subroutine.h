@@ -14,8 +14,4 @@ jive_i386_subroutine_begin(jive::graph * graph,
 	size_t nparameters, const jive_argument_type parameter_types[],
 	size_t nreturns, const jive_argument_type return_types[]);
 
-/* convert according to "default" ABI */
-jive::node *
-jive_i386_subroutine_convert(jive::region * target_parent, jive::node * lambda_node);
-
 #endif
