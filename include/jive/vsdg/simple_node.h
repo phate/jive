@@ -88,9 +88,6 @@ public:
 	virtual jive::simple_output *
 	output(size_t index) const noexcept override;
 
-	virtual jive::simple_input *
-	add_input(const jive::port & port, jive::output * origin) override;
-
 	virtual void
 	remove_input(size_t index) override;
 
@@ -107,6 +104,9 @@ public:
 	copy(jive::region * region, jive::substitution_map & smap) const override;
 
 private:
+	virtual jive::simple_input *
+	add_input(const jive::port & port, jive::output * origin) override;
+
 	std::vector<std::unique_ptr<jive::simple_input>> inputs_;
 	std::vector<std::unique_ptr<jive::simple_output>> outputs_;
 };

@@ -182,16 +182,7 @@ simple_node::has_successors() const noexcept
 jive::simple_input *
 simple_node::add_input(const jive::port & port, jive::output * origin)
 {
-	if (ninputs() == 0)
-		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
-
-	inputs_.emplace_back(std::make_unique<jive::simple_input>(this, ninputs(), origin, port));
-	auto input = this->input(ninputs()-1);
-
-	recompute_depth();
-	graph()->on_input_create(input);
-
-	return input;
+	JIVE_ASSERT(0);
 }
 
 void
