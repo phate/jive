@@ -965,11 +965,11 @@ static int types_bitstring_test_normalize(void)
 
 	auto sum0 = jive::bits::create_add(32, imp, c0);
 	assert(sum0->node()->operation() == jive::bits::add_op(32));
-	assert(sum0->node()->noperands() == 2);
+	assert(sum0->node()->ninputs() == 2);
 
 	auto sum1 = jive::bits::create_add(32, sum0, c1);
 	assert(sum1->node()->operation() == jive::bits::add_op(32));
-	assert(sum1->node()->noperands() == 2);
+	assert(sum1->node()->ninputs() == 2);
 
 	auto exp = graph.export_port(sum1, "dummy");
 
@@ -978,7 +978,7 @@ static int types_bitstring_test_normalize(void)
 	graph.prune();
 
 	assert(exp->origin()->node()->operation() == jive::bits::add_op(32));
-	assert(exp->origin()->node()->noperands() == 2);
+	assert(exp->origin()->node()->ninputs() == 2);
 	auto op1 = exp->origin()->node()->input(0)->origin();
 	auto op2 = exp->origin()->node()->input(1)->origin();
 	if (!op1->node()) {

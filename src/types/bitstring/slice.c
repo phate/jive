@@ -99,7 +99,7 @@ slice_op::reduce_operand(
 	if (path == jive_unop_reduction_distribute) {
 		size_t pos = 0, n;
 		std::vector<jive::output*> arguments;
-		for (n = 0; n < arg->node()->noperands(); n++) {
+		for (n = 0; n < arg->node()->ninputs(); n++) {
 			auto argument = arg->node()->input(n)->origin();
 			size_t base = pos;
 			size_t nbits = static_cast<const jive::bits::type&>(argument->type()).nbits();

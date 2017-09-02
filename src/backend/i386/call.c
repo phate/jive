@@ -24,7 +24,7 @@ jive_i386_call_node_substitute(
 	const jive::call_operation & op)
 {
 	jive::region * region = node->region();
-	size_t nargs = node->noperands() - 1;
+	size_t nargs = node->ninputs() - 1;
 
 	std::vector<jive::port> iports;
 	std::vector<jive::port> oports;
@@ -62,11 +62,6 @@ jive_i386_call_node_substitute(
 		auto split = jive_splitnode_create(node->region(), value, value_cls, slot_cls);
 		iports.push_back(slot_cls);
 		operands.push_back(split->output(0));
-	}
-
-	for (size_t n = node->noperands(); n < node->ninputs(); n++) {
-		iports.push_back(node->input(n)->port());
-		operands.push_back(node->input(n)->origin());
 	}
 
 	oports.push_back(&jive_i386_regcls_gpr_eax);

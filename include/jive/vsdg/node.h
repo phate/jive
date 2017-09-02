@@ -249,12 +249,6 @@ public:
 	virtual bool
 	has_successors() const noexcept = 0;
 
-	inline size_t
-	noperands() const noexcept
-	{
-		return operation_->narguments();
-	}
-
 	virtual jive::input *
 	add_input(const jive::port & port, jive::output * origin) = 0;
 
@@ -415,7 +409,7 @@ static inline std::vector<jive::output*>
 jive_node_arguments(const jive::node * self)
 {
 	std::vector<jive::output*> arguments;
-	for (size_t n = 0; n < self->noperands(); ++n) {
+	for (size_t n = 0; n < self->ninputs(); ++n) {
 		arguments.push_back(self->input(n)->origin());
 	}
 	return arguments;
