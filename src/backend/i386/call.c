@@ -27,6 +27,7 @@ jive_i386_call_node_substitute(
 	size_t nargs = node->noperands() - 1;
 
 	std::vector<jive::port> iports;
+	std::vector<jive::port> oports;
 	std::vector<jive::output*> operands;
 
 	const jive::instruction_class * icls;
@@ -68,35 +69,23 @@ jive_i386_call_node_substitute(
 		operands.push_back(node->input(n)->origin());
 	}
 
-	auto call_instr = jive::create_instruction(region, icls, operands, iports, {});
+	oports.push_back(&jive_i386_regcls_gpr_eax);
+	oports.push_back(&jive_i386_regcls_gpr_edx);
+	oports.push_back(&jive_i386_regcls_gpr_ecx);
+	oports.push_back(&jive_i386_regcls_flags);
+	for (size_t n = op.nresults(); n < node->noutputs(); n++)
+		oports.push_back(node->output(n)->port());
 
-
-	/* mark caller-saved regs as clobbered */
-	auto clobber_eax = call_instr->add_output(&jive_i386_regcls_gpr_eax);
-	auto clobber_edx = call_instr->add_output(&jive_i386_regcls_gpr_edx);
-	auto clobber_ecx = call_instr->add_output(&jive_i386_regcls_gpr_ecx);
-	auto clobber_flags = call_instr->add_output(&jive_i386_regcls_flags);
-	(void) clobber_edx;
-	(void) clobber_ecx;
-	(void) clobber_flags;
+	auto call = jive::create_instruction(region, icls, operands, iports, oports);
 
 	JIVE_DEBUG_ASSERT(op.nresults() <= 1);
-	
 	if (op.nresults() == 1) {
 		/* FIXME: assumes  int32 */
-		node->output(0)->replace(clobber_eax);
+		node->output(0)->replace(call->output(0));
 	}
 
-	for (size_t n = op.nresults(); n < node->noutputs(); n++) {
-		auto orig_output = dynamic_cast<jive::simple_output*>(node->output(n));
-		jive::output * new_output;
-		if (orig_output->port().gate()) {
-			new_output = call_instr->add_output(orig_output->port().gate());
-		} else {
-			new_output = call_instr->add_output(orig_output->port().rescls());
-		}
-		orig_output->replace(new_output);
-	}
-	
-	return call_instr;
+	for (size_t n = 4; n < node->noutputs(); n++)
+		node->output(n)->replace(call->output(n));
+
+	return call;
 }

@@ -243,22 +243,7 @@ simple_node::copy(jive::region * region, jive::substitution_map & smap) const
 
 	jive::node * new_node = copy(region, operands);
 	JIVE_DEBUG_ASSERT(noperands() == ninputs());
-
-	for (size_t n = new_node->noutputs(); n < noutputs(); n++) {
-		if (output(n)->port().gate()) {
-			auto gate = output(n)->port().gate();
-
-			jive::gate * target_gate = smap.lookup(gate);
-			if (!target_gate) {
-				target_gate = region->graph()->create_gate(gate);
-				smap.insert(gate, target_gate);
-			}
-
-			new_node->add_output(target_gate);
-		} else {
-			new_node->add_output(this->output(n)->port().rescls());
-		}
-	}
+	JIVE_DEBUG_ASSERT(new_node->noutputs() == noutputs());
 
 	for (size_t n = 0; n < new_node->noutputs(); n++)
 		smap.insert(output(n), new_node->output(n));

@@ -460,6 +460,7 @@ static void
 match_gpr_load(jive::node * node)
 {
 	std::vector<jive::port> iports;
+	std::vector<jive::port> oports;
 	std::vector<jive::output*> operands;
 
 	jive_i386_addr_info info = classify_address(node->input(0)->origin());
@@ -474,26 +475,22 @@ match_gpr_load(jive::node * node)
 		operands.push_back(node->input(n)->origin());
 	}
 
-	auto instr = jive::create_instruction(node->region(),
-		&jive::i386::instr_int_load32_disp::instance(), operands, iports, {});
-	node->output(0)->replace(instr->output(0));
+	for (size_t n = 1; n < node->noutputs(); n++)
+		oports.push_back(node->output(n)->port());
 
-	
-	for (size_t n = 1; n < node->noutputs(); n++) {
-		jive::output * output = node->output(n);
-		jive::output * rep;
-		if (output->port().gate())
-			rep = instr->add_output(output->port().gate());
-		else
-			rep = instr->add_output(output->type());
-		output->replace(rep);
-	}
+	auto instr = jive::create_instruction(node->region(),
+		&jive::i386::instr_int_load32_disp::instance(), operands, iports, oports);
+
+	node->output(0)->replace(instr->output(0));
+	for (size_t n = 1; n < node->noutputs(); n++)
+		node->output(n)->replace(instr->output(n));
 }
 
 static void
 match_gpr_store(jive::node * node)
 {
 	std::vector<jive::port> iports;
+	std::vector<jive::port> oports;
 	std::vector<jive::output*> operands;
 
 	jive_i386_addr_info info = classify_address(node->input(0)->origin());
@@ -509,18 +506,14 @@ match_gpr_store(jive::node * node)
 		operands.push_back(node->input(n)->origin());
 	}
 
-	auto instr = jive::create_instruction(node->region(),
-		&jive::i386::instr_int_store32_disp::instance(), operands, iports, {});
+	for (size_t n = 0; n < node->noutputs(); n++)
+		oports.push_back(node->output(n)->port());
 
-	for (size_t n = 0; n < node->noutputs(); n++) {
-		auto output = node->output(n);
-		jive::output * rep;
-		if (output->port().gate())
-			rep = instr->add_output(output->port().gate());
-		else
-			rep = instr->add_output(output->type());
-		output->replace(rep);
-	}
+	auto instr = jive::create_instruction(node->region(),
+		&jive::i386::instr_int_store32_disp::instance(), operands, iports, oports);
+
+	for (size_t n = 0; n < node->noutputs(); n++)
+		node->output(n)->replace(instr->output(n));
 }
 
 static void
