@@ -203,12 +203,7 @@ simple_node::remove_input(size_t index)
 jive::simple_output *
 simple_node::add_output(const jive::port & port)
 {
-	outputs_.emplace_back(std::make_unique<jive::simple_output>(this, noutputs(), port));
-	auto output = outputs_[noutputs()-1].get();
-
-	graph()->on_output_create(output);
-
-	return output;
+	JIVE_ASSERT(0);
 }
 
 void
