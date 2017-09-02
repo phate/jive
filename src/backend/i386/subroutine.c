@@ -159,11 +159,10 @@ public:
 	finalize(
 		jive_subroutine & subroutine) override
 	{
+		auto ptgate = subroutine.builder_state->passthroughs[6].gate;
+		auto ptoperand = subroutine.builder_state->passthroughs[6].output;
 		auto ret_instr = create_instruction(subroutine.region, &jive::i386::instr_ret::instance(),
-			{}, {}, {jive::ctl::boolean});
-		/* add dependency on return address on stack */
-			ret_instr->add_input(subroutine.builder_state->passthroughs[6].gate,
-				subroutine.builder_state->passthroughs[6].output);
+			{ptoperand}, {ptgate}, {jive::ctl::boolean});
 		return dynamic_cast<jive::simple_output*>(ret_instr->output(0));
 	}
 };
@@ -289,7 +288,9 @@ jive_i386_subroutine_add_fp_dependency_(
 		if (input->origin() == frameptr)
 			return NULL;
 	}
-	return dynamic_cast<jive::simple_input*>(node->add_input(frameptr->type(), frameptr));
+	/* FIXME */
+	JIVE_ASSERT(0);
+	return nullptr;
 }
 
 static jive::simple_input *
@@ -304,5 +305,7 @@ jive_i386_subroutine_add_sp_dependency_(
 		if (input->origin() == stackptr)
 			return NULL;
 	}
-	return dynamic_cast<jive::simple_input*>(node->add_input(stackptr->type(), stackptr));
+	/* FIXME */
+	JIVE_ASSERT(0);
+	return nullptr;
 }

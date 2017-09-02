@@ -459,31 +459,27 @@ classify_address(jive::output * output)
 static void
 match_gpr_load(jive::node * node)
 {
+	std::vector<jive::port> iports;
+	std::vector<jive::output*> operands;
+
 	jive_i386_addr_info info = classify_address(node->input(0)->origin());
-	
-	jive::node * instr;
-	jive::output * value;
-	switch (info.mode) {
-		case jive_i386_addr_mode_disp: {
-			jive::immediate imm(info.info.disp.offset);
-			auto tmp = jive_immediate_create(node->region(), &imm);
-			instr = jive::create_instruction(node->region(),
-				&jive::i386::instr_int_load32_disp::instance(), {info.info.disp.base, tmp});
-			value = instr->output(0);
-			break;
-		}
+	JIVE_DEBUG_ASSERT(info.mode == jive_i386_addr_mode_disp);
+
+	jive::immediate imm(info.info.disp.offset);
+	operands.push_back(info.info.disp.base);
+	operands.push_back(jive_immediate_create(node->region(), &imm));
+
+	for (size_t n = 1; n < node->ninputs(); n++) {
+		iports.push_back(node->input(n)->port());
+		operands.push_back(node->input(n)->origin());
 	}
+
+	auto instr = jive::create_instruction(node->region(),
+		&jive::i386::instr_int_load32_disp::instance(), operands, iports, {});
+	node->output(0)->replace(instr->output(0));
+
 	
-	node->output(0)->replace(value);
-	size_t n;
-	for (n = 1; n < node->ninputs(); n++) {
-		auto input = node->input(n);
-		if (input->port().gate())
-			instr->add_input(input->port().gate(), input->origin());
-		else
-			instr->add_input(input->type(), input->origin());
-	}
-	for (n = 1; n < node->noutputs(); n++) {
+	for (size_t n = 1; n < node->noutputs(); n++) {
 		jive::output * output = node->output(n);
 		jive::output * rep;
 		if (output->port().gate())
@@ -497,29 +493,26 @@ match_gpr_load(jive::node * node)
 static void
 match_gpr_store(jive::node * node)
 {
+	std::vector<jive::port> iports;
+	std::vector<jive::output*> operands;
+
 	jive_i386_addr_info info = classify_address(node->input(0)->origin());
-	auto value = node->input(1)->origin();
-	
-	jive::node * instr;
-	switch (info.mode) {
-		case jive_i386_addr_mode_disp: {
-			jive::immediate imm(info.info.disp.offset);
-			auto tmp = jive_immediate_create(node->region(), &imm);
-			instr = jive::create_instruction(node->region(),
-				&jive::i386::instr_int_store32_disp::instance(), {info.info.disp.base, value, tmp});
-			break;
-		}
+	JIVE_DEBUG_ASSERT(info.mode == jive_i386_addr_mode_disp);
+
+	jive::immediate imm(info.info.disp.offset);
+	operands.push_back(info.info.disp.base);
+	operands.push_back(node->input(1)->origin());
+	operands.push_back(jive_immediate_create(node->region(), &imm));
+
+	for (size_t n = 2; n < node->ninputs(); n++) {
+		iports.push_back(node->input(n)->port());
+		operands.push_back(node->input(n)->origin());
 	}
-	
-	size_t n;
-	for (n = 2; n < node->ninputs(); n++) {
-		auto input = node->input(n);
-		if (input->port().gate())
-			instr->add_input(input->port().gate(), input->origin());
-		else
-			instr->add_input(input->type(), input->origin());
-	}
-	for (n = 0; n < node->noutputs(); n++) {
+
+	auto instr = jive::create_instruction(node->region(),
+		&jive::i386::instr_int_store32_disp::instance(), operands, iports, {});
+
+	for (size_t n = 0; n < node->noutputs(); n++) {
 		auto output = node->output(n);
 		jive::output * rep;
 		if (output->port().gate())

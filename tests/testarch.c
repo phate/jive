@@ -205,8 +205,9 @@ create_xfer(jive::region * region, jive::simple_output * origin,
 		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
 		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->add_output(out_class->type()));
 	} else if (out_relaxed == CLS(gpr)) {
-		xfer.node = create_instruction(region, &jive::testarch::instr_restore_gpr::instance(), {});
-		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->add_input(in_class->type(), origin));
+		xfer.node = create_instruction(region, &jive::testarch::instr_restore_gpr::instance(),
+			{origin}, {in_class->type()}, {});
+		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
 		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
 	} else {
 		JIVE_DEBUG_ASSERT(false);
@@ -358,10 +359,10 @@ public:
 	finalize(
 		jive_subroutine & subroutine) override
 	{
+		auto & ptgate = subroutine.builder_state->passthroughs[1].gate;
+		auto & ptorigin = subroutine.builder_state->passthroughs[1].output;
 		auto ret_instr = create_instruction(subroutine.region,
-			&jive::testarch::instr_ret::instance(), {}, {}, {jive::ctl::boolean});
-		ret_instr->add_input(subroutine.builder_state->passthroughs[1].gate,
-			subroutine.builder_state->passthroughs[1].output);
+			&jive::testarch::instr_ret::instance(), {ptorigin}, {ptgate}, {jive::ctl::boolean});
 		return dynamic_cast<jive::simple_output*>(ret_instr->output(0));
 	}
 };

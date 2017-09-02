@@ -5,7 +5,6 @@ TESTS+=\
 	arch/test-dynamic-stackslots \
 	arch/test-label-nodes \
 	arch/test-load \
-	arch/test-memory-type \
 	arch/test-regselect \
 	arch/test-relocation \
 	arch/test-sizeof \

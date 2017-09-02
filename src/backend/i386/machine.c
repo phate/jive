@@ -49,8 +49,8 @@ jive_i386_create_xfer(jive::region * region, jive::simple_output * origin,
 		get_slot_memory_reference(in_class, &displacement, &base, sp, fp);
 		auto imm = jive_immediate_create(region, &displacement);
 		xfer.node = jive::create_instruction(region, &jive::i386::instr_int_load32_disp::instance(),
-			{base, imm});
-		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->add_input(in_class, origin));
+			{base, imm, origin}, {in_class}, {});
+		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(2));
 		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
 	} else if (out_mem) {
 		jive::output * base;
