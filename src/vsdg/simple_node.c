@@ -124,20 +124,19 @@ simple_node::copy(jive::region * region, const std::vector<jive::output*> & oper
 jive::node *
 simple_node::copy(jive::region * region, jive::substitution_map & smap) const
 {
-	std::vector<jive::output*> operands(ninputs());
+	std::vector<jive::output*> operands;
 	for (size_t n = 0; n < ninputs(); n++) {
-		operands[n] = smap.lookup(input(n)->origin());
-		if (!operands[n])
-			operands[n] = input(n)->origin();
+		auto operand = smap.lookup(input(n)->origin());
+		operands.push_back(operand ? operand : input(n)->origin());
 	}
 
-	auto new_node = copy(region, operands);
-	JIVE_DEBUG_ASSERT(new_node->noutputs() == noutputs());
+	auto node = copy(region, operands);
 
-	for (size_t n = 0; n < new_node->noutputs(); n++)
-		smap.insert(output(n), new_node->output(n));
+	JIVE_DEBUG_ASSERT(node->noutputs() == noutputs());
+	for (size_t n = 0; n < node->noutputs(); n++)
+		smap.insert(output(n), node->output(n));
 
-	return new_node;
+	return node;
 }
 
 

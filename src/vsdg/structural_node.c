@@ -147,7 +147,7 @@ jive::structural_node *
 structural_node::copy(jive::region * region, jive::substitution_map & smap) const
 {
 	graph()->mark_denormalized();
-	auto new_node = new structural_node(*static_cast<const structural_op*>(&operation()), region, 0);
+	auto node = region->add_structural_node(*static_cast<const structural_op*>(&operation()), 0);
 
 	/* copy inputs */
 	for (size_t n = 0; n < ninputs(); n++) {
@@ -163,11 +163,9 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 				smap.insert(gate, new_gate);
 			}
 
-			new_input = new_node->add_input(new_gate, origin);
-		} else if (input(n)->port().rescls() != &jive_root_resource_class) {
-			new_input = new_node->add_input(input(n)->port().rescls(), origin);
+			new_input = node->add_input(new_gate, origin);
 		} else {
-			new_input = new_node->add_input(input(n)->type(), origin);
+			new_input = node->add_input(input(n)->port(), origin);
 		}
 		smap.insert(input(n), new_input);
 	}
@@ -183,23 +181,20 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 				smap.insert(gate, new_gate);
 			}
 
-			new_output = new_node->add_output(new_gate);
-		} else if (output(n)->port().rescls() != &jive_root_resource_class) {
-			new_output = new_node->add_output(output(n)->port().rescls());
+			new_output = node->add_output(new_gate);
 		} else {
-			new_output = new_node->add_output(output(n)->type());
+			new_output = node->add_output(output(n)->port());
 		}
 		smap.insert(output(n), new_output);
 	}
 
 	/* copy regions */
 	for (size_t n = 0; n < nsubregions(); n++) {
-		new_node->subregions_.emplace_back(std::unique_ptr<jive::region>(new jive::region(new_node)));
-		auto new_subregion = new_node->subregions_.back().get();
-		subregion(n)->copy(new_subregion, smap, true, true);
+		node->subregions_.emplace_back(std::make_unique<jive::region>(node));
+		subregion(n)->copy(node->subregions_.back().get(), smap, true, true);
 	}
 
-	return new_node;
+	return node;
 }
 
 }
