@@ -201,7 +201,7 @@ region::add_simple_node(const jive::simple_op & op, const std::vector<jive::outp
 }
 
 jive::structural_node *
-region::add_structural_node(const jive::operation & op, size_t nsubregions)
+region::add_structural_node(const jive::structural_op & op, size_t nsubregions)
 {
 	return new jive::structural_node(op, this, nsubregions);
 }

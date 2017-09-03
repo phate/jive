@@ -5,6 +5,7 @@
 
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/structural.h>
 #include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/substitution.h>
 
@@ -103,7 +104,7 @@ structural_node::~structural_node()
 }
 
 structural_node::structural_node(
-	const jive::operation & op,
+	const jive::structural_op & op,
 	jive::region * region,
 	size_t nsubregions)
 	: node(op.copy(), region, 0)
@@ -147,7 +148,7 @@ jive::structural_node *
 structural_node::copy(jive::region * region, jive::substitution_map & smap) const
 {
 	graph()->mark_denormalized();
-	jive::structural_node * new_node = new structural_node(operation(), region, 0);
+	auto new_node = new structural_node(*static_cast<const structural_op*>(&operation()), region, 0);
 
 	/* copy inputs */
 	for (size_t n = 0; n < ninputs(); n++) {

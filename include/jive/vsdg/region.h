@@ -27,6 +27,7 @@ class node;
 class simple_node;
 class simple_op;
 class structural_input;
+class structural_op;
 class structural_output;
 
 class argument final : public output {
@@ -172,7 +173,7 @@ public:
 	add_simple_node(const jive::simple_op & op, const std::vector<jive::output*> & operands);
 
 	jive::structural_node *
-	add_structural_node(const jive::operation & op, size_t nsubregions);
+	add_structural_node(const jive::structural_op & op, size_t nsubregions);
 
 	void
 	remove_node(jive::node * node);

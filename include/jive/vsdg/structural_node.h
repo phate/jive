@@ -12,6 +12,7 @@ namespace jive {
 
 class argument;
 class result;
+class structural_op;
 class structural_node;
 
 class structural_input final : public input {
@@ -73,7 +74,7 @@ public:
 	~structural_node();
 
 	structural_node(
-		const jive::operation & op,
+		const jive::structural_op & op,
 		jive::region * region,
 		size_t nsubregions);
 
