@@ -172,6 +172,9 @@ node::~node()
 	while (ninputs())
 		remove_input(ninputs()-1);
 
+	while(noutputs())
+		remove_output(noutputs()-1);
+
 	region_->nodes.erase(this);
 
 	JIVE_LIST_REMOVE(region()->bottom_nodes, this, region_bottom_list);
@@ -209,6 +212,18 @@ node::remove_input(size_t index)
 
 	if (ninputs() == 0)
 		JIVE_LIST_PUSH_BACK(region()->top_nodes, this, region_top_node_list);
+}
+
+void
+node::remove_output(size_t index)
+{
+	JIVE_DEBUG_ASSERT(index < noutputs());
+
+	for (size_t n = index; n < noutputs()-1; n++) {
+		JIVE_DEBUG_ASSERT(output(n+1)->index() == n);
+		outputs_[n] = std::move(outputs_[n+1]);
+	}
+	outputs_.pop_back();
 }
 
 void

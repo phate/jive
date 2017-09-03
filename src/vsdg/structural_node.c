@@ -100,9 +100,6 @@ structural_node::~structural_node()
 	graph()->on_node_destroy(this);
 
 	subregions_.clear();
-
-	while(noutputs())
-		remove_output(noutputs()-1);
 }
 
 structural_node::structural_node(
@@ -118,43 +115,6 @@ structural_node::structural_node(
 	graph()->on_node_create(this);
 }
 
-bool
-structural_node::has_users() const noexcept
-{
-	for (const auto & output : outputs_) {
-		if (output->nusers() != 0)
-			return true;
-	}
-
-	return false;
-}
-
-bool
-structural_node::has_successors() const noexcept
-{
-	for (const auto & output : outputs_) {
-		for (const auto & user : *output) {
-			if (user->node())
-				return true;
-		}
-	}
-
-	return false;
-}
-
-size_t
-structural_node::noutputs() const noexcept
-{
-	return outputs_.size();
-}
-
-jive::structural_output *
-structural_node::output(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < noutputs());
-	return outputs_[index].get();
-}
-
 jive::structural_input *
 structural_node::add_input(const jive::port & port, jive::output * origin)
 {
@@ -166,21 +126,9 @@ structural_node::add_input(const jive::port & port, jive::output * origin)
 jive::structural_output *
 structural_node::add_output(const jive::port & port)
 {
-	outputs_.emplace_back(std::unique_ptr<structural_output>(
+	node::add_output(std::unique_ptr<structural_output>(
 		new structural_output(this, noutputs(), port)));
-	return this->output(noutputs()-1);
-}
-
-void
-structural_node::remove_output(size_t index)
-{
-	JIVE_DEBUG_ASSERT(index < outputs_.size());
-
-	for (size_t n = index; n < noutputs()-1; n++) {
-		JIVE_DEBUG_ASSERT(output(n+1)->index() == n);
-		outputs_[n] = std::move(outputs_[n+1]);
-	}
-	outputs_.pop_back();
+	return output(noutputs()-1);
 }
 
 jive::structural_node *

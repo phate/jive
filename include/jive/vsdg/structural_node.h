@@ -77,12 +77,6 @@ public:
 		jive::region * region,
 		size_t nsubregions);
 
-	virtual bool
-	has_users() const noexcept override;
-
-	virtual bool
-	has_successors() const noexcept override;
-
 	inline size_t
 	nsubregions() const noexcept
 	{
@@ -102,8 +96,17 @@ public:
 		return static_cast<structural_input*>(node::input(index));
 	}
 
+	inline jive::structural_output *
+	output(size_t index) const noexcept
+	{
+		return static_cast<structural_output*>(node::output(index));
+	}
+
 	jive::structural_input *
 	add_input(const jive::port & port, jive::output * origin);
+
+	jive::structural_output *
+	add_output(const jive::port & port);
 
 	inline void
 	remove_input(size_t index)
@@ -111,17 +114,11 @@ public:
 		node::remove_input(index);
 	}
 
-	virtual size_t
-	noutputs() const noexcept override;
-
-	virtual jive::structural_output *
-	output(size_t index) const noexcept override;
-
-	virtual jive::structural_output *
-	add_output(const jive::port & port) override;
-
-	virtual void
-	remove_output(size_t index) override;
+	inline void
+	remove_output(size_t index)
+	{
+		node::remove_output(index);
+	}
 
 	virtual jive::structural_node *
 	copy(jive::region * region, const std::vector<jive::output*> & operands) const override;
@@ -131,7 +128,6 @@ public:
 
 private:
 	std::vector<std::unique_ptr<jive::region>> subregions_;
-	std::vector<std::unique_ptr<structural_output>> outputs_;
 };
 
 }

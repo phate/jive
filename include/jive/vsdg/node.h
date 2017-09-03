@@ -243,11 +243,29 @@ public:
 		return *operation_;
 	}
 
-	virtual bool
-	has_users() const noexcept = 0;
+	inline bool
+	has_users() const noexcept
+	{
+		for (const auto & output : outputs_) {
+			if (output->nusers() != 0)
+				return true;
+		}
 
-	virtual bool
-	has_successors() const noexcept = 0;
+		return false;
+	}
+
+	inline bool
+	has_successors() const noexcept
+	{
+		for (const auto & output : outputs_) {
+			for (const auto & user : *output) {
+				if (user->node())
+					return true;
+			}
+		}
+
+		return false;
+	}
 
 	inline size_t
 	ninputs() const noexcept
@@ -262,6 +280,19 @@ public:
 		return inputs_[index].get();
 	}
 
+	inline size_t
+	noutputs() const noexcept
+	{
+		return outputs_.size();
+	}
+
+	inline jive::output *
+	output(size_t index) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(index < noutputs());
+		return outputs_[index].get();
+	}
+
 protected:
 	void
 	add_input(std::unique_ptr<jive::input> input);
@@ -269,13 +300,16 @@ protected:
 	void
 	remove_input(size_t index);
 
+	inline void
+	add_output(std::unique_ptr<jive::output> output)
+	{
+		outputs_.push_back(std::move(output));
+	}
+
+	void
+	remove_output(size_t index);
+
 public:
-	virtual jive::output *
-	add_output(const jive::port & port) = 0;
-
-	virtual void
-	remove_output(size_t index) = 0;
-
 	inline jive::graph *
 	graph() const noexcept
 	{
@@ -287,9 +321,6 @@ public:
 	{
 		return region_;
 	}
-
-	virtual size_t
-	noutputs() const noexcept = 0;
 
 	virtual jive::node *
 	copy(jive::region * region, const std::vector<jive::output*> & operands) const = 0;
@@ -313,9 +344,6 @@ public:
 	*/
 	virtual jive::node *
 	copy(jive::region * region, jive::substitution_map & smap) const = 0;
-
-	virtual jive::output *
-	output(size_t index) const noexcept = 0;
 
 	inline size_t
 	depth() const noexcept
@@ -356,6 +384,7 @@ private:
 	jive::region * region_;
 	std::unique_ptr<jive::operation> operation_;
 	std::vector<std::unique_ptr<jive::input>> inputs_;
+	std::vector<std::unique_ptr<jive::output>> outputs_;
 };
 
 }

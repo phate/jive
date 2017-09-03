@@ -90,9 +90,6 @@ simple_output::node() const noexcept
 simple_node::~simple_node()
 {
 	graph()->on_node_destroy(this);
-
-	while(noutputs())
-		remove_output(noutputs()-1);
 }
 
 simple_node::simple_node(
@@ -114,64 +111,10 @@ simple_node::simple_node(
 	}
 
 	for (size_t n = 0; n < operation().nresults(); n++)
-		outputs_.emplace_back(std::make_unique<jive::simple_output>(this, n, operation().result(n)));
+		node::add_output(std::move(std::unique_ptr<jive::output>(
+			new simple_output(this, n, operation().result(n)))));
 
 	graph()->on_node_create(this);
-}
-
-size_t
-simple_node::noutputs() const noexcept
-{
-	return outputs_.size();
-}
-
-jive::simple_output *
-simple_node::output(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < noutputs());
-	return outputs_[index].get();
-}
-
-bool
-simple_node::has_users() const noexcept
-{
-	for (const auto & output : outputs_) {
-		if (output->nusers() != 0)
-			return true;
-	}
-
-	return false;
-}
-
-bool
-simple_node::has_successors() const noexcept
-{
-	for (const auto & output : outputs_) {
-		for (const auto & user : *output) {
-			if (user->node())
-				return true;
-		}
-	}
-
-	return false;
-}
-
-jive::simple_output *
-simple_node::add_output(const jive::port & port)
-{
-	JIVE_ASSERT(0);
-}
-
-void
-simple_node::remove_output(size_t index)
-{
-	JIVE_DEBUG_ASSERT(index < outputs_.size());
-
-	for (size_t n = index; n < noutputs()-1; n++) {
-		JIVE_DEBUG_ASSERT(output(n+1)->index() == n);
-		outputs_[n] = std::move(outputs_[n+1]);
-	}
-	outputs_.pop_back();
 }
 
 jive::node *
