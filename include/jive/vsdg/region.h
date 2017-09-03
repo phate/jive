@@ -25,6 +25,7 @@ namespace jive {
 
 class node;
 class simple_node;
+class simple_op;
 class structural_input;
 class structural_output;
 
@@ -168,7 +169,7 @@ public:
 	}
 
 	jive::simple_node *
-	add_simple_node(const jive::operation & op, const std::vector<jive::output*> & operands);
+	add_simple_node(const jive::simple_op & op, const std::vector<jive::output*> & operands);
 
 	jive::structural_node *
 	add_structural_node(const jive::operation & op, size_t nsubregions);

@@ -147,12 +147,11 @@ binary_normal_form::normalize_node(jive::node * node, const base::binary_op & op
 	if (changes) {
 		jive::node * new_node = nullptr;
 
-		std::unique_ptr<operation> tmp_op;
+		std::unique_ptr<simple_op> tmp_op;
 		if (new_args.size() > 2) {
 			tmp_op.reset(new base::flattened_binary_op(op, new_args.size()));
 		}
-		const operation & new_op =
-			tmp_op ? *tmp_op : static_cast<const operation &>(op);
+		const auto & new_op = tmp_op ? *tmp_op : static_cast<const simple_op&>(op);
 		if (get_cse()) {
 			jive_node_cse(node->region(), new_op, new_args);
 		}

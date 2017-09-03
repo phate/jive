@@ -66,7 +66,7 @@ public:
 	~simple_node();
 
 	simple_node(
-		const jive::operation & op,
+		const jive::simple_op & op,
 		jive::region * region,
 		const std::vector<jive::output*> & operands);
 

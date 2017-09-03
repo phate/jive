@@ -195,7 +195,7 @@ region::remove_result(size_t index)
 }
 
 jive::simple_node *
-region::add_simple_node(const jive::operation & op, const std::vector<jive::output*> & operands)
+region::add_simple_node(const jive::simple_op & op, const std::vector<jive::output*> & operands)
 {
 	return new jive::simple_node(op, this, operands);
 }
