@@ -3,7 +3,7 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/structural.h>
+#include <jive/vsdg/operation.h>
 #include <jive/vsdg/structural-normal-form.h>
 
 namespace jive {

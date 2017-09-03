@@ -31,7 +31,6 @@ LIBJIVE_SRC = \
 	src/vsdg/splitnode.c \
 	src/vsdg/statetype.c \
 	src/vsdg/structural-normal-form.c \
-	src/vsdg/structural.c \
 	src/vsdg/structural_node.c \
 	src/vsdg/theta.c \
 	src/vsdg/tracker.c \

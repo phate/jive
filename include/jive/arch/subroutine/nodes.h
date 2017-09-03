@@ -9,7 +9,6 @@
 
 #include <jive/arch/subroutine/signature.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/structural.h>
 
 namespace jive {
 
