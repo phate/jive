@@ -151,6 +151,14 @@ public:
 	}
 };
 
+/* simple operation */
+
+class simple_op : public operation {
+public:
+	virtual
+	~simple_op();
+};
+
 }
 
 #endif

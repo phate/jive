@@ -39,4 +39,9 @@ port::port(const resource_class * rescls)
 
 operation::~operation() noexcept {}
 
+/* simple operation */
+
+simple_op::~simple_op()
+{}
+
 }

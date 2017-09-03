@@ -27,7 +27,6 @@ LIBJIVE_SRC = \
 	src/vsdg/region.c \
 	src/vsdg/resource.c \
 	src/vsdg/simple-normal-form.c \
-	src/vsdg/simple.c \
 	src/vsdg/simple_node.c \
 	src/vsdg/splitnode.c \
 	src/vsdg/statetype.c \

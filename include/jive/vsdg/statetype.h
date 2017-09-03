@@ -11,7 +11,6 @@
 #include <vector>
 
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/simple.h>
 
 namespace jive {
 namespace state {

@@ -7,7 +7,6 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
-#include <jive/vsdg/simple.h>
 #include <jive/vsdg/simple-normal-form.h>
 
 static jive::node *

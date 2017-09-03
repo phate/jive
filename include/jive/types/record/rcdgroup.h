@@ -9,7 +9,6 @@
 
 #include <jive/types/record/rcdtype.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/simple.h>
 
 namespace jive {
 namespace rcd {

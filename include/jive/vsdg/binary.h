@@ -10,7 +10,6 @@
 #include <jive/common.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/simple.h>
 
 typedef size_t jive_binop_reduction_path_t;
 

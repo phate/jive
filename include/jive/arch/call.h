@@ -12,7 +12,6 @@
 
 #include <jive/common.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/simple.h>
 
 namespace jive {
 	class type;
