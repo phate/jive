@@ -76,7 +76,7 @@ input::divert_origin(jive::output * new_origin)
 	this->origin_ = new_origin;
 	new_origin->add_user(this);
 
-	if (node()) node()->recompute_depth();
+	if (node()) node()->recompute_depth(this);
 	region()->graph()->mark_denormalized();
 	region()->graph()->on_input_change(this, old_origin, new_origin);
 }
@@ -156,8 +156,8 @@ register_node_normal_form(void)
 
 namespace jive {
 
-node::node(std::unique_ptr<jive::operation> op, jive::region * region, size_t depth)
-	: depth_(depth)
+node::node(std::unique_ptr<jive::operation> op, jive::region * region)
+	: depth_(0)
 	, graph_(region->graph())
 	, region_(region)
 	, operation_(std::move(op))
@@ -197,6 +197,7 @@ node::add_input(std::unique_ptr<jive::input> input)
 		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 
 	inputs_.push_back(std::move(input));
+	recompute_depth(inputs_.back().get());
 }
 
 void
@@ -227,25 +228,21 @@ node::remove_output(size_t index)
 }
 
 void
-node::recompute_depth()
+node::recompute_depth(jive::input * input)
 {
-	size_t new_depth = 0;
-	for (size_t n = 0; n < ninputs(); n++) {
-		if (input(n)->origin()->node())
-			new_depth = std::max(input(n)->origin()->node()->depth() + 1, new_depth);
-	}
-
-	size_t old_depth = depth_;
-	if (new_depth == old_depth)
+	if (input->node() != this
+	|| input->origin()->node() == nullptr
+	|| input->origin()->node()->depth() < depth())
 		return;
 
-	depth_ = new_depth;
+	size_t old_depth = depth_;
+	depth_ = input->origin()->node()->depth()+1;
 	graph()->on_node_depth_change(this, old_depth);
 
 	for (size_t n = 0; n < noutputs(); n++) {
 		for (auto user : *output(n)) {
 			if (user->node())
-				user->node()->recompute_depth();
+				user->node()->recompute_depth(user);
 		}
 	}
 }

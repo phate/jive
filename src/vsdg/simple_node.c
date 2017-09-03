@@ -95,10 +95,7 @@ simple_node::simple_node(
 	const jive::simple_op & op,
 	jive::region * region,
 	const std::vector<jive::output*> & operands)
-	: node(op.copy(), region, std::accumulate(operands.begin(), operands.end(), 0,
-			[](size_t depth, const jive::output * operand) {
-				return std::max(depth, operand->node() ? operand->node()->depth()+1 : 0);
-			}))
+	: node(op.copy(), region)
 {
 	if (operation().narguments() != operands.size())
 		throw jive::compiler_error(jive::detail::strfmt("Argument error - expected ",

@@ -235,7 +235,7 @@ public:
 	virtual
 	~node();
 
-	node(std::unique_ptr<jive::operation> op, jive::region * region, size_t depth);
+	node(std::unique_ptr<jive::operation> op, jive::region * region);
 
 	inline const jive::operation &
 	operation() const noexcept
@@ -351,11 +351,8 @@ public:
 		return depth_;
 	}
 
-	/*
-		FIXME: privatize or completely remove it again
-	*/
 	void
-	recompute_depth();
+	recompute_depth(jive::input * input);
 
 	struct {
 		jive::node * prev;

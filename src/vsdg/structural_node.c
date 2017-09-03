@@ -106,7 +106,7 @@ structural_node::structural_node(
 	const jive::structural_op & op,
 	jive::region * region,
 	size_t nsubregions)
-	: node(op.copy(), region, 0)
+	: node(op.copy(), region)
 {
 	/* FIXME: check that nsubregions is unequal zero */
 	for (size_t n = 0; n < nsubregions; n++)
