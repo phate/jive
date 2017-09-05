@@ -192,10 +192,6 @@ node::add_input(std::unique_ptr<jive::input> input)
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
-	auto origin = input->origin();
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-
 	inputs_.push_back(std::move(input));
 	recompute_depth(inputs_.back().get());
 }
