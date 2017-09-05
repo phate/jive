@@ -21,9 +21,6 @@ simple_input::~simple_input() noexcept
 
 	if (port().gate())
 		port().gate()->clear_interferences();
-
-	for (size_t n = index()+1; n < node()->ninputs(); n++)
-		dynamic_cast<jive::simple_input*>(node()->input(n))->set_index(n-1);
 }
 
 simple_input::simple_input(
@@ -73,9 +70,6 @@ simple_output::~simple_output() noexcept
 
 	if (port().gate())
 		port().gate()->clear_interferences();
-
-	for (size_t n = index()+1; n < node()->noutputs(); n++)
-		dynamic_cast<jive::simple_output*>(node()->output(n))->set_index(n-1);
 }
 
 jive::node *

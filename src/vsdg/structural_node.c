@@ -20,9 +20,6 @@ structural_input::~structural_input()
 
 	if (port().gate())
 		port().gate()->clear_interferences();
-
-	for (size_t n = index()+1; n < node()->ninputs(); n++)
-		static_cast<jive::structural_node*>(node())->input(n)->set_index(n-1);
 }
 
 structural_input::structural_input(
@@ -62,9 +59,6 @@ structural_output::~structural_output()
 
 	if (port().gate())
 		port().gate()->clear_interferences();
-
-	for (size_t n = index()+1; n < node()->noutputs(); n++)
-		static_cast<jive::structural_node*>(node())->output(n)->set_index(n-1);
 }
 
 structural_output::structural_output(

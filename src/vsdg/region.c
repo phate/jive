@@ -28,9 +28,6 @@ argument::~argument() noexcept
 
 	if (port().gate())
 		port().gate()->clear_interferences();
-
-	for (size_t n = index()+1; n < region()->narguments(); n++)
-		region()->argument(n)->set_index(n-1);
 }
 
 argument::argument(
@@ -71,9 +68,6 @@ result::~result() noexcept
 
 	if (port().gate())
 		port().gate()->clear_interferences();
-
-	for (size_t n = index()+1; n < region()->nresults(); n++)
-		region()->result(n)->set_index(n-1);
 }
 
 result::result(
@@ -160,8 +154,8 @@ region::remove_argument(size_t index)
 
 	delete argument;
 	for (size_t n = index; n < arguments_.size()-1; n++) {
-		JIVE_DEBUG_ASSERT(arguments_[n+1]->index() == n);
 		arguments_[n] = arguments_[n+1];
+		arguments_[n]->index_ = n;
 	}
 	arguments_.pop_back();
 }
@@ -188,8 +182,8 @@ region::remove_result(size_t index)
 
 	delete result;
 	for (size_t n = index; n < results_.size()-1; n++) {
-		JIVE_DEBUG_ASSERT(results_[n+1]->index() == n);
 		results_[n] = results_[n+1];
+		results_[n]->index_ = n;
 	}
 	results_.pop_back();
 }

@@ -34,6 +34,9 @@ class substitution_map;
 /* inputs */
 
 class input {
+	friend jive::node;
+	friend jive::region;
+
 public:
 	virtual
 	~input() noexcept;
@@ -98,13 +101,6 @@ public:
 		jive::input * next;
 	} gate_input_list;
 
-protected:
-	inline void
-	set_index(size_t index) noexcept
-	{
-		index_ = index;
-	}
-
 private:
 	size_t index_;
 	jive::port port_;
@@ -116,6 +112,8 @@ private:
 
 class output {
 	friend input;
+	friend jive::node;
+	friend jive::region;
 
 	typedef std::unordered_set<jive::input*>::const_iterator user_iterator;
 
@@ -197,13 +195,6 @@ public:
 		jive::output * prev;
 		jive::output * next;
 	} gate_output_list;
-
-protected:
-	inline void
-	set_index(size_t index) noexcept
-	{
-		index_ = index;
-	}
 
 private:
 	void

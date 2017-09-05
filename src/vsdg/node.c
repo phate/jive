@@ -206,8 +206,8 @@ node::remove_input(size_t index)
 	JIVE_DEBUG_ASSERT(index < ninputs());
 
 	for (size_t n = index; n < ninputs()-1; n++) {
-		JIVE_DEBUG_ASSERT(input(n+1)->index() == n);
 		inputs_[n] = std::move(inputs_[n+1]);
+		inputs_[n]->index_ = n;
 	}
 	inputs_.pop_back();
 
@@ -221,8 +221,8 @@ node::remove_output(size_t index)
 	JIVE_DEBUG_ASSERT(index < noutputs());
 
 	for (size_t n = index; n < noutputs()-1; n++) {
-		JIVE_DEBUG_ASSERT(output(n+1)->index() == n);
 		outputs_[n] = std::move(outputs_[n+1]);
+		outputs_[n]->index_ = n;
 	}
 	outputs_.pop_back();
 }
