@@ -180,7 +180,7 @@ public:
 
 		auto ctl = dynamic_cast<const jive::ctl::type*>(&predicate->type());
 		if (!ctl)
-			throw jive::type_error("ctl", ctl->debug_string());
+			throw jive::type_error("ctl", predicate->type().debug_string());
 
 		auto region = predicate->region();
 		size_t nalternatives = ctl->nalternatives();
