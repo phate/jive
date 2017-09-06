@@ -24,9 +24,11 @@ public:
 	copy() const override;
 };
 
+class theta;
 class theta_builder;
 
 class loopvar final {
+	friend theta;
 	friend theta_builder;
 
 private:
@@ -71,6 +73,18 @@ public:
 		JIVE_DEBUG_ASSERT(output_->results.first != nullptr
 		&& output_->results.first == output_->results.last);
 		return output_->results.first;
+	}
+
+	inline bool
+	operator==(const loopvar & other) const noexcept
+	{
+		return input_ == other.input_ && output_ == other.output_;
+	}
+
+	inline bool
+	operator!=(const loopvar & other) const noexcept
+	{
+		return !(*this == other);
 	}
 
 private:
@@ -140,6 +154,119 @@ public:
 private:
 	jive::structural_node * node_;
 	std::vector<std::shared_ptr<loopvar>> loopvars_;
+};
+
+class theta final {
+public:
+	inline
+	theta(jive::structural_node * node)
+	: node_(node)
+	{
+		if (!dynamic_cast<const jive::theta_op*>(&node->operation()))
+			throw jive::compiler_error("Expected theta node.");
+	}
+
+private:
+	class loopvar_iterator {
+	public:
+		inline constexpr
+		loopvar_iterator(const jive::loopvar & lv) noexcept
+		: lv_(lv)
+		{}
+
+		inline const loopvar_iterator &
+		operator++() noexcept
+		{
+			auto input = lv_.input();
+			if (input == nullptr)
+				return *this;
+
+			auto node = input->node();
+			auto index = input->index();
+			if (index == node->ninputs()-1) {
+				lv_ = loopvar(nullptr, nullptr);
+				return *this;
+			}
+
+			index++;
+			auto new_input = static_cast<jive::structural_input*>(node->input(index));
+			auto new_output = static_cast<jive::structural_output*>(node->output(index));
+			lv_ = loopvar(new_input, new_output);
+			return *this;
+		}
+
+		inline const loopvar_iterator
+		operator++(int) noexcept
+		{
+			loopvar_iterator it(*this);
+			++(*this);
+			return it;
+		}
+
+		inline bool
+		operator==(const loopvar_iterator & other) const noexcept
+		{
+			return lv_ == other.lv_;
+		}
+
+		inline bool
+		operator!=(const loopvar_iterator & other) const noexcept
+		{
+			return !(*this == other);
+		}
+
+		inline loopvar &
+		operator*() noexcept
+		{
+			return lv_;
+		}
+
+		inline loopvar *
+		operator->() noexcept
+		{
+			return &lv_;
+		}
+
+	private:
+		loopvar lv_;
+	};
+
+public:
+	inline jive::structural_node *
+	node() const noexcept
+	{
+		return node_;
+	}
+
+	inline jive::result *
+	predicate() const noexcept
+	{
+		auto result = node_->subregion(0)->result(0);
+		JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&result->type()));
+		return result;
+	}
+
+	inline size_t
+	nloopvars() const noexcept
+	{
+		JIVE_DEBUG_ASSERT(node_->ninputs() == node_->noutputs());
+		return node_->ninputs();
+	}
+
+	inline theta::loopvar_iterator
+	begin() const
+	{
+		return loopvar_iterator({node_->input(0), node_->output(0)});
+	}
+
+	inline theta::loopvar_iterator
+	end() const
+	{
+		return loopvar_iterator({nullptr, nullptr});
+	}
+
+private:
+	jive::structural_node * node_;
 };
 
 }
