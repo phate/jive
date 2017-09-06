@@ -51,20 +51,17 @@ fib(size_t n)
 	auto lv_k = tb.add_loopvar(k);
 	auto lv_n = tb.add_loopvar(n);
 
-	auto t = jive::bits::create_add(32, lv_i->value(), lv_j->value());
+	auto t = jive::bits::create_add(32, lv_i->argument(), lv_j->argument());
 
 	auto one = jive_bitconstant_unsigned(theta_region, 32, 1);
 
-	auto new_k = jive::bits::create_add(32, one, lv_k->value());
+	auto new_k = jive::bits::create_add(32, one, lv_k->argument());
 
-	auto cmp = jive_bitule(32, new_k, lv_n->value());
+	auto cmp = jive_bitule(32, new_k, lv_n->argument());
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
-	lv_k->set_value(new_k);
-	lv_i->set_value(lv_j->value());
-	lv_j->set_value(t);
-	lv_n->set_value(lv_n->value());
-	tb.end(predicate);
+	tb.end(predicate, {{lv_k, new_k}, {lv_i, lv_j->argument()},
+		{lv_j, t}, {lv_n, lv_n->argument()}});
 
 	cmp = jive_bitule(32, k, n);
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
@@ -75,10 +72,10 @@ fib(size_t n)
 	auto evj = gb.add_entryvar(j);
 	auto evk = gb.add_entryvar(k);
 	auto evn = gb.add_entryvar(n);
-	auto evlvi = gb.add_entryvar(lv_i->value());
-	auto evlvj = gb.add_entryvar(lv_j->value());
-	auto evlvk = gb.add_entryvar(lv_k->value());
-	auto evlvn = gb.add_entryvar(lv_n->value());
+	auto evlvi = gb.add_entryvar(lv_i->output());
+	auto evlvj = gb.add_entryvar(lv_j->output());
+	auto evlvk = gb.add_entryvar(lv_k->output());
+	auto evlvn = gb.add_entryvar(lv_n->output());
 
 	auto exi = gb.add_exitvar({evi->argument(0), evlvi->argument(1)});
 	auto exj = gb.add_exitvar({evj->argument(0), evlvj->argument(1)});

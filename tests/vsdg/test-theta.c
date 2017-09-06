@@ -28,19 +28,15 @@ test_main()
 	auto lv2 = tb.add_loopvar(imp2);
 	auto lv3 = tb.add_loopvar(imp3);
 
-	auto tmp = lv2->value();
-	lv2->set_value(lv3->value());
-	lv3->set_value(tmp);
-
-	auto theta = tb.end(lv1->value());
+	auto theta = tb.end(lv1->argument(), {{lv2, lv3->argument()}, {lv3, lv3->argument()}});
 
 	graph.export_port(theta->output(0), "exp");
 
 	jive::view(graph.root(), stdout);
 
-	assert(lv1->value()->node() == theta);
-	assert(lv2->value()->node() == theta);
-	assert(lv3->value()->node() == theta);
+	assert(lv1->output()->node() == theta);
+	assert(lv2->output()->node() == theta);
+	assert(lv3->output()->node() == theta);
 
 	return 0;
 }

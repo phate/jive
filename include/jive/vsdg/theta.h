@@ -31,25 +31,51 @@ class loopvar final {
 
 private:
 	inline constexpr
-	loopvar(jive::output * value)
-	: value_(value)
+	loopvar(
+		jive::structural_input * input,
+		jive::structural_output * output)
+	: input_(input)
+	, output_(output)
 	{}
 
 public:
-	inline void
-	set_value(jive::output * value)
+	inline jive::structural_input *
+	input() const noexcept
 	{
-		value_ = value;
+		return input_;
 	}
 
-	inline jive::output *
-	value() const noexcept
+	inline jive::structural_output *
+	output() const noexcept
 	{
-		return value_;
+		return output_;
+	}
+
+	inline jive::argument *
+	argument() const noexcept
+	{
+		if (input_ == nullptr)
+			return nullptr;
+
+		JIVE_DEBUG_ASSERT(input_->arguments.first != nullptr
+		&& input_->arguments.first == input_->arguments.last);
+		return input_->arguments.first;
+	}
+
+	inline jive::result *
+	result() const noexcept
+	{
+		if (output_ == nullptr)
+			return nullptr;
+
+		JIVE_DEBUG_ASSERT(output_->results.first != nullptr
+		&& output_->results.first == output_->results.last);
+		return output_->results.first;
 	}
 
 private:
-	jive::output * value_;
+	jive::structural_input * input_;
+	jive::structural_output * output_;
 };
 
 class theta_builder final {
@@ -82,22 +108,26 @@ public:
 			return nullptr;
 
 		auto input = node_->add_input(origin->type(), origin);
-		auto argument = node_->subregion(0)->add_argument(input, origin->type());
-		loopvars_.push_back(std::shared_ptr<loopvar>(new loopvar(loopvar(argument))));
-		return loopvars_[loopvars_.size()-1];
+		node_->subregion(0)->add_argument(input, origin->type());
+		loopvars_.push_back(std::make_shared<loopvar>(loopvar(input, nullptr)));
+		return loopvars_.back();
 	}
 
 	inline jive::structural_node *
-	end(jive::output * predicate)
+	end(
+		jive::output * predicate,
+		const std::unordered_map<std::shared_ptr<loopvar>, jive::output*> & lvmap)
 	{
 		if (!node_)
 			return nullptr;
 
 		node_->subregion(0)->add_result(predicate, nullptr, jive::ctl::type(2));
 		for (const auto & lv : loopvars_) {
-			auto output = node_->add_output(lv->value()->type());
-			node_->subregion(0)->add_result(lv->value(), output, lv->value()->type());
-			lv->set_value(output);
+			auto it = lvmap.find(lv);
+			auto value = it != lvmap.end() ? it->second : lv->argument();
+			auto output = node_->add_output(lv->input()->type());
+			node_->subregion(0)->add_result(value, output, lv->input()->type());
+			lv->output_ = output;
 		}
 
 		auto node = node_;
