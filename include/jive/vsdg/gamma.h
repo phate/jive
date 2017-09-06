@@ -379,25 +379,25 @@ public:
 	}
 
 	inline gamma::entryvar_iterator
-	begin_entryvar()
+	begin_entryvar() const
 	{
 		return entryvar_iterator(node()->input(1));
 	}
 
 	inline gamma::entryvar_iterator
-	end_entryvar()
+	end_entryvar() const
 	{
 		return entryvar_iterator(nullptr);
 	}
 
 	inline gamma::exitvar_iterator
-	begin_exitvar()
+	begin_exitvar() const
 	{
 		return exitvar_iterator(node()->output(0));
 	}
 
 	inline gamma::exitvar_iterator
-	end_exitvar()
+	end_exitvar() const
 	{
 		return exitvar_iterator(nullptr);
 	}
