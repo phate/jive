@@ -83,7 +83,7 @@ fib(size_t n)
 	auto exn = gb.add_exitvar({evn->argument(0), evlvn->argument(1)});
 	auto gamma = gb.end();
 
-	return lb.end({gamma->output(1)})->output(0);
+	return lb.end({gamma->node()->output(1)})->output(0);
 }
 
 static void
@@ -175,7 +175,7 @@ unsigned int fib(unsigned int n){
 	auto ex = gb.add_exitvar({ev1->argument(0), ev2->argument(1)});
 	auto gamma = gb.end();
 
-	auto fib = lb.end({gamma->output(0)})->output(0);
+	auto fib = lb.end({gamma->node()->output(0)})->output(0);
 	rv->set_value(fib);
 	pb.end();
 

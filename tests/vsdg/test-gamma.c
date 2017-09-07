@@ -37,10 +37,10 @@ test_gamma(void)
 	gb.add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
 	auto gamma = gb.end();
 
-	graph.export_port(gamma->output(0), "dummy");
+	graph.export_port(gamma->node()->output(0), "dummy");
 	jive::view(graph.root(), stdout);
 
-	assert(gamma && gamma->operation() == jive::gamma_op(3));
+	assert(gamma && gamma->node()->operation() == jive::gamma_op(3));
 }
 
 static void
@@ -65,7 +65,7 @@ test_predicate_reduction(void)
 	gb.add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
 	auto gamma = gb.end();
 
-	auto r = graph.export_port(gamma->output(0), "");
+	auto r = graph.export_port(gamma->node()->output(0), "");
 
 	graph.normalize();
 	jive::view(graph.root(), stdout);
@@ -91,7 +91,7 @@ test_invariant_reduction(void)
 	gb.add_exitvar({ev->argument(0), ev->argument(1)});
 	auto gamma = gb.end();
 
-	auto r = graph.export_port(gamma->output(0), "");
+	auto r = graph.export_port(gamma->node()->output(0), "");
 
 	graph.normalize();
 	jive::view(graph.root(), stdout);

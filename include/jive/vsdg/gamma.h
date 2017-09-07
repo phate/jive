@@ -100,7 +100,6 @@ private:
 
 class exitvar final {
 	friend gamma;
-	friend gamma_builder;
 
 private:
 	inline constexpr
@@ -145,90 +144,6 @@ public:
 
 private:
 	jive::structural_output * output_;
-};
-
-class gamma_builder final {
-public:
-	inline
-	gamma_builder() noexcept
-	: node_(nullptr)
-	{}
-
-	inline size_t
-	nsubregions() const noexcept
-	{
-		return node_ ? node_->nsubregions() : 0;
-	}
-
-	inline jive::region *
-	region(size_t n) const noexcept
-	{
-		return node_ ? node_->subregion(n) : nullptr;
-	}
-
-	inline jive::input *
-	predicate() const noexcept
-	{
-		return node_ ? node_->input(0) : nullptr;
-	}
-
-	inline void
-	begin(jive::output * predicate)
-	{
-		if (node_)
-			return;
-
-		auto ctl = dynamic_cast<const jive::ctl::type*>(&predicate->type());
-		if (!ctl)
-			throw jive::type_error("ctl", predicate->type().debug_string());
-
-		auto region = predicate->region();
-		size_t nalternatives = ctl->nalternatives();
-		node_ = region->add_structural_node(jive::gamma_op(nalternatives), nalternatives);
-		node_->add_input(*ctl, predicate);
-	}
-
-	inline std::shared_ptr<jive::entryvar>
-	add_entryvar(jive::output * origin)
-	{
-		if (!node_)
-			return nullptr;
-
-		auto input = node_->add_input(origin->type(), origin);
-		for (size_t n = 0; n < nsubregions(); n++)
-			node_->subregion(n)->add_argument(input, origin->type());
-
-		return std::shared_ptr<entryvar>(new entryvar(input));
-	}
-
-	inline std::shared_ptr<jive::exitvar>
-	add_exitvar(const std::vector<jive::output*> & values)
-	{
-		if (!node_)
-			return nullptr;
-
-		if (values.size() != nsubregions())
-			throw jive::compiler_error("Incorrect number of values.");
-		JIVE_DEBUG_ASSERT(values.size() != 0);
-
-		const auto & type = values[0]->type();
-		auto output = node_->add_output(type);
-		for (size_t n = 0; n < nsubregions(); n++)
-			node_->subregion(n)->add_result(values[n], output, type);
-
-		return std::shared_ptr<exitvar>(new exitvar(output));
-	}
-
-	inline jive::structural_node *
-	end()
-	{
-		auto node = node_;
-		node_ = nullptr;
-		return node;
-	}
-
-private:
-	jive::structural_node * node_;
 };
 
 class gamma final {
@@ -378,6 +293,12 @@ public:
 		return node()->input(0);
 	}
 
+	inline size_t
+	nsubregions() const noexcept
+	{
+		return node_->nsubregions();
+	}
+
 	inline gamma::entryvar_iterator
 	begin_entryvar() const
 	{
@@ -402,8 +323,92 @@ public:
 		return exitvar_iterator(nullptr);
 	}
 
+	inline std::shared_ptr<jive::entryvar>
+	add_entryvar(jive::output * origin)
+	{
+		auto input = node_->add_input(origin->type(), origin);
+		for (size_t n = 0; n < nsubregions(); n++)
+			node_->subregion(n)->add_argument(input, origin->type());
+
+		return std::shared_ptr<entryvar>(new entryvar(input));
+	}
+
+	inline std::shared_ptr<jive::exitvar>
+	add_exitvar(const std::vector<jive::output*> & values)
+	{
+		if (values.size() != nsubregions())
+			throw jive::compiler_error("Incorrect number of values.");
+		JIVE_DEBUG_ASSERT(values.size() != 0);
+
+		const auto & type = values[0]->type();
+		auto output = node_->add_output(type);
+		for (size_t n = 0; n < nsubregions(); n++)
+			node_->subregion(n)->add_result(values[n], output, type);
+
+		return std::shared_ptr<exitvar>(new exitvar(output));
+	}
+
 private:
 	jive::structural_node * node_;
+};
+
+class gamma_builder final {
+public:
+	inline size_t
+	nsubregions() const noexcept
+	{
+		return gamma_ ? gamma_->node()->nsubregions() : 0;
+	}
+
+	inline jive::region *
+	region(size_t n) const noexcept
+	{
+		return gamma_ ? gamma_->node()->subregion(n) : nullptr;
+	}
+
+	inline jive::input *
+	predicate() const noexcept
+	{
+		return gamma_ ? gamma_->node()->input(0) : nullptr;
+	}
+
+	inline void
+	begin(jive::output * predicate)
+	{
+		if (gamma_)
+			return;
+
+		auto ctl = dynamic_cast<const jive::ctl::type*>(&predicate->type());
+		if (!ctl)
+			throw jive::type_error("ctl", predicate->type().debug_string());
+
+		auto region = predicate->region();
+		size_t nalternatives = ctl->nalternatives();
+		auto node = region->add_structural_node(jive::gamma_op(nalternatives), nalternatives);
+		node->add_input(*ctl, predicate);
+		gamma_ = std::make_unique<gamma>(node);
+	}
+
+	inline std::shared_ptr<jive::entryvar>
+	add_entryvar(jive::output * origin)
+	{
+		return gamma_ ? gamma_->add_entryvar(origin) : nullptr;
+	}
+
+	inline std::shared_ptr<jive::exitvar>
+	add_exitvar(const std::vector<jive::output*> & values)
+	{
+		return gamma_ ? gamma_->add_exitvar(values) : nullptr;
+	}
+
+	inline std::unique_ptr<jive::gamma>
+	end()
+	{
+		return std::move(gamma_);
+	}
+
+private:
+	std::unique_ptr<jive::gamma> gamma_;
 };
 
 }
