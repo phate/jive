@@ -46,6 +46,12 @@ private:
 	jive::ctl::type predicate_type_;
 };
 
+static inline bool
+is_gamma_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const jive::gamma_op*>(&op) != nullptr;
+}
+
 class gamma;
 class gamma_builder;
 
