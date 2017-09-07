@@ -37,15 +37,15 @@ fib(size_t n)
 	std::vector<const jive::base::type*> types({&bits32});
 
 	jive::lambda_builder lb;
-	lb.begin(graph->root(), {{&bits32}, {&bits32}});
+	auto arguments = lb.begin(graph->root(), {{&bits32}, {&bits32}});
 
-	auto n = lb.region()->argument(0);
-	auto i = jive_bitconstant_unsigned(lb.region(), 32, 1);
-	auto j = jive_bitconstant_unsigned(lb.region(), 32, 0);
-	auto k = jive_bitconstant_unsigned(lb.region(), 32, 1);
+	auto n = arguments[0];
+	auto i = jive_bitconstant_unsigned(lb.subregion(), 32, 1);
+	auto j = jive_bitconstant_unsigned(lb.subregion(), 32, 0);
+	auto k = jive_bitconstant_unsigned(lb.subregion(), 32, 1);
 
 	jive::theta_builder tb;
-	auto theta_region = tb.begin(lb.region());
+	auto theta_region = tb.begin(lb.subregion());
 	auto lv_i = tb.add_loopvar(i);
 	auto lv_j = tb.add_loopvar(j);
 	auto lv_k = tb.add_loopvar(k);
@@ -86,7 +86,7 @@ fib(size_t n)
 	auto exn = gb.add_exitvar({evn->argument(0), evlvn->argument(1)});
 	auto gamma = gb.end();
 
-	return lb.end({gamma->node()->output(1)})->output(0);
+	return lb.end({gamma->node()->output(1)})->node()->output(0);
 }
 
 static void
@@ -154,12 +154,12 @@ unsigned int fib(unsigned int n){
 	auto rv = pb.add_recvar(fcttype);
 
 	jive::lambda_builder lb;
-	lb.begin(pb.region(), {{&bits32}, {&bits32}});
+	auto arguments = lb.begin(pb.region(), {{&bits32}, {&bits32}});
 	auto dep = lb.add_dependency(rv->value());
 
-	auto n = lb.region()->argument(0);
-	auto one = jive_bitconstant_unsigned(lb.region(), 32, 1);
-	auto two = jive_bitconstant_unsigned(lb.region(), 32, 2);
+	auto n = arguments[0];
+	auto one = jive_bitconstant_unsigned(lb.subregion(), 32, 1);
+	auto two = jive_bitconstant_unsigned(lb.subregion(), 32, 2);
 
 	auto tmp = jive::bits::create_sub(32, n, one);
 	tmp = jive::fct::create_apply(dep, {tmp})[0];
@@ -178,7 +178,7 @@ unsigned int fib(unsigned int n){
 	auto ex = gb.add_exitvar({ev1->argument(0), ev2->argument(1)});
 	auto gamma = gb.end();
 
-	auto fib = lb.end({gamma->node()->output(0)})->output(0);
+	auto fib = lb.end({gamma->node()->output(0)})->node()->output(0);
 	rv->set_value(fib);
 	pb.end();
 
@@ -240,19 +240,19 @@ test_loadstore(jive::graph * graph)
 	std::vector<const jive::base::type*> types({&jive::mem::type::instance(), &bits64});
 
 	jive::lambda_builder lb;
-	lb.begin(graph->root(), {{&mem, &bits64}, {&mem}});
+	auto arguments = lb.begin(graph->root(), {{&mem, &bits64}, {&mem}});
 
-	auto state = dynamic_cast<jive::output*>(lb.region()->argument(0));
-	auto address = lb.region()->argument(1);
+	auto state = arguments[0];
+	auto address = arguments[1];
 
 	auto value = jive_load_by_bitstring_create(address, 64, &bits4, 1, &state);
 
-	auto three = jive_bitconstant_unsigned(lb.region(), 4, 3);
+	auto three = jive_bitconstant_unsigned(lb.subregion(), 4, 3);
 	value = jive::bits::create_add(4, value, three);
 
 	state = jive_store_by_bitstring_create(address, 64, &bits4, value, 1, &state)[0];
 
-	auto f = lb.end({state})->output(0);
+	auto f = lb.end({state})->node()->output(0);
 
 	graph->export_port(f, "loadstore");
 
@@ -278,12 +278,12 @@ test_external_function()
 	auto i = graph.import(bits64, "v");
 
 	jive::lambda_builder lb;
-	auto region = lb.begin(graph.root(), {{&bits64}, {&bits64}});
+	auto arguments = lb.begin(graph.root(), {{&bits64}, {&bits64}});
 	auto v = lb.add_dependency(i);
-	auto sum = jive::bits::create_add(64, region->argument(0), v);
+	auto sum = jive::bits::create_add(64, arguments[0], v);
 	auto lambda = lb.end({sum});
 
-	graph.export_port(lambda->output(0), "test");
+	graph.export_port(lambda->node()->output(0), "test");
 
 	jive::view(graph.root(), stdout);
 

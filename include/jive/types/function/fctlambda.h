@@ -78,64 +78,160 @@ namespace jive {
 
 class argument;
 
-class lambda_builder final {
+class lambda final {
 public:
 	inline
-	lambda_builder() noexcept
-	: node_(nullptr)
-	{}
-
-	inline jive::region *
-	begin(jive::region * parent, jive::fct::type type)
+	lambda(jive::structural_node * node)
+	: node_(node)
 	{
-		if (node_)
-			node_->subregion(0);
+		if (!fct::is_lambda_op(node->operation()))
+			throw jive::compiler_error("Expected lambda node.");
+	}
 
-		std::vector<jive::argument*> arguments;
-		node_ = parent->add_structural_node(jive::fct::lambda_op(std::move(type)), 1);
-		for (size_t n = 0; n < type.narguments(); n++)
-			arguments.push_back(node_->subregion(0)->add_argument(nullptr, type.argument_type(n)));
+private:
+	class dependency_iterator {
+	public:
+		inline constexpr
+		dependency_iterator(jive::input * input) noexcept
+		: input_(input)
+		{}
 
-		return node_->subregion(0);
+		inline const dependency_iterator &
+		operator++() noexcept
+		{
+			auto node = input_->node();
+			auto index = input_->index();
+			input_ = (index == node->ninputs()-1) ? nullptr : node->input(index+1);
+			return *this;
+		}
+
+		inline const dependency_iterator
+		operator++(int) noexcept
+		{
+			dependency_iterator it(*this);
+			++(*this);
+			return it;
+		}
+
+		inline bool
+		operator==(const dependency_iterator & other) const noexcept
+		{
+			return input_ == other.input_;
+		}
+
+		inline bool
+		operator!=(const dependency_iterator & other) const noexcept
+		{
+			return !(*this == other);
+		}
+
+		inline jive::input *
+		operator*() noexcept
+		{
+			return input_;
+		}
+
+	private:
+		jive::input * input_;
+	};
+
+public:
+	inline jive::structural_node *
+	node() const noexcept
+	{
+		return node_;
 	}
 
 	inline jive::region *
-	region() const noexcept
+	subregion() const noexcept
 	{
-		return node_ ? node_->subregion(0) : nullptr;
+		return node_->subregion(0);
+	}
+
+	inline lambda::dependency_iterator
+	begin() const
+	{
+		auto argument = subregion()->argument(0);
+		while (argument->input() == nullptr && argument != nullptr)
+			argument = subregion()->argument(argument->index()+1);
+
+		return dependency_iterator(argument->input());
+	}
+
+	inline lambda::dependency_iterator
+	end() const
+	{
+		return dependency_iterator(nullptr);
+	}
+
+	inline jive::argument *
+	add_dependency(jive::output * origin)
+	{
+		auto input = node_->add_input(origin->type(), origin);
+		return subregion()->add_argument(input, origin->type());
+	}
+
+private:
+	jive::structural_node * node_;
+};
+
+class lambda_builder final {
+public:
+	inline std::vector<jive::output*>
+	begin(jive::region * parent, jive::fct::type type)
+	{
+		std::vector<jive::output*> arguments;
+
+		if (lambda_) {
+			auto argument = lambda_->subregion()->argument(0);
+			while (argument->input() == nullptr && argument != nullptr) {
+				arguments.push_back(argument);
+				argument = lambda_->subregion()->argument(argument->index()+1);
+			}
+			return arguments;
+		}
+
+		auto node = parent->add_structural_node(jive::fct::lambda_op(std::move(type)), 1);
+		lambda_ = std::make_unique<jive::lambda>(node);
+
+		for (size_t n = 0; n < type.narguments(); n++)
+			arguments.push_back(lambda_->subregion()->add_argument(nullptr, type.argument_type(n)));
+
+		return arguments;
+	}
+
+	inline jive::region *
+	subregion() const noexcept
+	{
+		return lambda_ ? lambda_->subregion() : nullptr;
 	}
 
 	inline jive::output *
 	add_dependency(jive::output * value)
 	{
-		if (!node_)
-			return nullptr;
-
-		auto input = node_->add_input(value->type(), value);
-		return node_->subregion(0)->add_argument(input, value->type());
+		return lambda_ ? lambda_->add_dependency(value) : nullptr;
 	}
 
-	inline jive::structural_node *
+	inline std::unique_ptr<jive::lambda>
 	end(const std::vector<jive::output*> & results)
 	{
-		if (!node_)
+		if (!lambda_)
 			return nullptr;
 
-		const auto & ftype = static_cast<const fct::lambda_op*>(&node_->operation())->function_type();
+		const auto & ftype = static_cast<const fct::lambda_op*>(
+			&lambda_->node()->operation())->function_type();
 		if (results.size() != ftype.nresults())
 			throw jive::compiler_error("Incorrect number of results.");
 
 		for (size_t n = 0; n < results.size(); n++)
-			node_->subregion(0)->add_result(results[n], nullptr, ftype.result_type(n));
-		node_->add_output(ftype);
+			lambda_->node()->subregion(0)->add_result(results[n], nullptr, ftype.result_type(n));
+		lambda_->node()->add_output(ftype);
 
-		auto node = node_;
-		node_ = nullptr;
-		return node;
+		return std::move(lambda_);
 	}
 
 private:
-	jive::structural_node * node_;
+	std::unique_ptr<jive::lambda> lambda_;
 };
 
 }
