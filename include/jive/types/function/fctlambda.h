@@ -59,6 +59,12 @@ private:
 	jive::fct::type function_type_;
 };
 
+static inline bool
+is_lambda_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const jive::fct::lambda_op*>(&op) != nullptr;
+}
+
 }
 }
 
