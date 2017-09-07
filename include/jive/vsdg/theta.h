@@ -24,6 +24,12 @@ public:
 	copy() const override;
 };
 
+static inline bool
+is_theta_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const jive::theta_op*>(&op) != nullptr;
+}
+
 class theta;
 class theta_builder;
 
