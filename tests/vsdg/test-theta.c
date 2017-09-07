@@ -28,20 +28,21 @@ test_main()
 	auto lv2 = tb.add_loopvar(imp2);
 	auto lv3 = tb.add_loopvar(imp3);
 
-	auto node = tb.end(lv1->argument(), {{lv2, lv3->argument()}, {lv3, lv3->argument()}});
+	lv2->result()->divert_origin(lv3->argument());
+	lv3->result()->divert_origin(lv3->argument());
+	auto theta = tb.end(lv1->argument());
 
-	graph.export_port(node->output(0), "exp");
+	graph.export_port(theta->node()->output(0), "exp");
 
 	jive::view(graph.root(), stdout);
 
-	assert(lv1->output()->node() == node);
-	assert(lv2->output()->node() == node);
-	assert(lv3->output()->node() == node);
+	assert(lv1->output()->node() == theta->node());
+	assert(lv2->output()->node() == theta->node());
+	assert(lv3->output()->node() == theta->node());
 
-	jive::theta theta(node);
-	assert(theta.predicate() == node->subregion(0)->result(0));
-	assert(theta.nloopvars() == 3);
-	assert(theta.begin()->result() == node->subregion(0)->result(1));
+	assert(theta->predicate() == theta->node()->subregion(0)->result(0));
+	assert(theta->nloopvars() == 3);
+	assert(theta->begin()->result() == theta->node()->subregion(0)->result(1));
 
 	return 0;
 }

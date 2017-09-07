@@ -60,8 +60,11 @@ fib(size_t n)
 	auto cmp = jive_bitule(32, new_k, lv_n->argument());
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
-	tb.end(predicate, {{lv_k, new_k}, {lv_i, lv_j->argument()},
-		{lv_j, t}, {lv_n, lv_n->argument()}});
+	lv_k->result()->divert_origin(new_k);
+	lv_i->result()->divert_origin(lv_j->argument());
+	lv_j->result()->divert_origin(t);
+	lv_n->result()->divert_origin(lv_n->argument());
+	tb.end(predicate);
 
 	cmp = jive_bitule(32, k, n);
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);

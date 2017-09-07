@@ -7,7 +7,7 @@
 #ifndef JIVE_VSDG_THETA_H
 #define JIVE_VSDG_THETA_H
 
-#include <jive/vsdg/controltype.h>
+#include <jive/vsdg/control.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/structural_node.h>
 
@@ -29,7 +29,6 @@ class theta_builder;
 
 class loopvar final {
 	friend theta;
-	friend theta_builder;
 
 private:
 	inline constexpr
@@ -90,70 +89,6 @@ public:
 private:
 	jive::structural_input * input_;
 	jive::structural_output * output_;
-};
-
-class theta_builder final {
-public:
-	inline
-	theta_builder() noexcept
-	: node_(nullptr)
-	{}
-
-	inline jive::region *
-	region() const noexcept
-	{
-		return node_ ? node_->subregion(0) : nullptr;
-	}
-
-	inline jive::region *
-	begin(jive::region * parent)
-	{
-		if (node_)
-			return node_->subregion(0);
-
-		node_ = parent->add_structural_node(jive::theta_op(), 1);
-		return node_->subregion(0);
-	}
-
-	inline std::shared_ptr<jive::loopvar>
-	add_loopvar(jive::output * origin)
-	{
-		if (!node_)
-			return nullptr;
-
-		auto input = node_->add_input(origin->type(), origin);
-		node_->subregion(0)->add_argument(input, origin->type());
-		loopvars_.push_back(std::make_shared<loopvar>(loopvar(input, nullptr)));
-		return loopvars_.back();
-	}
-
-	inline jive::structural_node *
-	end(
-		jive::output * predicate,
-		const std::unordered_map<std::shared_ptr<loopvar>, jive::output*> & lvmap)
-	{
-		if (!node_)
-			return nullptr;
-
-		node_->subregion(0)->add_result(predicate, nullptr, jive::ctl::type(2));
-		for (const auto & lv : loopvars_) {
-			auto it = lvmap.find(lv);
-			auto value = it != lvmap.end() ? it->second : lv->argument();
-			auto output = node_->add_output(lv->input()->type());
-			node_->subregion(0)->add_result(value, output, lv->input()->type());
-			lv->output_ = output;
-		}
-
-		auto node = node_;
-		node_ = nullptr;
-		loopvars_.clear();
-
-		return node;
-	}
-
-private:
-	jive::structural_node * node_;
-	std::vector<std::shared_ptr<loopvar>> loopvars_;
 };
 
 class theta final {
@@ -238,6 +173,12 @@ public:
 		return node_;
 	}
 
+	inline jive::region *
+	subregion() const noexcept
+	{
+		return node_->subregion(0);
+	}
+
 	inline jive::result *
 	predicate() const noexcept
 	{
@@ -265,8 +206,65 @@ public:
 		return loopvar_iterator({nullptr, nullptr});
 	}
 
+	inline std::shared_ptr<jive::loopvar>
+	add_loopvar(jive::output * origin)
+	{
+		auto input = node_->add_input(origin->type(), origin);
+		auto output = node_->add_output(origin->type());
+		auto argument = node_->subregion(0)->add_argument(input, origin->type());
+		node_->subregion(0)->add_result(argument, output, origin->type());
+		return std::make_shared<loopvar>(loopvar(input, output));
+	}
+
 private:
 	jive::structural_node * node_;
+};
+
+
+class theta_builder final {
+public:
+	inline jive::region *
+	subregion() const noexcept
+	{
+		return theta_ ? theta_->node()->subregion(0) : nullptr;
+	}
+
+	inline jive::region *
+	begin(jive::region * parent)
+	{
+		if (theta_)
+			return theta_->node()->subregion(0);
+
+		/* FIXME: stop creating a ctl constant once we can add results from the start */
+
+		auto node = parent->add_structural_node(jive::theta_op(), 1);
+		auto predicate = jive_control_false(node->subregion(0));
+		node->subregion(0)->add_result(predicate, nullptr, jive::ctl::type(2));
+		theta_ = std::make_unique<jive::theta>(node);
+		return node->subregion(0);
+	}
+
+	inline std::shared_ptr<jive::loopvar>
+	add_loopvar(jive::output * origin)
+	{
+		if (!theta_)
+			return nullptr;
+
+		return theta_ ? theta_->add_loopvar(origin) : nullptr;
+	}
+
+	inline std::unique_ptr<jive::theta>
+	end(jive::output * predicate)
+	{
+		if (!theta_)
+			return nullptr;
+
+		theta_->node()->subregion(0)->result(0)->divert_origin(predicate);
+		return std::move(theta_);
+	}
+
+private:
+	std::unique_ptr<jive::theta> theta_;
 };
 
 }
