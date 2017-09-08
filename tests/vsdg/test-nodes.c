@@ -87,10 +87,33 @@ test_node_copy(void)
 	assert(graph.root()->nodes.size() == 2);
 }
 
+static inline void
+test_node_depth()
+{
+	using namespace jive::test;
+
+	valuetype vt;
+
+	jive::graph graph;
+	auto x = graph.import(vt, "x");
+
+	auto null = simple_node_create(graph.root(), {}, {}, {vt});
+	auto bin = simple_node_create(graph.root(), {vt, vt}, {null->output(0), x}, {vt});
+
+	graph.export_port(bin->output(0), "x");
+
+	jive::view(graph.root(), stdout);
+
+	bin->input(0)->divert_origin(x);
+	assert(bin->depth() == 0);
+
+}
+
 static int
 test_nodes()
 {
 	test_node_copy();
+	test_node_depth();
 
 	return 0;
 }

@@ -226,13 +226,24 @@ node::remove_output(size_t index)
 void
 node::recompute_depth(jive::input * input)
 {
-	if (input->node() != this
-	|| input->origin()->node() == nullptr
-	|| input->origin()->node()->depth() < depth())
+	if (input->node() != this)
+		return;
+
+	size_t new_depth = 0;
+	if (input->origin()->node() == nullptr) {
+		for (size_t n = 0; n < ninputs(); n++) {
+			auto node = this->input(n)->origin()->node();
+			new_depth = std::max(new_depth, node ? node->depth()+1 : 0);
+		}
+	} else {
+		new_depth = input->origin()->node()->depth()+1;
+	}
+
+	if (new_depth == depth())
 		return;
 
 	size_t old_depth = depth_;
-	depth_ = input->origin()->node()->depth()+1;
+	depth_ = new_depth;
 	graph()->on_node_depth_change(this, old_depth);
 
 	for (size_t n = 0; n < noutputs(); n++) {
