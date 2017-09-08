@@ -230,17 +230,19 @@ node::recompute_depth(jive::input * input)
 		return;
 
 	size_t new_depth = 0;
-	if (input->origin()->node() == nullptr) {
+	auto node = input->origin()->node();
+	if (node == nullptr) {
 		for (size_t n = 0; n < ninputs(); n++) {
-			auto node = this->input(n)->origin()->node();
-			new_depth = std::max(new_depth, node ? node->depth()+1 : 0);
+			auto producer = this->input(n)->origin()->node();
+			new_depth = std::max(new_depth, producer ? producer->depth()+1 : 0);
 		}
+		if (new_depth == depth())
+			return;
 	} else {
-		new_depth = input->origin()->node()->depth()+1;
+		new_depth = node->depth()+1;
+		if (new_depth <= depth())
+			return;
 	}
-
-	if (new_depth == depth())
-		return;
 
 	size_t old_depth = depth_;
 	depth_ = new_depth;
