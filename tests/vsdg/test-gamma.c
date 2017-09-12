@@ -72,7 +72,7 @@ test_predicate_reduction(void)
 	assert(r->origin() == v1);
 
 	graph.prune();
-	assert(graph.root()->nodes.size() == 0);
+	assert(graph.root()->nnodes() == 0);
 }
 
 static void
@@ -98,7 +98,7 @@ test_invariant_reduction(void)
 	assert(r->origin() == v);
 
 	graph.prune();
-	assert(graph.root()->nodes.size() == 0);
+	assert(graph.root()->nnodes() == 0);
 }
 
 static int

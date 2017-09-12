@@ -56,7 +56,7 @@ test_node_copy(void)
 	assert(r2->result(0)->output() == o1);
 	assert(r2->result(1)->output() == o2);
 
-	assert(r2->nodes.size() == 2);
+	assert(r2->nnodes() == 2);
 
 	/* copy second into third region only with arguments */
 	jive::substitution_map smap2;
@@ -75,7 +75,7 @@ test_node_copy(void)
 	assert(r3->result(0)->output() == o1);
 	assert(r3->result(1)->output() == o2);
 
-	assert(r3->nodes.size() == 2);
+	assert(r3->nnodes() == 2);
 
 	/* copy structural node */
 	jive::substitution_map smap3;
@@ -84,7 +84,7 @@ test_node_copy(void)
 
 	jive::view(graph.root(), stdout);
 
-	assert(graph.root()->nodes.size() == 2);
+	assert(graph.root()->nnodes() == 2);
 }
 
 static inline void

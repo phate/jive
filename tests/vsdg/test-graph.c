@@ -75,7 +75,7 @@ test_empty_graph_pruning(void)
 
 	graph.prune();
 
-	assert(graph.root()->nodes.size() == 0);
+	assert(graph.root()->nnodes() == 0);
 
 	jive::view(graph.root(), stdout);
 
