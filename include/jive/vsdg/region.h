@@ -169,6 +169,12 @@ public:
 		return results_[index];
 	}
 
+	inline size_t
+	nnodes() const noexcept
+	{
+		return nodes.size();
+	}
+
 	jive::simple_node *
 	add_simple_node(const jive::simple_op & op, const std::vector<jive::output*> & operands);
 
