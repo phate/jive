@@ -292,28 +292,3 @@ region::prune(bool recursive)
 }
 
 }	//namespace
-
-#ifdef JIVE_DEBUG
-void
-jive_region_verify_top_node_list(struct jive::region * region)
-{
-	/* check whether all nodes in the top_node_list are really nullary nodes */
-	jive::node * node;
-	JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
-		JIVE_DEBUG_ASSERT(node->ninputs() == 0);
-
-	/* check whether all nullary nodes from the region are in the top_node_list */
-	for (const auto & node : region->nodes) {
-		if (node.ninputs() != 0)
-			continue;
-
-		jive::node * top;
-		JIVE_LIST_ITERATE(region->top_nodes, top, region_top_node_list) {
-			if (top == &node)
-				break;
-		}
-		if (top == NULL)
-			JIVE_DEBUG_ASSERT(0);
-	}
-}
-#endif

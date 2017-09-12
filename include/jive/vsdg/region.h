@@ -256,9 +256,4 @@ private:
 
 } //namespace
 
-#ifdef JIVE_DEBUG
-void
-jive_region_verify_top_node_list(struct jive::region * region);
-#endif
-
 #endif
