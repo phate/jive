@@ -123,7 +123,7 @@ public:
 			return true;
 		}
 
-		std::vector<jive::output*> args = jive_node_arguments(node);
+		auto args = node->operands();
 		std::vector<jive::output*> new_args;
 
 		/* possibly expand associative */

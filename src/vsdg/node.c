@@ -267,7 +267,7 @@ jive_node_cse_test(
 	const jive::operation & op,
 	const std::vector<jive::output*> & arguments)
 {
-	return (node->operation() == op && arguments == jive_node_arguments(node));
+	return node->operation() == op && arguments == node->operands();
 }
 
 jive::node *

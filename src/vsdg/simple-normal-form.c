@@ -17,7 +17,7 @@ node_cse(
 {
 	auto cse_test = [&](const jive::node * node)
 	{
-		return node->operation() == op && arguments == jive_node_arguments(node);
+		return node->operation() == op && arguments == node->operands();
 	};
 
 	if (!arguments.empty()) {
@@ -59,7 +59,7 @@ simple_normal_form::normalize_node(jive::node * node) const
 		return true;
 
 	if (get_cse()) {
-		auto new_node = node_cse(node->region(), node->operation(), jive_node_arguments(node));
+		auto new_node = node_cse(node->region(), node->operation(), node->operands());
 		if (new_node && new_node != node) {
 			JIVE_DEBUG_ASSERT(new_node->noutputs() == node->noutputs());
 			for (size_t n = 0; n < node->noutputs(); n++)

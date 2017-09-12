@@ -109,7 +109,7 @@ binary_normal_form::normalize_node(jive::node * node, const base::binary_op & op
 		return true;
 	}
 
-	std::vector<jive::output*> args = jive_node_arguments(node);
+	auto args = node->operands();
 	std::vector<jive::output*> new_args;
 
 	/* possibly expand associative */
