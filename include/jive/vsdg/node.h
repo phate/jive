@@ -151,6 +151,9 @@ public:
 	inline void
 	replace(jive::output * new_origin)
 	{
+		if (this == new_origin)
+			return;
+
 		while (users_.size())
 			(*users_.begin())->divert_origin(new_origin);
 	}
