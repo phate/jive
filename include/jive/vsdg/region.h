@@ -112,12 +112,41 @@ private:
 class structural_node;
 
 class region {
+	typedef jive::detail::intrusive_list<
+		jive::node,
+		jive::node::region_node_list_accessor
+	> region_nodes_list;
+
 public:
 	~region();
 
 	region(jive::region * parent, jive::graph * graph);
 
 	region(jive::structural_node * node);
+
+	inline region_nodes_list::iterator
+	begin()
+	{
+		return nodes.begin();
+	}
+
+	inline region_nodes_list::const_iterator
+	begin() const
+	{
+		return nodes.begin();
+	}
+
+	inline region_nodes_list::iterator
+	end()
+	{
+		return nodes.end();
+	}
+
+	inline region_nodes_list::const_iterator
+	end() const
+	{
+		return nodes.end();
+	}
 
 	inline jive::graph *
 	graph() const noexcept
@@ -205,11 +234,6 @@ public:
 
 	void
 	prune(bool recursive);
-
-	typedef jive::detail::intrusive_list<
-		jive::node,
-		jive::node::region_node_list_accessor
-	> region_nodes_list;
 
 	region_nodes_list nodes;
 
