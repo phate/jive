@@ -65,6 +65,9 @@ input::debug_string() const
 void
 input::divert_origin(jive::output * new_origin)
 {
+	if (origin() == new_origin)
+		return;
+
 	if (type() != new_origin->type())
 		throw jive::type_error(type().debug_string(), new_origin->type().debug_string());
 
