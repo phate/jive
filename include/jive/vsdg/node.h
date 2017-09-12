@@ -359,6 +359,15 @@ public:
 	void
 	recompute_depth(jive::input * input);
 
+	inline std::vector<jive::output*>
+	operands() const
+	{
+		std::vector<jive::output*> operands;
+		for (size_t n = 0; n < ninputs(); ++n)
+			operands.push_back(input(n)->origin());
+		return operands;
+	}
+
 	struct {
 		jive::node * prev;
 		jive::node * next;
