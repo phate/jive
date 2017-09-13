@@ -28,6 +28,9 @@ struct type_of_value {
 struct format_value {
 	std::string operator()(const value_repr & repr) const
 	{
+		if (repr.is_known() && repr.nbits() < 64)
+			return detail::strfmt(repr.to_uint());
+
 		return repr.str();
 	}
 };
