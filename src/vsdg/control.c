@@ -90,7 +90,12 @@ match_op::reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) co
 std::string
 match_op::debug_string() const
 {
-	return "MATCH";
+	std::string str("[");
+	for (const auto & pair : mapping_)
+		str += detail::strfmt(pair.first, " -> ", pair.second, ", ");
+	str += detail::strfmt(default_alternative_, "]");
+
+	return "MATCH" + str;
 }
 
 std::unique_ptr<jive::operation>
