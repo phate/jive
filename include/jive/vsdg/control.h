@@ -32,7 +32,7 @@ struct type_of_value {
 struct format_value {
 	std::string operator()(const value_repr & repr) const
 	{
-		return jive::detail::strfmt(repr.alternative());
+		return jive::detail::strfmt("CTL(", repr.alternative(), ")");
 	}
 };
 
