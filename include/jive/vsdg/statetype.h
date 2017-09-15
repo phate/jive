@@ -7,10 +7,7 @@
 #ifndef JIVE_VSDG_STATETYPE_H
 #define JIVE_VSDG_STATETYPE_H
 
-#include <memory>
-#include <vector>
-
-#include <jive/vsdg/node.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace state {
@@ -61,40 +58,30 @@ private:
 };
 
 }
-}
 
-jive::output*
-jive_state_merge(
-	const jive::state::type * statetype,
-	size_t nstates,
-	jive::output * const states[]);
-
-std::vector<jive::output*>
-jive_state_split(
-	const jive::state::type * statetype,
-	jive::output * state,
-	size_t nstates);
-
-
-// FIXME: temporary overloads below, until it has been made syntactically sure
-// that only state types are passed as arguments
-static inline jive::output*
-jive_state_merge(
-	const jive::base::type * statetype,
-	size_t nstates,
-	jive::output * const states[])
+static inline jive::output *
+create_state_merge(
+	const jive::state::type & type,
+	const std::vector<jive::output*> & states)
 {
-	return jive_state_merge(&dynamic_cast<const jive::state::type &>(*statetype), nstates, states);
+	if (states.empty())
+		throw jive::compiler_error("Insufficient number of operands.");
+
+	auto region = states.front()->region();
+	jive::state::mux_op op(type, states.size(), 1);
+	return jive::create_normalized(region, op, states)[0];
 }
 
 static inline std::vector<jive::output*>
-jive_state_split(
-	const jive::base::type * statetype,
+create_state_split(
+	const jive::state::type & type,
 	jive::output * state,
-	size_t nstates)
+	size_t nresults)
 {
-	return jive_state_split(&dynamic_cast<const jive::state::type &>(*statetype), state, nstates);
+	jive::state::mux_op op(type, 1, nresults);
+	return jive::create_normalized(state->region(), op, {state});
 }
 
+}
 
 #endif

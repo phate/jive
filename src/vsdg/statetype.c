@@ -67,20 +67,3 @@ mux_op::copy() const
 
 }
 }
-
-jive::output *
-jive_state_merge(const jive::state::type * statetype, size_t nstates, jive::output * const states[])
-{
-	jive::region * region = states[0]->region();
-
-	jive::state::mux_op op(*statetype, nstates, 1);
-	return jive::create_normalized(region, op,
-		std::vector<jive::output*>(states, states + nstates))[0];
-}
-
-std::vector<jive::output*>
-jive_state_split(const jive::state::type * statetype, jive::output * state, size_t nstates)
-{
-	jive::state::mux_op op(*statetype, 1, nstates);
-	return jive::create_normalized(state->region(), op, {state});
-}

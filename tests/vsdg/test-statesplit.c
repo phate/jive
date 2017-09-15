@@ -15,23 +15,22 @@
 
 #include "testnodes.h"
 
-static int test_main(void)
+static int
+test_main(void)
 {
+	jive::test::statetype st;
+
 	jive::graph graph;
-	
-	jive::test::statetype statetype;
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {statetype, statetype});
+	auto x = graph.import(st, "x");
+	auto y = graph.import(st, "y");
 
-	std::vector<jive::output*> outputs;
-	for (size_t n = 0; n < top->noutputs(); n++)
-		outputs.push_back(top->output(n));
+	auto merged = jive::create_state_merge(st, {x, y});
+	auto split = jive::create_state_split(st, merged, 2);
 
-	auto merged = jive_state_merge(&statetype, 2, &outputs[0]);
-	auto split = jive_state_split(&statetype, merged, 2);
-	jive::test::simple_node_create(graph.root(), {statetype, statetype}, {split[0], split[1]}, {});
+	graph.export_port(split[0], "x");
+	graph.export_port(split[1], "y");
 
 	jive::view(graph.root(), stdout);
-
 	std::unique_ptr<jive::graph> graph2 = graph.copy();
 	jive::view(graph2->root(), stdout);
 
