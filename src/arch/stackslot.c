@@ -14,6 +14,7 @@
 #include <jive/common.h>
 
 #include <jive/arch/memorytype.h>
+#include <jive/util/strfmt.h>
 
 #include <unordered_map>
 

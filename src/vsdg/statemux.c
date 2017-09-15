@@ -4,7 +4,7 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/statetype.h>
+#include <jive/vsdg/statemux.h>
 
 #include <jive/common.h>
 #include <jive/vsdg/graph.h>

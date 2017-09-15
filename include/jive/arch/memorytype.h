@@ -7,7 +7,7 @@
 #ifndef JIVE_ARCH_MEMORYTYPE_H
 #define JIVE_ARCH_MEMORYTYPE_H
 
-#include <jive/vsdg/statetype.h>
+#include <jive/vsdg/type.h>
 
 namespace jive {
 namespace mem {

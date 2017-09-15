@@ -13,7 +13,6 @@
 #include <jive/util/ptr-collection.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/statetype.h>
 
 namespace jive {
 

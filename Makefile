@@ -28,8 +28,8 @@ LIBJIVE_SRC = \
 	src/vsdg/resource.c \
 	src/vsdg/simple-normal-form.c \
 	src/vsdg/simple_node.c \
+	src/vsdg/statemux.c \
 	src/vsdg/splitnode.c \
-	src/vsdg/statetype.c \
 	src/vsdg/structural-normal-form.c \
 	src/vsdg/structural_node.c \
 	src/vsdg/theta.c \

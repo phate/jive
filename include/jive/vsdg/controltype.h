@@ -7,7 +7,7 @@
 #ifndef JIVE_VSDG_CONTROLTYPE_H
 #define JIVE_VSDG_CONTROLTYPE_H
 
-#include <jive/vsdg/statetype.h>
+#include <jive/vsdg/type.h>
 
 namespace jive {
 namespace ctl {

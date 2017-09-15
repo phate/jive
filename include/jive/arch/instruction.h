@@ -20,7 +20,6 @@
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/nullary.h>
 #include <jive/vsdg/simple_node.h>
-#include <jive/vsdg/statetype.h>
 
 namespace jive {
 

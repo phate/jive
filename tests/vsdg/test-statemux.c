@@ -11,7 +11,7 @@
 
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/vsdg/statetype.h>
+#include <jive/vsdg/statemux.h>
 
 #include "testnodes.h"
 
@@ -37,4 +37,4 @@ test_main(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("vsdg/test-statesplit", test_main);
+JIVE_UNIT_TEST_REGISTER("vsdg/test-statemux", test_main);

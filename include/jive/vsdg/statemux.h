@@ -4,8 +4,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_VSDG_STATETYPE_H
-#define JIVE_VSDG_STATETYPE_H
+#ifndef JIVE_VSDG_STATEMUX_H
+#define JIVE_VSDG_STATEMUX_H
 
 #include <jive/vsdg/simple_node.h>
 
