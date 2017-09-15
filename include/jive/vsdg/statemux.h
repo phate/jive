@@ -8,8 +8,11 @@
 #define JIVE_VSDG_STATEMUX_H
 
 #include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-normal-form.h>
 
 namespace jive {
+
+/* mux operation */
 
 class mux_op final : public simple_op {
 public:
@@ -78,6 +81,28 @@ create_state_split(
 	jive::mux_op op(type, 1, nresults);
 	return jive::create_normalized(state->region(), op, {state});
 }
+
+/* mux normal form */
+
+class mux_normal_form final : public simple_normal_form {
+public:
+	virtual
+	~mux_normal_form() noexcept;
+
+	mux_normal_form(
+	const std::type_info & opclass,
+	jive::node_normal_form * parent,
+	jive::graph * graph) noexcept;
+
+	virtual bool
+	normalize_node(jive::node * node) const override;
+
+	virtual std::vector<jive::output*>
+	normalized_create(
+		jive::region * region,
+		const jive::simple_op & op,
+		const std::vector<jive::output*> & arguments) const override;
+};
 
 }
 
