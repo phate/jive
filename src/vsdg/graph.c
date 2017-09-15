@@ -45,15 +45,6 @@ graph::copy() const
 	return graph;
 }
 
-void
-graph::normalize()
-{
-	for (auto node : jive::topdown_traverser(root()))
-		node_normal_form(typeid(node->operation()))->normalize_node(node);
-
-	normalized_ = true;
-}
-
 jive::node_normal_form *
 graph::node_normal_form(const std::type_info & type) noexcept
 {

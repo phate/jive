@@ -49,8 +49,12 @@ public:
 		normalized_ = false;
 	}
 
-	void
-	normalize();
+	inline void
+	normalize()
+	{
+		root()->normalize(true);
+		normalized_ = true;
+	}
 
 	std::unique_ptr<jive::graph>
 	copy() const;

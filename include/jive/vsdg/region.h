@@ -235,6 +235,9 @@ public:
 	void
 	prune(bool recursive);
 
+	void
+	normalize(bool recursive);
+
 	region_nodes_list nodes;
 
 	struct {

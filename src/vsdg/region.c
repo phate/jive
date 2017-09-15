@@ -291,4 +291,17 @@ region::prune(bool recursive)
 	}
 }
 
+void
+region::normalize(bool recursive)
+{
+	for (auto node : jive::topdown_traverser(this)) {
+		if (auto structnode = dynamic_cast<const jive::structural_node*>(node)) {
+			for (size_t n = 0; n < structnode->nsubregions(); n++)
+				structnode->subregion(n)->normalize(recursive);
+		}
+
+		graph()->node_normal_form(typeid(node->operation()))->normalize_node(node);
+	}
+}
+
 }	//namespace
