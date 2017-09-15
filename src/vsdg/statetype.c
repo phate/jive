@@ -13,7 +13,6 @@
 #include <jive/vsdg/simple_node.h>
 
 namespace jive {
-namespace state {
 
 mux_op::~mux_op() noexcept {}
 
@@ -65,5 +64,4 @@ mux_op::copy() const
 	return std::unique_ptr<jive::operation>(new mux_op(*this));
 }
 
-}
 }

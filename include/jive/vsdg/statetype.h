@@ -10,7 +10,6 @@
 #include <jive/vsdg/simple_node.h>
 
 namespace jive {
-namespace state {
 
 class mux_op final : public simple_op {
 public:
@@ -18,7 +17,7 @@ public:
 	~mux_op() noexcept;
 
 	inline
-	mux_op(const type & state_type, size_t narguments, size_t nresults)
+	mux_op(const state::type & state_type, size_t narguments, size_t nresults)
 	: port_(state_type)
 	, nresults_(nresults)
 	, narguments_(narguments)
@@ -57,8 +56,6 @@ private:
 	size_t narguments_;
 };
 
-}
-
 static inline jive::output *
 create_state_merge(
 	const jive::state::type & type,
@@ -68,7 +65,7 @@ create_state_merge(
 		throw jive::compiler_error("Insufficient number of operands.");
 
 	auto region = states.front()->region();
-	jive::state::mux_op op(type, states.size(), 1);
+	jive::mux_op op(type, states.size(), 1);
 	return jive::create_normalized(region, op, states)[0];
 }
 
@@ -78,7 +75,7 @@ create_state_split(
 	jive::output * state,
 	size_t nresults)
 {
-	jive::state::mux_op op(type, 1, nresults);
+	jive::mux_op op(type, 1, nresults);
 	return jive::create_normalized(state->region(), op, {state});
 }
 
