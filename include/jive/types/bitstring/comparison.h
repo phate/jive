@@ -12,265 +12,45 @@
 namespace jive {
 namespace bits {
 
-class eq_op final : public compare_op {
-public:
-	virtual
-	~eq_op() noexcept;
-
-	inline
-	eq_op(const jive::bits::type & type) noexcept
-	: compare_op(type)
-	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual jive_binary_operation_flags
-	flags() const noexcept override;
-
-	virtual compare_result
-	reduce_constants(const value_repr & arg1, const value_repr & arg2) const override;
-
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
-class ne_op final : public compare_op {
-public:
-	virtual
-	~ne_op() noexcept;
-
-	inline
-	ne_op(const jive::bits::type & type) noexcept
-	: compare_op(type)
-	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual jive_binary_operation_flags
-	flags() const noexcept override;
-
-	virtual compare_result
-	reduce_constants(const value_repr & arg1, const value_repr & arg2) const override;
-
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
-class sgt_op final : public compare_op {
-public:
-	virtual
-	~sgt_op() noexcept;
-
-	inline
-	sgt_op(const jive::bits::type & type) noexcept
-	: compare_op(type)
-	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual jive_binary_operation_flags
-	flags() const noexcept override;
-
-	virtual compare_result
-	reduce_constants(const value_repr & arg1, const value_repr & arg2) const override;
-
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
-class sge_op final : public compare_op {
-public:
-	virtual
-	~sge_op() noexcept;
-
-	inline
-	sge_op(const jive::bits::type & type) noexcept
-	: compare_op(type)
-	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual jive_binary_operation_flags
-	flags() const noexcept override;
-
-	virtual compare_result
-	reduce_constants(const value_repr & arg1, const value_repr & arg2) const override;
-
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
-class slt_op final : public compare_op {
-public:
-	virtual
-	~slt_op() noexcept;
-
-	inline
-	slt_op(const jive::bits::type & type) noexcept
-	: compare_op(type)
-	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual jive_binary_operation_flags
-	flags() const noexcept override;
-
-	virtual compare_result
-	reduce_constants(const value_repr & arg1, const value_repr & arg2) const override;
-
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
-class sle_op final : public compare_op {
-public:
-	virtual
-	~sle_op() noexcept;
-
-	inline
-	sle_op(const jive::bits::type & type) noexcept
-	: compare_op(type)
-	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual jive_binary_operation_flags
-	flags() const noexcept override;
-
-	virtual compare_result
-	reduce_constants(const value_repr & arg1, const value_repr & arg2) const override;
-
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
-class ugt_op final : public compare_op {
-public:
-	virtual
-	~ugt_op() noexcept;
-
-	inline
-	ugt_op(const jive::bits::type & type) noexcept
-	: compare_op(type)
-	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual jive_binary_operation_flags
-	flags() const noexcept override;
-
-	virtual compare_result
-	reduce_constants(const value_repr & arg1, const value_repr & arg2) const override;
-
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
-class uge_op final : public compare_op {
-public:
-	virtual
-	~uge_op() noexcept;
-
-	inline
-	uge_op(const jive::bits::type & type) noexcept
-	: compare_op(type)
-	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual jive_binary_operation_flags
-	flags() const noexcept override;
-
-	virtual compare_result
-	reduce_constants(const value_repr & arg1, const value_repr & arg2) const override;
-
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
-class ult_op final : public compare_op {
-public:
-	virtual
-	~ult_op() noexcept;
-
-	inline
-	ult_op(const jive::bits::type & type) noexcept
-	: compare_op(type)
-	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual jive_binary_operation_flags
-	flags() const noexcept override;
-
-	virtual compare_result
-	reduce_constants(const value_repr & arg1, const value_repr & arg2) const override;
-
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
-class ule_op final : public compare_op {
-public:
-	virtual
-	~ule_op() noexcept;
-
-	inline
-	ule_op(const jive::bits::type & type) noexcept
-	: compare_op(type)
-	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual jive_binary_operation_flags
-	flags() const noexcept override;
-
-	virtual compare_result
-	reduce_constants(const value_repr & arg1, const value_repr & arg2) const override;
-
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
+#define DECLARE_BITCOMPARISON_OPERATION(NAME) \
+class NAME ## _op final : public compare_op { \
+public: \
+	virtual \
+	~NAME ## _op() noexcept; \
+\
+	inline \
+	NAME ## _op(const jive::bits::type & type) noexcept \
+	: compare_op(type) \
+	{} \
+\
+	virtual bool \
+	operator==(const operation & other) const noexcept override; \
+\
+	virtual jive_binary_operation_flags \
+	flags() const noexcept override; \
+\
+	virtual compare_result \
+	reduce_constants( \
+		const value_repr & arg1, \
+		const value_repr & arg2) const override; \
+\
+	virtual std::string \
+	debug_string() const override; \
+\
+	virtual std::unique_ptr<jive::operation> \
+	copy() const override; \
+}; \
+
+DECLARE_BITCOMPARISON_OPERATION(eq);
+DECLARE_BITCOMPARISON_OPERATION(ne);
+DECLARE_BITCOMPARISON_OPERATION(sge);
+DECLARE_BITCOMPARISON_OPERATION(sgt);
+DECLARE_BITCOMPARISON_OPERATION(sle);
+DECLARE_BITCOMPARISON_OPERATION(slt);
+DECLARE_BITCOMPARISON_OPERATION(uge);
+DECLARE_BITCOMPARISON_OPERATION(ugt);
+DECLARE_BITCOMPARISON_OPERATION(ule);
+DECLARE_BITCOMPARISON_OPERATION(ult);
 
 }
 }
