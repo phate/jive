@@ -68,6 +68,55 @@ mux_op::copy() const
 
 /* mux normal form */
 
+static inline jive::node *
+is_mux_mux_reducible(const std::vector<jive::output*> & ops)
+{
+	std::unordered_set<jive::output*> operands({ops.begin(), ops.end()});
+
+	for (const auto & operand : operands) {
+		if (!operand->node() || !dynamic_cast<const jive::mux_op*>(&operand->node()->operation()))
+			continue;
+
+		size_t n;
+		auto node = operand->node();
+		for (n = 0; n < node->noutputs(); n++) {
+			if (operands.find(node->output(n)) == operands.end())
+				break;
+		}
+		if (n == node->noutputs())
+			return node;
+	}
+
+	return nullptr;
+}
+
+static inline std::vector<jive::output*>
+perform_mux_mux_reduction(
+	const jive::mux_op & old_op,
+	const jive::node * muxnode,
+	const std::vector<jive::output*> & old_operands)
+{
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::mux_op*>(&muxnode->operation()));
+	auto type = static_cast<const jive::state::type*>(&old_op.result(0).type());
+
+	bool reduced = false;
+	std::vector<jive::output*> new_operands;
+	for (const auto & operand : old_operands) {
+		if (operand->node() && operand->node() == muxnode && !reduced) {
+			reduced = true;
+			auto tmp = muxnode->operands();
+			new_operands.insert(new_operands.end(), tmp.begin(), tmp.end());
+			continue;
+		}
+
+		if (operand->node() != muxnode)
+			new_operands.push_back(operand);
+	}
+
+	jive::mux_op new_op(*type, new_operands.size(), old_op.nresults());
+	return jive::create_normalized(muxnode->region(), new_op, new_operands);
+}
+
 mux_normal_form::~mux_normal_form() noexcept
 {}
 
@@ -76,11 +125,29 @@ mux_normal_form::mux_normal_form(
 	jive::node_normal_form * parent,
 	jive::graph * graph) noexcept
 : simple_normal_form(opclass, parent, graph)
-{}
+, enable_mux_mux_(false)
+{
+	if (auto p = dynamic_cast<const mux_normal_form*>(parent))
+		enable_mux_mux_ = p->enable_mux_mux_;
+}
 
 bool
 mux_normal_form::normalize_node(jive::node * node) const
 {
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::mux_op*>(&node->operation()));
+	auto op = static_cast<const jive::mux_op*>(&node->operation());
+
+	if (!get_mutable())
+		return true;
+
+	auto muxnode = is_mux_mux_reducible(node->operands());
+	if (get_mux_mux_reducible() && muxnode) {
+		auto outputs = perform_mux_mux_reduction(*op, muxnode, node->operands());
+		for (size_t n = 0; n < node->noutputs(); n++)
+			node->output(n)->replace(outputs[n]);
+		return false;
+	}
+
 	return simple_normal_form::normalize_node(node);
 }
 
@@ -90,7 +157,30 @@ mux_normal_form::normalized_create(
 	const jive::simple_op & op,
 	const std::vector<jive::output*> & operands) const
 {
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::mux_op*>(&op));
+	auto mop = static_cast<const jive::mux_op*>(&op);
+
+	if (!get_mutable())
+		return simple_normal_form::normalized_create(region, op, operands);
+
+	auto muxnode = is_mux_mux_reducible(operands);
+	if (get_mux_mux_reducible() && muxnode)
+		return perform_mux_mux_reduction(*mop, muxnode, operands);
+
 	return simple_normal_form::normalized_create(region, op, operands);
+}
+
+void
+mux_normal_form::set_mux_mux_reducible(bool enable)
+{
+	if (get_mux_mux_reducible() == enable)
+		return;
+
+	children_set<mux_normal_form, &mux_normal_form::set_mux_mux_reducible>(enable);
+
+	enable_mux_mux_ = enable;
+	if (get_mutable() && enable)
+		graph()->mark_denormalized();
 }
 
 }

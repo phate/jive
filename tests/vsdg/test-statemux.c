@@ -15,24 +15,48 @@
 
 #include "testnodes.h"
 
-static int
-test_main(void)
+static void
+test_mux_mux_reduction()
 {
 	jive::test::statetype st;
 
 	jive::graph graph;
+	auto nf = graph.node_normal_form(typeid(jive::mux_op));
+	auto mnf = static_cast<jive::mux_normal_form*>(nf);
+	mnf->set_mutable(false);
+	mnf->set_mux_mux_reducible(false);
+
 	auto x = graph.import(st, "x");
 	auto y = graph.import(st, "y");
+	auto z = graph.import(st, "z");
 
-	auto merged = jive::create_state_merge(st, {x, y});
-	auto split = jive::create_state_split(st, merged, 2);
+	auto mux1 = jive::create_state_merge(st, {x, y});
+	auto mux2 = jive::create_state_split(st, z, 2);
+	auto mux3 = jive::create_state_merge(st, {mux1, mux2[0], mux2[1], z});
 
-	graph.export_port(split[0], "x");
-	graph.export_port(split[1], "y");
+	auto ex = graph.export_port(mux3, "m");
 
 	jive::view(graph.root(), stdout);
-	std::unique_ptr<jive::graph> graph2 = graph.copy();
-	jive::view(graph2->root(), stdout);
+
+	mnf->set_mutable(true);
+	mnf->set_mux_mux_reducible(true);
+	graph.normalize();
+	graph.prune();
+
+	jive::view(graph.root(), stdout);
+
+	auto node = ex->origin()->node();
+	assert(node->ninputs() == 4);
+	assert(node->input(0)->origin() == x);
+	assert(node->input(1)->origin() == y);
+	assert(node->input(2)->origin() == z);
+	assert(node->input(3)->origin() == z);
+}
+
+static int
+test_main(void)
+{
+	test_mux_mux_reduction();
 
 	return 0;
 }

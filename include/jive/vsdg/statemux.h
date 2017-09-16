@@ -102,6 +102,18 @@ public:
 		jive::region * region,
 		const jive::simple_op & op,
 		const std::vector<jive::output*> & arguments) const override;
+
+	virtual void
+	set_mux_mux_reducible(bool enable);
+
+	inline bool
+	get_mux_mux_reducible() const noexcept
+	{
+		return enable_mux_mux_;
+	}
+
+private:
+	bool enable_mux_mux_;
 };
 
 }
