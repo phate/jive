@@ -90,6 +90,28 @@ is_mux_mux_reducible(const std::vector<jive::output*> & ops)
 	return nullptr;
 }
 
+static inline bool
+is_multiple_origin_reducible(const std::vector<jive::output*> & operands)
+{
+	std::unordered_set<jive::output*> tmp({operands.begin(), operands.end()});
+	return tmp.size() != operands.size();
+}
+
+static inline std::vector<jive::output*>
+perform_multiple_origin_reduction(
+	const jive::mux_op & old_op,
+	const std::vector<jive::output*> & old_operands)
+{
+	auto type = static_cast<const jive::state::type*>(&old_op.result(0).type());
+	auto region = old_operands[0]->region();
+
+	std::unordered_set<jive::output*> tmp({old_operands.begin(), old_operands.end()});
+	std::vector<jive::output*> new_operands({tmp.begin(), tmp.end()});
+
+	jive::mux_op new_op(*type, new_operands.size(), old_op.nresults());
+	return jive::create_normalized(region, new_op, new_operands);
+}
+
 static inline std::vector<jive::output*>
 perform_mux_mux_reduction(
 	const jive::mux_op & old_op,
@@ -148,6 +170,13 @@ mux_normal_form::normalize_node(jive::node * node) const
 		return false;
 	}
 
+	if (get_multiple_origin_reducible() && is_multiple_origin_reducible(node->operands())) {
+		auto outputs = perform_multiple_origin_reduction(*op, node->operands());
+		for (size_t n = 0; n < node->noutputs(); n++)
+			node->output(n)->replace(outputs[n]);
+		return false;
+	}
+
 	return simple_normal_form::normalize_node(node);
 }
 
@@ -167,6 +196,9 @@ mux_normal_form::normalized_create(
 	if (get_mux_mux_reducible() && muxnode)
 		return perform_mux_mux_reduction(*mop, muxnode, operands);
 
+	if (get_multiple_origin_reducible() && is_multiple_origin_reducible(operands))
+		return perform_multiple_origin_reduction(*mop, operands);
+
 	return simple_normal_form::normalized_create(region, op, operands);
 }
 
@@ -179,6 +211,19 @@ mux_normal_form::set_mux_mux_reducible(bool enable)
 	children_set<mux_normal_form, &mux_normal_form::set_mux_mux_reducible>(enable);
 
 	enable_mux_mux_ = enable;
+	if (get_mutable() && enable)
+		graph()->mark_denormalized();
+}
+
+void
+mux_normal_form::set_multiple_origin_reducible(bool enable)
+{
+	if (get_multiple_origin_reducible() == enable)
+		return;
+
+	children_set<mux_normal_form, &mux_normal_form::set_multiple_origin_reducible>(enable);
+
+	enable_multiple_origin_ = enable;
 	if (get_mutable() && enable)
 		graph()->mark_denormalized();
 }

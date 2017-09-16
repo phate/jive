@@ -36,14 +36,14 @@ test_mux_mux_reduction()
 
 	auto ex = graph.export_port(mux3, "m");
 
-	jive::view(graph.root(), stdout);
+//	jive::view(graph.root(), stdout);
 
 	mnf->set_mutable(true);
 	mnf->set_mux_mux_reducible(true);
 	graph.normalize();
 	graph.prune();
 
-	jive::view(graph.root(), stdout);
+//	jive::view(graph.root(), stdout);
 
 	auto node = ex->origin()->node();
 	assert(node->ninputs() == 4);
@@ -53,10 +53,38 @@ test_mux_mux_reduction()
 	assert(node->input(3)->origin() == z);
 }
 
+static void
+test_multiple_origin_reduction()
+{
+	jive::test::statetype st;
+
+	jive::graph graph;
+	auto nf = graph.node_normal_form(typeid(jive::mux_op));
+	auto mnf = static_cast<jive::mux_normal_form*>(nf);
+	mnf->set_mutable(false);
+	mnf->set_multiple_origin_reducible(false);
+
+	auto x = graph.import(st, "x");
+	auto mux1 = jive::create_state_merge(st, {x, x});
+	auto ex = graph.export_port(mux1, "m");
+
+	jive::view(graph.root(), stdout);
+
+	mnf->set_mutable(true);
+	mnf->set_multiple_origin_reducible(true);
+	graph.normalize();
+	graph.prune();
+
+	jive::view(graph.root(), stdout);
+
+	assert(ex->origin()->node()->ninputs() == 1);
+}
+
 static int
 test_main(void)
 {
 	test_mux_mux_reduction();
+	test_multiple_origin_reduction();
 
 	return 0;
 }
