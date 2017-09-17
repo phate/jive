@@ -143,7 +143,7 @@ associative_flatten(std::vector<jive::output*> args, const FlattenTester& flatte
 	while (n < args.size()) {
 		if (flatten_tester(args[n])) {
 			auto arg = args[n];
-			auto sub_args = arg->node()->operands();
+			auto sub_args = jive::operands(arg->node());
 			args[n] = sub_args[0];
 			args.insert(args.begin() + n + 1, sub_args.begin() + 1, sub_args.end());
 		} else {
