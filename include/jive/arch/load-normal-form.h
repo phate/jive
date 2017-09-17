@@ -23,11 +23,6 @@ public:
 	virtual bool
 	normalize_node(jive::node * node) const override;
 
-	virtual bool
-	operands_are_normalized(
-		const jive::operation & op,
-		const std::vector<jive::output*> & arguments) const override;
-
 	virtual std::vector<jive::output*>
 	normalized_create(
 		jive::region * region,

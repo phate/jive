@@ -88,23 +88,6 @@ gamma_normal_form::normalize_node(jive::node * node_) const
 	return was_normalized;
 }
 
-bool
-gamma_normal_form::operands_are_normalized(
-	const jive::operation & op,
-	const std::vector<jive::output*> & arguments) const
-{
-	if (!get_mutable())
-		return true;
-	
-	if (get_predicate_reduction()) {
-		auto constant  = arguments[0]->node();
-		if (constant && dynamic_cast<const jive::ctl::constant_op*>(&constant->operation()))
-			return false;
-	}
-	
-	return true;
-}
-
 void
 gamma_normal_form::set_predicate_reduction(bool enable)
 {

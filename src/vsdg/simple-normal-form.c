@@ -72,14 +72,6 @@ simple_normal_form::normalize_node(jive::node * node) const
 	return true;
 }
 
-bool
-simple_normal_form::operands_are_normalized(
-	const jive::operation & op,
-	const std::vector<jive::output*> & arguments) const
-{
-	return true;
-}
-
 std::vector<jive::output*>
 simple_normal_form::normalized_create(
 	jive::region * region,

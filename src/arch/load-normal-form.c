@@ -72,32 +72,6 @@ load_normal_form::normalize_node(jive::node * node) const
 	return simple_normal_form::normalize_node(node);
 }
 
-bool
-load_normal_form::operands_are_normalized(
-	const jive::operation & op,
-	const std::vector<jive::output*> & arguments) const
-{
-	if (get_mutable() && get_reducible()) {
-		const jive::load_op & l_op = static_cast<const jive::load_op &>(op);
-		auto address = arguments[0];
-		auto arg1 = dynamic_cast<jive::simple_output*>(arguments[1]);
-		jive::node * store_node =
-			(arg1 && arguments.size() >= 2 && is_matching_store_node(l_op, address, arg1->node())) ?
-			arg1->node() : nullptr;
-		for (size_t n = 2; n < arguments.size(); ++n) {
-			auto argn = dynamic_cast<jive::simple_output*>(arguments[n]);
-			if (argn && argn->node() != store_node) {
-				store_node = nullptr;
-			}
-		}
-		if (store_node) {
-			return false;
-		}
-	}
-
-	return simple_normal_form::operands_are_normalized(op, arguments);
-}
-
 std::vector<jive::output*>
 load_normal_form::normalized_create(
 	jive::region * region,

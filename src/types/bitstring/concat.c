@@ -37,28 +37,6 @@ namespace bits {
 
 namespace {
 
-bool
-concat_test_reduce_arg_pair(const jive::output * arg1, const jive::output * arg2)
-{
-	if (!arg1->node() || !arg2->node())
-		return false;
-
-	auto arg1_constant = dynamic_cast<const constant_op*>(&arg1->node()->operation());
-	auto arg2_constant = dynamic_cast<const constant_op*>(&arg2->node()->operation());
-	if (arg1_constant && arg2_constant) {
-		return true;
-	}
-
-	auto arg1_slice = dynamic_cast<const slice_op *>(&arg1->node()->operation());
-	auto arg2_slice = dynamic_cast<const slice_op *>(&arg2->node()->operation());
-	if (arg1_slice && arg2_slice && arg1_slice->high() == arg2_slice->low() &&
-		arg1->node()->input(0)->origin() == arg2->node()->input(0)->origin()) {
-		return true;
-	}
-
-	return false;
-}
-
 jive::output *
 concat_reduce_arg_pair(jive::output * arg1, jive::output * arg2)
 {
@@ -174,39 +152,6 @@ public:
 		}
 
 		return true;
-	}
-
-	virtual bool
-	operands_are_normalized(
-		const jive::operation & op,
-		const std::vector<jive::output*> & arguments) const override
-	{
-		if (!get_mutable()) {
-			return true;
-		}
-		
-		/* possibly expand associative */
-		if (get_flatten()) {
-			bool can_flatten = base::detail::associative_test_flatten(
-				arguments,
-				[](jive::output * arg) {
-					return arg->node() && typeid(arg->node()->operation()) == typeid(concat_op);
-				});
-			if (can_flatten) {
-				return false;
-			}
-		}
-		
-		if (get_reducible()) {
-			bool reducible = base::detail::pairwise_test_reduce(
-				arguments,
-				concat_test_reduce_arg_pair);
-			if (reducible) {
-				return false;
-			}
-		}
-		
-		return simple_normal_form::operands_are_normalized(op, arguments);
 	}
 
 	virtual std::vector<jive::output*>

@@ -24,14 +24,6 @@ node_normal_form::normalize_node(jive::node * node) const
 	return true;
 }
 
-bool
-node_normal_form::operands_are_normalized(
-	const jive::operation & op,
-	const std::vector<jive::output*> & arguments) const
-{
-	return true;
-}
-
 void
 node_normal_form::set_mutable(bool enable)
 {

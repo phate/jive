@@ -15,29 +15,6 @@ namespace jive {
 
 namespace {
 
-bool
-test_reduce_operands(
-	const jive::base::binary_op & op,
-	const std::vector<jive::output*> & args)
-{
-	/* pair-wise reduce */
-	if (op.is_commutative()) {
-		return base::detail::commutative_pairwise_test_reduce(
-			args,
-			[&op](jive::output * arg1, jive::output * arg2)
-			{
-				return op.can_reduce_operand_pair(arg1, arg2) != jive_binop_reduction_none;
-			});
-	} else {
-		return base::detail::pairwise_test_reduce(
-			args,
-			[&op](jive::output * arg1, jive::output * arg2)
-			{
-				return op.can_reduce_operand_pair(arg1, arg2) != jive_binop_reduction_none;
-			});
-	}
-}
-
 std::vector<jive::output*>
 reduce_operands(
 	const jive::base::binary_op & op,
@@ -169,44 +146,6 @@ binary_normal_form::normalize_node(jive::node * node, const base::binary_op & op
 	}
 
 	return true;
-}
-
-bool
-binary_normal_form::operands_are_normalized(
-	const jive::operation & base_op,
-	const std::vector<jive::output*> & args) const
-{
-	const jive::base::binary_op& op = *static_cast<const jive::base::binary_op*>(&base_op);
-	if (!get_mutable()) {
-		return true;
-	}
-	
-	/* possibly expand associative */
-	if (get_flatten() && op.is_associative()) {
-		bool can_flatten = base::detail::associative_test_flatten(
-			args,
-			[&op](jive::output * arg) {
-				auto operand = dynamic_cast<jive::simple_output*>(arg);
-				auto fb_op = dynamic_cast<const base::flattened_binary_op*>(&operand->node()->operation());
-				return operand->node()->operation() == op ||
-					(fb_op && fb_op->bin_operation() == op);
-			});
-		if (can_flatten) {
-			return false;
-		}
-	}
-	
-	if (get_reducible()) {
-		if (test_reduce_operands(op, args)) {
-			return false;
-		}
-	}
-	
-	/* FIXME: reorder for commutative operation */
-	
-	/* FIXME: attempt distributive transform */
-	
-	return simple_normal_form::operands_are_normalized(base_op, args);
 }
 
 std::vector<jive::output*>
@@ -343,19 +282,6 @@ flattened_binary_normal_form::normalize_node(jive::node * node) const
 	const auto nf = graph()->node_normal_form(typeid(op.bin_operation()));
 
 	return static_cast<const binary_normal_form *>(nf)->normalize_node(node, op.bin_operation());
-}
-
-bool
-flattened_binary_normal_form::operands_are_normalized(
-	const jive::operation & base_op,
-	const std::vector<jive::output*> & arguments) const
-{
-	const base::flattened_binary_op & op =
-		static_cast<const base::flattened_binary_op &>(base_op);
-
-	const auto nf = graph()->node_normal_form(typeid(op.bin_operation()));
-
-	return nf->operands_are_normalized(op.bin_operation(), arguments);
 }
 
 std::vector<jive::output*>

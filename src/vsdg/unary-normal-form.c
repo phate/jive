@@ -60,26 +60,6 @@ unary_normal_form::normalize_node(jive::node * node) const
 	return true;
 }
 
-bool
-unary_normal_form::operands_are_normalized(
-	const jive::operation & base_op,
-	const std::vector<jive::output*> & arguments) const
-{
-	JIVE_DEBUG_ASSERT(arguments.size() == 1);
-
-	if (get_mutable() && get_reducible()) {
-		const jive::base::unary_op & op =
-			static_cast<const jive::base::unary_op &>(base_op);
-
-		auto reduction = op.can_reduce_operand(arguments[0]);
-		if (reduction != jive_unop_reduction_none) {
-			return false;
-		}
-	}
-
-	return simple_normal_form::operands_are_normalized(base_op, arguments);
-}
-
 std::vector<jive::output*>
 unary_normal_form::normalized_create(
 	jive::region * region,
