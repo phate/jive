@@ -59,27 +59,35 @@ private:
 	size_t narguments_;
 };
 
+static inline std::vector<jive::output*>
+create_state_mux(
+	const jive::state::type & type,
+	const std::vector<jive::output*> & operands,
+	size_t nresults)
+{
+	if (operands.empty())
+		throw jive::compiler_error("Insufficient number of operands.");
+
+	auto region = operands.front()->region();
+	jive::mux_op op(type, operands.size(), nresults);
+	return jive::create_normalized(region, op, operands);
+}
+
 static inline jive::output *
 create_state_merge(
 	const jive::state::type & type,
-	const std::vector<jive::output*> & states)
+	const std::vector<jive::output*> & operands)
 {
-	if (states.empty())
-		throw jive::compiler_error("Insufficient number of operands.");
-
-	auto region = states.front()->region();
-	jive::mux_op op(type, states.size(), 1);
-	return jive::create_normalized(region, op, states)[0];
+	return create_state_mux(type, operands, 1)[0];
 }
 
 static inline std::vector<jive::output*>
 create_state_split(
 	const jive::state::type & type,
-	jive::output * state,
+	jive::output * operand,
 	size_t nresults)
 {
-	jive::mux_op op(type, 1, nresults);
-	return jive::create_normalized(state->region(), op, {state});
+	return create_state_mux(type, {operand}, nresults);
 }
 
 /* mux normal form */
