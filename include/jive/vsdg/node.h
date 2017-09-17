@@ -403,6 +403,8 @@ replace(
 	jive::node * node,
 	const std::vector<jive::output*> & outputs)
 {
+	JIVE_DEBUG_ASSERT(node->noutputs() == outputs.size());
+
 	for (size_t n = 0; n < outputs.size(); n++)
 		node->output(n)->replace(outputs[n]);
 }
