@@ -398,6 +398,15 @@ operands(const jive::node * node)
 	return operands;
 }
 
+static inline void
+replace(
+	jive::node * node,
+	const std::vector<jive::output*> & outputs)
+{
+	for (size_t n = 0; n < outputs.size(); n++)
+		node->output(n)->replace(outputs[n]);
+}
+
 }
 
 struct jive_tracker_nodestate {
