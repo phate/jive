@@ -59,6 +59,12 @@ private:
 	size_t narguments_;
 };
 
+static inline bool
+is_mux_op(const jive::operation & op)
+{
+	return dynamic_cast<const jive::mux_op*>(&op) != nullptr;
+}
+
 static inline std::vector<jive::output*>
 create_state_mux(
 	const jive::base::type & type,
