@@ -68,13 +68,13 @@ mux_op::copy() const
 
 /* mux normal form */
 
-static inline jive::node *
+static jive::node *
 is_mux_mux_reducible(const std::vector<jive::output*> & ops)
 {
-	std::unordered_set<jive::output*> operands({ops.begin(), ops.end()});
+	std::unordered_set<jive::output*> operands(ops.begin(), ops.end());
 
 	for (const auto & operand : operands) {
-		if (!operand->node() || !dynamic_cast<const jive::mux_op*>(&operand->node()->operation()))
+		if (!operand->node() || !is_mux_op(operand->node()->operation()))
 			continue;
 
 		size_t n;
@@ -90,41 +90,34 @@ is_mux_mux_reducible(const std::vector<jive::output*> & ops)
 	return nullptr;
 }
 
-static inline bool
+static bool
 is_multiple_origin_reducible(const std::vector<jive::output*> & operands)
 {
-	std::unordered_set<jive::output*> tmp({operands.begin(), operands.end()});
-	return tmp.size() != operands.size();
+	std::unordered_set<jive::output*> set(operands.begin(), operands.end());
+	return set.size() != operands.size();
 }
 
-static inline std::vector<jive::output*>
+static std::vector<jive::output*>
 perform_multiple_origin_reduction(
-	const jive::mux_op & old_op,
-	const std::vector<jive::output*> & old_operands)
+	const jive::mux_op & op,
+	const std::vector<jive::output*> & operands)
 {
-	auto type = static_cast<const jive::state::type*>(&old_op.result(0).type());
-	auto region = old_operands[0]->region();
-
-	std::unordered_set<jive::output*> tmp({old_operands.begin(), old_operands.end()});
-	std::vector<jive::output*> new_operands({tmp.begin(), tmp.end()});
-
-	jive::mux_op new_op(*type, new_operands.size(), old_op.nresults());
-	return jive::create_normalized(region, new_op, new_operands);
+	std::unordered_set<jive::output*> set(operands.begin(), operands.end());
+	return create_state_mux(op.result(0).type(), {set.begin(), set.end()}, op.nresults());
 }
 
-static inline std::vector<jive::output*>
+static std::vector<jive::output*>
 perform_mux_mux_reduction(
-	const jive::mux_op & old_op,
+	const jive::mux_op & op,
 	const jive::node * muxnode,
 	const std::vector<jive::output*> & old_operands)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::mux_op*>(&muxnode->operation()));
-	auto type = static_cast<const jive::state::type*>(&old_op.result(0).type());
+	JIVE_DEBUG_ASSERT(is_mux_op(muxnode->operation()));
 
 	bool reduced = false;
 	std::vector<jive::output*> new_operands;
 	for (const auto & operand : old_operands) {
-		if (operand->node() && operand->node() == muxnode && !reduced) {
+		if (operand->node() == muxnode && !reduced) {
 			reduced = true;
 			auto tmp = operands(muxnode);
 			new_operands.insert(new_operands.end(), tmp.begin(), tmp.end());
@@ -135,8 +128,7 @@ perform_mux_mux_reduction(
 			new_operands.push_back(operand);
 	}
 
-	jive::mux_op new_op(*type, new_operands.size(), old_op.nresults());
-	return jive::create_normalized(muxnode->region(), new_op, new_operands);
+	return create_state_mux(op.result(0).type(), new_operands, op.nresults());
 }
 
 mux_normal_form::~mux_normal_form() noexcept
