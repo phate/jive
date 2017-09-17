@@ -7,10 +7,55 @@
 #ifndef JIVE_VSDG_STATEMUX_H
 #define JIVE_VSDG_STATEMUX_H
 
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/simple-normal-form.h>
 
 namespace jive {
+
+/* mux normal form */
+
+class mux_normal_form final : public simple_normal_form {
+public:
+	virtual
+	~mux_normal_form() noexcept;
+
+	mux_normal_form(
+	const std::type_info & opclass,
+	jive::node_normal_form * parent,
+	jive::graph * graph) noexcept;
+
+	virtual bool
+	normalize_node(jive::node * node) const override;
+
+	virtual std::vector<jive::output*>
+	normalized_create(
+		jive::region * region,
+		const jive::simple_op & op,
+		const std::vector<jive::output*> & arguments) const override;
+
+	virtual void
+	set_mux_mux_reducible(bool enable);
+
+	virtual void
+	set_multiple_origin_reducible(bool enable);
+
+	inline bool
+	get_mux_mux_reducible() const noexcept
+	{
+		return enable_mux_mux_;
+	}
+
+	inline bool
+	get_multiple_origin_reducible() const noexcept
+	{
+		return enable_multiple_origin_;
+	}
+
+private:
+	bool enable_mux_mux_;
+	bool enable_multiple_origin_;
+};
 
 /* mux operation */
 
@@ -52,6 +97,12 @@ public:
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
+
+	static jive::mux_normal_form *
+	normal_form(jive::graph * graph) noexcept
+	{
+		return static_cast<jive::mux_normal_form*>(graph->node_normal_form(typeid(mux_op)));
+	}
 
 private:
 	jive::port port_;
@@ -98,50 +149,6 @@ create_state_split(
 {
 	return create_state_mux(type, {operand}, nresults);
 }
-
-/* mux normal form */
-
-class mux_normal_form final : public simple_normal_form {
-public:
-	virtual
-	~mux_normal_form() noexcept;
-
-	mux_normal_form(
-	const std::type_info & opclass,
-	jive::node_normal_form * parent,
-	jive::graph * graph) noexcept;
-
-	virtual bool
-	normalize_node(jive::node * node) const override;
-
-	virtual std::vector<jive::output*>
-	normalized_create(
-		jive::region * region,
-		const jive::simple_op & op,
-		const std::vector<jive::output*> & arguments) const override;
-
-	virtual void
-	set_mux_mux_reducible(bool enable);
-
-	virtual void
-	set_multiple_origin_reducible(bool enable);
-
-	inline bool
-	get_mux_mux_reducible() const noexcept
-	{
-		return enable_mux_mux_;
-	}
-
-	inline bool
-	get_multiple_origin_reducible() const noexcept
-	{
-		return enable_multiple_origin_;
-	}
-
-private:
-	bool enable_mux_mux_;
-	bool enable_multiple_origin_;
-};
 
 }
 
