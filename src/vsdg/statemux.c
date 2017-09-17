@@ -80,7 +80,8 @@ is_mux_mux_reducible(const std::vector<jive::output*> & ops)
 		size_t n;
 		auto node = operand->node();
 		for (n = 0; n < node->noutputs(); n++) {
-			if (operands.find(node->output(n)) == operands.end())
+			auto output = node->output(n);
+			if (operands.find(output) == operands.end() || output->nusers() != 1)
 				break;
 		}
 		if (n == node->noutputs())
