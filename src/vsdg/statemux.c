@@ -164,16 +164,12 @@ mux_normal_form::normalize_node(jive::node * node) const
 
 	auto muxnode = is_mux_mux_reducible(operands(node));
 	if (get_mux_mux_reducible() && muxnode) {
-		auto outputs = perform_mux_mux_reduction(*op, muxnode, operands(node));
-		for (size_t n = 0; n < node->noutputs(); n++)
-			node->output(n)->replace(outputs[n]);
+		replace(node, perform_mux_mux_reduction(*op, muxnode, operands(node)));
 		return false;
 	}
 
 	if (get_multiple_origin_reducible() && is_multiple_origin_reducible(operands(node))) {
-		auto outputs = perform_multiple_origin_reduction(*op, operands(node));
-		for (size_t n = 0; n < node->noutputs(); n++)
-			node->output(n)->replace(outputs[n]);
+		replace(node, perform_multiple_origin_reduction(*op, operands(node)));
 		return false;
 	}
 
