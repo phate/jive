@@ -61,21 +61,24 @@ private:
 
 static inline std::vector<jive::output*>
 create_state_mux(
-	const jive::state::type & type,
+	const jive::base::type & type,
 	const std::vector<jive::output*> & operands,
 	size_t nresults)
 {
 	if (operands.empty())
 		throw jive::compiler_error("Insufficient number of operands.");
 
+	auto st = dynamic_cast<const jive::state::type*>(&type);
+	if (!st) throw jive::compiler_error("Expected state type.");
+
 	auto region = operands.front()->region();
-	jive::mux_op op(type, operands.size(), nresults);
+	jive::mux_op op(*st, operands.size(), nresults);
 	return jive::create_normalized(region, op, operands);
 }
 
 static inline jive::output *
 create_state_merge(
-	const jive::state::type & type,
+	const jive::base::type & type,
 	const std::vector<jive::output*> & operands)
 {
 	return create_state_mux(type, operands, 1)[0];
@@ -83,7 +86,7 @@ create_state_merge(
 
 static inline std::vector<jive::output*>
 create_state_split(
-	const jive::state::type & type,
+	const jive::base::type & type,
 	jive::output * operand,
 	size_t nresults)
 {
