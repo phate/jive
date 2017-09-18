@@ -305,6 +305,12 @@ public:
 		return node_->nsubregions();
 	}
 
+	inline jive::region *
+	subregion(size_t n) const noexcept
+	{
+		return node_->subregion(n);
+	}
+
 	inline gamma::entryvar_iterator
 	begin_entryvar() const
 	{
