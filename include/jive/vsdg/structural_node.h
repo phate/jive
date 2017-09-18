@@ -10,63 +10,13 @@
 
 namespace jive {
 
+/* structural node */
+
 class argument;
 class result;
+class structural_input;
 class structural_op;
-class structural_node;
-
-class structural_input final : public input {
-	friend structural_node;
-
-public:
-	virtual
-	~structural_input() noexcept;
-
-private:
-	structural_input(
-		jive::structural_node * node,
-		size_t index,
-		jive::output * origin,
-		const jive::port & port);
-
-public:
-	virtual jive::node *
-	node() const noexcept override;
-
-	struct {
-		jive::argument * first;
-		jive::argument * last;
-	} arguments;
-
-private:
-	jive::structural_node * node_;
-};
-
-class structural_output final : public output {
-	friend structural_node;
-
-public:
-	virtual
-	~structural_output() noexcept;
-
-private:
-	structural_output(
-		jive::structural_node * node,
-		size_t index,
-		const jive::port & port);
-
-public:
-	virtual jive::node *
-	node() const noexcept override;
-
-	struct {
-		jive::result * first;
-		jive::result * last;
-	} results;
-
-private:
-	jive::structural_node * node_;
-};
+class structural_output;
 
 class structural_node final : public node {
 public:
@@ -92,16 +42,10 @@ public:
 	}
 
 	inline jive::structural_input *
-	input(size_t index) const noexcept
-	{
-		return static_cast<structural_input*>(node::input(index));
-	}
+	input(size_t index) const noexcept;
 
 	inline jive::structural_output *
-	output(size_t index) const noexcept
-	{
-		return static_cast<structural_output*>(node::output(index));
-	}
+	output(size_t index) const noexcept;
 
 	jive::structural_input *
 	add_input(const jive::port & port, jive::output * origin);
@@ -130,6 +74,77 @@ public:
 private:
 	std::vector<std::unique_ptr<jive::region>> subregions_;
 };
+
+/* structural input class */
+
+class structural_input final : public input {
+	friend structural_node;
+
+public:
+	virtual
+	~structural_input() noexcept;
+
+private:
+	structural_input(
+		jive::structural_node * node,
+		size_t index,
+		jive::output * origin,
+		const jive::port & port);
+
+public:
+	virtual jive::structural_node *
+	node() const noexcept override;
+
+	struct {
+		jive::argument * first;
+		jive::argument * last;
+	} arguments;
+
+private:
+	jive::structural_node * node_;
+};
+
+/* structural output class */
+
+class structural_output final : public output {
+	friend structural_node;
+
+public:
+	virtual
+	~structural_output() noexcept;
+
+private:
+	structural_output(
+		jive::structural_node * node,
+		size_t index,
+		const jive::port & port);
+
+public:
+	virtual jive::node *
+	node() const noexcept override;
+
+	struct {
+		jive::result * first;
+		jive::result * last;
+	} results;
+
+private:
+	jive::structural_node * node_;
+};
+
+/* structural node method definitions */
+
+inline jive::structural_input *
+structural_node::input(size_t index) const noexcept
+{
+	return static_cast<structural_input*>(node::input(index));
+}
+
+inline jive::structural_output *
+structural_node::output(size_t index) const noexcept
+{
+	return static_cast<structural_output*>(node::output(index));
+}
 
 }
 

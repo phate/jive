@@ -43,7 +43,7 @@ structural_input::structural_input(
 	node->graph()->on_input_create(this);
 }
 
-jive::node *
+jive::structural_node *
 structural_input::node() const noexcept
 {
 	return node_;
