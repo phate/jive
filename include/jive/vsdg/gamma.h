@@ -292,6 +292,12 @@ public:
 		return node_;
 	}
 
+	inline jive::region *
+	region() const noexcept
+	{
+		return node_->region();
+	}
+
 	inline jive::structural_input *
 	predicate() const noexcept
 	{
