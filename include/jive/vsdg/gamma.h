@@ -83,6 +83,12 @@ public:
 	virtual bool
 	operator==(const operation & other) const noexcept override;
 
+	static jive::gamma_normal_form *
+	normal_form(jive::graph * graph) noexcept
+	{
+		return static_cast<jive::gamma_normal_form*>(graph->node_normal_form(typeid(gamma_op)));
+	}
+
 private:
 	jive::ctl::type predicate_type_;
 };
