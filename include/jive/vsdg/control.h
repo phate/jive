@@ -96,6 +96,12 @@ public:
 		return default_alternative_;
 	}
 
+	inline size_t
+	nbits() const noexcept
+	{
+		return static_cast<const bits::type*>(&argument_.type())->nbits();
+	}
+
 	inline const_iterator
 	begin() const
 	{
