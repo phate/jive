@@ -14,6 +14,60 @@
 
 namespace jive {
 
+static bool
+is_predicate_reducible(const jive::structural_node * node)
+{
+	auto constant = node->input(0)->origin()->node();
+	return constant && is_ctlconstant_op(constant->operation());
+}
+
+static void
+perform_predicate_reduction(jive::structural_node * node)
+{
+	jive::gamma gamma(node);
+	auto constant = gamma.predicate()->origin()->node();
+	auto cop = static_cast<const jive::ctl::constant_op*>(&constant->operation());
+	auto alternative = cop->value().alternative();
+
+	jive::substitution_map smap;
+	for (auto it = gamma.begin_entryvar(); it != gamma.end_entryvar(); it++)
+		smap.insert(it->argument(alternative), it->input()->origin());
+
+	gamma.subregion(alternative)->copy(gamma.region(), smap, false, false);
+
+	for (auto it = gamma.begin_exitvar(); it != gamma.end_exitvar(); it++)
+		it->output()->replace(smap.lookup(it->result(alternative)->origin()));
+
+	remove(node);
+}
+
+static bool
+perform_invariant_reduction(jive::structural_node * node)
+{
+	jive::gamma gamma(node);
+
+	bool was_normalized = true;
+	for (auto it = gamma.begin_exitvar(); it != gamma.end_exitvar(); it++) {
+		auto argument = dynamic_cast<const jive::argument*>(it->result(0)->origin());
+		if (!argument) continue;
+
+		size_t n;
+		auto input = argument->input();
+		for (n = 1; n < it->nresults(); n++) {
+			auto argument = dynamic_cast<const jive::argument*>(it->result(n)->origin());
+			if (!argument && argument->input() != input)
+				break;
+		}
+
+		if (n == it->nresults()) {
+			it->output()->replace(argument->input()->origin());
+			was_normalized = false;
+		}
+	}
+
+	return was_normalized;
+}
+
 gamma_normal_form::~gamma_normal_form() noexcept
 {
 }
@@ -41,51 +95,15 @@ gamma_normal_form::normalize_node(jive::node * node_) const
 	if (!get_mutable())
 		return true;
 
-	bool was_normalized = true;
-	if (get_predicate_reduction()) {
-		auto constant = node->input(0)->origin()->node();
-		if (constant && dynamic_cast<const jive::ctl::constant_op*>(&constant->operation())) {
-			auto op = static_cast<const jive::ctl::constant_op*>(&constant->operation());
-			size_t alternative = op->value().alternative();
-
-			jive::substitution_map smap;
-			JIVE_DEBUG_ASSERT(node->subregion(alternative)->narguments() == node->ninputs()-1);
-			for (size_t n = 1; n < node->ninputs(); n++)
-				smap.insert(node->subregion(alternative)->argument(n-1), node->input(n)->origin());
-
-			node->subregion(alternative)->copy(node->region(), smap, false, false);
-
-			JIVE_DEBUG_ASSERT(node->subregion(alternative)->nresults() == node->noutputs());
-			for (size_t n = 0; n < node->noutputs(); n++) {
-				auto result = node->subregion(alternative)->result(n);
-				node->output(n)->replace(smap.lookup(result->origin()));
-			}
-			was_normalized = false;
-		}
+	if (get_predicate_reduction() && is_predicate_reducible(node)) {
+		perform_predicate_reduction(node);
+		return false;
 	}
 
-	if (get_invariant_reduction()) {
-		jive::gamma gamma(node);
-		for (auto it = gamma.begin_exitvar(); it != gamma.end_exitvar(); it++) {
-			auto argument = dynamic_cast<const jive::argument*>(it->result(0)->origin());
-			if (!argument) continue;
+	if (get_invariant_reduction())
+		return perform_invariant_reduction(node);
 
-			size_t n;
-			size_t index = argument->index();
-			for (n = 1; n < it->nresults(); n++) {
-				auto argument = dynamic_cast<const jive::argument*>(it->result(n)->origin());
-				if (!argument && argument->index() != index)
-					break;
-			}
-
-			if (n == it->nresults()) {
-				it->output()->replace(argument->input()->origin());
-				was_normalized = false;
-			}
-		}
-	}
-
-	return was_normalized;
+	return true;
 }
 
 void
