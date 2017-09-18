@@ -137,6 +137,13 @@ is_match_op(const jive::operation & op) noexcept
 	return dynamic_cast<const jive::ctl::match_op*>(&op) != nullptr;
 }
 
+static inline const ctl::match_op &
+to_match_op(const jive::operation & op) noexcept
+{
+	JIVE_DEBUG_ASSERT(is_match_op(op));
+	return *static_cast<const ctl::match_op*>(&op);
+}
+
 static inline bool
 is_ctlconstant_op(const jive::operation & op) noexcept
 {
