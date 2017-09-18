@@ -47,9 +47,19 @@ public:
 		return enable_invariant_reduction_;
 	}
 
+	virtual void
+	set_control_constant_reduction(bool enable);
+
+	inline bool
+	get_control_constant_reduction() const noexcept
+	{
+		return enable_control_constant_reduction_;
+	}
+
 private:
 	bool enable_predicate_reduction_;
 	bool enable_invariant_reduction_;
+	bool enable_control_constant_reduction_;
 };
 
 /* gamma operation */

@@ -69,7 +69,7 @@ test_predicate_reduction(void)
 	auto r = graph.export_port(gamma->node()->output(0), "");
 
 	graph.normalize();
-	jive::view(graph.root(), stdout);
+//	jive::view(graph.root(), stdout);
 	assert(r->origin() == v1);
 
 	graph.prune();
@@ -96,11 +96,45 @@ test_invariant_reduction(void)
 	auto r = graph.export_port(gamma->node()->output(0), "");
 
 	graph.normalize();
-	jive::view(graph.root(), stdout);
+//	jive::view(graph.root(), stdout);
 	assert(r->origin() == v);
 
 	graph.prune();
 	assert(graph.root()->nnodes() == 0);
+}
+
+static void
+test_control_constant_reduction()
+{
+	jive::bits::type bt(1);
+
+	jive::graph graph;
+	jive::gamma_op::normal_form(&graph)->set_control_constant_reduction(true);
+
+	auto x = graph.import(bt, "x");
+
+	auto c = jive::ctl::match(1, {{0, 0}}, 1, 2, x);
+
+	jive::gamma_builder gb;
+	gb.begin(c);
+
+	auto t = jive_control_true(gb.region(0));
+	auto f = jive_control_false(gb.region(1));
+
+	gb.add_exitvar({t, f});
+
+	auto gamma = gb.end();
+
+	auto ex = graph.export_port(gamma->node()->output(0), "c");
+
+	jive::view(graph.root(), stdout);
+	graph.normalize();
+	jive::view(graph.root(), stdout);
+
+	auto match = ex->origin()->node();
+	assert(match && jive::is_match_op(match->operation()));
+	auto & match_op = jive::to_match_op(match->operation());
+	assert(match_op.default_alternative() == 0);
 }
 
 static int
@@ -109,6 +143,7 @@ test_main(void)
 	test_gamma();
 	test_predicate_reduction();
 	test_invariant_reduction();
+	test_control_constant_reduction();
 
 	return 0;
 }
