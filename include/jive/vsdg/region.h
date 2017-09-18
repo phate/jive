@@ -257,6 +257,12 @@ private:
 	std::vector<jive::argument*> arguments_;
 };
 
+static inline void
+remove(jive::node * node)
+{
+	return node->region()->remove_node(node);
+}
+
 } //namespace
 
 #endif
