@@ -72,7 +72,7 @@ simple_output::~simple_output() noexcept
 		port().gate()->clear_interferences();
 }
 
-jive::node *
+jive::simple_node *
 simple_output::node() const noexcept
 {
 	return node_;

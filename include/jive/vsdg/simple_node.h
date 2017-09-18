@@ -83,7 +83,7 @@ public:
 		const jive::port & port);
 
 public:
-	virtual jive::node *
+	virtual jive::simple_node *
 	node() const noexcept override;
 
 private:
