@@ -35,6 +35,16 @@ private:
 	size_t nalternatives_;
 };
 
+}
+
+static inline bool
+is_ctltype(const jive::base::type & type) noexcept
+{
+	return dynamic_cast<const jive::ctl::type*>(&type) != nullptr;
+}
+
+namespace ctl {
+
 class value_repr {
 public:
 	value_repr(size_t alternative, size_t nalternatives);
