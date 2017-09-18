@@ -150,6 +150,13 @@ is_ctlconstant_op(const jive::operation & op) noexcept
 	return dynamic_cast<const jive::ctl::constant_op*>(&op) != nullptr;
 }
 
+static inline const ctl::constant_op &
+to_ctlconstant_op(const jive::operation & op) noexcept
+{
+	JIVE_DEBUG_ASSERT(is_ctlconstant_op(op));
+	return *static_cast<const ctl::constant_op*>(&op);
+}
+
 namespace base {
 // declare explicit instantiation
 extern template class domain_const_op<
