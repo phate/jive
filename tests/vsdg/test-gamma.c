@@ -118,8 +118,8 @@ test_control_constant_reduction()
 	jive::gamma_builder gb;
 	gb.begin(c);
 
-	auto t = jive_control_true(gb.region(0));
-	auto f = jive_control_false(gb.region(1));
+	auto t = jive_control_true(gb.subregion(0));
+	auto f = jive_control_false(gb.subregion(1));
 
 	gb.add_exitvar({t, f});
 

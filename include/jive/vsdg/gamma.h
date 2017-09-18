@@ -436,7 +436,7 @@ public:
 	}
 
 	inline jive::region *
-	region(size_t n) const noexcept
+	subregion(size_t n) const noexcept
 	{
 		return gamma_ ? gamma_->node()->subregion(n) : nullptr;
 	}
