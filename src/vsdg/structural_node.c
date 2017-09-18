@@ -81,7 +81,7 @@ structural_output::structural_output(
 	node->graph()->on_output_create(this);
 }
 
-jive::node *
+jive::structural_node *
 structural_output::node() const noexcept
 {
 	return node_;

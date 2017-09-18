@@ -120,7 +120,7 @@ private:
 		const jive::port & port);
 
 public:
-	virtual jive::node *
+	virtual jive::structural_node *
 	node() const noexcept override;
 
 	struct {
