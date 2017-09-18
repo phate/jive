@@ -13,7 +13,6 @@ LIBJIVE_SRC = \
 	src/vsdg/control.c \
 	src/vsdg/controltype.c \
 	src/vsdg/equivalence.c \
-	src/vsdg/gamma-normal-form.c \
 	src/vsdg/gamma.c \
 	src/vsdg/gate.c \
 	src/vsdg/graph.c \
