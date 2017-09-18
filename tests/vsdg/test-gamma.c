@@ -47,6 +47,7 @@ static void
 test_predicate_reduction(void)
 {
 	jive::graph graph;
+	jive::gamma_op::normal_form(&graph)->set_predicate_reduction(true);
 
 	jive::bits::type bits2(2);
 	jive::bits::type bits32(32);
@@ -79,6 +80,7 @@ static void
 test_invariant_reduction(void)
 {
 	jive::graph graph;
+	jive::gamma_op::normal_form(&graph)->set_invariant_reduction(true);
 
 	jive::test::valuetype vtype;
 

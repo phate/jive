@@ -86,8 +86,8 @@ gamma_normal_form::gamma_normal_form(
 	jive::node_normal_form * parent,
 	jive::graph * graph) noexcept
 : structural_normal_form(operator_class, parent, graph)
-, enable_predicate_reduction_(true)
-, enable_invariant_reduction_(true)
+, enable_predicate_reduction_(false)
+, enable_invariant_reduction_(false)
 {
 	if (auto p = dynamic_cast<gamma_normal_form *>(parent)) {
 		enable_predicate_reduction_ = p->enable_predicate_reduction_;
