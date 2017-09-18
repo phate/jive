@@ -40,7 +40,7 @@ simple_input::simple_input(
 	}
 }
 
-jive::node *
+jive::simple_node *
 simple_input::node() const noexcept
 {
 	return node_;

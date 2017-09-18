@@ -11,7 +11,39 @@
 namespace jive {
 
 class simple_op;
-class simple_node;
+class simple_input;
+class simple_output;
+
+/* simple nodes */
+
+class simple_node final : public node {
+public:
+	virtual
+	~simple_node();
+
+	simple_node(
+		const jive::simple_op & op,
+		jive::region * region,
+		const std::vector<jive::output*> & operands);
+
+	jive::simple_input *
+	input(size_t index) const noexcept;
+
+	jive::simple_output *
+	output(size_t index) const noexcept;
+
+	virtual jive::node *
+	copy(jive::region * region, const std::vector<jive::output*> & operands) const override;
+
+	virtual jive::node *
+	copy(jive::region * region, jive::substitution_map & smap) const override;
+};
+
+std::vector<jive::output*>
+create_normalized(
+	jive::region * region,
+	const jive::simple_op & op,
+	const std::vector<jive::output*> & arguments);
 
 /* inputs */
 
@@ -29,7 +61,7 @@ public:
 		const jive::port & port);
 
 public:
-	virtual jive::node *
+	virtual jive::simple_node *
 	node() const noexcept override;
 
 private:
@@ -58,42 +90,19 @@ private:
 	jive::simple_node * node_;
 };
 
-/* simple nodes */
+/* simple node method definitions */
 
-class simple_node final : public node {
-public:
-	virtual
-	~simple_node();
+inline jive::simple_input *
+simple_node::input(size_t index) const noexcept
+{
+	return static_cast<simple_input*>(node::input(index));
+}
 
-	simple_node(
-		const jive::simple_op & op,
-		jive::region * region,
-		const std::vector<jive::output*> & operands);
-
-	inline jive::simple_input *
-	input(size_t index) const noexcept
-	{
-		return static_cast<simple_input*>(node::input(index));
-	}
-
-	inline jive::simple_output *
-	output(size_t index) const noexcept
-	{
-		return static_cast<simple_output*>(node::output(index));
-	}
-
-	virtual jive::node *
-	copy(jive::region * region, const std::vector<jive::output*> & operands) const override;
-
-	virtual jive::node *
-	copy(jive::region * region, jive::substitution_map & smap) const override;
-};
-
-std::vector<jive::output*>
-create_normalized(
-	jive::region * region,
-	const jive::simple_op & op,
-	const std::vector<jive::output*> & arguments);
+inline jive::simple_output *
+simple_node::output(size_t index) const noexcept
+{
+	return static_cast<simple_output*>(node::output(index));
+}
 
 }
 
