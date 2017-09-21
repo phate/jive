@@ -7,6 +7,8 @@
 #ifndef JIVE_VIEW_H
 #define JIVE_VIEW_H
 
+#include <jive/vsdg/graph.h>
+
 #include <string>
 
 namespace jive {
@@ -15,6 +17,12 @@ class region;
 
 void
 view(const jive::region * region, FILE * out);
+
+static inline void
+view(const jive::graph & graph, FILE * out)
+{
+	return view(graph.root(), stdout);
+}
 
 std::string
 view(const jive::region * region);
