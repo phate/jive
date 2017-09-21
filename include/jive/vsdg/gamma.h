@@ -109,6 +109,12 @@ is_gamma_op(const jive::operation & op) noexcept
 	return dynamic_cast<const jive::gamma_op*>(&op) != nullptr;
 }
 
+static inline bool
+is_gamma_node(const jive::node * node) noexcept
+{
+	return is_opnode<gamma_op>(node);
+}
+
 class gamma;
 class gamma_builder;
 
