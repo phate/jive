@@ -445,17 +445,6 @@ jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 	return nullptr;
 }
 
-static inline jive::output *
-jive_node_get_gate_output(const jive::node * self, const char * name)
-{
-	for (size_t n = 0; n < self->noutputs(); n++) {
-		auto o = self->output(n);
-		if (o->port().gate() && o->port().gate()->name() == name)
-			return o;
-	}
-	return nullptr;
-}
-
 jive::node *
 jive_node_cse(
 	jive::region * region,
