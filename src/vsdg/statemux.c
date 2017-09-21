@@ -141,6 +141,7 @@ mux_normal_form::mux_normal_form(
 	jive::graph * graph) noexcept
 : simple_normal_form(opclass, parent, graph)
 , enable_mux_mux_(false)
+, enable_multiple_origin_(false)
 {
 	if (auto p = dynamic_cast<const mux_normal_form*>(parent))
 		enable_mux_mux_ = p->enable_mux_mux_;
