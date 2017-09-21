@@ -409,6 +409,18 @@ replace(
 		node->output(n)->replace(outputs[n]);
 }
 
+template <class T> static inline bool
+is_opnode(const jive::node * node) noexcept
+{
+	static_assert(std::is_base_of<jive::operation, T>::value,
+		"Template parameter T must be derived from jive::operation.");
+
+	if (!node)
+		return false;
+
+	return dynamic_cast<const T*>(&node->operation()) != nullptr;
+}
+
 }
 
 struct jive_tracker_nodestate {
