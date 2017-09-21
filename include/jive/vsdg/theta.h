@@ -241,8 +241,6 @@ public:
 		if (theta_)
 			return theta_->node()->subregion(0);
 
-		/* FIXME: stop creating a ctl constant once we can add results from the start */
-
 		auto node = parent->add_structural_node(jive::theta_op(), 1);
 		auto predicate = jive_control_false(node->subregion(0));
 		node->subregion(0)->add_result(predicate, nullptr, jive::ctl::type(2));
@@ -265,7 +263,11 @@ public:
 		if (!theta_)
 			return nullptr;
 
-		theta_->node()->subregion(0)->result(0)->divert_origin(predicate);
+		auto p = theta_->node()->subregion(0)->result(0);
+		auto ctlconstant = p->origin()->node();
+		p->divert_origin(predicate);
+		if (!ctlconstant->has_users())
+			remove(ctlconstant);
 		return std::move(theta_);
 	}
 
