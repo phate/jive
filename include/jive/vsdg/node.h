@@ -434,28 +434,6 @@ struct jive_tracker_nodestate {
 	} state_node_list;
 };
 
-static inline jive::input *
-jive_node_get_gate_input(const jive::node * self, const jive::gate * gate)
-{
-	for (size_t n = 0; n < self->ninputs(); n++) {
-		if (self->input(n)->port().gate() == gate) {
-			return self->input(n);
-		}
-	}
-	return nullptr;
-}
-
-static inline jive::input *
-jive_node_get_gate_input(const jive::node * self, const char * name)
-{
-	for (size_t n = 0; n < self->ninputs(); n++) {
-		auto i = self->input(n);
-		if (i->port().gate() && i->port().gate()->name() == name)
-			return i;
-	}
-	return nullptr;
-}
-
 static inline jive::output *
 jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 {
