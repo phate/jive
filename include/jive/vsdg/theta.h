@@ -30,6 +30,12 @@ is_theta_op(const jive::operation & op) noexcept
 	return dynamic_cast<const jive::theta_op*>(&op) != nullptr;
 }
 
+static inline bool
+is_theta_node(const jive::node * node) noexcept
+{
+	return is_opnode<theta_op>(node);
+}
+
 class theta;
 class theta_builder;
 
