@@ -212,13 +212,16 @@ public:
 	inline theta::loopvar_iterator
 	begin() const
 	{
+		if (node_->ninputs() == 0)
+			return loopvar_iterator({});
+
 		return loopvar_iterator({node_->input(0), node_->output(0)});
 	}
 
 	inline theta::loopvar_iterator
 	end() const
 	{
-		return loopvar_iterator({nullptr, nullptr});
+		return loopvar_iterator({});
 	}
 
 	inline std::shared_ptr<jive::loopvar>
