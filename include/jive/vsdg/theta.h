@@ -247,6 +247,18 @@ public:
 		return theta_ ? theta_->node()->subregion(0) : nullptr;
 	}
 
+	inline theta::loopvar_iterator
+	begin() const
+	{
+		return theta_ ? theta_->begin() : theta::loopvar_iterator({});
+	}
+
+	inline theta::loopvar_iterator
+	end() const
+	{
+		return theta_ ? theta_->end() : theta::loopvar_iterator({});
+	}
+
 	inline jive::region *
 	begin_theta(jive::region * parent)
 	{
