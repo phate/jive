@@ -42,6 +42,13 @@ class theta_builder;
 class loopvar final {
 	friend theta;
 
+public:
+	inline constexpr
+	loopvar()
+	: input_(nullptr)
+	, output_(nullptr)
+	{}
+
 private:
 	inline constexpr
 	loopvar(
