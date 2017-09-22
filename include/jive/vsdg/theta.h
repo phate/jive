@@ -242,7 +242,7 @@ public:
 	}
 
 	inline jive::region *
-	begin(jive::region * parent)
+	begin_theta(jive::region * parent)
 	{
 		if (theta_)
 			return theta_->node()->subregion(0);
@@ -264,7 +264,7 @@ public:
 	}
 
 	inline std::unique_ptr<jive::theta>
-	end(jive::output * predicate)
+	end_theta(jive::output * predicate)
 	{
 		if (!theta_)
 			return nullptr;

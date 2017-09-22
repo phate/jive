@@ -45,7 +45,7 @@ fib(size_t n)
 	auto k = jive_bitconstant_unsigned(lb.subregion(), 32, 1);
 
 	jive::theta_builder tb;
-	auto theta_region = tb.begin(lb.subregion());
+	auto theta_region = tb.begin_theta(lb.subregion());
 	auto lv_i = tb.add_loopvar(i);
 	auto lv_j = tb.add_loopvar(j);
 	auto lv_k = tb.add_loopvar(k);
@@ -64,7 +64,7 @@ fib(size_t n)
 	lv_i->result()->divert_origin(lv_j->argument());
 	lv_j->result()->divert_origin(t);
 	lv_n->result()->divert_origin(lv_n->argument());
-	tb.end(predicate);
+	tb.end_theta(predicate);
 
 	cmp = jive_bitule(32, k, n);
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);

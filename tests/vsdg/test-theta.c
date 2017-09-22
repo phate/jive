@@ -22,7 +22,7 @@ test_main()
 	auto imp3 = graph.import(t, "imp3");
 
 	jive::theta_builder tb;
-	tb.begin(graph.root());
+	tb.begin_theta(graph.root());
 
 	auto lv1 = tb.add_loopvar(imp1);
 	auto lv2 = tb.add_loopvar(imp2);
@@ -30,7 +30,7 @@ test_main()
 
 	lv2->result()->divert_origin(lv3->argument());
 	lv3->result()->divert_origin(lv3->argument());
-	auto theta = tb.end(lv1->argument());
+	auto theta = tb.end_theta(lv1->argument());
 
 	graph.export_port(theta->node()->output(0), "exp");
 
