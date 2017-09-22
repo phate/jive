@@ -105,15 +105,6 @@ private:
 
 class theta final {
 public:
-	inline
-	theta(jive::structural_node * node)
-	: node_(node)
-	{
-		if (!dynamic_cast<const jive::theta_op*>(&node->operation()))
-			throw jive::compiler_error("Expected theta node.");
-	}
-
-private:
 	class loopvar_iterator {
 	public:
 		inline constexpr
@@ -136,9 +127,7 @@ private:
 			}
 
 			index++;
-			auto new_input = static_cast<jive::structural_input*>(node->input(index));
-			auto new_output = static_cast<jive::structural_output*>(node->output(index));
-			lv_ = loopvar(new_input, new_output);
+			lv_ = loopvar(node->input(index), node->output(index));
 			return *this;
 		}
 
@@ -178,7 +167,14 @@ private:
 		loopvar lv_;
 	};
 
-public:
+	inline
+	theta(jive::structural_node * node)
+	: node_(node)
+	{
+		if (!dynamic_cast<const jive::theta_op*>(&node->operation()))
+			throw jive::compiler_error("Expected theta node.");
+	}
+
 	inline jive::structural_node *
 	node() const noexcept
 	{
