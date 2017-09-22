@@ -25,11 +25,11 @@ static int function_test_build_lambda(void)
 	jive::bits::type bits32(32);
 
 	jive::lambda_builder lb;
-	auto arguments = lb.begin(graph.root(), {{&bits32, &bits32}, {&bits32}});
+	auto arguments = lb.begin_lambda(graph.root(), {{&bits32, &bits32}, {&bits32}});
 
 	auto sum = jive::bits::create_add(32, arguments[0], arguments[1]);
 
-	auto fct = lb.end({sum})->node()->output(0);
+	auto fct = lb.end_lambda({sum})->node()->output(0);
 
 	jive::view(graph.root(), stderr);
 	

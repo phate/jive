@@ -37,7 +37,7 @@ fib(size_t n)
 	std::vector<const jive::base::type*> types({&bits32});
 
 	jive::lambda_builder lb;
-	auto arguments = lb.begin(graph->root(), {{&bits32}, {&bits32}});
+	auto arguments = lb.begin_lambda(graph->root(), {{&bits32}, {&bits32}});
 
 	auto n = arguments[0];
 	auto i = jive_bitconstant_unsigned(lb.subregion(), 32, 1);
@@ -86,7 +86,7 @@ fib(size_t n)
 	auto exn = gb.add_exitvar({evn->argument(0), evlvn->argument(1)});
 	auto gamma = gb.end_gamma();
 
-	return lb.end({gamma->node()->output(1)})->node()->output(0);
+	return lb.end_lambda({gamma->node()->output(1)})->node()->output(0);
 }
 
 static void
@@ -154,7 +154,7 @@ unsigned int fib(unsigned int n){
 	auto rv = pb.add_recvar(fcttype);
 
 	jive::lambda_builder lb;
-	auto arguments = lb.begin(pb.region(), {{&bits32}, {&bits32}});
+	auto arguments = lb.begin_lambda(pb.region(), {{&bits32}, {&bits32}});
 	auto dep = lb.add_dependency(rv->value());
 
 	auto n = arguments[0];
@@ -178,7 +178,7 @@ unsigned int fib(unsigned int n){
 	auto ex = gb.add_exitvar({ev1->argument(0), ev2->argument(1)});
 	auto gamma = gb.end_gamma();
 
-	auto fib = lb.end({gamma->node()->output(0)})->node()->output(0);
+	auto fib = lb.end_lambda({gamma->node()->output(0)})->node()->output(0);
 	rv->set_value(fib);
 	pb.end_phi();
 
@@ -240,7 +240,7 @@ test_loadstore(jive::graph * graph)
 	std::vector<const jive::base::type*> types({&jive::mem::type::instance(), &bits64});
 
 	jive::lambda_builder lb;
-	auto arguments = lb.begin(graph->root(), {{&mem, &bits64}, {&mem}});
+	auto arguments = lb.begin_lambda(graph->root(), {{&mem, &bits64}, {&mem}});
 
 	auto state = arguments[0];
 	auto address = arguments[1];
@@ -252,7 +252,7 @@ test_loadstore(jive::graph * graph)
 
 	state = jive_store_by_bitstring_create(address, 64, &bits4, value, 1, &state)[0];
 
-	auto f = lb.end({state})->node()->output(0);
+	auto f = lb.end_lambda({state})->node()->output(0);
 
 	graph->export_port(f, "loadstore");
 
@@ -278,10 +278,10 @@ test_external_function()
 	auto i = graph.import(bits64, "v");
 
 	jive::lambda_builder lb;
-	auto arguments = lb.begin(graph.root(), {{&bits64}, {&bits64}});
+	auto arguments = lb.begin_lambda(graph.root(), {{&bits64}, {&bits64}});
 	auto v = lb.add_dependency(i);
 	auto sum = jive::bits::create_add(64, arguments[0], v);
-	auto lambda = lb.end({sum});
+	auto lambda = lb.end_lambda({sum});
 
 	graph.export_port(lambda->node()->output(0), "test");
 

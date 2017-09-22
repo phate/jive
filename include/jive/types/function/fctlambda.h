@@ -178,7 +178,7 @@ private:
 class lambda_builder final {
 public:
 	inline std::vector<jive::output*>
-	begin(jive::region * parent, jive::fct::type type)
+	begin_lambda(jive::region * parent, jive::fct::type type)
 	{
 		std::vector<jive::output*> arguments;
 
@@ -213,7 +213,7 @@ public:
 	}
 
 	inline std::unique_ptr<jive::lambda>
-	end(const std::vector<jive::output*> & results)
+	end_lambda(const std::vector<jive::output*> & results)
 	{
 		if (!lambda_)
 			return nullptr;
