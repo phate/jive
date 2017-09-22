@@ -30,12 +30,12 @@ test_gamma(void)
 	auto pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 
 	jive::gamma_builder gb;
-	gb.begin(pred);
+	gb.begin_gamma(pred);
 	auto ev0 = gb.add_entryvar(v0);
 	auto ev1 = gb.add_entryvar(v1);
 	auto ev2 = gb.add_entryvar(v2);
 	gb.add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
-	auto gamma = gb.end();
+	auto gamma = gb.end_gamma();
 
 	graph.export_port(gamma->node()->output(0), "dummy");
 	jive::view(graph.root(), stdout);
@@ -59,12 +59,12 @@ test_predicate_reduction(void)
 	auto pred = jive_control_constant(graph.root(), 3, 1);
 
 	jive::gamma_builder gb;
-	gb.begin(pred);
+	gb.begin_gamma(pred);
 	auto ev0 = gb.add_entryvar(v0);
 	auto ev1 = gb.add_entryvar(v1);
 	auto ev2 = gb.add_entryvar(v2);
 	gb.add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
-	auto gamma = gb.end();
+	auto gamma = gb.end_gamma();
 
 	auto r = graph.export_port(gamma->node()->output(0), "");
 
@@ -88,10 +88,10 @@ test_invariant_reduction(void)
 	auto v = graph.import(vtype, "");
 
 	jive::gamma_builder gb;
-	gb.begin(pred);
+	gb.begin_gamma(pred);
 	auto ev = gb.add_entryvar(v);
 	gb.add_exitvar({ev->argument(0), ev->argument(1)});
-	auto gamma = gb.end();
+	auto gamma = gb.end_gamma();
 
 	auto r = graph.export_port(gamma->node()->output(0), "");
 
@@ -116,14 +116,14 @@ test_control_constant_reduction()
 	auto c = jive::ctl::match(1, {{0, 0}}, 1, 2, x);
 
 	jive::gamma_builder gb;
-	gb.begin(c);
+	gb.begin_gamma(c);
 
 	auto t = jive_control_true(gb.subregion(0));
 	auto f = jive_control_false(gb.subregion(1));
 
 	gb.add_exitvar({t, f});
 
-	auto gamma = gb.end();
+	auto gamma = gb.end_gamma();
 
 	auto ex = graph.export_port(gamma->node()->output(0), "c");
 

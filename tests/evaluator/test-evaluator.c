@@ -70,7 +70,7 @@ fib(size_t n)
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
 	jive::gamma_builder gb;
-	gb.begin(predicate);
+	gb.begin_gamma(predicate);
 	auto evi = gb.add_entryvar(i);
 	auto evj = gb.add_entryvar(j);
 	auto evk = gb.add_entryvar(k);
@@ -84,7 +84,7 @@ fib(size_t n)
 	auto exj = gb.add_exitvar({evj->argument(0), evlvj->argument(1)});
 	auto exk = gb.add_exitvar({evk->argument(0), evlvk->argument(1)});
 	auto exn = gb.add_exitvar({evn->argument(0), evlvn->argument(1)});
-	auto gamma = gb.end();
+	auto gamma = gb.end_gamma();
 
 	return lb.end({gamma->node()->output(1)})->node()->output(0);
 }
@@ -172,11 +172,11 @@ unsigned int fib(unsigned int n){
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, jive_bitult(32, n, two));
 
 	jive::gamma_builder gb;
-	gb.begin(predicate);
+	gb.begin_gamma(predicate);
 	auto ev1 = gb.add_entryvar(result);
 	auto ev2 = gb.add_entryvar(n);
 	auto ex = gb.add_exitvar({ev1->argument(0), ev2->argument(1)});
-	auto gamma = gb.end();
+	auto gamma = gb.end_gamma();
 
 	auto fib = lb.end({gamma->node()->output(0)})->node()->output(0);
 	rv->set_value(fib);

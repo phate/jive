@@ -454,7 +454,7 @@ public:
 	}
 
 	inline void
-	begin(jive::output * predicate)
+	begin_gamma(jive::output * predicate)
 	{
 		if (gamma_)
 			return;
@@ -483,7 +483,7 @@ public:
 	}
 
 	inline std::unique_ptr<jive::gamma>
-	end()
+	end_gamma()
 	{
 		return std::move(gamma_);
 	}
