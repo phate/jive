@@ -26,7 +26,7 @@ static int test_main()
 	jive::fct::type f1type({&vtype}, {&vtype});
 
 	jive::phi_builder pb;
-	pb.begin(graph.root());
+	pb.begin_phi(graph.root());
 	auto rv1 = pb.add_recvar(f0type);
 	auto rv2 = pb.add_recvar(f0type);
 	auto rv3 = pb.add_recvar(f1type);
@@ -47,7 +47,7 @@ static int test_main()
 	rv2->set_value(lambda1);
 	rv3->set_value(lambda2);
 
-	auto phi = pb.end();
+	auto phi = pb.end_phi();
 	graph.export_port(phi->output(0), "dummy");
 
 	graph.normalize();

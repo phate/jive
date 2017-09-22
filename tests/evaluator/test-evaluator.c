@@ -150,7 +150,7 @@ unsigned int fib(unsigned int n){
 	jive::fct::type fcttype({&bits32}, {&bits32});
 
 	jive::phi_builder pb;
-	pb.begin(graph->root());
+	pb.begin_phi(graph->root());
 	auto rv = pb.add_recvar(fcttype);
 
 	jive::lambda_builder lb;
@@ -180,7 +180,7 @@ unsigned int fib(unsigned int n){
 
 	auto fib = lb.end({gamma->node()->output(0)})->node()->output(0);
 	rv->set_value(fib);
-	pb.end();
+	pb.end_phi();
 
 	return rv->value();
 }

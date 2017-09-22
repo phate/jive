@@ -62,7 +62,7 @@ public:
 	{}
 
 	inline jive::region *
-	begin(jive::region * parent)
+	begin_phi(jive::region * parent)
 	{
 		if (node_)
 			node_->subregion(0);
@@ -99,7 +99,7 @@ public:
 	}
 
 	inline jive::structural_node *
-	end()
+	end_phi()
 	{
 		if (!node_)
 			return nullptr;
