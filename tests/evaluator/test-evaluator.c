@@ -274,6 +274,7 @@ test_external_function()
 	using namespace jive::evaluator;
 
 	jive::graph graph;
+	graph.node_normal_form(typeid(jive::operation))->set_mutable(false);
 
 	jive::bits::type bits64(64);
 	auto i = graph.import(bits64, "v");
@@ -304,6 +305,7 @@ static int
 test_evaluator()
 {
 	jive::graph graph;
+	graph.node_normal_form(typeid(jive::operation))->set_mutable(false);
 
 	test_fib_iter(&graph);
 	test_fib_rec(&graph);
