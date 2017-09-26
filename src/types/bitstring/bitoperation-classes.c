@@ -48,7 +48,7 @@ jive_binop_reduction_path_t
 unary_op::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
-	if (arg->node() && dynamic_cast<const bits::constant_op*>(&arg->node()->operation()))
+	if (is_bitconstant_node(producer(arg)))
 		return jive_unop_reduction_constant;
 
 	return jive_unop_reduction_none;
@@ -60,7 +60,7 @@ unary_op::reduce_operand(
 	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_constant) {
-		const auto c = static_cast<const bits::constant_op&>(arg->node()->operation());
+		const auto c = static_cast<const bits::constant_op&>(producer(arg)->operation());
 		return create_bitconstant(arg->node()->region(), reduce_constant(c.value()));
 	}
 
@@ -101,12 +101,8 @@ binary_op::can_reduce_operand_pair(
 	const jive::output * arg1,
 	const jive::output * arg2) const noexcept
 {
-	if (arg1->node() && arg2->node()
-			&& dynamic_cast<const bits::constant_op*>(&arg1->node()->operation())
-			&& dynamic_cast<const bits::constant_op*>(&arg2->node()->operation()))
-	{
+	if (is_bitconstant_node(producer(arg1)) && is_bitconstant_node(producer(arg2)))
 		return jive_binop_reduction_constants;
-	}
 
 	return jive_binop_reduction_none;
 }
@@ -118,8 +114,8 @@ binary_op::reduce_operand_pair(
 	jive::output * arg2) const
 {
 	if (path == jive_binop_reduction_constants) {
-		const auto c1 = static_cast<const bits::constant_op&>(arg1->node()->operation());
-		const auto c2 = static_cast<const bits::constant_op&>(arg2->node()->operation());
+		const auto c1 = static_cast<const bits::constant_op&>(producer(arg1)->operation());
+		const auto c2 = static_cast<const bits::constant_op&>(producer(arg2)->operation());
 		return create_bitconstant(arg1->region(), reduce_constants(c1.value(), c2.value()));
 	}
 
@@ -160,13 +156,13 @@ compare_op::can_reduce_operand_pair(
 	const jive::output * arg1,
 	const jive::output * arg2) const noexcept
 {
+	auto p = producer(arg1);
 	const bits::constant_op * c1_op = nullptr;
-	if (arg1->node())
-		c1_op = dynamic_cast<const bits::constant_op*>(&arg1->node()->operation());
+	if (p) c1_op = dynamic_cast<const bits::constant_op*>(&p->operation());
 
+	p = producer(arg2);
 	const bits::constant_op * c2_op = nullptr;
-	if (arg2->node())
-		c2_op = dynamic_cast<const bits::constant_op*>(&arg2->node()->operation());
+	if (p) c2_op = dynamic_cast<const bits::constant_op*>(&p->operation());
 
 	value_repr arg1_repr = c1_op ? c1_op->value() : value_repr::repeat(type().nbits(), 'D');
 	value_repr arg2_repr = c2_op ? c2_op->value() : value_repr::repeat(type().nbits(), 'D');
