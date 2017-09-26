@@ -421,6 +421,9 @@ is_opnode(const jive::node * node) noexcept
 	return dynamic_cast<const T*>(&node->operation()) != nullptr;
 }
 
+jive::node *
+producer(const jive::output * output) noexcept;
+
 }
 
 struct jive_tracker_nodestate {

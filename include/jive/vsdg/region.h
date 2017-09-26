@@ -264,22 +264,6 @@ remove(jive::node * node)
 	return node->region()->remove_node(node);
 }
 
-static inline jive::node *
-producer(const jive::input * input) noexcept
-{
-	auto origin = input->origin();
-	if (auto node = origin->node())
-		return node;
-
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::argument*>(origin));
-	auto argument = static_cast<const jive::argument*>(origin);
-
-	if (!argument->input())
-		return nullptr;
-
-	return producer(argument->input());
-}
-
 template <class T> static inline bool
 contains(const jive::region * region, bool recursive)
 {

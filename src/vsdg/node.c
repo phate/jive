@@ -16,6 +16,7 @@
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/substitution.h>
+#include <jive/vsdg/theta.h>
 
 namespace jive {
 
@@ -257,6 +258,25 @@ node::recompute_depth(jive::input * input)
 				user->node()->recompute_depth(user);
 		}
 	}
+}
+
+jive::node *
+producer(const jive::output * output) noexcept
+{
+	if (auto node = output->node())
+		return node;
+
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::argument*>(output));
+	auto argument = static_cast<const jive::argument*>(output);
+
+	if (!argument->input())
+		return nullptr;
+
+	if (is_theta_node(argument->region()->node())
+	&& (argument->region()->result(argument->index()+1)->origin() != argument))
+		return nullptr;
+
+	return producer(argument->input()->origin());
 }
 
 }
