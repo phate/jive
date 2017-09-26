@@ -137,6 +137,12 @@ is_match_op(const jive::operation & op) noexcept
 	return dynamic_cast<const jive::ctl::match_op*>(&op) != nullptr;
 }
 
+static inline bool
+is_match_node(const jive::node * node) noexcept
+{
+	return is_opnode<jive::ctl::match_op>(node);
+}
+
 static inline const ctl::match_op &
 to_match_op(const jive::operation & op) noexcept
 {
