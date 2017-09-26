@@ -54,6 +54,12 @@ int_constant_op(size_t nbits, int64_t value)
 
 }
 
+static inline bool
+is_bitconstant_node(const jive::node * node) noexcept
+{
+	return is_opnode<bits::constant_op>(node);
+}
+
 namespace base {
 // declare explicit instantiation
 extern template class domain_const_op<
