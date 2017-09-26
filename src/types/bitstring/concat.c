@@ -54,7 +54,8 @@ concat_reduce_arg_pair(jive::output * arg1, jive::output * arg2)
 			&arg2_constant->value()[0],
 			arg2_constant->value().nbits());
 
-		return jive_bitconstant(arg1->node()->region(), nbits, bits);
+		std::string s(bits, nbits);
+		return create_bitconstant(arg1->node()->region(), s.c_str());
 	}
 
 	auto arg1_slice = dynamic_cast<const slice_op*>(&arg1->node()->operation());
@@ -341,7 +342,7 @@ concat_op::reduce_operand_pair(
 			&arg2_constant.value()[0],
 			arg2_constant.value().nbits());
 
-		return jive_bitconstant(arg1->region(), nbits, bits);
+		return create_bitconstant(arg1->region(), bits);
 	}
 
 	if (path == jive_binop_reduction_merge) {

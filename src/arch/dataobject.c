@@ -106,7 +106,7 @@ flatten_data_items(
 
 		auto graph = data->region()->graph();
 		
-		auto zero_pad = jive_bitconstant(graph->root(), 8, "00000000");
+		auto zero_pad = create_bitconstant(graph->root(), "00000000");
 		items.resize(layout.size(), zero_pad);
 
 		for (size_t k = 0; k < decl->nelements(); k++) {
@@ -133,7 +133,7 @@ flatten_data_items(
 		
 		auto graph = data->region()->graph();
 		
-		auto zero_pad = jive_bitconstant(graph->root(), 8, "00000000");
+		auto zero_pad = create_bitconstant(graph->root(), "00000000");
 		items.resize(layout.size(), zero_pad);
 		
 		auto sub_items = flatten_data_items(tmp->node()->input(0)->origin(), layout_mapper);

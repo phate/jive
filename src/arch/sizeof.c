@@ -68,6 +68,6 @@ jive_sizeof_node_reduce(const jive::node * node, jive::memlayout_mapper * mapper
 	const jive::dataitem_memlayout & layout = mapper->map_value_type(
 		static_cast<const jive::sizeof_op &>(node->operation()).type());
 	
-	auto new_node = jive_bitconstant_unsigned(node->region(), 32, layout.size());
+	auto new_node = create_bitconstant(node->region(), 32, layout.size());
 	node->output(0)->replace(new_node);
 }

@@ -40,9 +40,9 @@ fib(size_t n)
 	auto arguments = lb.begin_lambda(graph->root(), {{&bits32}, {&bits32}});
 
 	auto n = arguments[0];
-	auto i = jive_bitconstant_unsigned(lb.subregion(), 32, 1);
-	auto j = jive_bitconstant_unsigned(lb.subregion(), 32, 0);
-	auto k = jive_bitconstant_unsigned(lb.subregion(), 32, 1);
+	auto i = create_bitconstant(lb.subregion(), 32, 1);
+	auto j = create_bitconstant(lb.subregion(), 32, 0);
+	auto k = create_bitconstant(lb.subregion(), 32, 1);
 
 	jive::theta_builder tb;
 	auto theta_region = tb.begin_theta(lb.subregion());
@@ -53,7 +53,7 @@ fib(size_t n)
 
 	auto t = jive::bits::create_add(32, lv_i->argument(), lv_j->argument());
 
-	auto one = jive_bitconstant_unsigned(theta_region, 32, 1);
+	auto one = create_bitconstant(theta_region, 32, 1);
 
 	auto new_k = jive::bits::create_add(32, one, lv_k->argument());
 
@@ -158,8 +158,8 @@ unsigned int fib(unsigned int n){
 	auto dep = lb.add_dependency(rv->value());
 
 	auto n = arguments[0];
-	auto one = jive_bitconstant_unsigned(lb.subregion(), 32, 1);
-	auto two = jive_bitconstant_unsigned(lb.subregion(), 32, 2);
+	auto one = create_bitconstant(lb.subregion(), 32, 1);
+	auto two = create_bitconstant(lb.subregion(), 32, 2);
 
 	auto tmp = jive::bits::create_sub(32, n, one);
 	tmp = jive::fct::create_apply(dep, {tmp})[0];
@@ -248,7 +248,7 @@ test_loadstore(jive::graph * graph)
 
 	auto value = jive_load_by_bitstring_create(address, 64, &bits4, 1, &state);
 
-	auto three = jive_bitconstant_unsigned(lb.subregion(), 4, 3);
+	auto three = create_bitconstant(lb.subregion(), 4, 3);
 	value = jive::bits::create_add(4, value, three);
 
 	state = jive_store_by_bitstring_create(address, 64, &bits4, value, 1, &state)[0];

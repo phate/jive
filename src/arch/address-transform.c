@@ -238,7 +238,7 @@ jive_memberof_node_address_transform(
 	size_t elem_offset = mapper->map_record(decl).element(index).offset();
 	size_t nbits = mapper->map_address().size() * 8;
 
-	auto offset = jive_bitconstant_unsigned(node->region(), nbits, elem_offset);
+	auto offset = create_bitconstant(node->region(), nbits, elem_offset);
 	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
 		&node->input(0)->origin()->type());
 	auto sum = jive::bits::create_add(nbits, address, offset);
@@ -260,7 +260,7 @@ jive_containerof_node_address_transform(
 	size_t elem_offset = mapper->map_record(decl).element(index).offset();
 	size_t nbits = mapper->map_address().size() * 8;
 
-	auto offset = jive_bitconstant_unsigned(node->region(), nbits, elem_offset);
+	auto offset = create_bitconstant(node->region(), nbits, elem_offset);
 	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
 		&node->input(0)->origin()->type());
 	auto sum = jive::bits::create_sub(nbits, address, offset);
@@ -281,7 +281,7 @@ jive_arraysubscript_node_address_transform(
 	auto index = node->input(1)->origin();
 	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
 		&node->input(0)->origin()->type());
-	auto elem_size = jive_bitconstant_unsigned(node->region(), nbits, elem_type_size);
+	auto elem_size = create_bitconstant(node->region(), nbits, elem_type_size);
 	auto offset = jive::bits::create_mul(nbits, elem_size, index);
 	auto sum = jive::bits::create_add(nbits, address, offset);
 	auto off_address = jive_bitstring_to_address_create(sum, nbits, &node->output(0)->type());
@@ -302,7 +302,7 @@ jive_arrayindex_node_address_transform(
 		&node->input(0)->origin()->type());
 	auto address2 = jive_address_to_bitstring_create(node->input(1)->origin(), nbits,
 		&node->input(1)->origin()->type());
-	auto elem_size = jive_bitconstant_unsigned(node->region(), nbits, elem_type_size);
+	auto elem_size = create_bitconstant(node->region(), nbits, elem_type_size);
 	auto diff = jive::bits::create_sub(nbits, address1, address2);
 	auto div = jive::bits::create_sdiv(nbits, diff, elem_size);
 

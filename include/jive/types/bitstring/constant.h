@@ -14,6 +14,7 @@
 #include <jive/types/bitstring/value-representation.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/nullary.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace bits {
@@ -60,47 +61,32 @@ extern template class domain_const_op<
 >;
 }
 
-}
-
-/**
-	\brief Create bitconstant
-	\param graph Graph to create constant in
-	\param nbits Number of bits
-	\param bits Values of bits
-	\returns Bitstring value representing constant
-	
-	Convenience function that either creates a new constant or
-	returns the output handle of an existing constant.
-*/
-jive::output *
-jive_bitconstant(jive::region * region, size_t nbits, const char bits[]);
-
-jive::output *
-jive_bitconstant_unsigned(jive::region * region, size_t nbits, uint64_t value);
-
-jive::output *
-jive_bitconstant_signed(jive::region * region, size_t nbits, int64_t value);
-
 static inline jive::output *
-jive_bitconstant_undefined(jive::region * region, size_t nbits)
+create_bitconstant(jive::region * region, const bits::value_repr & vr)
 {
-	size_t i;
-	char bits[nbits];
-	for (i = 0; i < nbits; i++)
-		bits[i] = 'X';
-
-	return jive_bitconstant(region, nbits, bits);
+	return create_normalized(region, bits::constant_op(vr), {})[0];
 }
 
 static inline jive::output *
-jive_bitconstant_defined(jive::region * region, size_t nbits)
+create_bitconstant(jive::region * region, size_t nbits, int64_t value)
 {
-	size_t i;
-	char bits[nbits];
-	for (i = 0; i < nbits; i++)
-		bits[i] = 'D';
+	return create_bitconstant(region, {nbits, value});
+}
 
-	return jive_bitconstant(region, nbits, bits);
+static inline jive::output *
+create_bitconstant_undefined(jive::region * region, size_t nbits)
+{
+	std::string s(nbits, 'X');
+	return create_bitconstant(region, bits::value_repr(s.c_str()));
+}
+
+static inline jive::output *
+create_bitconstant_defined(jive::region * region, size_t nbits)
+{
+	std::string s(nbits, 'D');
+	return create_bitconstant(region, bits::value_repr(s.c_str()));
+}
+
 }
 
 #endif

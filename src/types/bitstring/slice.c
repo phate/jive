@@ -93,7 +93,8 @@ slice_op::reduce_operand(
 	
 	if (path == jive_unop_reduction_constant) {
 		auto op = static_cast<const constant_op &>(arg->node()->operation());
-		return jive_bitconstant(arg->region(), high() - low(), &op.value()[0] + low());
+		std::string s(&op.value()[0]+low(), high()-low());
+		return create_bitconstant(arg->region(), s.c_str());
 	}
 	
 	if (path == jive_unop_reduction_distribute) {

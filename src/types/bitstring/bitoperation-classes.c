@@ -61,8 +61,7 @@ unary_op::reduce_operand(
 {
 	if (path == jive_unop_reduction_constant) {
 		const auto c = static_cast<const bits::constant_op&>(arg->node()->operation());
-		value_repr result = reduce_constant(c.value());
-		return jive_bitconstant(arg->node()->region(), result.nbits(), &result[0]);
+		return create_bitconstant(arg->node()->region(), reduce_constant(c.value()));
 	}
 
 	return nullptr;
@@ -121,8 +120,7 @@ binary_op::reduce_operand_pair(
 	if (path == jive_binop_reduction_constants) {
 		const auto c1 = static_cast<const bits::constant_op&>(arg1->node()->operation());
 		const auto c2 = static_cast<const bits::constant_op&>(arg2->node()->operation());
-		value_repr result = reduce_constants(c1.value(), c2.value());
-		return jive_bitconstant(arg1->region(), result.nbits(), &result[0]);
+		return create_bitconstant(arg1->region(), reduce_constants(c1.value(), c2.value()));
 	}
 
 	return nullptr;
@@ -192,10 +190,10 @@ compare_op::reduce_operand_pair(
 	jive::output * arg2) const
 {
 	if (path == 1) {
-		return jive_bitconstant(arg1->region(), 1, "0");
+		return create_bitconstant(arg1->region(), "0");
 	}
 	if (path == 2) {
-		return jive_bitconstant(arg1->region(), 1, "1");
+		return create_bitconstant(arg1->region(), "1");
 	}
 
 	return nullptr;

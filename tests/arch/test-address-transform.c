@@ -53,7 +53,7 @@ test_address_transform(void)
 		2, tmparray2,
 		2, tmparray3);
 
-	auto constant = jive_bitconstant_unsigned(graph.root(), 64, 1);
+	auto constant = create_bitconstant(graph.root(), 64, 1);
 	auto arraysub = jive_arraysubscript(call->output(0), &addr, constant);
 
 	auto arrayindex = jive_arrayindex(call->output(0), call->output(1), &addr, &bits64);

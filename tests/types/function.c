@@ -49,7 +49,7 @@ static int function_test_call(void)
 	jive::bits::type btype(8);
 	jive::fct::type ftype({&btype}, {&btype}) ;
 
-	auto constant = jive_bitconstant(graph.root(), 8, "00001111" ) ;
+	auto constant = create_bitconstant(graph.root(), "00001111");
 	auto func = graph.import(ftype, "sin");
 	auto ret = jive::fct::create_apply(func, {constant})[0];
 

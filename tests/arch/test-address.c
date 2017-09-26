@@ -46,9 +46,9 @@ static int test_main(void)
 	assert(memb4 != top->output(1));
 	assert(memb3 == top->output(1));
 	
-	auto zero = jive_bitconstant(graph.root(), 32, "00000000000000000000000000000000");
-	auto one = jive_bitconstant(graph.root(), 32, "10000000000000000000000000000000");
-	auto minus_one = jive_bitconstant(graph.root(), 32, "11111111111111111111111111111111");
+	auto zero = create_bitconstant(graph.root(), "00000000000000000000000000000000");
+	auto one = create_bitconstant(graph.root(), "10000000000000000000000000000000");
+	auto minus_one = create_bitconstant(graph.root(), "11111111111111111111111111111111");
 	
 	auto a0 = jive_arraysubscript(top->output(0), &bits32, zero);
 	//assert(a0 == top->outputs[0]);

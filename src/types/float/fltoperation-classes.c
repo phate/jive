@@ -186,9 +186,9 @@ compare_op::reduce_operand_pair(
 		auto & c2 = static_cast<const constant_op&>(arg2->node()->operation());
 		bool result = reduce_constants(c1.value(), c2.value());
 		if (result) {
-			return jive_bitconstant(arg1->region(), 1, "1");
+			return create_bitconstant(arg1->region(), "1");
 		} else {
-			return jive_bitconstant(arg1->region(), 1, "0");
+			return create_bitconstant(arg1->region(), "0");
 		}
 	}
 

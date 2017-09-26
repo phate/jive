@@ -32,7 +32,7 @@ static int test_main(void)
 	
 	auto arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
 	
-	auto lit = jive_bitconstant_unsigned(subroutine.region, 32, 42);
+	auto lit = create_bitconstant(subroutine.region, 32, 42);
 	auto sym = subroutine.node->subregion(0)->add_argument(nullptr, jive::bits::type(32));
 	auto bitnot = jive::bits::create_not(32, sym);
 	auto sum1 = jive::bits::create_add(32, arg1, lit);
