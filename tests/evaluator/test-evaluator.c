@@ -57,7 +57,7 @@ fib(size_t n)
 
 	auto new_k = jive::bits::create_add(32, one, lv_k->argument());
 
-	auto cmp = jive_bitule(32, new_k, lv_n->argument());
+	auto cmp = jive::bits::create_ule(32, new_k, lv_n->argument());
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
 	lv_k->result()->divert_origin(new_k);
@@ -66,7 +66,7 @@ fib(size_t n)
 	lv_n->result()->divert_origin(lv_n->argument());
 	tb.end_theta(predicate);
 
-	cmp = jive_bitule(32, k, n);
+	cmp = jive::bits::create_ule(32, k, n);
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
 	jive::gamma_builder gb;
@@ -169,7 +169,8 @@ unsigned int fib(unsigned int n){
 
 	auto result = jive::bits::create_add(32, tmp, tmp2);
 
-	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, jive_bitult(32, n, two));
+	auto cmp = jive::bits::create_ult(32, n, two);
+	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
 	jive::gamma_builder gb;
 	gb.begin_gamma(predicate);

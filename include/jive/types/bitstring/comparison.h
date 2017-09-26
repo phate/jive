@@ -8,6 +8,7 @@
 #define JIVE_TYPES_BITSTRING_COMPARISON_H
 
 #include <jive/types/bitstring/bitoperation-classes.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace bits {
@@ -40,6 +41,12 @@ public: \
 	virtual std::unique_ptr<jive::operation> \
 	copy() const override; \
 }; \
+\
+static inline jive::output * \
+create_##NAME(size_t nbits, jive::output * op1, jive::output * op2) \
+{ \
+	return create_normalized(op1->region(), NAME ## _op(nbits), {op1, op2})[0]; \
+} \
 
 DECLARE_BITCOMPARISON_OPERATION(eq);
 DECLARE_BITCOMPARISON_OPERATION(ne);
@@ -54,35 +61,5 @@ DECLARE_BITCOMPARISON_OPERATION(ult);
 
 }
 }
-
-jive::output *
-jive_biteq(size_t nbits, jive::output * operand1, jive::output * operand2);
-
-jive::output *
-jive_bitne(size_t nbits, jive::output * operand1, jive::output * operand2);
-
-jive::output *
-jive_bitsgt(size_t nbits, jive::output * operand1, jive::output * operand2);
-
-jive::output *
-jive_bitsge(size_t nbits, jive::output * operand1, jive::output * operand2);
-
-jive::output *
-jive_bitslt(size_t nbits, jive::output * operand1, jive::output * operand2);
-
-jive::output *
-jive_bitsle(size_t nbits, jive::output * operand1, jive::output * operand2);
-
-jive::output *
-jive_bitugt(size_t nbits, jive::output * operand1, jive::output * operand2);
-
-jive::output *
-jive_bituge(size_t nbits, jive::output * operand1, jive::output * operand2);
-
-jive::output *
-jive_bitult(size_t nbits, jive::output * operand1, jive::output * operand2);
-
-jive::output *
-jive_bitule(size_t nbits, jive::output * operand1, jive::output * operand2);
 
 #endif
