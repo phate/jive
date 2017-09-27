@@ -8,8 +8,10 @@
 #define JIVE_VSDG_UNARY_H
 
 #include <jive/common.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/unary-normal-form.h>
 
 typedef size_t jive_unop_reduction_path_t;
 
@@ -38,6 +40,12 @@ public:
 	reduce_operand(
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const = 0;
+
+	static jive::unary_normal_form *
+	normal_form(jive::graph * graph) noexcept
+	{
+		return static_cast<jive::unary_normal_form*>(graph->node_normal_form(typeid(unary_op)));
+	}
 };
 
 }
