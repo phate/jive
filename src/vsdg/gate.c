@@ -84,7 +84,6 @@ gate::clear_interferences()
 		auto i = interference_.begin()->whole;
 		i->count = i->count-1;
 		if (i->count == 0) {
-			JIVE_DEBUG_ASSERT(i->first.gate == this);
 			i->first.gate->interference_.erase(&i->second);
 			i->second.gate->interference_.erase(&i->first);
 			graph()->on_gate_interference_remove(this, i->second.gate);
