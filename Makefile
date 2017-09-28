@@ -8,7 +8,6 @@ CFLAGS+=-Wall -g --std=c++17 -xc++
 # VSDG core
 LIBJIVE_SRC = \
 	src/common.c \
-	src/vsdg/binary-normal-form.c \
 	src/vsdg/binary.c \
 	src/vsdg/control.c \
 	src/vsdg/controltype.c \
