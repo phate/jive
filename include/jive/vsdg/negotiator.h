@@ -65,7 +65,7 @@ public:
 
 namespace jive {
 
-class negotiator_split_operation final : public base::unary_op {
+class negotiator_split_operation final : public jive::unary_op {
 public:
 	inline
 	negotiator_split_operation(

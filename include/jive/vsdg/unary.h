@@ -44,8 +44,6 @@ private:
 	bool enable_reducible_;
 };
 
-namespace base {
-
 /**
 	\brief Unary operator
 	
@@ -76,7 +74,6 @@ public:
 	}
 };
 
-}
 }
 
 typedef struct jive_unary_operation_normal_form jive_unary_operation_normal_form;

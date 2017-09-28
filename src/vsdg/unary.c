@@ -34,8 +34,7 @@ unary_normal_form::normalize_node(jive::node * node) const
 		return true;
 	}
 
-	const jive::base::unary_op & op =
-		static_cast<const jive::base::unary_op &>(node->operation());
+	const auto & op = static_cast<const jive::unary_op&>(node->operation());
 
 	if (get_reducible()) {
 		auto tmp = node->input(0)->origin();
@@ -69,8 +68,7 @@ unary_normal_form::normalized_create(
 	JIVE_DEBUG_ASSERT(arguments.size() == 1);
 
 	if (get_mutable() && get_reducible()) {
-		const jive::base::unary_op & un_op =
-			static_cast<const jive::base::unary_op &>(op);
+		const auto & un_op = static_cast<const jive::unary_op&>(op);
 
 		jive_unop_reduction_path_t reduction = un_op.can_reduce_operand(arguments[0]);
 		if (reduction != jive_unop_reduction_none) {
@@ -95,8 +93,6 @@ unary_normal_form::set_reducible(bool enable)
 		graph()->mark_denormalized();
 }
 
-namespace base {
-
 /* unary operator */
 
 unary_op::~unary_op() noexcept {}
@@ -114,7 +110,6 @@ unary_op::nresults() const noexcept
 }
 
 }
-}
 
 jive::node_normal_form *
 jive_unary_operation_get_default_normal_form_(
@@ -131,5 +126,5 @@ static void  __attribute__((constructor))
 register_node_normal_form(void)
 {
 	jive::node_normal_form::register_factory(
-		typeid(jive::base::unary_op), jive_unary_operation_get_default_normal_form_);
+		typeid(jive::unary_op), jive_unary_operation_get_default_normal_form_);
 }

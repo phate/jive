@@ -18,7 +18,7 @@ namespace jive {
 
 class resource_class;
 
-class split_operation final : public base::unary_op {
+class split_operation final : public jive::unary_op {
 public:
 	virtual
 	~split_operation() noexcept;

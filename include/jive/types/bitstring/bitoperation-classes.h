@@ -17,7 +17,7 @@ namespace bits {
 
 /* Represents a unary operation on a bitstring of a specific width,
  * produces another bitstring of the same width. */
-class unary_op : public base::unary_op {
+class unary_op : public jive::unary_op {
 public:
 	virtual ~unary_op() noexcept;
 

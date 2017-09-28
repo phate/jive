@@ -40,7 +40,7 @@ typedef base::domain_const_op<
 	type, value_repr, format_value, type_of_value
 > constant_op;
 
-class match_op final : public base::unary_op {
+class match_op final : public jive::unary_op {
 	typedef std::unordered_map<uint64_t,uint64_t>::const_iterator const_iterator;
 
 public:

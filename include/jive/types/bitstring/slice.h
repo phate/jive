@@ -14,7 +14,7 @@
 namespace jive {
 namespace bits {
 
-class slice_op : public base::unary_op {
+class slice_op : public jive::unary_op {
 public:
 	inline
 	slice_op(

@@ -16,7 +16,7 @@ namespace jive {
 namespace flt {
 
 /* Represents a unary operation on a float. */
-class unary_op : public base::unary_op {
+class unary_op : public jive::unary_op {
 public:
 	virtual ~unary_op() noexcept;
 

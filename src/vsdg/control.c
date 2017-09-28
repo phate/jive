@@ -34,7 +34,7 @@ match_op::match_op(
 	const std::unordered_map<uint64_t, uint64_t> & mapping,
 	uint64_t default_alternative,
 	size_t nalternatives)
-: base::unary_op()
+: jive::unary_op()
 , result_(type(nalternatives))
 , argument_(jive::bits::type(nbits))
 , default_alternative_(default_alternative)

@@ -12,7 +12,7 @@
 namespace jive {
 namespace rcd {
 
-class select_operation final : public base::unary_op {
+class select_operation final : public jive::unary_op {
 public:
 	virtual
 	~select_operation() noexcept;

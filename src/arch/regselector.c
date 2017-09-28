@@ -282,7 +282,7 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 			if (!jive_negotiator_map_output(&self->base, subst))
 				self->base.class_->annotate_node(&self->base, subst->node());
 			jive_negotiator_fully_specialize(&self->base);
-		} else if (dynamic_cast<const jive::base::unary_op *>(&origin->operation())) {
+		} else if (dynamic_cast<const jive::unary_op*>(&origin->operation())) {
 			jive::simple_output * operands[origin->ninputs()];
 			for (size_t n = 0; n < origin->ninputs(); n++) {
 				auto operand = origin->input(n)->origin();

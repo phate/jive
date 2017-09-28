@@ -18,7 +18,7 @@ namespace unn {
 
 struct declaration;
 
-class unify_op final : public base::unary_op {
+class unify_op final : public jive::unary_op {
 public:
 	virtual
 	~unify_op() noexcept;

@@ -25,7 +25,7 @@ in memory, compute address of specified member of record */
 namespace jive {
 namespace address {
 
-class memberof_op : public base::unary_op {
+class memberof_op : public jive::unary_op {
 public:
 	virtual ~memberof_op() noexcept;
 
@@ -75,7 +75,7 @@ private:
 	size_t index_;
 };
 
-class containerof_op : public base::unary_op {
+class containerof_op : public jive::unary_op {
 public:
 	virtual ~containerof_op() noexcept;
 

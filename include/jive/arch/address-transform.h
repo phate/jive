@@ -19,7 +19,7 @@
 
 namespace jive {
 
-class address_to_bitstring_operation final : public base::unary_op {
+class address_to_bitstring_operation final : public jive::unary_op {
 public:
 	virtual ~address_to_bitstring_operation() noexcept;
 
@@ -82,7 +82,7 @@ private:
 	jive::port argument_;
 };
 
-class bitstring_to_address_operation final : public base::unary_op {
+class bitstring_to_address_operation final : public jive::unary_op {
 public:
 	virtual ~bitstring_to_address_operation() noexcept;
 

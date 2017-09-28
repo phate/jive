@@ -13,7 +13,7 @@
 namespace jive {
 namespace unn {
 
-class choose_operation final : public base::unary_op {
+class choose_operation final : public jive::unary_op {
 public:
 	virtual
 	~choose_operation() noexcept;
