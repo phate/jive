@@ -34,7 +34,6 @@ LIBJIVE_SRC = \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \
 	src/vsdg/type.c \
-	src/vsdg/unary-normal-form.c \
 	src/vsdg/unary.c \
 
 #evaluation
