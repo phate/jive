@@ -17,9 +17,7 @@ namespace jive {
 namespace {
 
 std::vector<jive::output*>
-reduce_operands(
-	const jive::base::binary_op & op,
-	std::vector<jive::output*> args)
+reduce_operands(const jive::binary_op & op, std::vector<jive::output*> args)
 {
 	/* pair-wise reduce */
 	if (op.is_commutative()) {
@@ -75,13 +73,13 @@ bool
 binary_normal_form::normalize_node(jive::node * node) const
 {
 	const jive::operation & base_op = node->operation();
-	const jive::base::binary_op & op = *static_cast<const jive::base::binary_op *>(&base_op);
+	const auto & op = *static_cast<const jive::binary_op*>(&base_op);
 
 	return normalize_node(node, op);
 }
 
 bool
-binary_normal_form::normalize_node(jive::node * node, const base::binary_op & op) const
+binary_normal_form::normalize_node(jive::node * node, const binary_op & op) const
 {
 	if (!get_mutable()) {
 		return true;
@@ -155,7 +153,7 @@ binary_normal_form::normalized_create(
 	const jive::simple_op & base_op,
 	const std::vector<jive::output*> & args) const
 {
-	const jive::base::binary_op& op = *static_cast<const jive::base::binary_op *>(&base_op);
+	const auto & op = *static_cast<const jive::binary_op*>(&base_op);
 
 	std::vector<jive::output*> new_args(args.begin(), args.end());
 
@@ -302,8 +300,6 @@ flattened_binary_normal_form::normalized_create(
 
 /* binary operator */
 
-namespace base {
-
 binary_op::~binary_op() noexcept {}
 
 jive_binary_operation_flags
@@ -313,6 +309,8 @@ binary_op::flags() const noexcept
 }
 
 /* flattened binary operator */
+
+namespace base {
 
 flattened_binary_op::~flattened_binary_op() noexcept
 {
@@ -398,8 +396,7 @@ static void  __attribute__((constructor))
 register_node_normal_form(void)
 {
 	jive::node_normal_form::register_factory(
-		typeid(jive::base::binary_op),
-		jive_binary_operation_get_default_normal_form_);
+		typeid(jive::binary_op), jive_binary_operation_get_default_normal_form_);
 	jive::node_normal_form::register_factory(
 		typeid(jive::base::flattened_binary_op),
 		jive_flattened_binary_operation_get_default_normal_form_);

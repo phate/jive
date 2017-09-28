@@ -38,7 +38,7 @@ public:
 };
 
 /* Represents a binary operation on a float. */
-class binary_op : public base::binary_op {
+class binary_op : public jive::binary_op {
 public:
 	virtual ~binary_op() noexcept;
 
@@ -73,7 +73,7 @@ public:
 };
 
 /* Represents a comparison operation on a float. */
-class compare_op : public base::binary_op {
+class compare_op : public jive::binary_op {
 public:
 	virtual ~compare_op() noexcept;
 

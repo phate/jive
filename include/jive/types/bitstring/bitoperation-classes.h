@@ -65,7 +65,7 @@ private:
 /* Represents a binary operation (possibly normalized n-ary if associative)
  * on a bitstring of a specific width, produces another bitstring of the
  * same width. */
-class binary_op : public base::binary_op {
+class binary_op : public jive::binary_op {
 public:
 	virtual ~binary_op() noexcept;
 
@@ -128,7 +128,7 @@ enum class compare_result {
 	static_false
 };
 
-class compare_op : public base::binary_op {
+class compare_op : public jive::binary_op {
 public:
 	inline
 	compare_op(const jive::bits::type & type) noexcept

@@ -16,7 +16,7 @@
 namespace jive {
 namespace bits {
 
-class concat_op final : public jive::base::binary_op {
+class concat_op final : public jive::binary_op {
 public:
 	virtual ~concat_op() noexcept;
 

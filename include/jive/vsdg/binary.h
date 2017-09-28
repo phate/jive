@@ -35,9 +35,8 @@ operator&(jive_binary_operation_flags a, jive_binary_operation_flags b)
 }
 
 namespace jive {
-namespace base {
-	class binary_op;
-}
+
+class binary_op;
 
 class binary_normal_form final : public simple_normal_form {
 public:
@@ -85,7 +84,7 @@ public:
 
 private:
 	bool
-	normalize_node(jive::node * node, const base::binary_op & op) const;
+	normalize_node(jive::node * node, const binary_op & op) const;
 
 	bool enable_reducible_;
 	bool enable_reorder_;
@@ -115,8 +114,6 @@ public:
 		const jive::simple_op & op,
 		const std::vector<jive::output*> & arguments) const override;
 };
-
-namespace base {
 
 /**
 	\brief Binary operator
@@ -160,6 +157,8 @@ public:
 		return static_cast<jive::binary_normal_form*>(graph->node_normal_form(typeid(binary_op)));
 	}
 };
+
+namespace base {
 
 class flattened_binary_op final : public simple_op {
 public:

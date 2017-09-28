@@ -259,7 +259,7 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 		auto regcls = op->regcls();
 		auto origin = node->input(1)->origin()->node();
 
-		if (dynamic_cast<const jive::base::binary_op *>(&origin->operation())) {
+		if (dynamic_cast<const jive::binary_op*>(&origin->operation())) {
 			jive::output * operands[origin->ninputs()];
 			for (size_t n = 0; n < origin->ninputs(); n++) {
 				auto operand = origin->input(n)->origin();
