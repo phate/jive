@@ -92,7 +92,7 @@ fib(size_t n)
 static void
 test_fib_iter(jive::graph * graph)
 {
-	using namespace jive::evaluator;
+	using namespace jive::eval;
 
 	auto fib_iter = setup_fib_iter(graph);
 	graph->export_port(fib_iter, "fib_iter");
@@ -189,7 +189,7 @@ unsigned int fib(unsigned int n){
 static void
 test_fib_rec(jive::graph * graph)
 {
-	using namespace jive::evaluator;
+	using namespace jive::eval;
 
 	auto fib_rec = setup_fib_rec(graph);
 	graph->export_port(fib_rec, "fib_rec");
@@ -234,7 +234,7 @@ test_fib_rec(jive::graph * graph)
 static void
 test_loadstore(jive::graph * graph)
 {
-	using namespace jive::evaluator;
+	using namespace jive::eval;
 
 	jive::bits::type bits64(64), bits4(4);
 	const auto & mem = jive::mem::type::instance();
@@ -271,7 +271,7 @@ test_loadstore(jive::graph * graph)
 static void
 test_external_function()
 {
-	using namespace jive::evaluator;
+	using namespace jive::eval;
 
 	jive::graph graph;
 	graph.node_normal_form(typeid(jive::operation))->set_mutable(false);

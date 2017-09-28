@@ -8,7 +8,7 @@
 #include <jive/util/ptr-collection.h>
 
 namespace jive {
-namespace evaluator {
+namespace eval {
 
 /* literal */
 

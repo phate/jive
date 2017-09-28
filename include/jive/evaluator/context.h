@@ -16,7 +16,7 @@ namespace jive {
 
 class output;
 
-namespace evaluator {
+namespace eval {
 
 class frame {
 public:

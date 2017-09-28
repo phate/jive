@@ -10,7 +10,7 @@
 #include <vector>
 
 namespace jive {
-namespace evaluator {
+namespace eval {
 
 class literal;
 

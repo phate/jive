@@ -22,21 +22,21 @@
 
 typedef std::unordered_map<
 		std::type_index,
-		std::vector<std::unique_ptr<const jive::evaluator::literal>>(*)(
+		std::vector<std::unique_ptr<const jive::eval::literal>>(*)(
 			const jive::operation & operation,
-			const std::vector<std::unique_ptr<const jive::evaluator::literal>> & operands)
+			const std::vector<std::unique_ptr<const jive::eval::literal>> & operands)
 	> operation_map;
 
 typedef std::unordered_map<
 	std::type_index,
-	const std::unique_ptr<const jive::evaluator::literal>(*)(
+	const std::unique_ptr<const jive::eval::literal>(*)(
 		const jive::node * node,
 		size_t index,
-		jive::evaluator::context & ctx)
+		jive::eval::context & ctx)
 	> eval_map;
 
 namespace jive {
-namespace evaluator {
+namespace eval {
 
 /* computation */
 
