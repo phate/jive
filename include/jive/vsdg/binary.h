@@ -8,6 +8,7 @@
 #define JIVE_VSDG_BINARY_H
 
 #include <jive/common.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/operation.h>
 #include <jive/vsdg/simple-normal-form.h>
 
@@ -151,6 +152,12 @@ public:
 	is_commutative() const noexcept
 	{
 		return flags() & jive_binary_operation_commutative;
+	}
+
+	static jive::binary_normal_form *
+	normal_form(jive::graph * graph) noexcept
+	{
+		return static_cast<jive::binary_normal_form*>(graph->node_normal_form(typeid(binary_op)));
 	}
 };
 
