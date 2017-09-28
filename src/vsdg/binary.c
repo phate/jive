@@ -96,7 +96,7 @@ binary_normal_form::normalize_node(jive::node * node, const binary_op & op) cons
 				if (!arg->node())
 					return false;
 
-				auto fb_op = dynamic_cast<const base::flattened_binary_op*>(&arg->node()->operation());
+				auto fb_op = dynamic_cast<const flattened_binary_op*>(&arg->node()->operation());
 				return arg->node()->operation() == op || (fb_op && fb_op->bin_operation() == op);
 			});
 	} else {
@@ -125,7 +125,7 @@ binary_normal_form::normalize_node(jive::node * node, const binary_op & op) cons
 
 		std::unique_ptr<simple_op> tmp_op;
 		if (new_args.size() > 2) {
-			tmp_op.reset(new base::flattened_binary_op(op, new_args.size()));
+			tmp_op.reset(new flattened_binary_op(op, new_args.size()));
 		}
 		const auto & new_op = tmp_op ? *tmp_op : static_cast<const simple_op&>(op);
 		if (get_cse()) {
@@ -164,7 +164,7 @@ binary_normal_form::normalized_create(
 			[&op](jive::output* arg) {
 				if (!arg->node())
 					return false;
-				auto fb_op = dynamic_cast<const base::flattened_binary_op *>(&arg->node()->operation());
+				auto fb_op = dynamic_cast<const flattened_binary_op*>(&arg->node()->operation());
 				return arg->node()->operation() == op ||
 					(fb_op && fb_op->bin_operation() == op);
 			});
@@ -181,7 +181,7 @@ binary_normal_form::normalized_create(
 	/* FIXME: attempt distributive transform */
 	std::unique_ptr<simple_op> tmp_op;
 	if (new_args.size() > 2) {
-		tmp_op.reset(new base::flattened_binary_op(op, new_args.size()));
+		tmp_op.reset(new flattened_binary_op(op, new_args.size()));
 	}
 
 	region = new_args[0]->region();
@@ -276,9 +276,7 @@ flattened_binary_normal_form::flattened_binary_normal_form(
 bool
 flattened_binary_normal_form::normalize_node(jive::node * node) const
 {
-	const base::flattened_binary_op & op =
-		static_cast<const base::flattened_binary_op &>(node->operation());
-
+	const auto & op = static_cast<const flattened_binary_op&>(node->operation());
 	const auto nf = graph()->node_normal_form(typeid(op.bin_operation()));
 
 	return static_cast<const binary_normal_form *>(nf)->normalize_node(node, op.bin_operation());
@@ -290,8 +288,7 @@ flattened_binary_normal_form::normalized_create(
 	const jive::simple_op & base_op,
 	const std::vector<jive::output*> & arguments) const
 {
-	const base::flattened_binary_op & op =
-		static_cast<const base::flattened_binary_op &>(base_op);
+	const auto & op = static_cast<const flattened_binary_op&>(base_op);
 
 	auto nf = static_cast<const binary_normal_form*>(
 		graph()->node_normal_form(typeid(op.bin_operation())));
@@ -309,8 +306,6 @@ binary_op::flags() const noexcept
 }
 
 /* flattened binary operator */
-
-namespace base {
 
 flattened_binary_op::~flattened_binary_op() noexcept
 {
@@ -366,7 +361,6 @@ flattened_binary_op::copy() const
 }
 
 }
-}
 
 /* node class */
 
@@ -398,6 +392,5 @@ register_node_normal_form(void)
 	jive::node_normal_form::register_factory(
 		typeid(jive::binary_op), jive_binary_operation_get_default_normal_form_);
 	jive::node_normal_form::register_factory(
-		typeid(jive::base::flattened_binary_op),
-		jive_flattened_binary_operation_get_default_normal_form_);
+		typeid(jive::flattened_binary_op), jive_flattened_binary_operation_get_default_normal_form_);
 }

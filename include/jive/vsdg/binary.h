@@ -158,8 +158,6 @@ public:
 	}
 };
 
-namespace base {
-
 class flattened_binary_op final : public simple_op {
 public:
 	virtual ~flattened_binary_op() noexcept;
@@ -214,7 +212,6 @@ private:
 	size_t narguments_;
 };
 
-}
 }
 
 static const jive_binop_reduction_path_t jive_binop_reduction_none = 0;
