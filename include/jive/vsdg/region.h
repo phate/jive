@@ -282,6 +282,20 @@ contains(const jive::region * region, bool recursive)
 	return false;
 }
 
+static inline size_t
+nnodes(const jive::region * region) noexcept
+{
+	size_t n = region->nnodes();
+	for (const auto & node : region->nodes) {
+		if (auto snode = dynamic_cast<const jive::structural_node*>(&node)) {
+			for (size_t r = 0; r < snode->nsubregions(); r++)
+				n += nnodes(snode->subregion(r));
+		}
+	}
+
+	return n;
+}
+
 } //namespace
 
 #endif
