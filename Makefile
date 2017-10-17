@@ -3,7 +3,7 @@
 # See COPYING for terms of redistribution.
 
 CPPFLAGS+=-Iinclude
-CFLAGS+=-Wall -g --std=c++17 -xc++
+CFLAGS+=-Wall --std=c++17 -xc++
 
 # VSDG core
 LIBJIVE_SRC = \
