@@ -311,6 +311,22 @@ nstructnodes(const jive::region * region) noexcept
 	return n;
 }
 
+static inline size_t
+nsimpnodes(const jive::region * region) noexcept
+{
+	size_t n = 0;
+	for (const auto & node : region->nodes) {
+		if (auto snode = dynamic_cast<const jive::structural_node*>(&node)) {
+			for (size_t r = 0; r < snode->nsubregions(); r++)
+				n += nsimpnodes(snode->subregion(r));
+		} else {
+			n += 1;
+		}
+	}
+
+	return n;
+}
+
 } //namespace
 
 #endif
