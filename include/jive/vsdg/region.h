@@ -296,6 +296,21 @@ nnodes(const jive::region * region) noexcept
 	return n;
 }
 
+static inline size_t
+nstructnodes(const jive::region * region) noexcept
+{
+	size_t n = 0;
+	for (const auto & node : region->nodes) {
+		if (auto snode = dynamic_cast<const jive::structural_node*>(&node)) {
+			for (size_t r = 0; r < snode->nsubregions(); r++)
+				n += nstructnodes(snode->subregion(r));
+			n += 1;
+		}
+	}
+
+	return n;
+}
+
 } //namespace
 
 #endif
