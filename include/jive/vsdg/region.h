@@ -327,6 +327,21 @@ nsimpnodes(const jive::region * region) noexcept
 	return n;
 }
 
+static inline size_t
+ninputs(const jive::region * region) noexcept
+{
+	size_t n = region->nresults();
+	for (const auto & node : region->nodes) {
+		if (auto snode = dynamic_cast<const jive::structural_node*>(&node)) {
+			for (size_t r = 0; r < snode->nsubregions(); r++)
+				n += ninputs(snode->subregion(r));
+		}
+		n += node.ninputs();
+	}
+
+	return n;
+}
+
 } //namespace
 
 #endif
