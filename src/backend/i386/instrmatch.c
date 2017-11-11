@@ -54,7 +54,7 @@ regvalue_to_immediate(const jive::output * regvalue)
 		return jive::immediate(0, lbop->label());
 	}
 	
-	JIVE_DEBUG_ASSERT(false);
+	JIVE_ASSERT(false);
 }
 
 static void

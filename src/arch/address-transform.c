@@ -70,7 +70,7 @@ convert_address_to_bitstring_type(
 	if (dynamic_cast<const jive::bits::type*>(&type))
 		return std::unique_ptr<jive::base::type>(type.copy());
 
-	JIVE_DEBUG_ASSERT(0);
+	JIVE_ASSERT(0);
 }
 
 jive::output *
