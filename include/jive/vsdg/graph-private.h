@@ -18,8 +18,8 @@ struct jive_tracker_slot_reservation {
 };
 
 struct jive_tracker_nodestate_list {
-	jive_tracker_nodestate * first;
-	jive_tracker_nodestate * last;
+	jive::tracker_nodestate * first;
+	jive::tracker_nodestate * last;
 };
 
 namespace jive {
@@ -43,20 +43,20 @@ public:
 	tracker_depth_state &
 	operator=(tracker_depth_state&&) = delete;
 
-	inline jive_tracker_nodestate *
+	inline tracker_nodestate *
 	peek_top() const noexcept
 	{
 		return count_ ? nodestates_[top_depth_].first : nullptr;
 	}
 
-	inline jive_tracker_nodestate *
+	inline tracker_nodestate *
 	peek_bottom() const noexcept
 	{
 		return count_ ? nodestates_[bottom_depth_].first : nullptr;
 	}
 
 	inline void
-	add(jive_tracker_nodestate * nodestate, size_t depth)
+	add(tracker_nodestate * nodestate, size_t depth)
 	{
 		size_t old_size = nodestates_.size();
 		if (depth >= old_size) {
@@ -83,7 +83,7 @@ public:
 	}
 
 	inline void
-	remove(jive_tracker_nodestate * nodestate, size_t depth)
+	remove(tracker_nodestate * nodestate, size_t depth)
 	{
 		JIVE_LIST_REMOVE(nodestates_[depth], nodestate, state_node_list);
 
@@ -104,7 +104,7 @@ public:
 		JIVE_DEBUG_ASSERT(top_depth_ <= bottom_depth_);
 	}
 
-	inline jive_tracker_nodestate *
+	inline tracker_nodestate *
 	pop_top()
 	{
 		auto nodestate = peek_top();
@@ -116,7 +116,7 @@ public:
 		return nodestate;
 	}
 
-	inline jive_tracker_nodestate *
+	inline tracker_nodestate *
 	pop_bottom()
 	{
 		auto nodestate = peek_bottom();

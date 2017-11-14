@@ -21,13 +21,12 @@ struct jive_tracker_slot {
 	size_t cookie;
 };
 
-struct jive_tracker_nodestate;
-
 namespace jive {
 
 class graph;
 class node;
 class region;
+class tracker_nodestate;
 class tracker_depth_state;
 
 /* Track states of nodes within the graph. Each node can logically be in
@@ -62,7 +61,7 @@ private:
 	void
 	node_destroy(jive::node * node);
 
-	jive_tracker_nodestate*
+	tracker_nodestate *
 	map_node(jive::node * node);
 
 	jive::graph * graph_;
@@ -90,7 +89,7 @@ public:
 	pop_top();
 
 private:
-	jive_tracker_nodestate*
+	tracker_nodestate *
 	map_node(jive::node * node);
 
 	jive::graph * graph_;

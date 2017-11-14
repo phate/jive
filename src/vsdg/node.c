@@ -312,7 +312,7 @@ jive_node_cse(
 	return nullptr;
 }
 
-jive_tracker_nodestate *
+jive::tracker_nodestate *
 jive_node_get_tracker_state_slow(jive::node * self, jive_tracker_slot slot)
 {
 	size_t new_size = slot.index + 1;
@@ -320,21 +320,16 @@ jive_node_get_tracker_state_slow(jive::node * self, jive_tracker_slot slot)
 	size_t ntracker_slots = self->tracker_slots.size();
 	self->tracker_slots.resize(new_size);
 	
-	jive_tracker_nodestate * nodestate;
+	jive::tracker_nodestate * nodestate;
 	for(size_t n = ntracker_slots; n < new_size; n++) {
-		nodestate = new jive_tracker_nodestate;
-		nodestate->node = self;
-		nodestate->cookie = 0;
-		nodestate->state = jive_tracker_nodestate_none;
-		nodestate->tag = 0;
+		nodestate = new jive::tracker_nodestate(self);
 		self->tracker_slots[n] = nodestate;
 	}
 	
 	nodestate = self->tracker_slots[slot.index];
 	nodestate->cookie = slot.cookie;
 	nodestate->state = jive_tracker_nodestate_none;
-	nodestate->tag = 0;
-	
+
 	return nodestate;
 }
 

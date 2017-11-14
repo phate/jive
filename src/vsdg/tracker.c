@@ -35,7 +35,7 @@ tracker::tracker(jive::graph * graph, size_t nstates)
 		std::bind(&tracker::node_destroy, this, _1));
 }
 
-jive_tracker_nodestate*
+tracker_nodestate *
 tracker::map_node(jive::node * node)
 {
 	return jive_node_get_tracker_state(node, slot_);
@@ -44,7 +44,7 @@ tracker::map_node(jive::node * node)
 void
 tracker::node_depth_change(jive::node * node, size_t old_depth)
 {
-	jive_tracker_nodestate * nodestate = map_node(node);
+	auto nodestate = map_node(node);
 	if (nodestate->state >= states_.size()) {
 		return;
 	}
@@ -55,7 +55,7 @@ tracker::node_depth_change(jive::node * node, size_t old_depth)
 void
 tracker::node_destroy(jive::node * node)
 {
-	jive_tracker_nodestate * nodestate = map_node(node);
+	auto nodestate = map_node(node);
 	if (nodestate->state >= states_.size()) {
 		return;
 	}
@@ -71,8 +71,7 @@ tracker::get_nodestate(jive::node * node)
 void
 tracker::set_nodestate(jive::node * node, size_t state)
 {
-	jive_tracker_nodestate * nodestate = map_node(node);
-	
+	auto nodestate = map_node(node);
 	if (nodestate->state != state) {
 		if (nodestate->state < states_.size())
 			states_[nodestate->state]->remove(nodestate, node->depth());
@@ -87,14 +86,14 @@ jive::node *
 tracker::peek_top(size_t state) const
 {
 	auto nodestate = states_[state]->pop_top();
-	return nodestate ? nodestate->node : nullptr;
+	return nodestate ? nodestate->node() : nullptr;
 }
 
 jive::node *
 tracker::peek_bottom(size_t state) const
 {
 	auto nodestate = states_[state]->pop_bottom();
-	return nodestate ? nodestate->node : nullptr;
+	return nodestate ? nodestate->node() : nullptr;
 }
 
 computation_tracker::computation_tracker(jive::graph * graph)
@@ -109,7 +108,7 @@ computation_tracker::~computation_tracker() noexcept
 	jive_graph_return_tracker_slot(graph_, slot_);
 }
 
-jive_tracker_nodestate *
+tracker_nodestate *
 computation_tracker::map_node(jive::node * node)
 {
 	return jive_node_get_tracker_state(node, slot_);
@@ -118,7 +117,7 @@ computation_tracker::map_node(jive::node * node)
 void
 computation_tracker::invalidate(jive::node * node)
 {
-	jive_tracker_nodestate * nodestate = map_node(node);
+	auto nodestate = map_node(node);
 	if (nodestate->state == jive_tracker_nodestate_none) {
 		nodestates_->add(nodestate, node->depth());
 		nodestate->state = 0;
@@ -138,7 +137,7 @@ jive::node *
 computation_tracker::pop_top()
 {
 	auto nodestate = nodestates_->pop_top();
-	return nodestate ? nodestate->node : nullptr;
+	return nodestate ? nodestate->node() : nullptr;
 }
 
 }

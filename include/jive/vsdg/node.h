@@ -212,17 +212,7 @@ private:
 	std::unordered_set<jive::input*> users_;
 };
 
-}	//jive namespace
-
-/**	@}	*/
-
-/**	@}	*/
-
-typedef struct jive_tracker_nodestate jive_tracker_nodestate;
-
-struct jive_substitution_map;
-
-namespace jive {
+class tracker_nodestate;
 
 class node {
 public:
@@ -369,7 +359,7 @@ public:
 		jive::node * next;
 	} region_bottom_list;
 
-	std::vector<jive_tracker_nodestate*> tracker_slots;
+	std::vector<tracker_nodestate*> tracker_slots;
 
 private:
 	jive::detail::intrusive_list_anchor<jive::node> region_node_list_anchor_;
@@ -424,18 +414,45 @@ is_opnode(const jive::node * node) noexcept
 jive::node *
 producer(const jive::output * output) noexcept;
 
-}
+class tracker_nodestate {
+public:
+	inline
+	tracker_nodestate(jive::node * node)
+	: cookie(0)
+	, state(jive_tracker_nodestate_none)
+	, node_(node)
+	{
+		state_node_list.prev = state_node_list.next = nullptr;
+	}
 
-struct jive_tracker_nodestate {
-	jive::node * node;
+	tracker_nodestate(const tracker_nodestate&) = delete;
+
+	tracker_nodestate(tracker_nodestate&&) = delete;
+
+	tracker_nodestate &
+	operator=(const tracker_nodestate&) = delete;
+
+	tracker_nodestate &
+	operator=(tracker_nodestate&&) = delete;
+
+	inline jive::node *
+	node() const noexcept
+	{
+		return node_;
+	}
+
 	size_t cookie;
 	size_t state;
-	intptr_t tag;
 	struct {
-		jive_tracker_nodestate * prev;
-		jive_tracker_nodestate * next;
+		tracker_nodestate * prev;
+		tracker_nodestate * next;
 	} state_node_list;
+
+private:
+	jive::node * node_;
 };
+
+}
 
 static inline jive::output *
 jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
@@ -461,19 +478,18 @@ jive_node_normalize(jive::node * self);
 
 /* tracking support */
 
-jive_tracker_nodestate *
+jive::tracker_nodestate *
 jive_node_get_tracker_state_slow(jive::node * self, jive_tracker_slot slot);
 
-static inline jive_tracker_nodestate *
+static inline jive::tracker_nodestate *
 jive_node_get_tracker_state(jive::node * self, jive_tracker_slot slot)
 {
-	jive_tracker_nodestate * nodestate;
+	jive::tracker_nodestate * nodestate;
 	if (slot.index < self->tracker_slots.size()) {
 		nodestate = self->tracker_slots[slot.index];
 		if (nodestate->cookie != slot.cookie) {
 			nodestate->state = jive_tracker_nodestate_none;
 			nodestate->cookie = slot.cookie;
-			nodestate->tag = 0;
 		}
 		return nodestate;
 	}
