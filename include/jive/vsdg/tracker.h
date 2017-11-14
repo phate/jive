@@ -13,7 +13,6 @@
 #include <jive/util/callbacks.h>
 
 struct jive_notifier;
-struct jive_tracker_depth_state;
 
 static const size_t jive_tracker_nodestate_none = (size_t) -1;
 
@@ -29,6 +28,7 @@ namespace jive {
 class graph;
 class node;
 class region;
+class tracker_depth_state;
 
 /* Track states of nodes within the graph. Each node can logically be in
  * one of the numbered states, plus another "initial" state. All nodes are
@@ -69,7 +69,7 @@ private:
 	/* FIXME: need RAII idiom for slot reservation */
 	jive_tracker_slot slot_;
 	/* FIXME: need RAII idiom for state reservation */
-	std::vector<jive_tracker_depth_state *> states_;
+	std::vector<std::unique_ptr<tracker_depth_state>> states_;
 
 	callback depth_callback_, destroy_callback_;
 };
@@ -97,7 +97,7 @@ private:
 	/* FIXME: need RAII idiom for slot reservation */
 	jive_tracker_slot slot_;
 	/* FIXME: need RAII idiom for state reservation */
-	jive_tracker_depth_state * nodestates_;
+	std::unique_ptr<tracker_depth_state> nodestates_;
 };
 
 }

@@ -22,18 +22,120 @@ struct jive_tracker_nodestate_list {
 	jive_tracker_nodestate * last;
 };
 
-struct jive_tracker_depth_state {
-	size_t top_occupied;
-	size_t bottom_occupied;
-	size_t count;
-	size_t space;
-	std::vector<jive_tracker_nodestate_list> nodestates_per_depth;
-	
-	struct {
-		jive_tracker_depth_state * prev;
-		jive_tracker_depth_state * next;
-	} graph_cached_tracker_states;
+namespace jive {
+
+class tracker_depth_state {
+public:
+	inline
+	tracker_depth_state()
+	: count_(0)
+	, top_depth_(0)
+	, bottom_depth_(0)
+	{}
+
+	tracker_depth_state(const tracker_depth_state&) = delete;
+
+	tracker_depth_state(tracker_depth_state&&) = delete;
+
+	tracker_depth_state &
+	operator=(const tracker_depth_state&) = delete;
+
+	tracker_depth_state &
+	operator=(tracker_depth_state&&) = delete;
+
+	inline jive_tracker_nodestate *
+	peek_top() const noexcept
+	{
+		return count_ ? nodestates_[top_depth_].first : nullptr;
+	}
+
+	inline jive_tracker_nodestate *
+	peek_bottom() const noexcept
+	{
+		return count_ ? nodestates_[bottom_depth_].first : nullptr;
+	}
+
+	inline void
+	add(jive_tracker_nodestate * nodestate, size_t depth)
+	{
+		size_t old_size = nodestates_.size();
+		if (depth >= old_size) {
+			size_t new_size = old_size * 2 + 1;
+			if (new_size <= depth) new_size = depth + 1;
+
+			nodestates_.resize(new_size);
+			for (size_t n = old_size; n < new_size; n++)
+				nodestates_[n].first = nodestates_[n].last = nullptr;
+		}
+
+		JIVE_LIST_PUSH_BACK(nodestates_[depth], nodestate, state_node_list);
+
+		count_++;
+		if (count_ == 1) {
+			top_depth_= depth;
+			bottom_depth_= depth;
+		} else {
+			if (depth < top_depth_)
+				top_depth_ = depth;
+			if (depth > bottom_depth_)
+				bottom_depth_ = depth;
+		}
+	}
+
+	inline void
+	remove(jive_tracker_nodestate * nodestate, size_t depth)
+	{
+		JIVE_LIST_REMOVE(nodestates_[depth], nodestate, state_node_list);
+
+		count_--;
+		if (count_ == 0)
+			return;
+
+		if (depth == top_depth_) {
+			while (!nodestates_[top_depth_].first)
+				top_depth_++;
+		}
+
+		if (depth == bottom_depth_) {
+			while (!nodestates_[bottom_depth_].first)
+				bottom_depth_--;
+		}
+
+		JIVE_DEBUG_ASSERT(top_depth_ <= bottom_depth_);
+	}
+
+	inline jive_tracker_nodestate *
+	pop_top()
+	{
+		auto nodestate = peek_top();
+		if (nodestate) {
+			remove(nodestate, top_depth_);
+			nodestate->state = jive_tracker_nodestate_none;
+		}
+
+		return nodestate;
+	}
+
+	inline jive_tracker_nodestate *
+	pop_bottom()
+	{
+		auto nodestate = peek_bottom();
+		if (nodestate) {
+			remove(nodestate, bottom_depth_);
+			nodestate->state = jive_tracker_nodestate_none;
+		}
+
+		return nodestate;
+	}
+
+private:
+	size_t count_;
+	size_t top_depth_;
+	size_t bottom_depth_;
+	std::vector<jive_tracker_nodestate_list> nodestates_;
 };
+
+}
 
 jive_tracker_slot
 jive_graph_reserve_tracker_slot_slow(jive::graph * self);
@@ -63,21 +165,6 @@ jive_graph_return_tracker_slot(jive::graph * self, jive_tracker_slot slot)
 {
 	JIVE_DEBUG_ASSERT(self->tracker_slots[slot.index].in_use);
 	self->tracker_slots[slot.index].in_use = false;
-}
-
-static inline jive_tracker_depth_state *
-jive_graph_reserve_tracker_depth_state(jive::graph * self)
-{
-	jive_tracker_depth_state * state = new jive_tracker_depth_state;
-	state->count = 0;
-	state->space = 0;
-	return state;
-}
-
-static inline void
-jive_graph_return_tracker_depth_state(jive::graph * self, jive_tracker_depth_state * state)
-{
-	delete state;
 }
 
 #endif

@@ -8,7 +8,6 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/simple_node.h>
-#include <jive/vsdg/tracker-private.h>
 #include <jive/vsdg/tracker.h>
 
 using namespace std::placeholders;
@@ -19,20 +18,16 @@ namespace jive {
 
 tracker::~tracker()
 {
-	for (size_t n = 0; n < states_.size(); n++) {
-		jive_graph_return_tracker_depth_state(graph_, states_[n]);
-	}
 	jive_graph_return_tracker_slot(graph_, slot_);
 }
 
 tracker::tracker(jive::graph * graph, size_t nstates)
 	: graph_(graph)
 	, slot_(jive_graph_reserve_tracker_slot(graph_))
-	, states_(nstates, nullptr)
+	, states_(nstates)
 {
-	for (size_t n = 0; n < states_.size(); n++) {
-		states_[n] = jive_graph_reserve_tracker_depth_state(graph);
-	}
+	for (size_t n = 0; n < states_.size(); n++)
+		states_[n]= std::make_unique<tracker_depth_state>();
 
 	depth_callback_ = graph->on_node_depth_change.connect(
 		std::bind(&tracker::node_depth_change, this, _1, _2));
@@ -53,9 +48,8 @@ tracker::node_depth_change(jive::node * node, size_t old_depth)
 	if (nodestate->state >= states_.size()) {
 		return;
 	}
-	jive_tracker_depth_state_remove(states_[nodestate->state], nodestate, old_depth);
-	jive_tracker_depth_state_add(states_[nodestate->state], nodestate, node->depth());
-	
+	states_[nodestate->state]->remove(nodestate, old_depth);
+	states_[nodestate->state]->add(nodestate, node->depth());
 }
 
 void
@@ -65,7 +59,7 @@ tracker::node_destroy(jive::node * node)
 	if (nodestate->state >= states_.size()) {
 		return;
 	}
-	jive_tracker_depth_state_remove(states_[nodestate->state], nodestate, node->depth());
+	states_[nodestate->state]->remove(nodestate, node->depth());
 }
 
 ssize_t
@@ -80,40 +74,38 @@ tracker::set_nodestate(jive::node * node, size_t state)
 	jive_tracker_nodestate * nodestate = map_node(node);
 	
 	if (nodestate->state != state) {
-		if (nodestate->state < states_.size()) {
-			jive_tracker_depth_state_remove(states_[nodestate->state], nodestate, node->depth());
-		}
+		if (nodestate->state < states_.size())
+			states_[nodestate->state]->remove(nodestate, node->depth());
+
 		nodestate->state = state;
-		if (nodestate->state < states_.size()) {
-			jive_tracker_depth_state_add(states_[nodestate->state], nodestate, node->depth());
-		}
+		if (nodestate->state < states_.size())
+			states_[nodestate->state]->add(nodestate, node->depth());
 	}
 }
 
 jive::node *
 tracker::peek_top(size_t state) const
 {
-	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_top(states_[state]);
+	auto nodestate = states_[state]->pop_top();
 	return nodestate ? nodestate->node : nullptr;
 }
 
 jive::node *
 tracker::peek_bottom(size_t state) const
 {
-	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_bottom(states_[state]);
+	auto nodestate = states_[state]->pop_bottom();
 	return nodestate ? nodestate->node : nullptr;
 }
 
 computation_tracker::computation_tracker(jive::graph * graph)
 	: graph_(graph)
 	, slot_(jive_graph_reserve_tracker_slot(graph))
-	, nodestates_(jive_graph_reserve_tracker_depth_state(graph))
+	, nodestates_(std::make_unique<tracker_depth_state>())
 {
 }
 
 computation_tracker::~computation_tracker() noexcept
 {
-	jive_graph_return_tracker_depth_state(graph_, nodestates_);
 	jive_graph_return_tracker_slot(graph_, slot_);
 }
 
@@ -128,7 +120,7 @@ computation_tracker::invalidate(jive::node * node)
 {
 	jive_tracker_nodestate * nodestate = map_node(node);
 	if (nodestate->state == jive_tracker_nodestate_none) {
-		jive_tracker_depth_state_add(nodestates_, nodestate, node->depth());
+		nodestates_->add(nodestate, node->depth());
 		nodestate->state = 0;
 	}
 }
@@ -145,7 +137,7 @@ computation_tracker::invalidate_below(jive::node * node)
 jive::node *
 computation_tracker::pop_top()
 {
-	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_top(nodestates_);
+	auto nodestate = nodestates_->pop_top();
 	return nodestate ? nodestate->node : nullptr;
 }
 
