@@ -155,47 +155,48 @@ tracker::tracker(jive::graph * graph, size_t nstates)
 void
 tracker::node_depth_change(jive::node * node, size_t old_depth)
 {
-	auto nodestate = node->tracker_state(slot_);
-	if (nodestate->state >= states_.size()) {
-		return;
+	auto nstate = nodestate(node);
+	if (nstate->state < states_.size()) {
+		states_[nstate->state]->remove(nstate, old_depth);
+		states_[nstate->state]->add(nstate, node->depth());
 	}
-	states_[nodestate->state]->remove(nodestate, old_depth);
-	states_[nodestate->state]->add(nodestate, node->depth());
 }
 
 void
 tracker::node_destroy(jive::node * node)
 {
-	auto nodestate = node->tracker_state(slot_);
-	if (nodestate->state >= states_.size()) {
-		return;
-	}
-	states_[nodestate->state]->remove(nodestate, node->depth());
+	auto nstate = nodestate(node);
+	if (nstate->state < states_.size())
+		states_[nstate->state]->remove(nstate, node->depth());
+
+	nodestates_.erase(node);
 }
 
 ssize_t
 tracker::get_nodestate(jive::node * node)
 {
-	return node->tracker_state(slot_)->state;
+	return nodestate(node)->state;
 }
 
 void
 tracker::set_nodestate(jive::node * node, size_t state)
 {
-	auto nodestate = node->tracker_state(slot_);
-	if (nodestate->state != state) {
-		if (nodestate->state < states_.size())
-			states_[nodestate->state]->remove(nodestate, node->depth());
+	auto nstate = nodestate(node);
+	if (nstate->state != state) {
+		if (nstate->state < states_.size())
+			states_[nstate->state]->remove(nstate, node->depth());
 
-		nodestate->state = state;
-		if (nodestate->state < states_.size())
-			states_[nodestate->state]->add(nodestate, node->depth());
+		nstate->state = state;
+		if (nstate->state < states_.size())
+			states_[nstate->state]->add(nstate, node->depth());
 	}
 }
 
 jive::node *
 tracker::peek_top(size_t state) const
 {
+	JIVE_DEBUG_ASSERT(state < states_.size());
+
 	auto nodestate = states_[state]->pop_top();
 	return nodestate ? nodestate->node() : nullptr;
 }
@@ -203,8 +204,21 @@ tracker::peek_top(size_t state) const
 jive::node *
 tracker::peek_bottom(size_t state) const
 {
+	JIVE_DEBUG_ASSERT(state < states_.size());
+
 	auto nodestate = states_[state]->pop_bottom();
 	return nodestate ? nodestate->node() : nullptr;
+}
+
+jive::tracker_nodestate *
+tracker::nodestate(jive::node * node)
+{
+	auto it = nodestates_.find(node);
+	if (it != nodestates_.end())
+		return it->second.get();
+
+	nodestates_[node] = std::make_unique<jive::tracker_nodestate>(node);
+	return nodestates_[node].get();
 }
 
 }

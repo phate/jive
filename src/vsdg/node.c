@@ -182,11 +182,6 @@ node::~node()
 
 	JIVE_LIST_REMOVE(region()->bottom_nodes, this, region_bottom_list);
 	JIVE_LIST_REMOVE(region_->top_nodes, this, region_top_node_list);
-
-	region_ = nullptr;
-
-	for (size_t n = 0; n < tracker_states_.size(); n++)
-		delete tracker_states_[n];
 }
 
 void
@@ -276,35 +271,6 @@ producer(const jive::output * output) noexcept
 		return nullptr;
 
 	return producer(argument->input()->origin());
-}
-
-jive::tracker_nodestate *
-node::tracker_state(jive_tracker_slot slot)
-{
-	jive::tracker_nodestate * nodestate;
-	if (slot.index < tracker_states_.size()) {
-		nodestate = tracker_states_[slot.index];
-		if (nodestate->cookie != slot.cookie) {
-			nodestate->state = jive_tracker_nodestate_none;
-			nodestate->cookie = slot.cookie;
-		}
-		return nodestate;
-	}
-
-	size_t new_size = slot.index + 1;
-	size_t old_size = tracker_states_.size();
-	tracker_states_.resize(new_size);
-
-	for(size_t n = old_size; n < new_size; n++) {
-		nodestate = new jive::tracker_nodestate(this);
-		tracker_states_[n] = nodestate;
-	}
-
-	nodestate = tracker_states_[slot.index];
-	nodestate->cookie = slot.cookie;
-	nodestate->state = jive_tracker_nodestate_none;
-
-	return nodestate;
 }
 
 }

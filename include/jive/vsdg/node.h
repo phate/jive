@@ -18,7 +18,6 @@
 #include <jive/vsdg/gate.h>
 #include <jive/vsdg/operation.h>
 #include <jive/vsdg/resource.h>
-#include <jive/vsdg/tracker.h>
 
 namespace jive {
 namespace base {
@@ -30,46 +29,6 @@ class graph;
 class node_normal_form;
 class output;
 class substitution_map;
-
-/* tracker support */
-
-class tracker_nodestate {
-public:
-	inline
-	tracker_nodestate(jive::node * node)
-	: cookie(0)
-	, state(jive_tracker_nodestate_none)
-	, node_(node)
-	{
-		state_node_list.prev = state_node_list.next = nullptr;
-	}
-
-	tracker_nodestate(const tracker_nodestate&) = delete;
-
-	tracker_nodestate(tracker_nodestate&&) = delete;
-
-	tracker_nodestate &
-	operator=(const tracker_nodestate&) = delete;
-
-	tracker_nodestate &
-	operator=(tracker_nodestate&&) = delete;
-
-	inline jive::node *
-	node() const noexcept
-	{
-		return node_;
-	}
-
-	size_t cookie;
-	size_t state;
-	struct {
-		tracker_nodestate * prev;
-		tracker_nodestate * next;
-	} state_node_list;
-
-private:
-	jive::node * node_;
-};
 
 /* inputs */
 
@@ -252,8 +211,6 @@ private:
 	std::unordered_set<jive::input*> users_;
 };
 
-class tracker_nodestate;
-
 class node {
 public:
 	virtual
@@ -389,9 +346,6 @@ public:
 	void
 	recompute_depth(jive::input * input);
 
-	jive::tracker_nodestate *
-	tracker_state(jive_tracker_slot slot);
-
 	struct {
 		jive::node * prev;
 		jive::node * next;
@@ -417,7 +371,6 @@ private:
 	jive::graph * graph_;
 	jive::region * region_;
 	std::unique_ptr<jive::operation> operation_;
-	std::vector<tracker_nodestate*> tracker_states_;
 	std::vector<std::unique_ptr<jive::input>> inputs_;
 	std::vector<std::unique_ptr<jive::output>> outputs_;
 };

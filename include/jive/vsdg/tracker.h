@@ -26,8 +26,43 @@ namespace jive {
 class graph;
 class node;
 class region;
-class tracker_nodestate;
 class tracker_depth_state;
+
+class tracker_nodestate {
+public:
+	inline
+	tracker_nodestate(jive::node * node)
+	: state(jive_tracker_nodestate_none)
+	, node_(node)
+	{
+		state_node_list.prev = state_node_list.next = nullptr;
+	}
+
+	tracker_nodestate(const tracker_nodestate&) = delete;
+
+	tracker_nodestate(tracker_nodestate&&) = delete;
+
+	tracker_nodestate &
+	operator=(const tracker_nodestate&) = delete;
+
+	tracker_nodestate &
+	operator=(tracker_nodestate&&) = delete;
+
+	inline jive::node *
+	node() const noexcept
+	{
+		return node_;
+	}
+
+	size_t state;
+	struct {
+		tracker_nodestate * prev;
+		tracker_nodestate * next;
+	} state_node_list;
+
+private:
+	jive::node * node_;
+};
 
 /* Track states of nodes within the graph. Each node can logically be in
  * one of the numbered states, plus another "initial" state. All nodes are
@@ -55,6 +90,9 @@ public:
 	peek_bottom(size_t state) const;
 
 private:
+	jive::tracker_nodestate *
+	nodestate(jive::node * node);
+
 	void
 	node_depth_change(jive::node * node, size_t old_depth);
 
@@ -62,12 +100,15 @@ private:
 	node_destroy(jive::node * node);
 
 	jive::graph * graph_;
+
 	/* FIXME: need RAII idiom for slot reservation */
 	jive_tracker_slot slot_;
 	/* FIXME: need RAII idiom for state reservation */
 	std::vector<std::unique_ptr<tracker_depth_state>> states_;
 
 	callback depth_callback_, destroy_callback_;
+
+	std::unordered_map<jive::node*, std::unique_ptr<jive::tracker_nodestate>> nodestates_;
 };
 
 }
