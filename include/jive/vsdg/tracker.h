@@ -61,9 +61,6 @@ private:
 	void
 	node_destroy(jive::node * node);
 
-	tracker_nodestate *
-	map_node(jive::node * node);
-
 	jive::graph * graph_;
 	/* FIXME: need RAII idiom for slot reservation */
 	jive_tracker_slot slot_;

@@ -152,16 +152,10 @@ tracker::tracker(jive::graph * graph, size_t nstates)
 		std::bind(&tracker::node_destroy, this, _1));
 }
 
-tracker_nodestate *
-tracker::map_node(jive::node * node)
-{
-	return node->tracker_state(slot_);
-}
-
 void
 tracker::node_depth_change(jive::node * node, size_t old_depth)
 {
-	auto nodestate = map_node(node);
+	auto nodestate = node->tracker_state(slot_);
 	if (nodestate->state >= states_.size()) {
 		return;
 	}
@@ -172,7 +166,7 @@ tracker::node_depth_change(jive::node * node, size_t old_depth)
 void
 tracker::node_destroy(jive::node * node)
 {
-	auto nodestate = map_node(node);
+	auto nodestate = node->tracker_state(slot_);
 	if (nodestate->state >= states_.size()) {
 		return;
 	}
@@ -182,13 +176,13 @@ tracker::node_destroy(jive::node * node)
 ssize_t
 tracker::get_nodestate(jive::node * node)
 {
-	return map_node(node)->state;
+	return node->tracker_state(slot_)->state;
 }
 
 void
 tracker::set_nodestate(jive::node * node, size_t state)
 {
-	auto nodestate = map_node(node);
+	auto nodestate = node->tracker_state(slot_);
 	if (nodestate->state != state) {
 		if (nodestate->state < states_.size())
 			states_[nodestate->state]->remove(nodestate, node->depth());
