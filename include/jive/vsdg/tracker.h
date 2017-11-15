@@ -16,17 +16,15 @@ struct jive_notifier;
 
 static const size_t jive_tracker_nodestate_none = (size_t) -1;
 
-struct jive_tracker_slot {
-	size_t index;
-	size_t cookie;
-};
-
 namespace jive {
 
 class graph;
 class node;
 class region;
 class tracker_depth_state;
+
+bool
+has_active_trackers(const jive::graph * graph);
 
 class tracker_nodestate {
 public:
@@ -89,6 +87,12 @@ public:
 	jive::node *
 	peek_bottom(size_t state) const;
 
+	inline jive::graph *
+	graph() const noexcept
+	{
+		return graph_;
+	}
+
 private:
 	jive::tracker_nodestate *
 	nodestate(jive::node * node);
@@ -101,8 +105,6 @@ private:
 
 	jive::graph * graph_;
 
-	/* FIXME: need RAII idiom for slot reservation */
-	jive_tracker_slot slot_;
 	/* FIXME: need RAII idiom for state reservation */
 	std::vector<std::unique_ptr<tracker_depth_state>> states_;
 

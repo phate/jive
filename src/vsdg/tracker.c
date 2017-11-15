@@ -16,7 +16,42 @@ struct jive_tracker_nodestate_list {
 	jive::tracker_nodestate * last;
 };
 
+namespace {
+
+typedef std::unordered_set<const jive::graph*> tracker_set;
+
+tracker_set *
+active_trackers()
+{
+	static std::unique_ptr<tracker_set> trackers;
+	if (!trackers)
+		trackers.reset(new tracker_set());
+
+	return trackers.get();
+}
+
+void
+register_tracker(const jive::tracker * tracker)
+{
+	active_trackers()->insert(tracker->graph());
+}
+
+void
+unregister_tracker(const jive::tracker * tracker)
+{
+	active_trackers()->erase(tracker->graph());
+}
+
+}
+
 namespace jive {
+
+bool
+has_active_trackers(const jive::graph * graph)
+{
+	auto at = active_trackers();
+	return at->find(graph) != at->end();
+}
 
 /* tracker depth state */
 
@@ -135,12 +170,11 @@ private:
 
 tracker::~tracker()
 {
-	graph_->destroy_tracker_slot(slot_);
+	unregister_tracker(this);
 }
 
 tracker::tracker(jive::graph * graph, size_t nstates)
 	: graph_(graph)
-	, slot_(graph->create_tracker_slot())
 	, states_(nstates)
 {
 	for (size_t n = 0; n < states_.size(); n++)
@@ -150,6 +184,8 @@ tracker::tracker(jive::graph * graph, size_t nstates)
 		std::bind(&tracker::node_depth_change, this, _1, _2));
 	destroy_callback_ = graph->on_node_destroy.connect(
 		std::bind(&tracker::node_destroy, this, _1));
+
+	register_tracker(this);
 }
 
 void

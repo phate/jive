@@ -22,24 +22,10 @@
 
 /* graph */
 
-typedef struct jive_tracker_depth_state jive_tracker_depth_state;
-typedef struct jive_tracker_nodestate_list jive_tracker_nodestate_list;
-
 struct jive_resource;
 struct jive_resource_name;
 
 namespace jive {
-
-class tracker_slot_reservation {
-public:
-	inline
-	tracker_slot_reservation()
-	: in_use(true)
-	{}
-
-	jive_tracker_slot slot;
-	bool in_use;
-};
 
 class graph {
 public:
@@ -115,16 +101,6 @@ public:
 		jive::gate * last;
 	} gates;
 
-	jive_tracker_slot
-	create_tracker_slot();
-
-	inline void
-	destroy_tracker_slot(jive_tracker_slot slot)
-	{
-		JIVE_DEBUG_ASSERT(tracker_slots_[slot.index].in_use);
-		tracker_slots_[slot.index].in_use = false;
-	}
-
 	/* FIXME: notifiers should become private, but need to turn more things
 	 * into classes first */
 	jive::notifier<jive::region *> on_region_create;
@@ -152,7 +128,6 @@ private:
 	bool normalized_;
 	jive::region * root_;
 	jive::node_normal_form_hash node_normal_forms_;
-	std::vector<tracker_slot_reservation> tracker_slots_;
 };
 
 }

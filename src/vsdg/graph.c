@@ -14,7 +14,7 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/substitution.h>
-#include <jive/vsdg/traverser.h>
+#include <jive/vsdg/tracker.h>
 
 /* graph */
 
@@ -68,12 +68,7 @@ graph::node_normal_form(const std::type_info & type) noexcept
 bool
 graph::has_active_traversers() const noexcept
 {
-	for (const auto & slot : tracker_slots_) {
-		if (slot.in_use)
-			return true;
-	}
-
-	return false;
+	return has_active_trackers(this);
 }
 
 jive::gate *
@@ -86,32 +81,6 @@ jive::gate *
 graph::create_gate(const std::string & name, const jive::resource_class * rescls)
 {
 	return new jive::gate(this, name, rescls);
-}
-
-jive_tracker_slot
-graph::create_tracker_slot()
-{
-	for (size_t n = 0; n < tracker_slots_.size(); n++) {
-		if (!tracker_slots_[n].in_use) {
-			/* in theory, overflow might be possible, causing
-			a cookie to be reused... just catch this case
-			even if it is never going to happen in real life */
-			if (tracker_slots_[n].slot.cookie == (size_t) -1)
-				continue;
-			tracker_slots_[n].slot.cookie ++;
-			tracker_slots_[n].in_use = true;
-			return tracker_slots_[n].slot;
-		}
-	}
-
-	size_t n = tracker_slots_.size();
-	tracker_slots_.resize(tracker_slots_.size()+1);
-
-	tracker_slots_[n].slot.index = n;
-	tracker_slots_[n].slot.cookie = 1;
-	tracker_slots_[n].in_use = true;
-
-	return tracker_slots_[n].slot;
 }
 
 }
