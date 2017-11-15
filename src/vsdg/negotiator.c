@@ -94,9 +94,9 @@ negotiator_split_operation::copy() const
 }
 
 static jive::simple_output *
-jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * operand_type,
+jive_negotiator_split(jive_negotiator * negotiator, const jive::type * operand_type,
 	jive::simple_output * operand, const jive_negotiator_option * input_option,
-	const jive::base::type * output_type, const jive_negotiator_option * output_option)
+	const jive::type * output_type, const jive_negotiator_option * output_option)
 {
 	jive::negotiator_split_operation op(
 		negotiator,
@@ -731,7 +731,7 @@ jive_negotiator_maybe_split_edge(
 	if (*origin_port->option == *input_port->option)
 		return;
 	
-	const jive::base::type * type = &input->type();
+	auto type = &input->type();
 	auto split_output = jive_negotiator_split(self,
 		type, dynamic_cast<jive::simple_output*>(input->origin()), origin_port->option,
 		type, input_port->option);

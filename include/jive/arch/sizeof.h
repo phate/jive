@@ -52,7 +52,7 @@ public:
 	copy() const override;
 
 private:
-	std::unique_ptr<base::type> type_;
+	std::unique_ptr<jive::type> type_;
 };
 
 class memlayout_mapper;

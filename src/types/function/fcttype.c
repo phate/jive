@@ -20,37 +20,37 @@ type::~type() noexcept
 {}
 
 type::type(
-	const std::vector<const jive::base::type*> & argument_types,
-	const std::vector<const jive::base::type*> & result_types)
+	const std::vector<const jive::type*> & argument_types,
+	const std::vector<const jive::type*> & result_types)
 : jive::valuetype()
 {
 	for (const auto & type : argument_types)
-		argument_types_.push_back(std::unique_ptr<jive::base::type>(type->copy()));
+		argument_types_.push_back(std::unique_ptr<jive::type>(type->copy()));
 
 	for (const auto & type : result_types)
-		result_types_.push_back(std::unique_ptr<jive::base::type>(type->copy()));
+		result_types_.push_back(std::unique_ptr<jive::type>(type->copy()));
 }
 
 type::type(
-	const std::vector<std::unique_ptr<jive::base::type>> & argument_types,
-	const std::vector<std::unique_ptr<jive::base::type>> & result_types)
+	const std::vector<std::unique_ptr<jive::type>> & argument_types,
+	const std::vector<std::unique_ptr<jive::type>> & result_types)
 : jive::valuetype()
 {
 	for (size_t i = 0; i < argument_types.size(); i++)
-		argument_types_.push_back(std::unique_ptr<jive::base::type>(argument_types[i]->copy()));
+		argument_types_.push_back(std::unique_ptr<jive::type>(argument_types[i]->copy()));
 
 	for (size_t i = 0; i < result_types.size(); i++)
-		result_types_.push_back(std::unique_ptr<jive::base::type>(result_types[i]->copy()));
+		result_types_.push_back(std::unique_ptr<jive::type>(result_types[i]->copy()));
 }
 
 type::type(const jive::fct::type & rhs)
 : jive::valuetype(rhs)
 {
 	for (size_t i = 0; i < rhs.narguments(); i++)
-		argument_types_.push_back(std::unique_ptr<jive::base::type>(rhs.argument_type(i).copy()));
+		argument_types_.push_back(std::unique_ptr<jive::type>(rhs.argument_type(i).copy()));
 
 	for (size_t i = 0; i < rhs.nresults(); i++)
-		result_types_.push_back(std::unique_ptr<jive::base::type>(rhs.result_type(i).copy()));
+		result_types_.push_back(std::unique_ptr<jive::type>(rhs.result_type(i).copy()));
 }
 
 std::string
@@ -60,7 +60,7 @@ type::debug_string() const
 }
 
 bool
-type::operator==(const jive::base::type & _other) const noexcept
+type::operator==(const jive::type & _other) const noexcept
 {
 	auto other = dynamic_cast<const jive::fct::type*>(&_other);
 	if (other == nullptr)
@@ -85,10 +85,10 @@ type::operator==(const jive::base::type & _other) const noexcept
 	return true;
 }
 
-std::unique_ptr<base::type>
+std::unique_ptr<jive::type>
 type::copy() const
 {
- return std::unique_ptr<base::type>(new type(*this));
+ return std::unique_ptr<jive::type>(new type(*this));
 }
 
 jive::fct::type &
@@ -98,10 +98,10 @@ type::operator=(const jive::fct::type & rhs)
 	argument_types_.clear();
 
 	for (size_t i = 0; i < rhs.narguments(); i++)
-		argument_types_.push_back(std::unique_ptr<base::type>(rhs.argument_type(i).copy()));
+		argument_types_.push_back(std::unique_ptr<jive::type>(rhs.argument_type(i).copy()));
 
 	for (size_t i = 0; i < rhs.nresults(); i++)
-		result_types_.push_back(std::unique_ptr<base::type>(rhs.result_type(i).copy()));
+		result_types_.push_back(std::unique_ptr<jive::type>(rhs.result_type(i).copy()));
 
 	return *this;
 }

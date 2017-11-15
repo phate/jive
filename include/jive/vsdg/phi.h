@@ -88,7 +88,7 @@ public:
 	}
 
 	inline std::shared_ptr<jive::recvar>
-	add_recvar(const jive::base::type & type)
+	add_recvar(const jive::type & type)
 	{
 		if (!node_)
 			return nullptr;

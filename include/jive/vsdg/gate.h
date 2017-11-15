@@ -46,13 +46,11 @@ typedef jive::detail::intrusive_hash<
 > jive_gate_interference_hash;
 
 namespace jive {
-namespace base {
-	class type;
-}
 
 class input;
 class output;
 class resource_class;
+class type;
 
 /* gate */
 
@@ -63,14 +61,14 @@ public:
 	gate(
 		jive::graph * graph,
 		const std::string & name,
-		const jive::base::type & type);
+		const jive::type & type);
 
 	gate(
 		jive::graph * graph,
 		const std::string & name,
 		const struct jive::resource_class * rescls);
 
-	const jive::base::type &
+	const jive::type &
 	type() const noexcept
 	{
 		return *type_;
@@ -134,7 +132,7 @@ private:
 		number given by the operation. Once this is fixed, the attribute can be removed and the type
 		can be taken from the operation.
 	*/
-	std::unique_ptr<jive::base::type> type_;
+	std::unique_ptr<jive::type> type_;
 };
 
 }

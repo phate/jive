@@ -118,7 +118,7 @@ is_mux_op(const jive::operation & op)
 
 static inline std::vector<jive::output*>
 create_state_mux(
-	const jive::base::type & type,
+	const jive::type & type,
 	const std::vector<jive::output*> & operands,
 	size_t nresults)
 {
@@ -135,7 +135,7 @@ create_state_mux(
 
 static inline jive::output *
 create_state_merge(
-	const jive::base::type & type,
+	const jive::type & type,
 	const std::vector<jive::output*> & operands)
 {
 	return create_state_mux(type, operands, 1)[0];
@@ -143,7 +143,7 @@ create_state_merge(
 
 static inline std::vector<jive::output*>
 create_state_split(
-	const jive::base::type & type,
+	const jive::type & type,
 	jive::output * operand,
 	size_t nresults)
 {

@@ -59,7 +59,7 @@ public:
 	node_normal_form(const std::type_info & type) noexcept;
 
 	jive::gate *
-	create_gate(const std::string & name, const jive::base::type & type);
+	create_gate(const std::string & name, const jive::type & type);
 
 	jive::gate *
 	create_gate(const std::string & name, const jive::resource_class * rescls);
@@ -74,7 +74,7 @@ public:
 	}
 
 	inline jive::argument *
-	import(const jive::base::type & type, const std::string & name)
+	import(const jive::type & type, const std::string & name)
 	{
 		auto gate = create_gate(name, type);
 		return root()->add_argument(nullptr, gate);

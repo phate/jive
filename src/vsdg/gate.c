@@ -13,7 +13,7 @@ namespace jive {
 gate::gate(
 	jive::graph * graph,
 	const std::string & name,
-	const jive::base::type & type)
+	const jive::type & type)
 : name_(name)
 , graph_(graph)
 , rescls_(&jive_root_resource_class)

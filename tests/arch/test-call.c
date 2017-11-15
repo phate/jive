@@ -25,7 +25,7 @@ static int test_main(void)
 	jive::bits::type bits16(16);
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {addr, bits16, addr});
 
-	const jive::base::type * tmparray1[] = {&bits16, &addr, &addr};
+	const jive::type * tmparray1[] = {&bits16, &addr, &addr};
 
 	std::vector<jive::output*> tmp = {top->output(1), top->output(2)};
 	jive::node * call = jive_call_by_address_node_create(graph.root(),

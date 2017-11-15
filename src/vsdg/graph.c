@@ -66,7 +66,7 @@ graph::node_normal_form(const std::type_info & type) noexcept
 }
 
 jive::gate *
-graph::create_gate(const std::string & name, const jive::base::type & type)
+graph::create_gate(const std::string & name, const jive::type & type)
 {
 	return new jive::gate(this, name, type);
 }

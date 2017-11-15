@@ -23,16 +23,16 @@ type::debug_string() const
 }
 
 bool
-type::operator==(const jive::base::type & _other) const noexcept
+type::operator==(const jive::type & _other) const noexcept
 {
 	const jive::bits::type * other = dynamic_cast<const jive::bits::type*>(&_other);
 	return other != nullptr && this->nbits() == other->nbits();
 }
 
-std::unique_ptr<base::type>
+std::unique_ptr<jive::type>
 type::copy() const
 {
-	return std::unique_ptr<base::type>(new type(*this));
+	return std::unique_ptr<jive::type>(new type(*this));
 }
 
 }

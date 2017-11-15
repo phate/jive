@@ -48,7 +48,7 @@ public:
 		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
 		const std::vector<jive::resource_class_demotion> demotions,
-		const jive::base::type * type,
+		const jive::type * type,
 		size_t s,
 		size_t a)
 	: jive::resource_class(cls, name, resources, parent, priority, demotions, type)
@@ -72,7 +72,7 @@ public:
 		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
 		const std::vector<jive::resource_class_demotion> & demotions,
-		const jive::base::type * type,
+		const jive::type * type,
 		size_t size,
 		size_t alignment,
 		const jive::resource_name * s)
@@ -114,7 +114,7 @@ public:
 		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
 		const std::vector<jive::resource_class_demotion> & demotions,
-		const jive::base::type * type,
+		const jive::type * type,
 		size_t size,
 		size_t alignment,
 		size_t o,

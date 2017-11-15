@@ -170,7 +170,7 @@ public:
 
 private:
 	jive::port index_;
-	std::unique_ptr<base::type> element_type_;
+	std::unique_ptr<jive::type> element_type_;
 };
 
 class arrayindex_op : public simple_op {
@@ -218,7 +218,7 @@ public:
 
 private:
 	jive::port index_;
-	std::unique_ptr<base::type> element_type_;
+	std::unique_ptr<jive::type> element_type_;
 };
 
 class label_to_address_op : public base::nullary_op {

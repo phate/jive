@@ -26,7 +26,7 @@
 #include <jive/vsdg/traverser.h>
 
 static bool
-type_contains_address(const jive::base::type * type)
+type_contains_address(const jive::type * type)
 {
 	if (dynamic_cast<const jive::addr::type*>(type))
 		return true;
@@ -45,49 +45,49 @@ type_contains_address(const jive::base::type * type)
 	return false;
 }
 
-static std::unique_ptr<jive::base::type>
+static std::unique_ptr<jive::type>
 convert_address_to_bitstring_type(
-	const jive::base::type & type,
+	const jive::type & type,
 	size_t nbits)
 {
 	if (dynamic_cast<const jive::addr::type*>(&type)) {
-		return std::unique_ptr<jive::base::type>(new jive::bits::type(nbits));
+		return std::unique_ptr<jive::type>(new jive::bits::type(nbits));
 	} else  if (auto fcttype = dynamic_cast<const jive::fct::type*>(&type)) {
-		std::vector<std::unique_ptr<jive::base::type>> argument_types;
+		std::vector<std::unique_ptr<jive::type>> argument_types;
 		for (size_t n = 0; n < fcttype->narguments(); n++)
 			argument_types.push_back(convert_address_to_bitstring_type(fcttype->argument_type(n), nbits));
 
-		std::vector<std::unique_ptr<jive::base::type>> return_types;
+		std::vector<std::unique_ptr<jive::type>> return_types;
 		for (size_t n = 0; n < fcttype->nresults(); n++)
 			return_types.push_back(convert_address_to_bitstring_type(fcttype->result_type(n), nbits));
 
-		return std::unique_ptr<jive::base::type>(new jive::fct::type(argument_types, return_types));
+		return std::unique_ptr<jive::type>(new jive::fct::type(argument_types, return_types));
 	}
 
 	if (dynamic_cast<const jive::mem::type*>(&type))
-		return std::unique_ptr<jive::base::type>(new jive::mem::type());
+		return std::unique_ptr<jive::type>(new jive::mem::type());
 
 	if (dynamic_cast<const jive::bits::type*>(&type))
-		return std::unique_ptr<jive::base::type>(type.copy());
+		return std::unique_ptr<jive::type>(type.copy());
 
 	JIVE_ASSERT(0);
 }
 
 jive::output *
 jive_address_to_bitstring_create(jive::output * address, size_t nbits,
-	const jive::base::type * original_type)
+	const jive::type * original_type)
 {
 	jive::address_to_bitstring_operation op(
-		nbits, std::unique_ptr<jive::base::type>(original_type->copy()));
+		nbits, std::unique_ptr<jive::type>(original_type->copy()));
 	return jive::create_normalized(address->region(), op, {address})[0];
 }
 
 jive::output *
 jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
-	const jive::base::type * original_type)
+	const jive::type * original_type)
 {
 	jive::bitstring_to_address_operation op(
-		nbits, std::unique_ptr<jive::base::type>(original_type->copy()));
+		nbits, std::unique_ptr<jive::type>(original_type->copy()));
 	return jive::create_normalized(bitstring->region(), op, {bitstring})[0];
 }
 
@@ -199,7 +199,7 @@ jive_call_node_address_transform(
 		}
 	}
 
-	const jive::base::type * return_types[node->noutputs()];
+	const jive::type * return_types[node->noutputs()];
 	jive::bits::type address_type(nbits);
 	for (size_t i = 0; i < node->noutputs(); i++){
 		if (dynamic_cast<const jive::addr::type*>(&node->output(i)->type())){
@@ -314,7 +314,7 @@ jive_apply_node_address_transform(const jive::node * node, size_t nbits)
 {
 	auto fct = dynamic_cast<jive::simple_input*>(node->input(0));
 
-	const jive::base::type * fcttype = &fct->type();
+	auto fcttype = &fct->type();
 	if (!type_contains_address(fcttype))
 		return;
 
@@ -377,7 +377,7 @@ address_to_bitstring_operation::~address_to_bitstring_operation() noexcept
 
 address_to_bitstring_operation::address_to_bitstring_operation(
 	size_t nbits,
-	std::unique_ptr<jive::base::type> original_type)
+	std::unique_ptr<jive::type> original_type)
 : nbits_(nbits)
 , result_(*convert_address_to_bitstring_type(*original_type, nbits))
 , argument_(*original_type)
@@ -462,7 +462,7 @@ bitstring_to_address_operation::~bitstring_to_address_operation() noexcept
 
 bitstring_to_address_operation::bitstring_to_address_operation(
 	size_t nbits,
-	std::unique_ptr<jive::base::type> original_type)
+	std::unique_ptr<jive::type> original_type)
 	: nbits_(nbits)
 	, result_(*original_type)
 	, argument_(*convert_address_to_bitstring_type(*original_type, nbits))

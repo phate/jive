@@ -20,9 +20,9 @@ public:
 
 	virtual std::string debug_string() const override;
 
-	virtual bool operator==(const jive::base::type & other) const noexcept override;
+	virtual bool operator==(const jive::type & other) const noexcept override;
 
-	virtual std::unique_ptr<base::type>
+	virtual std::unique_ptr<jive::type>
 	copy() const override;
 
 	inline size_t
@@ -38,7 +38,7 @@ private:
 }
 
 static inline bool
-is_ctltype(const jive::base::type & type) noexcept
+is_ctltype(const jive::type & type) noexcept
 {
 	return dynamic_cast<const jive::ctl::type*>(&type) != nullptr;
 }

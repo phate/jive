@@ -51,7 +51,7 @@ public:
 	classify_any() const = 0;
 
 	virtual jive_regselect_mask
-	classify_type(const jive::base::type * type, const jive::resource_class * rescls) const = 0;
+	classify_type(const jive::type * type, const jive::resource_class * rescls) const = 0;
 
 	virtual jive_regselect_mask
 	classify_fixed_unary(const jive::bits::unary_op & op) const = 0;

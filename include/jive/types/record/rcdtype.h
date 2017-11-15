@@ -58,7 +58,7 @@ public:
 	}
 
 private:
-	std::vector<std::unique_ptr<base::type>> types_;
+	std::vector<std::unique_ptr<jive::type>> types_;
 };
 
 /* type */
@@ -81,9 +81,10 @@ public:
 
 	virtual std::string debug_string() const override;
 
-	virtual bool operator==(const jive::base::type & type) const noexcept override;
+	virtual bool
+	operator==(const jive::type & type) const noexcept override;
 
-	virtual std::unique_ptr<base::type>
+	virtual std::unique_ptr<jive::type>
 	copy() const override;
 
 private:

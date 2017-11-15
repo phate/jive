@@ -11,7 +11,6 @@
 #include <string>
 
 namespace jive {
-namespace base {
 
 class type {
 public:
@@ -25,10 +24,10 @@ protected:
 
 public:
 	virtual bool
-	operator==(const jive::base::type & other) const noexcept = 0;
+	operator==(const jive::type & other) const noexcept = 0;
 
 	inline bool
-	operator!=(const jive::base::type & other) const noexcept
+	operator!=(const jive::type & other) const noexcept
 	{
 		return !(*this == other);
 	}
@@ -40,9 +39,7 @@ public:
 	debug_string() const = 0;
 };
 
-}	//base namespace
-
-class valuetype : public jive::base::type {
+class valuetype : public jive::type {
 public:
 	virtual
 	~valuetype() noexcept;
@@ -50,11 +47,11 @@ public:
 protected:
 	inline constexpr
 	valuetype() noexcept
-		: jive::base::type()
+	: jive::type()
 	{}
 };
 
-class statetype : public jive::base::type {
+class statetype : public jive::type {
 public:
 	virtual
 	~statetype() noexcept;
@@ -62,7 +59,7 @@ public:
 protected:
 	inline constexpr
 	statetype() noexcept
-		: jive::base::type()
+	: jive::type()
 	{}
 };
 

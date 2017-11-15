@@ -29,7 +29,7 @@ jive_i386_reg_classifier::classify_any() const
 
 jive_regselect_mask
 jive_i386_reg_classifier::classify_type(
-	const jive::base::type * type,
+	const jive::type * type,
 	const jive::resource_class * rescls) const
 {
 	rescls = jive_resource_class_relax(rescls);

@@ -27,7 +27,7 @@ protected:
 	{}
 
 public:
-	virtual const jive::base::type &
+	virtual const jive::type &
 	type() const noexcept = 0;
 
 	virtual std::unique_ptr<literal>
@@ -45,7 +45,7 @@ public:
 		, type_(vr.nbits())
 	{}
 
-	virtual const jive::base::type &
+	virtual const jive::type &
 	type() const noexcept override;
 
 	virtual std::unique_ptr<literal>
@@ -73,7 +73,7 @@ public:
 		, type_(vr.nalternatives())
 	{}
 
-	virtual const jive::base::type &
+	virtual const jive::type &
 	type() const noexcept override;
 
 	virtual std::unique_ptr<literal>
@@ -114,7 +114,7 @@ public:
 	fctliteral &
 	operator=(const fctliteral & other);
 
-	virtual const jive::base::type &
+	virtual const jive::type &
 	type() const noexcept override;
 
 	virtual std::unique_ptr<literal>
@@ -147,7 +147,7 @@ public:
 	}
 
 private:
-	std::unique_ptr<base::type> type_;
+	std::unique_ptr<jive::type> type_;
 	std::vector<std::unique_ptr<const literal>> arguments_;
 	std::vector<std::unique_ptr<const literal>> results_;
 };
@@ -157,7 +157,7 @@ public:
 	virtual
 	~memliteral() noexcept;
 
-	virtual const jive::base::type &
+	virtual const jive::type &
 	type() const noexcept override;
 
 	virtual std::unique_ptr<literal>

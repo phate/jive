@@ -47,7 +47,7 @@ test_address_transform(void)
 	jive_label_external_init(&write_label, "write", &write_symbol);
 	auto label = jive_label_to_address_create(graph.root(), &write_label.base);
 	jive::output * tmparray2[] = {memberof, containerof};
-	const jive::base::type * tmparray3[] = {&addr, &addr};
+	const jive::type * tmparray3[] = {&addr, &addr};
 	jive::node * call = jive_call_by_address_node_create(graph.root(),
 		label, NULL,
 		2, tmparray2,

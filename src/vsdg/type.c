@@ -7,12 +7,9 @@
 #include <jive/vsdg/type.h>
 
 namespace jive {
-namespace base {
 
 type::~type() noexcept
 {}
-
-}
 
 valuetype::~valuetype() noexcept
 {}

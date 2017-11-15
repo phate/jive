@@ -34,7 +34,6 @@ fib(size_t n)
 }
 */
 	jive::bits::type bits32(32);
-	std::vector<const jive::base::type*> types({&bits32});
 
 	jive::lambda_builder lb;
 	auto arguments = lb.begin_lambda(graph->root(), {{&bits32}, {&bits32}});
@@ -145,8 +144,8 @@ unsigned int fib(unsigned int n){
  }
 */
 	jive::bits::type bits32(32);
-	std::vector<const jive::base::type*> args({&bits32});
-	std::vector<const jive::base::type*> res({&bits32});
+	std::vector<const jive::type*> args({&bits32});
+	std::vector<const jive::type*> res({&bits32});
 	jive::fct::type fcttype({&bits32}, {&bits32});
 
 	jive::phi_builder pb;
@@ -238,7 +237,6 @@ test_loadstore(jive::graph * graph)
 
 	jive::bits::type bits64(64), bits4(4);
 	const auto & mem = jive::mem::type::instance();
-	std::vector<const jive::base::type*> types({&jive::mem::type::instance(), &bits64});
 
 	jive::lambda_builder lb;
 	auto arguments = lb.begin_lambda(graph->root(), {{&mem, &bits64}, {&mem}});

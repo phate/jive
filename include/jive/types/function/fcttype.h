@@ -21,12 +21,12 @@ public:
 	~type() noexcept;
 
 	type(
-		const std::vector<const jive::base::type*> & argument_types,
-		const std::vector<const jive::base::type*> & result_types);
+		const std::vector<const jive::type*> & argument_types,
+		const std::vector<const jive::type*> & result_types);
 
 	type(
-		const std::vector<std::unique_ptr<jive::base::type>> & argument_types,
-		const std::vector<std::unique_ptr<jive::base::type>> & result_types);
+		const std::vector<std::unique_ptr<jive::type>> & argument_types,
+		const std::vector<std::unique_ptr<jive::type>> & result_types);
 
 	type(const jive::fct::type & other);
 
@@ -42,13 +42,13 @@ public:
 		return argument_types_.size();
 	}
 
-	inline const jive::base::type &
+	inline const jive::type &
 	result_type(size_t index) const noexcept
 	{
 		return *result_types_[index];
 	}
 
-	inline const jive::base::type &
+	inline const jive::type &
 	argument_type(size_t index) const noexcept
 	{
 		return *argument_types_[index];
@@ -58,17 +58,17 @@ public:
 	debug_string() const override;
 
 	virtual bool
-	operator==(const jive::base::type & other) const noexcept override;
+	operator==(const jive::type & other) const noexcept override;
 
-	virtual std::unique_ptr<base::type>
+	virtual std::unique_ptr<jive::type>
 	copy() const override;
 
 	jive::fct::type &
 	operator=(const jive::fct::type & other);
 
 private:
-	std::vector<std::unique_ptr<jive::base::type>> result_types_;
-	std::vector<std::unique_ptr<jive::base::type>> argument_types_;
+	std::vector<std::unique_ptr<jive::type>> result_types_;
+	std::vector<std::unique_ptr<jive::type>> argument_types_;
 };
 
 }

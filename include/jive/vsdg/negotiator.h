@@ -70,9 +70,9 @@ public:
 	inline
 	negotiator_split_operation(
 		jive_negotiator * negotiator,
-		const jive::base::type & input_type,
+		const jive::type & input_type,
 		const jive_negotiator_option & input_option,
-		const jive::base::type & output_type,
+		const jive::type & output_type,
 		const jive_negotiator_option & output_option)
 	: unary_op()
 	, result_(output_type)
@@ -116,7 +116,7 @@ public:
 	inline jive_negotiator *
 	negotiator() const noexcept { return negotiator_; }
 
-	inline const jive::base::type &
+	inline const jive::type &
 	input_type() const noexcept
 	{
 		return argument_.type();
@@ -125,7 +125,7 @@ public:
 	inline const jive_negotiator_option &
 	input_option() const noexcept { return *input_option_; }
 
-	inline const jive::base::type &
+	inline const jive::type &
 	output_type() const noexcept
 	{
 		return result_.type();

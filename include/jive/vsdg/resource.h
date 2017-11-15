@@ -17,15 +17,6 @@
 #include <unordered_set>
 #include <vector>
 
-namespace jive {
-namespace base {
-	class type;
-}
-	class gate;
-	class resource_class;
-	class resource_name;
-}
-
 typedef struct jive_resource_class_class jive_resource_class_class;
 
 typedef enum {
@@ -40,6 +31,11 @@ typedef enum {
 } jive_resource_class_priority;
 
 namespace jive {
+
+class gate;
+class resource_class;
+class resource_name;
+class type;
 
 class resource_class_demotion final {
 public:
@@ -81,7 +77,7 @@ public:
 		const jive::resource_class * parent,
 		jive_resource_class_priority pr,
 		const std::vector<resource_class_demotion> & demotions,
-		const jive::base::type * type)
+		const jive::type * type)
 	: class_(cls)
 	, priority(pr)
 	, depth_(parent ? parent->depth()+1 : 0)
@@ -104,7 +100,7 @@ public:
 		return name_;
 	}
 
-	inline const jive::base::type &
+	inline const jive::type &
 	type() const noexcept
 	{
 		JIVE_DEBUG_ASSERT(type_ != nullptr);
@@ -146,7 +142,7 @@ private:
 	std::string name_;
 
 	/** \brief Port and gate type corresponding to this resource */
-	const jive::base::type * type_;
+	const jive::type * type_;
 
 	/** \brief Parent resource class */
 	const jive::resource_class * parent_;

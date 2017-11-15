@@ -51,7 +51,7 @@ public:
 		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
 		const std::vector<jive::resource_class_demotion> & demotions,
-		const jive::base::type * type,
+		const jive::type * type,
 		size_t nbits,
 		size_t aw,
 		size_t lw)

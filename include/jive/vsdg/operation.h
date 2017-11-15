@@ -28,9 +28,9 @@ class port final {
 public:
 	port(jive::gate * gate);
 
-	port(const jive::base::type & type);
+	port(const jive::type & type);
 
-	port(std::unique_ptr<jive::base::type> type);
+	port(std::unique_ptr<jive::type> type);
 
 	port(const resource_class * rescls);
 
@@ -105,7 +105,7 @@ public:
 		return rescls_;
 	}
 
-	inline const jive::base::type &
+	inline const jive::type &
 	type() const noexcept
 	{
 		return *type_;
@@ -114,7 +114,7 @@ public:
 private:
 	jive::gate * gate_;
 	const resource_class * rescls_;
-	std::unique_ptr<jive::base::type> type_;
+	std::unique_ptr<jive::type> type_;
 };
 
 /* operation */

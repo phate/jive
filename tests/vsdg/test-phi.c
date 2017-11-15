@@ -22,7 +22,7 @@ static int test_main()
 	jive::graph graph;
 
 	jive::test::valuetype vtype;
-	jive::fct::type f0type((const std::vector<const jive::base::type*>){}, {});
+	jive::fct::type f0type((const std::vector<const jive::type*>){}, {});
 	jive::fct::type f1type({&vtype}, {&vtype});
 
 	jive::phi_builder pb;

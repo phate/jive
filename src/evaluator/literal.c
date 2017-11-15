@@ -20,7 +20,7 @@ literal::~literal() noexcept
 bitliteral::~bitliteral() noexcept
 {}
 
-const jive::base::type &
+const jive::type &
 bitliteral::type() const noexcept
 {
 	return type_;
@@ -37,7 +37,7 @@ bitliteral::copy() const
 ctlliteral::~ctlliteral() noexcept
 {}
 
-const jive::base::type &
+const jive::type &
 ctlliteral::type() const noexcept
 {
 	return type_;
@@ -60,11 +60,11 @@ fctliteral::fctliteral(
 	: arguments_(detail::unique_ptr_vector_copy(arguments))
 	, results_(detail::unique_ptr_vector_copy(results))
 {
-	std::vector<std::unique_ptr<jive::base::type>> argument_types;
+	std::vector<std::unique_ptr<jive::type>> argument_types;
 	for (size_t n = 0; n < arguments.size(); n++)
 		argument_types.emplace_back(arguments[n]->type().copy());
 
-	std::vector<std::unique_ptr<jive::base::type>> result_types;
+	std::vector<std::unique_ptr<jive::type>> result_types;
 	for (size_t n = 0; n < results.size(); n++)
 		result_types.emplace_back(results[n]->type().copy());
 
@@ -77,11 +77,11 @@ fctliteral::fctliteral(
 	: arguments_(detail::unique_ptr_vector_copy(arguments))
 	, results_(detail::unique_ptr_vector_copy(results))
 {
-	std::vector<std::unique_ptr<jive::base::type>> argument_types;
+	std::vector<std::unique_ptr<jive::type>> argument_types;
 	for (auto argument : arguments)
 		argument_types.emplace_back(argument->type().copy());
 
-	std::vector<std::unique_ptr<jive::base::type>> result_types;
+	std::vector<std::unique_ptr<jive::type>> result_types;
 	for (auto result : results)
 		result_types.emplace_back(result->type().copy());
 
@@ -113,7 +113,7 @@ fctliteral::operator=(const fctliteral & other)
 	return *this;
 }
 
-const jive::base::type &
+const jive::type &
 fctliteral::type() const noexcept
 {
 	return *type_;
@@ -130,7 +130,7 @@ fctliteral::copy() const
 memliteral::~memliteral()
 {}
 
-const jive::base::type &
+const jive::type &
 memliteral::type() const noexcept
 {
 	return jive::mem::type::instance();

@@ -21,12 +21,12 @@ public:
 	~dataobj_op() noexcept;
 
 	inline
-	dataobj_op(const std::vector<std::unique_ptr<const base::type>> & types)
+	dataobj_op(const std::vector<std::unique_ptr<const jive::type>> & types)
 	: types_(detail::unique_ptr_vector_copy(types))
 	{}
 
 	inline
-	dataobj_op(std::vector<std::unique_ptr<const base::type>> && types)
+	dataobj_op(std::vector<std::unique_ptr<const jive::type>> && types)
 	: types_(std::move(types))
 	{}
 
@@ -51,7 +51,7 @@ public:
 	copy() const override;
 
 private:
-	std::vector<std::unique_ptr<const base::type>> types_;
+	std::vector<std::unique_ptr<const jive::type>> types_;
 };
 
 class memlayout_mapper;

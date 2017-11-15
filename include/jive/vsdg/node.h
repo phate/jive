@@ -71,7 +71,7 @@ public:
 	void
 	divert_origin(jive::output * new_origin);
 
-	inline const jive::base::type &
+	inline const jive::type &
 	type() const noexcept
 	{
 		return port_.type();
@@ -169,7 +169,7 @@ public:
 		return users_.end();
 	}
 
-	inline const jive::base::type &
+	inline const jive::type &
 	type() const noexcept
 	{
 		return port_.type();

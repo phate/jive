@@ -25,12 +25,12 @@ public:
 
 	address_to_bitstring_operation(
 		size_t nbits,
-		std::unique_ptr<jive::base::type> original_type);
+		std::unique_ptr<jive::type> original_type);
 
 	inline
 	address_to_bitstring_operation(
 		size_t nbits,
-		const jive::base::type & original_type)
+		const jive::type & original_type)
 	: address_to_bitstring_operation(nbits, original_type.copy())
 	{}
 
@@ -67,7 +67,7 @@ public:
 		return nbits_;
 	}
 
-	inline const jive::base::type &
+	inline const jive::type &
 	original_type() const noexcept
 	{
 		return argument_.type();
@@ -88,12 +88,12 @@ public:
 
 	bitstring_to_address_operation(
 		size_t nbits,
-		std::unique_ptr<jive::base::type> original_type);
+		std::unique_ptr<jive::type> original_type);
 
 	inline
 	bitstring_to_address_operation(
 		size_t nbits,
-		const jive::base::type & original_type)
+		const jive::type & original_type)
 	: bitstring_to_address_operation(nbits, original_type.copy())
 	{}
 
@@ -130,7 +130,7 @@ public:
 		return nbits_;
 	}
 
-	inline const jive::base::type &
+	inline const jive::type &
 	original_type() const noexcept
 	{
 		return result_.type();
@@ -153,13 +153,13 @@ class memlayout_mapper;
 
 jive::output *
 jive_address_to_bitstring_create(jive::output * address, size_t nbits,
-	const jive::base::type * original_type);
+	const jive::type * original_type);
 
 /* bitstring_to_address node */
 
 jive::output *
 jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
-	const jive::base::type * original_type);
+	const jive::type * original_type);
 
 /* reductions */
 

@@ -19,11 +19,11 @@ port::port(jive::gate * gate)
 , type_(gate->type().copy())
 {}
 
-port::port(const jive::base::type & type)
+port::port(const jive::type & type)
 : port(std::move(type.copy()))
 {}
 
-port::port(std::unique_ptr<jive::base::type> type)
+port::port(std::unique_ptr<jive::type> type)
 : gate_(nullptr)
 , rescls_(&jive_root_resource_class)
 , type_(std::move(type))

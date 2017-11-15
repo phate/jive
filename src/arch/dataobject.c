@@ -75,7 +75,7 @@ flatten_data_items(
 	auto tmp = dynamic_cast<jive::simple_output*>(data);
 
 	std::vector<jive::output*> items;
-	const jive::base::type * type_ = &data->type();
+	const jive::type * type_ = &data->type();
 	if (dynamic_cast<const jive::bits::type*>(type_)) {
 		const jive::bits::type * type = static_cast<const jive::bits::type*>(type_);
 		
@@ -157,7 +157,7 @@ jive_dataobj_internal(
 	auto data_items = flatten_data_items(data, layout_mapper);
 	squeeze_data_items(data_items);
 
-	std::vector<std::unique_ptr<const jive::base::type>> types;
+	std::vector<std::unique_ptr<const jive::type>> types;
 	for (const auto & item : data_items)
 		types.emplace_back(item->type().copy());
 
