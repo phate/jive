@@ -213,48 +213,4 @@ tracker::peek_bottom(size_t state) const
 	return nodestate ? nodestate->node() : nullptr;
 }
 
-computation_tracker::computation_tracker(jive::graph * graph)
-	: graph_(graph)
-	, slot_(graph->create_tracker_slot())
-	, nodestates_(std::make_unique<tracker_depth_state>())
-{
-}
-
-computation_tracker::~computation_tracker() noexcept
-{
-	graph_->destroy_tracker_slot(slot_);
-}
-
-tracker_nodestate *
-computation_tracker::map_node(jive::node * node)
-{
-	return node->tracker_state(slot_);
-}
-
-void
-computation_tracker::invalidate(jive::node * node)
-{
-	auto nodestate = map_node(node);
-	if (nodestate->state == jive_tracker_nodestate_none) {
-		nodestates_->add(nodestate, node->depth());
-		nodestate->state = 0;
-	}
-}
-
-void
-computation_tracker::invalidate_below(jive::node * node)
-{
-	for (size_t n = 0; n < node->noutputs(); n++) {
-		for (const auto & user : *node->output(n))
-			invalidate(user->node());
-	}
-}
-
-jive::node *
-computation_tracker::pop_top()
-{
-	auto nodestate = nodestates_->pop_top();
-	return nodestate ? nodestate->node() : nullptr;
-}
-
 }

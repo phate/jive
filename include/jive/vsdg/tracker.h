@@ -73,32 +73,6 @@ private:
 	callback depth_callback_, destroy_callback_;
 };
 
-class computation_tracker {
-public:
-	computation_tracker(jive::graph * graph);
-	
-	~computation_tracker() noexcept;
-	
-	void
-	invalidate(jive::node * node);
-	
-	void
-	invalidate_below(jive::node * node);
-	
-	jive::node *
-	pop_top();
-
-private:
-	tracker_nodestate *
-	map_node(jive::node * node);
-
-	jive::graph * graph_;
-	/* FIXME: need RAII idiom for slot reservation */
-	jive_tracker_slot slot_;
-	/* FIXME: need RAII idiom for state reservation */
-	std::unique_ptr<tracker_depth_state> nodestates_;
-};
-
 }
 
 #endif
