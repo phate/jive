@@ -14,9 +14,9 @@
 
 struct jive_notifier;
 
-static const size_t jive_tracker_nodestate_none = (size_t) -1;
-
 namespace jive {
+
+static const size_t tracker_nodestate_none = (size_t) -1;
 
 class graph;
 class node;
@@ -83,7 +83,7 @@ class tracker_nodestate {
 public:
 	inline
 	tracker_nodestate(jive::node * node)
-	: state_(jive_tracker_nodestate_none)
+	: state_(tracker_nodestate_none)
 	, node_(node)
 	{
 		state_node_list.prev = state_node_list.next = nullptr;

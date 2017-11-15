@@ -231,7 +231,7 @@ tracker::peek_top(size_t state) const
 
 	auto nodestate = states_[state]->pop_top();
 	if (nodestate) {
-		nodestate->state_ = jive_tracker_nodestate_none;
+		nodestate->state_ = tracker_nodestate_none;
 		return nodestate->node();
 	}
 
@@ -245,7 +245,7 @@ tracker::peek_bottom(size_t state) const
 
 	auto nodestate = states_[state]->pop_bottom();
 	if (nodestate) {
-		nodestate->state_ = jive_tracker_nodestate_none;
+		nodestate->state_ = tracker_nodestate_none;
 		return nodestate->node();
 	}
 
