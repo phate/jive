@@ -10,7 +10,6 @@
 
 #include <jive/util/list.h>
 #include <jive/vsdg/controltype.h>
-#include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource.h>

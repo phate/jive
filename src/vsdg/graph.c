@@ -9,7 +9,6 @@
 #include <cxxabi.h>
 
 #include <jive/util/list.h>
-#include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>

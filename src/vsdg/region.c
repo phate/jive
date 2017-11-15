@@ -9,7 +9,7 @@
 #include <jive/common.h>
 
 #include <jive/util/list.h>
-#include <jive/vsdg/graph-private.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/substitution.h>
