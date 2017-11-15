@@ -18,12 +18,12 @@ namespace jive {
 
 tracker::~tracker()
 {
-	jive_graph_return_tracker_slot(graph_, slot_);
+	graph_->destroy_tracker_slot(slot_);
 }
 
 tracker::tracker(jive::graph * graph, size_t nstates)
 	: graph_(graph)
-	, slot_(jive_graph_reserve_tracker_slot(graph_))
+	, slot_(graph->create_tracker_slot())
 	, states_(nstates)
 {
 	for (size_t n = 0; n < states_.size(); n++)
@@ -98,14 +98,14 @@ tracker::peek_bottom(size_t state) const
 
 computation_tracker::computation_tracker(jive::graph * graph)
 	: graph_(graph)
-	, slot_(jive_graph_reserve_tracker_slot(graph))
+	, slot_(graph->create_tracker_slot())
 	, nodestates_(std::make_unique<tracker_depth_state>())
 {
 }
 
 computation_tracker::~computation_tracker() noexcept
 {
-	jive_graph_return_tracker_slot(graph_, slot_);
+	graph_->destroy_tracker_slot(slot_);
 }
 
 tracker_nodestate *

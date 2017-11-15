@@ -19,17 +19,6 @@ struct jive_tracker_nodestate_list {
 
 namespace jive {
 
-class tracker_slot_reservation {
-public:
-	inline
-	tracker_slot_reservation()
-	: in_use(true)
-	{}
-
-	jive_tracker_slot slot;
-	bool in_use;
-};
-
 class tracker_depth_state {
 public:
 	inline
@@ -141,36 +130,6 @@ private:
 	std::vector<jive_tracker_nodestate_list> nodestates_;
 };
 
-}
-
-jive_tracker_slot
-jive_graph_reserve_tracker_slot_slow(jive::graph * self);
-
-static inline jive_tracker_slot
-jive_graph_reserve_tracker_slot(jive::graph * self)
-{
-	size_t n;
-	for (n = 0; n < self->tracker_slots.size(); n++) {
-		if (!self->tracker_slots[n].in_use) {
-			/* in theory, overflow might be possible, causing
-			a cookie to be reused... just catch this case
-			even if it is never going to happen in real life */
-			if (self->tracker_slots[n].slot.cookie == (size_t) -1)
-				continue;
-			self->tracker_slots[n].slot.cookie ++;
-			self->tracker_slots[n].in_use = true;
-			return self->tracker_slots[n].slot;
-		}
-	}
-	
-	return jive_graph_reserve_tracker_slot_slow(self);
-}
-
-static inline void
-jive_graph_return_tracker_slot(jive::graph * self, jive_tracker_slot slot)
-{
-	JIVE_DEBUG_ASSERT(self->tracker_slots[slot.index].in_use);
-	self->tracker_slots[slot.index].in_use = false;
 }
 
 #endif
