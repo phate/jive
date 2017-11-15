@@ -14,12 +14,8 @@ type::~type() noexcept
 
 }
 
-namespace value {
-
-type::~type() noexcept
+valuetype::~valuetype() noexcept
 {}
-
-}
 
 statetype::~statetype() noexcept
 {}

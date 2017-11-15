@@ -112,7 +112,7 @@ jive_load_node_address_transform(
 	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::type*>(&address->type())->nbits() == nbits);
 
 	jive::bits::type bits(nbits);
-	const jive::value::type * datatype = &op.data_type();
+	auto datatype = &op.data_type();
 	if (output_is_address)
 		datatype = &bits;
 
@@ -149,7 +149,7 @@ jive_store_node_address_transform(
 	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::type*>(&address->type())->nbits() == nbits);
 
 	jive::bits::type bits(nbits);
-	const jive::value::type * datatype = &op.data_type();
+	auto datatype = &op.data_type();
 	auto value = node->input(1)->origin();
 	if (input1_is_address){
 		datatype = &bits;

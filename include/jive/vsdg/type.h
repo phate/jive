@@ -42,21 +42,17 @@ public:
 
 }	//base namespace
 
-namespace value {
-
-class type : public jive::base::type {
+class valuetype : public jive::base::type {
 public:
 	virtual
-	~type() noexcept;
+	~valuetype() noexcept;
 
 protected:
 	inline constexpr
-	type() noexcept
+	valuetype() noexcept
 		: jive::base::type()
 	{}
 };
-
-} //value namespace
 
 class statetype : public jive::base::type {
 public:

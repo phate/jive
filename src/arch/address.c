@@ -209,7 +209,7 @@ arraysubscript_op::arraysubscript_op(arraysubscript_op && other) noexcept
 {}
 
 arraysubscript_op::arraysubscript_op(
-	const jive::value::type & type,
+	const jive::valuetype & type,
 	const jive::bits::type & index_type)
 : index_(std::move(index_type.copy()))
 , element_type_(type.copy())
@@ -273,7 +273,7 @@ arraysubscript_op::copy() const
 jive::output *
 jive_arraysubscript(
 	jive::output * address,
-	const jive::value::type * element_type,
+	const jive::valuetype * element_type,
 	jive::output * index)
 {
 	jive::address::arraysubscript_op op(
@@ -305,7 +305,7 @@ arrayindex_op::arrayindex_op(arrayindex_op && other) noexcept
 {}
 
 arrayindex_op::arrayindex_op(
-	const jive::value::type & element_type,
+	const jive::valuetype & element_type,
 	const jive::bits::type & index_type)
 : simple_op()
 , index_(std::move(index_type.copy()))
@@ -363,7 +363,7 @@ arrayindex_op::copy() const
 jive::output *
 jive_arrayindex(
 	jive::output * addr1, jive::output * addr2,
-	const jive::value::type * element_type,
+	const jive::valuetype * element_type,
 	const jive::bits::type * difference_type)
 {
 	jive::address::arrayindex_op op(*element_type, difference_type->nbits());

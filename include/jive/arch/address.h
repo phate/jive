@@ -132,7 +132,7 @@ public:
 	arraysubscript_op(const arraysubscript_op & other);
 	arraysubscript_op(arraysubscript_op && other) noexcept;
 	arraysubscript_op(
-		const jive::value::type & element_type,
+		const jive::valuetype & element_type,
 		const jive::bits::type & index_type);
 
 	virtual bool
@@ -153,10 +153,10 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const jive::value::type &
+	inline const jive::valuetype &
 	element_type() const noexcept
 	{
-		return *static_cast<const value::type*>(element_type_.get());
+		return *static_cast<const valuetype*>(element_type_.get());
 	}
 
 	inline const jive::bits::type &
@@ -180,7 +180,7 @@ public:
 	arrayindex_op(const arrayindex_op & other);
 	arrayindex_op(arrayindex_op && other) noexcept;
 	arrayindex_op(
-		const jive::value::type & element_type,
+		const jive::valuetype & element_type,
 		const jive::bits::type & index_type);
 
 	virtual bool
@@ -201,10 +201,10 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const jive::value::type &
+	inline const jive::valuetype &
 	element_type() const noexcept
 	{
-		return *static_cast<const value::type*>(element_type_.get());
+		return *static_cast<const valuetype*>(element_type_.get());
 	}
 
 	inline const jive::bits::type &
@@ -372,7 +372,7 @@ jive_containerof(
 an array, compute address of element offset by specified distance */
 
 jive::output *
-jive_arraysubscript(jive::output * address, const jive::value::type * element_type,
+jive_arraysubscript(jive::output * address, const jive::valuetype * element_type,
 	jive::output * index);
 
 /* "arrayindex" operator: given two addresses that each point to an
@@ -381,7 +381,7 @@ difference of their indices */
 
 jive::output *
 jive_arrayindex(jive::output * addr1, jive::output * addr2,
-	const jive::value::type * element_type,
+	const jive::valuetype * element_type,
 	const jive::bits::type * difference_type);
 
 /* label_to_address node */

@@ -26,7 +26,7 @@ public:
 	{}
 
 	inline
-	declaration(const std::vector<const value::type*> & types)
+	declaration(const std::vector<const valuetype*> & types)
 	: types_(types.size())
 	{
 		std::transform(types.begin(), types.end(), types_.begin(),
@@ -44,15 +44,15 @@ public:
 		return types_.size();
 	}
 
-	const value::type &
+	const valuetype &
 	element(size_t index) const noexcept
 	{
 		JIVE_DEBUG_ASSERT(index < nelements());
-		return *static_cast<const value::type*>(types_[index].get());
+		return *static_cast<const valuetype*>(types_[index].get());
 	}
 
 	void
-	append(const jive::value::type & type)
+	append(const jive::valuetype & type)
 	{
 		types_.push_back(type.copy());
 	}
@@ -63,7 +63,7 @@ private:
 
 /* type */
 
-class type final : public jive::value::type {
+class type final : public jive::valuetype {
 public:
 	virtual ~type() noexcept;
 

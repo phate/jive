@@ -20,10 +20,9 @@ public:
 	~sizeof_op() noexcept;
 
 	inline explicit
-	sizeof_op(const jive::value::type & type)
-		: type_(type.copy())
-	{
-	}
+	sizeof_op(const jive::valuetype & type)
+	: type_(type.copy())
+	{}
 
 	inline
 	sizeof_op(const sizeof_op & other)
@@ -43,10 +42,10 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const jive::value::type &
+	inline const jive::valuetype &
 	type() const noexcept
 	{
-		return *static_cast<const value::type*>(type_.get());
+		return *static_cast<const valuetype*>(type_.get());
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -61,7 +60,7 @@ class memlayout_mapper;
 }
 
 jive::output *
-jive_sizeof_create(jive::region * region, const jive::value::type * type);
+jive_sizeof_create(jive::region * region, const jive::valuetype * type);
 
 void
 jive_sizeof_node_reduce(const jive::node * node, jive::memlayout_mapper * mapper);

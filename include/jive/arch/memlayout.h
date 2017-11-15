@@ -20,9 +20,8 @@ namespace rcd {
 namespace unn {
 	struct declaration;
 }
-namespace value {
-	class type;
-}
+
+class valuetype;
 
 class dataitem_memlayout {
 public:
@@ -175,7 +174,7 @@ public:
 	map_address() = 0;
 
 	const dataitem_memlayout &
-	map_value_type(const value::type & type);
+	map_value_type(const valuetype & type);
 
 private:
 	size_t bytes_per_word_;

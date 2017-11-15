@@ -13,14 +13,14 @@ namespace test {
 
 /* test value type */
 
-class valuetype final : public jive::value::type {
+class valuetype final : public jive::valuetype {
 public:
 	virtual
 	~valuetype() noexcept;
 
 	inline constexpr
 	valuetype() noexcept
-	: jive::value::type()
+	: jive::valuetype()
 	{}
 
 	virtual

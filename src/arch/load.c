@@ -109,7 +109,7 @@ register_node_normal_form(void)
 
 jive::output *
 jive_load_by_address_create(jive::output * address,
-	const jive::value::type * datatype,
+	const jive::valuetype * datatype,
 	size_t nstates, jive::output * const states[])
 {
 	auto graph = address->region()->graph();
@@ -128,7 +128,7 @@ jive_load_by_address_create(jive::output * address,
 
 jive::output *
 jive_load_by_bitstring_create(jive::output * address, size_t nbits,
-	const jive::value::type * datatype,
+	const jive::valuetype * datatype,
 	size_t nstates, jive::output * const states[])
 {
 	auto graph = address->region()->graph();

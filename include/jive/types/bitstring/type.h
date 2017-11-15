@@ -14,7 +14,7 @@ namespace bits {
 
 /* bitstring type */
 
-class type final : public jive::value::type {
+class type final : public jive::valuetype {
 public:
 	virtual ~type() noexcept;
 

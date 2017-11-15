@@ -101,7 +101,7 @@ store_op::copy() const
 
 std::vector<jive::output*>
 jive_store_by_address_create(jive::output* address,
-	const jive::value::type * datatype, jive::output * value,
+	const jive::valuetype * datatype, jive::output * value,
 	size_t nstates, jive::output * const istates[])
 {
 	jive::graph * graph = address->region()->graph();
@@ -120,7 +120,7 @@ jive_store_by_address_create(jive::output* address,
 
 std::vector<jive::output*>
 jive_store_by_bitstring_create(jive::output * address, size_t nbits,
-	const jive::value::type * datatype, jive::output * value,
+	const jive::valuetype * datatype, jive::output * value,
 	size_t nstates, jive::output * const istates[])
 {
 	jive::graph * graph = address->region()->graph();

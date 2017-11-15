@@ -22,7 +22,7 @@ type::~type() noexcept
 type::type(
 	const std::vector<const jive::base::type*> & argument_types,
 	const std::vector<const jive::base::type*> & result_types)
-	: jive::value::type()
+: jive::valuetype()
 {
 	for (const auto & type : argument_types)
 		argument_types_.push_back(std::unique_ptr<jive::base::type>(type->copy()));
@@ -34,7 +34,7 @@ type::type(
 type::type(
 	const std::vector<std::unique_ptr<jive::base::type>> & argument_types,
 	const std::vector<std::unique_ptr<jive::base::type>> & result_types)
-	: jive::value::type()
+: jive::valuetype()
 {
 	for (size_t i = 0; i < argument_types.size(); i++)
 		argument_types_.push_back(std::unique_ptr<jive::base::type>(argument_types[i]->copy()));
@@ -44,7 +44,7 @@ type::type(
 }
 
 type::type(const jive::fct::type & rhs)
-	: jive::value::type()
+: jive::valuetype(rhs)
 {
 	for (size_t i = 0; i < rhs.narguments(); i++)
 		argument_types_.push_back(std::unique_ptr<jive::base::type>(rhs.argument_type(i).copy()));

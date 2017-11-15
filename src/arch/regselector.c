@@ -183,7 +183,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive::node * nod
 		auto input = dynamic_cast<jive::simple_input*>(node->input(0));
 		auto output = dynamic_cast<jive::simple_output*>(node->output(0));
 		
-		if (dynamic_cast<const jive::value::type*>(&input->type())) {
+		if (dynamic_cast<const jive::valuetype*>(&input->type())) {
 			jive_regselector_option option;
 			option.mask = self->classifier->classify_type(&input->type(), input->port().rescls());
 			if (option.mask) {
@@ -192,7 +192,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive::node * nod
 			}
 		}
 		
-		if (dynamic_cast<const jive::value::type*>(&output->type())) {
+		if (dynamic_cast<const jive::valuetype*>(&output->type())) {
 			jive_regselector_option option;
 			option.mask = self->classifier->classify_type(&output->type(), output->port().rescls());
 			if (option.mask) {
@@ -209,7 +209,7 @@ static bool
 jive_regselector_option_gate_default_(const jive_negotiator * self_, jive_negotiator_option * dst,
 	const jive::gate * gate)
 {
-	if (!dynamic_cast<const jive::value::type*>(&gate->type()))
+	if (!dynamic_cast<const jive::valuetype*>(&gate->type()))
 		return false;
 	jive_regselector * self = (jive_regselector *) self_;
 	jive_regselector_option * option = (jive_regselector_option *) dst;

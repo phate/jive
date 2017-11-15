@@ -33,7 +33,7 @@ static int test_main(void)
 		new jive::rcd::declaration({&bits4, &bits8, &bits18}));
 
 	jive::rcd::type record_t(r_decl);
-	const jive::value::type *  tmparray1[] = {&bits4, &bits8, &bits18};
+	const jive::valuetype *  tmparray1[] = {&bits4, &bits8, &bits18};
 
 	jive::unn::declaration u_decl = {3, tmparray1};
 

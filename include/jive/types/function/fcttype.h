@@ -15,7 +15,7 @@
 namespace jive {
 namespace fct {
 
-class type final : public jive::value::type {
+class type final : public jive::valuetype {
 public:
 	virtual
 	~type() noexcept;

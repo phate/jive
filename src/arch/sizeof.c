@@ -53,7 +53,7 @@ sizeof_op::copy() const
 }
 
 jive::output *
-jive_sizeof_create(jive::region * region, const jive::value::type * type)
+jive_sizeof_create(jive::region * region, const jive::valuetype * type)
 {
 	jive::sizeof_op op(*type);
 	return jive::create_normalized(region, op, {})[0];

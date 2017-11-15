@@ -16,12 +16,12 @@ namespace unn {
 
 struct declaration {
 	size_t nelements;
-	const jive::value::type ** elements;
+	const jive::valuetype ** elements;
 };
 
 /* type */
 
-class type final : public jive::value::type {
+class type final : public jive::valuetype {
 public:
 	virtual ~type() noexcept;
 

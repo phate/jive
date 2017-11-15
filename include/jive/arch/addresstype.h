@@ -14,11 +14,14 @@ namespace addr {
 
 /* address type */
 
-class type final : public jive::value::type {
+class type final : public jive::valuetype {
 public:
 	virtual ~type() noexcept;
 
-	inline constexpr type() noexcept : jive::value::type() {};
+	inline constexpr
+	type() noexcept
+	: jive::valuetype()
+	{}
 
 	virtual std::string debug_string() const override;
 

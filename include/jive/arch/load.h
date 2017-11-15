@@ -24,9 +24,9 @@ public:
 	template<typename Types>
 	inline
 	load_op(
-		const jive::value::type & address_type,
+		const jive::valuetype & address_type,
 		const Types & state_types,
-		const jive::value::type & data_type)
+		const jive::valuetype & data_type)
 		: value_(data_type)
 		, address_(address_type)
 	{
@@ -58,16 +58,16 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const jive::value::type &
+	inline const jive::valuetype &
 	address_type() const noexcept
 	{
-		return *static_cast<const value::type*>(&address_.type());
+		return *static_cast<const valuetype*>(&address_.type());
 	}
 
-	inline const jive::value::type &
+	inline const jive::valuetype &
 	data_type() const noexcept
 	{
-		return *static_cast<const value::type*>(&value_.type());
+		return *static_cast<const valuetype*>(&value_.type());
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -83,12 +83,12 @@ private:
 
 jive::output *
 jive_load_by_address_create(jive::output * address,
-	const jive::value::type * datatype,
+	const jive::valuetype * datatype,
 	size_t nstates, jive::output * const states[]);
 
 jive::output *
 jive_load_by_bitstring_create(jive::output * address,
-	size_t nbits, const jive::value::type * datatype,
+	size_t nbits, const jive::valuetype * datatype,
 	size_t nstates, jive::output * const states[]);
 
 #endif
