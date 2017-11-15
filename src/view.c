@@ -9,7 +9,7 @@
 #include <jive/vsdg/gamma.h>
 #include <jive/vsdg/phi.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-node.h>
 #include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/theta.h>
 

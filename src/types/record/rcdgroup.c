@@ -9,7 +9,7 @@
 #include <string.h>
 
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-node.h>
 
 namespace jive {
 namespace rcd {

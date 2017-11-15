@@ -16,7 +16,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/reduction-helpers.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/simple-normal-form.h>
 
 jive::output *

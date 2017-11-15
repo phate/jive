@@ -11,7 +11,7 @@
 
 #include <jive/util/callbacks.h>
 #include <jive/util/intrusive-hash.h>
-#include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-node.h>
 #include <jive/vsdg/unary.h>
 
 namespace jive {

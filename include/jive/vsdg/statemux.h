@@ -8,7 +8,7 @@
 #define JIVE_VSDG_STATEMUX_H
 
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-node.h>
 #include <jive/vsdg/simple-normal-form.h>
 
 namespace jive {

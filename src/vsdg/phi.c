@@ -10,7 +10,6 @@
 
 #include <jive/util/strfmt.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/substitution.h>
 
 namespace jive {

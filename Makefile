@@ -25,7 +25,7 @@ LIBJIVE_SRC = \
 	src/vsdg/region.c \
 	src/vsdg/resource.c \
 	src/vsdg/simple-normal-form.c \
-	src/vsdg/simple_node.c \
+	src/vsdg/simple-node.c \
 	src/vsdg/statemux.c \
 	src/vsdg/splitnode.c \
 	src/vsdg/structural-normal-form.c \

@@ -10,7 +10,7 @@
 #include <jive/arch/load.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-node.h>
 
 static constexpr jive_unop_reduction_path_t jive_choose_reduction_load = 128;
 

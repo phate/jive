@@ -12,7 +12,6 @@
 #include <jive/types/union/unntype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 

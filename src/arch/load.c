@@ -10,8 +10,7 @@
 #include <jive/arch/load-normal-form.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-node.h>
 
 static jive::output *
 jive_load_node_normalized_create(

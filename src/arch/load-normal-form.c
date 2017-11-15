@@ -8,7 +8,6 @@
 #include <jive/arch/load.h>
 #include <jive/arch/store.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 

@@ -5,7 +5,6 @@
  */
 
 #include <jive/types/bitstring/comparison.h>
-#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace bits {

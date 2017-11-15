@@ -10,7 +10,6 @@
 
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/view.h>
-#include <jive/vsdg/simple_node.h>
 #include "testarch.h"
 
 static int test_main(void)

@@ -8,7 +8,6 @@
 #include <jive/types/bitstring/constant.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace bits {

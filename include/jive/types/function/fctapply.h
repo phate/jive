@@ -9,7 +9,7 @@
 
 #include <jive/types/function/fcttype.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-node.h>
 
 namespace jive {
 namespace fct {

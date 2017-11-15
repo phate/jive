@@ -8,7 +8,7 @@
 #define JIVE_TYPES_BITSTRING_COMPARISON_H
 
 #include <jive/types/bitstring/bitoperation-classes.h>
-#include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-node.h>
 
 namespace jive {
 namespace bits {

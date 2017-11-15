@@ -13,7 +13,7 @@
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource.h>
-#include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/simple-node.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/theta.h>
 
