@@ -21,11 +21,7 @@ type::~type() noexcept
 
 }
 
-namespace state {
-
-type::~type() noexcept
+statetype::~statetype() noexcept
 {}
-
-}
 
 }

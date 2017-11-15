@@ -65,7 +65,7 @@ public:
 	~mux_op() noexcept;
 
 	inline
-	mux_op(const state::type & state_type, size_t narguments, size_t nresults)
+	mux_op(const statetype & state_type, size_t narguments, size_t nresults)
 	: port_(state_type)
 	, nresults_(nresults)
 	, narguments_(narguments)
@@ -125,7 +125,7 @@ create_state_mux(
 	if (operands.empty())
 		throw jive::compiler_error("Insufficient number of operands.");
 
-	auto st = dynamic_cast<const jive::state::type*>(&type);
+	auto st = dynamic_cast<const jive::statetype*>(&type);
 	if (!st) throw jive::compiler_error("Expected state type.");
 
 	auto region = operands.front()->region();

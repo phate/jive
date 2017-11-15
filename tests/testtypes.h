@@ -35,14 +35,14 @@ public:
 
 /* test state type */
 
-class statetype final : public jive::state::type {
+class statetype final : public jive::statetype {
 public:
 	virtual
 	~statetype() noexcept;
 
 	inline constexpr
 	statetype() noexcept
-	: jive::state::type()
+	: jive::statetype()
 	{}
 
 	virtual

@@ -12,11 +12,14 @@
 namespace jive {
 namespace mem {
 
-class type final : public jive::state::type {
+class type final : public jive::statetype {
 public:
 	virtual ~type() noexcept;
 
-	inline constexpr type() noexcept : jive::state::type() {};
+	inline constexpr
+	type() noexcept
+	: jive::statetype()
+	{}
 
 	virtual std::string debug_string() const override;
 

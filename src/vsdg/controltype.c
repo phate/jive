@@ -23,7 +23,7 @@ namespace ctl {
 type::~type() noexcept {}
 
 type::type(size_t nalternatives)
-	: jive::state::type()
+	: jive::statetype()
 	, nalternatives_(nalternatives)
 {
 	if (nalternatives == 0)

@@ -118,7 +118,7 @@ jive_load_by_address_create(jive::output * address,
 	std::vector<std::unique_ptr<jive::base::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
 		state_types.emplace_back(
-			dynamic_cast<const jive::state::type &>(states[n]->type()).copy());
+			dynamic_cast<const jive::statetype &>(states[n]->type()).copy());
 	}
 
 	jive::load_op op(jive::addr::type(), state_types, *datatype);
@@ -137,7 +137,7 @@ jive_load_by_bitstring_create(jive::output * address, size_t nbits,
 	std::vector<std::unique_ptr<jive::base::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
 		state_types.emplace_back(
-			dynamic_cast<const jive::state::type &>(states[n]->type()).copy());
+			dynamic_cast<const jive::statetype &>(states[n]->type()).copy());
 	}
 
 	jive::load_op op(jive::bits::type(nbits), state_types, *datatype);

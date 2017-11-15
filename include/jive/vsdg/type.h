@@ -58,21 +58,17 @@ protected:
 
 } //value namespace
 
-namespace state {
-
-class type : public jive::base::type {
+class statetype : public jive::base::type {
 public:
 	virtual
-	~type() noexcept;
+	~statetype() noexcept;
 
 protected:
 	inline constexpr
-	type() noexcept
+	statetype() noexcept
 		: jive::base::type()
 	{}
 };
-
-}	//state namespace
 
 }
 

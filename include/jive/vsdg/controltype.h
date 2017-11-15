@@ -12,7 +12,7 @@
 namespace jive {
 namespace ctl {
 
-class type final : public jive::state::type {
+class type final : public jive::statetype {
 public:
 	virtual ~type() noexcept;
 
