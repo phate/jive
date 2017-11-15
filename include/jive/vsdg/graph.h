@@ -58,9 +58,6 @@ public:
 	jive::node_normal_form *
 	node_normal_form(const std::type_info & type) noexcept;
 
-	bool
-	has_active_traversers() const noexcept;
-
 	jive::gate *
 	create_gate(const std::string & name, const jive::base::type & type);
 

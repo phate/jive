@@ -22,7 +22,7 @@ namespace jive {
 
 graph::~graph()
 {
-	JIVE_DEBUG_ASSERT(!has_active_traversers());
+	JIVE_DEBUG_ASSERT(!has_active_trackers(this));
 
 	delete root_;
 
@@ -63,12 +63,6 @@ graph::node_normal_form(const std::type_info & type) noexcept
 	node_normal_forms_.insert(std::move(nf));
 
 	return result;
-}
-
-bool
-graph::has_active_traversers() const noexcept
-{
-	return has_active_trackers(this);
 }
 
 jive::gate *

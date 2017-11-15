@@ -64,7 +64,7 @@ test_basic_traversal()
 		assert(tmp == nullptr);
 	}
 
-	assert(!graph.has_active_traversers());
+	assert(!has_active_trackers(&graph));
 }
 
 static void
@@ -91,7 +91,7 @@ test_order_enforcement_traversal()
 		assert(tmp == nullptr);
 	}
 
-	assert(!graph.has_active_traversers());
+	assert(!has_active_trackers(&graph));
 }
 
 static void
@@ -140,7 +140,7 @@ test_traversal_insertion()
 		assert(visited_n5);
 	}
 
-	assert(!graph.has_active_traversers());
+	assert(!has_active_trackers(&graph));
 }
 
 static void
