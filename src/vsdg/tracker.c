@@ -155,7 +155,7 @@ tracker::tracker(jive::graph * graph, size_t nstates)
 tracker_nodestate *
 tracker::map_node(jive::node * node)
 {
-	return jive_node_get_tracker_state(node, slot_);
+	return node->tracker_state(slot_);
 }
 
 void
@@ -228,7 +228,7 @@ computation_tracker::~computation_tracker() noexcept
 tracker_nodestate *
 computation_tracker::map_node(jive::node * node)
 {
-	return jive_node_get_tracker_state(node, slot_);
+	return node->tracker_state(slot_);
 }
 
 void

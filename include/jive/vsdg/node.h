@@ -31,6 +31,46 @@ class node_normal_form;
 class output;
 class substitution_map;
 
+/* tracker support */
+
+class tracker_nodestate {
+public:
+	inline
+	tracker_nodestate(jive::node * node)
+	: cookie(0)
+	, state(jive_tracker_nodestate_none)
+	, node_(node)
+	{
+		state_node_list.prev = state_node_list.next = nullptr;
+	}
+
+	tracker_nodestate(const tracker_nodestate&) = delete;
+
+	tracker_nodestate(tracker_nodestate&&) = delete;
+
+	tracker_nodestate &
+	operator=(const tracker_nodestate&) = delete;
+
+	tracker_nodestate &
+	operator=(tracker_nodestate&&) = delete;
+
+	inline jive::node *
+	node() const noexcept
+	{
+		return node_;
+	}
+
+	size_t cookie;
+	size_t state;
+	struct {
+		tracker_nodestate * prev;
+		tracker_nodestate * next;
+	} state_node_list;
+
+private:
+	jive::node * node_;
+};
+
 /* inputs */
 
 class input {
@@ -349,6 +389,9 @@ public:
 	void
 	recompute_depth(jive::input * input);
 
+	jive::tracker_nodestate *
+	tracker_state(jive_tracker_slot slot);
+
 	struct {
 		jive::node * prev;
 		jive::node * next;
@@ -359,7 +402,6 @@ public:
 		jive::node * next;
 	} region_bottom_list;
 
-	std::vector<tracker_nodestate*> tracker_slots;
 
 private:
 	jive::detail::intrusive_list_anchor<jive::node> region_node_list_anchor_;
@@ -375,6 +417,7 @@ private:
 	jive::graph * graph_;
 	jive::region * region_;
 	std::unique_ptr<jive::operation> operation_;
+	std::vector<tracker_nodestate*> tracker_states_;
 	std::vector<std::unique_ptr<jive::input>> inputs_;
 	std::vector<std::unique_ptr<jive::output>> outputs_;
 };
@@ -414,44 +457,6 @@ is_opnode(const jive::node * node) noexcept
 jive::node *
 producer(const jive::output * output) noexcept;
 
-class tracker_nodestate {
-public:
-	inline
-	tracker_nodestate(jive::node * node)
-	: cookie(0)
-	, state(jive_tracker_nodestate_none)
-	, node_(node)
-	{
-		state_node_list.prev = state_node_list.next = nullptr;
-	}
-
-	tracker_nodestate(const tracker_nodestate&) = delete;
-
-	tracker_nodestate(tracker_nodestate&&) = delete;
-
-	tracker_nodestate &
-	operator=(const tracker_nodestate&) = delete;
-
-	tracker_nodestate &
-	operator=(tracker_nodestate&&) = delete;
-
-	inline jive::node *
-	node() const noexcept
-	{
-		return node_;
-	}
-
-	size_t cookie;
-	size_t state;
-	struct {
-		tracker_nodestate * prev;
-		tracker_nodestate * next;
-	} state_node_list;
-
-private:
-	jive::node * node_;
-};
-
 }
 
 static inline jive::output *
@@ -475,25 +480,5 @@ jive_node_cse(
 
 bool
 jive_node_normalize(jive::node * self);
-
-/* tracking support */
-
-jive::tracker_nodestate *
-jive_node_get_tracker_state_slow(jive::node * self, jive_tracker_slot slot);
-
-static inline jive::tracker_nodestate *
-jive_node_get_tracker_state(jive::node * self, jive_tracker_slot slot)
-{
-	jive::tracker_nodestate * nodestate;
-	if (slot.index < self->tracker_slots.size()) {
-		nodestate = self->tracker_slots[slot.index];
-		if (nodestate->cookie != slot.cookie) {
-			nodestate->state = jive_tracker_nodestate_none;
-			nodestate->cookie = slot.cookie;
-		}
-		return nodestate;
-	}
-	return jive_node_get_tracker_state_slow(self, slot);
-}
 
 #endif
