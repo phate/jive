@@ -139,10 +139,8 @@ public:
 	pop_top()
 	{
 		auto nodestate = peek_top();
-		if (nodestate) {
+		if (nodestate)
 			remove(nodestate, top_depth_);
-			nodestate->state = jive_tracker_nodestate_none;
-		}
 
 		return nodestate;
 	}
@@ -151,10 +149,8 @@ public:
 	pop_bottom()
 	{
 		auto nodestate = peek_bottom();
-		if (nodestate) {
+		if (nodestate)
 			remove(nodestate, bottom_depth_);
-			nodestate->state = jive_tracker_nodestate_none;
-		}
 
 		return nodestate;
 	}
@@ -192,9 +188,9 @@ void
 tracker::node_depth_change(jive::node * node, size_t old_depth)
 {
 	auto nstate = nodestate(node);
-	if (nstate->state < states_.size()) {
-		states_[nstate->state]->remove(nstate, old_depth);
-		states_[nstate->state]->add(nstate, node->depth());
+	if (nstate->state() < states_.size()) {
+		states_[nstate->state()]->remove(nstate, old_depth);
+		states_[nstate->state()]->add(nstate, node->depth());
 	}
 }
 
@@ -202,8 +198,8 @@ void
 tracker::node_destroy(jive::node * node)
 {
 	auto nstate = nodestate(node);
-	if (nstate->state < states_.size())
-		states_[nstate->state]->remove(nstate, node->depth());
+	if (nstate->state() < states_.size())
+		states_[nstate->state()]->remove(nstate, node->depth());
 
 	nodestates_.erase(node);
 }
@@ -211,20 +207,20 @@ tracker::node_destroy(jive::node * node)
 ssize_t
 tracker::get_nodestate(jive::node * node)
 {
-	return nodestate(node)->state;
+	return nodestate(node)->state();
 }
 
 void
 tracker::set_nodestate(jive::node * node, size_t state)
 {
 	auto nstate = nodestate(node);
-	if (nstate->state != state) {
-		if (nstate->state < states_.size())
-			states_[nstate->state]->remove(nstate, node->depth());
+	if (nstate->state() != state) {
+		if (nstate->state() < states_.size())
+			states_[nstate->state()]->remove(nstate, node->depth());
 
-		nstate->state = state;
-		if (nstate->state < states_.size())
-			states_[nstate->state]->add(nstate, node->depth());
+		nstate->state_ = state;
+		if (nstate->state() < states_.size())
+			states_[nstate->state()]->add(nstate, node->depth());
 	}
 }
 
@@ -234,7 +230,12 @@ tracker::peek_top(size_t state) const
 	JIVE_DEBUG_ASSERT(state < states_.size());
 
 	auto nodestate = states_[state]->pop_top();
-	return nodestate ? nodestate->node() : nullptr;
+	if (nodestate) {
+		nodestate->state_ = jive_tracker_nodestate_none;
+		return nodestate->node();
+	}
+
+	return nullptr;
 }
 
 jive::node *
@@ -243,7 +244,12 @@ tracker::peek_bottom(size_t state) const
 	JIVE_DEBUG_ASSERT(state < states_.size());
 
 	auto nodestate = states_[state]->pop_bottom();
-	return nodestate ? nodestate->node() : nullptr;
+	if (nodestate) {
+		nodestate->state_ = jive_tracker_nodestate_none;
+		return nodestate->node();
+	}
+
+	return nullptr;
 }
 
 jive::tracker_nodestate *
