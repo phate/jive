@@ -11,7 +11,6 @@
 #include <jive/util/list.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/simple-node.h>
-#include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 

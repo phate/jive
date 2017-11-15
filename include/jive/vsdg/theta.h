@@ -9,7 +9,7 @@
 
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/structural_node.h>
+#include <jive/vsdg/structural-node.h>
 
 namespace jive {
 

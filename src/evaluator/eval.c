@@ -13,9 +13,7 @@
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/gamma.h>
 #include <jive/vsdg/phi.h>
-#include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/theta.h>
-
 
 #include <typeindex>
 #include <unordered_map>

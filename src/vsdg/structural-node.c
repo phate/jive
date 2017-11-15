@@ -5,7 +5,7 @@
 
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/structural_node.h>
+#include <jive/vsdg/structural-node.h>
 #include <jive/vsdg/substitution.h>
 
 namespace jive {

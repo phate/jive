@@ -29,7 +29,7 @@ LIBJIVE_SRC = \
 	src/vsdg/statemux.c \
 	src/vsdg/splitnode.c \
 	src/vsdg/structural-normal-form.c \
-	src/vsdg/structural_node.c \
+	src/vsdg/structural-node.c \
 	src/vsdg/theta.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \

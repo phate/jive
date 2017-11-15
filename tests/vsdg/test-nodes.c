@@ -9,7 +9,6 @@
 
 #include <jive/view.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/substitution.h>
 
 static void

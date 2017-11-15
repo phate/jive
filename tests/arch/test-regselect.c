@@ -5,6 +5,7 @@
  */
 
 #include "test-registry.h"
+#include "testarch.h"
 
 #include <assert.h>
 
@@ -13,8 +14,7 @@
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg/simple-node.h>
-#include <jive/vsdg/structural_node.h>
-#include "testarch.h"
+#include <jive/vsdg/structural-node.h>
 
 static int test_main(void)
 {

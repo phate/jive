@@ -12,7 +12,6 @@
 
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/phi.h>
-#include <jive/vsdg/structural_node.h>
 
 /* lambda node */
 

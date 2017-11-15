@@ -16,7 +16,6 @@
 #include <jive/types/union/unntype.h>
 #include <jive/types/union/unnunify.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/structural_node.h>
 
 namespace jive {
 

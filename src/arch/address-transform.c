@@ -22,7 +22,7 @@
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/substitution.h>
-#include <jive/vsdg/structural_node.h>
+#include <jive/vsdg/structural-node.h>
 #include <jive/vsdg/traverser.h>
 
 static bool

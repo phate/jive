@@ -10,7 +10,7 @@
 #include <jive/vsdg/phi.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple-node.h>
-#include <jive/vsdg/structural_node.h>
+#include <jive/vsdg/structural-node.h>
 #include <jive/vsdg/theta.h>
 
 namespace jive {

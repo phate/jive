@@ -11,7 +11,6 @@
 #include <stdio.h>
 
 #include <jive/view.h>
-#include <jive/vsdg/structural_node.h>
 #include <jive/vsdg.h>
 
 #include "testnodes.h"

@@ -9,7 +9,7 @@
 
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/structural_node.h>
+#include <jive/vsdg/structural-node.h>
 
 /* phi node */
 
