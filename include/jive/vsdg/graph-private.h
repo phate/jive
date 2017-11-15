@@ -12,17 +12,23 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/type.h>
 
-struct jive_tracker_slot_reservation {
-	jive_tracker_slot slot;
-	bool in_use;
-};
-
 struct jive_tracker_nodestate_list {
 	jive::tracker_nodestate * first;
 	jive::tracker_nodestate * last;
 };
 
 namespace jive {
+
+class tracker_slot_reservation {
+public:
+	inline
+	tracker_slot_reservation()
+	: in_use(true)
+	{}
+
+	jive_tracker_slot slot;
+	bool in_use;
+};
 
 class tracker_depth_state {
 public:

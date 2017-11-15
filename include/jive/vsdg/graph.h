@@ -24,12 +24,13 @@
 
 typedef struct jive_tracker_depth_state jive_tracker_depth_state;
 typedef struct jive_tracker_nodestate_list jive_tracker_nodestate_list;
-typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
 
 struct jive_resource;
 struct jive_resource_name;
 
 namespace jive {
+
+class tracker_slot_reservation;
 
 class graph {
 public:
@@ -105,7 +106,7 @@ public:
 		jive::gate * last;
 	} gates;
 	
-	std::vector<jive_tracker_slot_reservation> tracker_slots;
+	std::vector<tracker_slot_reservation> tracker_slots;
 
 	/* FIXME: notifiers should become private, but need to turn more things
 	 * into classes first */
