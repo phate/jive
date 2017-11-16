@@ -9,9 +9,9 @@
 
 #include <vector>
 
+#include <jive/rvsdg/node.h>
+#include <jive/rvsdg/binary.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/binary.h>
 
 namespace jive {
 namespace bits {

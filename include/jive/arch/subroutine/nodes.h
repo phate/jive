@@ -8,7 +8,7 @@
 #define JIVE_ARCH_SUBROUTINE_NODES_H
 
 #include <jive/arch/subroutine/signature.h>
-#include <jive/vsdg/node.h>
+#include <jive/rvsdg/node.h>
 
 namespace jive {
 

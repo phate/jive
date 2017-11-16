@@ -1,0 +1,11 @@
+include tests/rvsdg/traverser/Makefile.sub
+
+TESTS+=\
+	rvsdg/test-cse \
+	rvsdg/test-gamma \
+	rvsdg/test-graph \
+	rvsdg/test-nodes \
+	rvsdg/test-phi \
+	rvsdg/test-statemux \
+	rvsdg/test-theta \
+	rvsdg/test-typemismatch \

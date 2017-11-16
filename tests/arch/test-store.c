@@ -11,11 +11,11 @@
 #include <jive/arch/addresstype.h>
 #include <jive/arch/memorytype.h>
 #include <jive/arch/store.h>
+#include <jive/rvsdg.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/record.h>
 #include <jive/types/union.h>
 #include <jive/view.h>
-#include <jive/vsdg.h>
 
 #include "testnodes.h"
 

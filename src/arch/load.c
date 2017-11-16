@@ -8,9 +8,9 @@
 
 #include <jive/arch/addresstype.h>
 #include <jive/arch/load-normal-form.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/simple-node.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/simple-node.h>
 
 static jive::output *
 jive_load_node_normalized_create(

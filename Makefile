@@ -5,36 +5,36 @@
 CPPFLAGS+=-Iinclude
 CFLAGS+=-Wall --std=c++14 -xc++
 
-# VSDG core
+# RVSDG core
 LIBJIVE_SRC = \
 	src/common.c \
-	src/vsdg/binary.c \
-	src/vsdg/control.c \
-	src/vsdg/controltype.c \
-	src/vsdg/equivalence.c \
-	src/vsdg/gamma.c \
-	src/vsdg/gate.c \
-	src/vsdg/graph.c \
-	src/vsdg/label.c \
-	src/vsdg/negotiator.c \
-	src/vsdg/node-normal-form.c \
-	src/vsdg/node.c \
-	src/vsdg/nullary.c \
-	src/vsdg/operation.c \
-	src/vsdg/phi.c \
-	src/vsdg/region.c \
-	src/vsdg/resource.c \
-	src/vsdg/simple-normal-form.c \
-	src/vsdg/simple-node.c \
-	src/vsdg/statemux.c \
-	src/vsdg/splitnode.c \
-	src/vsdg/structural-normal-form.c \
-	src/vsdg/structural-node.c \
-	src/vsdg/theta.c \
-	src/vsdg/tracker.c \
-	src/vsdg/traverser.c \
-	src/vsdg/type.c \
-	src/vsdg/unary.c \
+	src/rvsdg/binary.c \
+	src/rvsdg/control.c \
+	src/rvsdg/controltype.c \
+	src/rvsdg/equivalence.c \
+	src/rvsdg/gamma.c \
+	src/rvsdg/gate.c \
+	src/rvsdg/graph.c \
+	src/rvsdg/label.c \
+	src/rvsdg/negotiator.c \
+	src/rvsdg/node-normal-form.c \
+	src/rvsdg/node.c \
+	src/rvsdg/nullary.c \
+	src/rvsdg/operation.c \
+	src/rvsdg/phi.c \
+	src/rvsdg/region.c \
+	src/rvsdg/resource.c \
+	src/rvsdg/simple-normal-form.c \
+	src/rvsdg/simple-node.c \
+	src/rvsdg/statemux.c \
+	src/rvsdg/splitnode.c \
+	src/rvsdg/structural-normal-form.c \
+	src/rvsdg/structural-node.c \
+	src/rvsdg/theta.c \
+	src/rvsdg/tracker.c \
+	src/rvsdg/traverser.c \
+	src/rvsdg/type.c \
+	src/rvsdg/unary.c \
 
 #evaluation
 LIBJIVE_SRC += \

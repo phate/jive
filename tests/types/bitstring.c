@@ -11,13 +11,13 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <jive/rvsdg.h>
+#include <jive/rvsdg/control.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/value-representation.h>
 #include <jive/types/function/fctlambda.h>
 #include <jive/view.h>
-#include <jive/vsdg.h>
-#include <jive/vsdg/control.h>
 
 static int types_bitstring_arithmetic_test_bitand(void)
 {

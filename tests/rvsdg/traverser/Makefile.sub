@@ -1,0 +1,3 @@
+TESTS+=\
+	rvsdg/traverser/test-bottomup \
+	rvsdg/traverser/test-topdown \

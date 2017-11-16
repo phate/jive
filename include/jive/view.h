@@ -7,7 +7,7 @@
 #ifndef JIVE_VIEW_H
 #define JIVE_VIEW_H
 
-#include <jive/vsdg/graph.h>
+#include <jive/rvsdg/graph.h>
 
 #include <string>
 

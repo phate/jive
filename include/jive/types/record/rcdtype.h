@@ -8,7 +8,7 @@
 #define JIVE_TYPES_RECORD_RCDTYPE_H
 
 #include <jive/common.h>
-#include <jive/vsdg/type.h>
+#include <jive/rvsdg/type.h>
 
 #include <algorithm>
 #include <memory>

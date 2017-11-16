@@ -10,14 +10,14 @@
 
 #include <assert.h>
 
+#include <jive/rvsdg.h>
+#include <jive/rvsdg/phi.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/function.h>
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
 #include <jive/types/function/fcttype.h>
 #include <jive/view.h>
-#include <jive/vsdg.h>
-#include <jive/vsdg/phi.h>
 
 static int function_test_build_lambda(void)
 {

@@ -12,14 +12,14 @@
 #include <jive/arch/regvalue.h>
 #include <jive/arch/store.h>
 #include <jive/common.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/node.h>
+#include <jive/rvsdg/nullary.h>
+#include <jive/rvsdg/splitnode.h>
+#include <jive/rvsdg/traverser.h>
+#include <jive/rvsdg/type.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/float/flttype.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/nullary.h>
-#include <jive/vsdg/splitnode.h>
-#include <jive/vsdg/traverser.h>
-#include <jive/vsdg/type.h>
 
 jive_reg_classifier::~jive_reg_classifier() noexcept
 {

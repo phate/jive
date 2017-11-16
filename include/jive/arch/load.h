@@ -10,9 +10,9 @@
 #include <algorithm>
 #include <memory>
 
+#include <jive/rvsdg/node-normal-form.h>
+#include <jive/rvsdg/node.h>
 #include <jive/util/ptr-collection.h>
-#include <jive/vsdg/node-normal-form.h>
-#include <jive/vsdg/node.h>
 
 namespace jive {
 

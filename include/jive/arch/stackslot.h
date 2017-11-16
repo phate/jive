@@ -7,7 +7,7 @@
 #ifndef JIVE_ARCH_STACKSLOT_H
 #define JIVE_ARCH_STACKSLOT_H
 
-#include <jive/vsdg/resource.h>
+#include <jive/rvsdg/resource.h>
 
 #include <unistd.h>
 

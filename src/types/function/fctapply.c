@@ -4,10 +4,9 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <jive/rvsdg/graph.h>
 #include <jive/types/function/fctapply.h>
-
 #include <jive/types/function/fcttype.h>
-#include <jive/vsdg/graph.h>
 
 #include <string.h>
 

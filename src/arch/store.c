@@ -10,11 +10,11 @@
 #include <jive/arch/address.h>
 #include <jive/arch/addresstype.h>
 #include <jive/arch/memorytype.h>
+#include <jive/rvsdg/graph.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/record/rcdgroup.h>
 #include <jive/types/union/unntype.h>
 #include <jive/types/union/unnunify.h>
-#include <jive/vsdg/graph.h>
 
 static std::vector<jive::output*>
 jive_store_node_normalized_create(

@@ -13,7 +13,7 @@
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/subroutine.h>
-#include <jive/vsdg.h>
+#include <jive/rvsdg.h>
 
 static void
 get_slot_memory_reference(const jive::resource_class * rescls,

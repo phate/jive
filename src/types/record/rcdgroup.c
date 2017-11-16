@@ -4,12 +4,11 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/types/record/rcdgroup.h>
-
 #include <string.h>
 
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/simple-node.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/simple-node.h>
+#include <jive/types/record/rcdgroup.h>
 
 namespace jive {
 namespace rcd {

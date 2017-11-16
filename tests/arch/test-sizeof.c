@@ -11,12 +11,12 @@
 #include <jive/arch/addresstype.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/arch/sizeof.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/traverser.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
 #include <jive/view.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/traverser.h>
 
 #include "testnodes.h"
 

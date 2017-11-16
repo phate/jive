@@ -10,9 +10,9 @@
 #include <stdint.h>
 
 #include <jive/arch/linker-symbol.h>
+#include <jive/rvsdg/label.h>
+#include <jive/rvsdg/section.h>
 #include <jive/util/buffer.h>
-#include <jive/vsdg/label.h>
-#include <jive/vsdg/section.h>
 
 struct jive_linker_symbol_resolver;
 

@@ -8,6 +8,7 @@
 
 #include <jive/arch/addresstype.h>
 #include <jive/arch/memlayout.h>
+#include <jive/rvsdg/graph.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/float/flttype.h>
@@ -15,7 +16,6 @@
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
 #include <jive/types/union/unnunify.h>
-#include <jive/vsdg/graph.h>
 
 namespace jive {
 

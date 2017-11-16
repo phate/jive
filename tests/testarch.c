@@ -12,9 +12,9 @@
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine/nodes.h>
+#include <jive/rvsdg.h>
+#include <jive/rvsdg/splitnode.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/vsdg.h>
-#include <jive/vsdg/splitnode.h>
 
 const jive::register_name jive_testarch_reg_r0("r0", &jive_testarch_regcls_r0, 0);
 const jive::register_name jive_testarch_reg_r2("r2", &jive_testarch_regcls_r2, 2);

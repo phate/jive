@@ -7,7 +7,7 @@
 #ifndef JIVE_ARCH_IMMEDIATE_TYPE_H
 #define JIVE_ARCH_IMMEDIATE_TYPE_H
 
-#include <jive/vsdg/type.h>
+#include <jive/rvsdg/type.h>
 
 namespace jive {
 namespace imm {

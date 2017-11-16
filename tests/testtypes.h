@@ -6,7 +6,7 @@
 #ifndef JIVE_TESTS_TESTTYPES_H
 #define JIVE_TESTS_TESTTYPES_H
 
-#include <jive/vsdg/type.h>
+#include <jive/rvsdg/type.h>
 
 namespace jive {
 namespace test {

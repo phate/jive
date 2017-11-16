@@ -11,9 +11,9 @@
 #include <jive/arch/address-transform.h>
 #include <jive/arch/address.h>
 #include <jive/arch/memlayout-simple.h>
+#include <jive/rvsdg.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
-#include <jive/vsdg.h>
 
 #include "testnodes.h"
 

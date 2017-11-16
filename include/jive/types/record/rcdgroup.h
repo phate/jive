@@ -7,8 +7,8 @@
 #ifndef JIVE_TYPES_RECORD_RCDGROUP_H
 #define JIVE_TYPES_RECORD_RCDGROUP_H
 
+#include <jive/rvsdg/node.h>
 #include <jive/types/record/rcdtype.h>
-#include <jive/vsdg/node.h>
 
 namespace jive {
 namespace rcd {

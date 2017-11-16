@@ -7,10 +7,10 @@
 #ifndef JIVE_TYPES_FLOAT_FLTOPERATION_CLASSES_H
 #define JIVE_TYPES_FLOAT_FLTOPERATION_CLASSES_H
 
+#include <jive/rvsdg/binary.h>
+#include <jive/rvsdg/simple-node.h>
+#include <jive/rvsdg/unary.h>
 #include <jive/types/float/value-representation.h>
-#include <jive/vsdg/binary.h>
-#include <jive/vsdg/simple-node.h>
-#include <jive/vsdg/unary.h>
 
 namespace jive {
 namespace flt {

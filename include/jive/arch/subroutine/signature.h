@@ -11,8 +11,8 @@
 #include <vector>
 
 #include <jive/arch/subroutine/nodes.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/node.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/node.h>
 
 struct jive_subroutine_abi_class;
 

@@ -5,13 +5,13 @@
  */
 
 #include <jive/types/function/fctlambda.h>
+#include <jive/rvsdg/gamma.h>
+#include <jive/rvsdg/phi.h>
+#include <jive/rvsdg/region.h>
+#include <jive/rvsdg/simple-node.h>
+#include <jive/rvsdg/structural-node.h>
+#include <jive/rvsdg/theta.h>
 #include <jive/view.h>
-#include <jive/vsdg/gamma.h>
-#include <jive/vsdg/phi.h>
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/simple-node.h>
-#include <jive/vsdg/structural-node.h>
-#include <jive/vsdg/theta.h>
 
 namespace jive {
 

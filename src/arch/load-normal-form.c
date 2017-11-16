@@ -7,7 +7,7 @@
 
 #include <jive/arch/load.h>
 #include <jive/arch/store.h>
-#include <jive/vsdg/graph.h>
+#include <jive/rvsdg/graph.h>
 
 namespace jive {
 

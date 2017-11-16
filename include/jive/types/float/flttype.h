@@ -6,7 +6,7 @@
 #ifndef JIVE_TYPES_FLOAT_FLTTYPE_H
 #define JIVE_TYPES_FLOAT_FLTTYPE_H
 
-#include <jive/vsdg/type.h>
+#include <jive/rvsdg/type.h>
 
 namespace jive {
 namespace flt {

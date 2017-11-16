@@ -13,9 +13,9 @@
 #include <jive/arch/address.h>
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/memlayout-simple.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/label.h>
 #include <jive/view.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/label.h>
 
 #include "testnodes.h"
 

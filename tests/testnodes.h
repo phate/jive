@@ -10,9 +10,9 @@
 #include <memory>
 #include <vector>
 
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/simple-node.h>
+#include <jive/rvsdg/node.h>
+#include <jive/rvsdg/region.h>
+#include <jive/rvsdg/simple-node.h>
 
 namespace jive {
 namespace test {

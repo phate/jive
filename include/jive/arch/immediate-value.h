@@ -7,7 +7,7 @@
 #ifndef JIVE_ARCH_IMMEDIATE_VALUE_H
 #define JIVE_ARCH_IMMEDIATE_VALUE_H
 
-#include <jive/vsdg/label.h>
+#include <jive/rvsdg/label.h>
 
 typedef uint64_t jive_immediate_int;
 

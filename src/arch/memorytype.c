@@ -5,8 +5,8 @@
  */
 
 #include <jive/arch/memorytype.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/node.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/node.h>
 
 #include <string.h>
 

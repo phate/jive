@@ -7,9 +7,9 @@
 #ifndef JIVE_TYPES_UNION_UNNUNIFY_H
 #define JIVE_TYPES_UNION_UNNUNIFY_H
 
+#include <jive/rvsdg/nullary.h>
+#include <jive/rvsdg/unary.h>
 #include <jive/types/union/unntype.h>
-#include <jive/vsdg/nullary.h>
-#include <jive/vsdg/unary.h>
 
 /* unify node */
 

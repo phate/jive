@@ -7,9 +7,9 @@
 #ifndef JIVE_TYPES_FUNCTION_FCTAPPLY_H
 #define JIVE_TYPES_FUNCTION_FCTAPPLY_H
 
+#include <jive/rvsdg/node.h>
+#include <jive/rvsdg/simple-node.h>
 #include <jive/types/function/fcttype.h>
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/simple-node.h>
 
 namespace jive {
 namespace fct {

@@ -11,11 +11,11 @@
 
 #include <jive/arch/addresstype.h>
 #include <jive/common.h>
+#include <jive/rvsdg/node.h>
+#include <jive/rvsdg/nullary.h>
+#include <jive/rvsdg/unary.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/record/rcdtype.h>
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/nullary.h>
-#include <jive/vsdg/unary.h>
 
 struct jive_label;
 

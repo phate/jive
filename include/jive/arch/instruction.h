@@ -15,11 +15,11 @@
 #include <jive/arch/instruction-class.h>
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/registers.h>
+#include <jive/rvsdg/label.h>
+#include <jive/rvsdg/nullary.h>
+#include <jive/rvsdg/simple-node.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/util/ptr-collection.h>
-#include <jive/vsdg/label.h>
-#include <jive/vsdg/nullary.h>
-#include <jive/vsdg/simple-node.h>
 
 namespace jive {
 

@@ -9,9 +9,9 @@
 
 #include <jive/common.h>
 
+#include <jive/rvsdg/node.h>
+#include <jive/rvsdg/region.h>
 #include <jive/util/ptr-collection.h>
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/region.h>
 
 namespace jive {
 

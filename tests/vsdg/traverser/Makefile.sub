@@ -1,3 +1,0 @@
-TESTS+=\
-	vsdg/traverser/test-bottomup \
-	vsdg/traverser/test-topdown \

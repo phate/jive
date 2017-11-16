@@ -11,10 +11,10 @@
 #include <jive/arch/memorytype.h>
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/common.h>
-#include <jive/vsdg/controltype.h>
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/resource.h>
-#include <jive/vsdg/simple-node.h>
+#include <jive/rvsdg/controltype.h>
+#include <jive/rvsdg/region.h>
+#include <jive/rvsdg/resource.h>
+#include <jive/rvsdg/simple-node.h>
 
 namespace jive {
 

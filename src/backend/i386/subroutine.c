@@ -13,9 +13,9 @@
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/types/function/fctlambda.h>
-#include <jive/vsdg.h>
-#include <jive/vsdg/splitnode.h>
-#include <jive/vsdg/substitution.h>
+#include <jive/rvsdg.h>
+#include <jive/rvsdg/splitnode.h>
+#include <jive/rvsdg/substitution.h>
 
 static void
 jive_i386_subroutine_prepare_stackframe_(

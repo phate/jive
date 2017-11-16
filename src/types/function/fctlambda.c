@@ -10,8 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/phi.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/phi.h>
 
 /* lambda node */
 

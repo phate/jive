@@ -7,11 +7,11 @@
 #include <jive/arch/sizeof.h>
 
 #include <jive/arch/memlayout.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/region.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/region.h>
 
 namespace jive {
 

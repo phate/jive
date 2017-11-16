@@ -4,10 +4,9 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/node.h>
 #include <jive/types/union/unntype.h>
-
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/node.h>
 
 #include <string.h>
 

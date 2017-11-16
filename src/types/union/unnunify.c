@@ -4,11 +4,10 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/simple-node.h>
 #include <jive/types/union/unnunify.h>
-
 #include <jive/types/union/unntype.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/simple-node.h>
 
 namespace jive {
 namespace unn {

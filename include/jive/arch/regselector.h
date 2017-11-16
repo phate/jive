@@ -10,10 +10,10 @@
 #include <stdint.h>
 
 #include <jive/arch/registers.h>
+#include <jive/rvsdg/negotiator.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/float/arithmetic.h>
 #include <jive/types/float/fltoperation-classes.h>
-#include <jive/vsdg/negotiator.h>
 
 namespace jive {
 class output;

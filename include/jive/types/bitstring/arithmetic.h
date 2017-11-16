@@ -6,8 +6,8 @@
 #ifndef JIVE_TYPES_BITSTRING_ARITHMETIC_H
 #define JIVE_TYPES_BITSTRING_ARITHMETIC_H
 
+#include <jive/rvsdg/simple-node.h>
 #include <jive/types/bitstring/bitoperation-classes.h>
-#include <jive/vsdg/simple-node.h>
 
 namespace jive {
 namespace bits {

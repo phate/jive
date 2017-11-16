@@ -10,10 +10,10 @@
 #include <memory>
 #include <vector>
 
+#include <jive/rvsdg/region.h>
+#include <jive/rvsdg/simple-node.h>
+#include <jive/rvsdg/structural-node.h>
 #include <jive/types/function/fcttype.h>
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/simple-node.h>
-#include <jive/vsdg/structural-node.h>
 
 namespace jive {
 namespace fct {

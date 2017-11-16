@@ -8,8 +8,8 @@
 
 #include <jive/arch/memorytype.h>
 #include <jive/arch/subroutine.h>
-#include <jive/vsdg/controltype.h>
-#include <jive/vsdg/simple-node.h>
+#include <jive/rvsdg/controltype.h>
+#include <jive/rvsdg/simple-node.h>
 
 namespace jive {
 

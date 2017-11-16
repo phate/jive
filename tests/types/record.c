@@ -11,10 +11,10 @@
 
 #include <jive/arch/addresstype.h>
 #include <jive/arch/load.h>
+#include <jive/rvsdg.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/record.h>
 #include <jive/view.h>
-#include <jive/vsdg.h>
 
 
 static int _test_rcdgroup(void)

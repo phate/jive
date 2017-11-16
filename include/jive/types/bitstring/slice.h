@@ -7,9 +7,9 @@
 #ifndef JIVE_TYPES_BITSTRING_SLICE_H
 #define JIVE_TYPES_BITSTRING_SLICE_H
 
+#include <jive/rvsdg/node.h>
+#include <jive/rvsdg/unary.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/unary.h>
 
 namespace jive {
 namespace bits {

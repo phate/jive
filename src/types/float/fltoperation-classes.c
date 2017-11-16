@@ -10,7 +10,7 @@
 #include <jive/types/float/fltoperation-classes.h>
 #include <jive/types/float/flttype.h>
 
-#include <jive/vsdg/control.h>
+#include <jive/rvsdg/control.h>
 
 namespace jive {
 namespace flt {

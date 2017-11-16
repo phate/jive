@@ -10,7 +10,7 @@
 #include <stdbool.h>
 
 #include <jive/common.h>
-#include <jive/vsdg/section.h>
+#include <jive/rvsdg/section.h>
 
 typedef struct jive_linker_symbol jive_linker_symbol;
 typedef struct jive_linker_symbol_resolver jive_linker_symbol_resolver;

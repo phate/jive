@@ -2,10 +2,10 @@
 
 #include <assert.h>
 
+#include <jive/rvsdg.h>
 #include <jive/types/float.h>
 #include <jive/types/float/fltconstant.h>
 #include <jive/view.h>
-#include <jive/vsdg.h>
 
 
 static int

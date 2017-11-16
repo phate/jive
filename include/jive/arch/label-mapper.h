@@ -8,7 +8,7 @@
 #define JIVE_ARCH_LABEL_MAPPER_H
 
 #include <jive/arch/linker-symbol.h>
-#include <jive/vsdg/label.h>
+#include <jive/rvsdg/label.h>
 
 typedef struct jive_label_external_symbol jive_label_external_symbol;
 typedef struct jive_label_name_mapper jive_label_name_mapper;

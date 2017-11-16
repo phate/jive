@@ -7,10 +7,10 @@
 #ifndef JIVE_TYPES_BITSTRING_BITOPERATION_CLASSES_H
 #define JIVE_TYPES_BITSTRING_BITOPERATION_CLASSES_H
 
+#include <jive/rvsdg/binary.h>
+#include <jive/rvsdg/unary.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/bitstring/value-representation.h>
-#include <jive/vsdg/binary.h>
-#include <jive/vsdg/unary.h>
 
 namespace jive {
 namespace bits {

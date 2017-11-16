@@ -13,9 +13,9 @@
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/vsdg/label.h>
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/splitnode.h>
+#include <jive/rvsdg/label.h>
+#include <jive/rvsdg/region.h>
+#include <jive/rvsdg/splitnode.h>
 
 jive::node *
 jive_i386_call_node_substitute(

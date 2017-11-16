@@ -9,9 +9,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <jive/rvsdg/graph.h>
 #include <jive/types/float/fltoperation-classes.h>
 #include <jive/types/float/flttype.h>
-#include <jive/vsdg/graph.h>
 
 namespace jive {
 namespace base {

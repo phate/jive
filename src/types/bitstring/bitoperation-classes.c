@@ -9,8 +9,8 @@
 #include <jive/types/bitstring/bitoperation-classes.h>
 #include <jive/types/bitstring/constant.h>
 
-#include <jive/vsdg/control.h>
-#include <jive/vsdg/controltype.h>
+#include <jive/rvsdg/control.h>
+#include <jive/rvsdg/controltype.h>
 
 namespace jive {
 namespace bits {

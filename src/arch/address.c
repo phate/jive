@@ -7,12 +7,12 @@
 #include <jive/arch/address.h>
 
 #include <jive/arch/addresstype.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/label.h>
+#include <jive/rvsdg/region.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/label.h>
-#include <jive/vsdg/region.h>
 
 /* memberof */
 

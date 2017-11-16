@@ -10,7 +10,7 @@
 #include <stdint.h>
 
 #include <jive/arch/registers.h>
-#include <jive/vsdg/node.h>
+#include <jive/rvsdg/node.h>
 
 namespace jive {
 

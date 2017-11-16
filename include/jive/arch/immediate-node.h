@@ -11,8 +11,8 @@
 
 #include <jive/arch/immediate-value.h>
 #include <jive/arch/linker-symbol.h>
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/nullary.h>
+#include <jive/rvsdg/node.h>
+#include <jive/rvsdg/nullary.h>
 
 namespace jive {
 class immediate_op final : public base::nullary_op {

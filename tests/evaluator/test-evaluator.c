@@ -10,12 +10,12 @@
 #include <jive/arch/store.h>
 #include <jive/evaluator/eval.h>
 #include <jive/evaluator/literal.h>
+#include <jive/rvsdg.h>
+#include <jive/rvsdg/phi.h>
+#include <jive/rvsdg/theta.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/function.h>
 #include <jive/view.h>
-#include <jive/vsdg.h>
-#include <jive/vsdg/phi.h>
-#include <jive/vsdg/theta.h>
 
 static jive::output *
 setup_fib_iter(jive::graph * graph)

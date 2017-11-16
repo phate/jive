@@ -8,10 +8,10 @@
 
 #include <string.h>
 
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/region.h>
+#include <jive/rvsdg/simple-node.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/simple-node.h>
 
 namespace jive {
 

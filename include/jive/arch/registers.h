@@ -7,7 +7,7 @@
 #ifndef JIVE_ARCH_REGISTERS_H
 #define JIVE_ARCH_REGISTERS_H
 
-#include <jive/vsdg/resource.h>
+#include <jive/rvsdg/resource.h>
 
 namespace jive {
 namespace base {

@@ -11,10 +11,10 @@
 
 #include <jive/arch/regvalue.h>
 #include <jive/arch/subroutine/nodes.h>
+#include <jive/rvsdg/simple-node.h>
+#include <jive/rvsdg/structural-node.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
-#include <jive/vsdg/simple-node.h>
-#include <jive/vsdg/structural-node.h>
 
 static int test_main(void)
 {

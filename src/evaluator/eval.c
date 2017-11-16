@@ -8,12 +8,12 @@
 #include <jive/evaluator/context.h>
 #include <jive/evaluator/eval.h>
 #include <jive/evaluator/literal.h>
+#include <jive/rvsdg/control.h>
+#include <jive/rvsdg/gamma.h>
+#include <jive/rvsdg/phi.h>
+#include <jive/rvsdg/theta.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/function.h>
-#include <jive/vsdg/control.h>
-#include <jive/vsdg/gamma.h>
-#include <jive/vsdg/phi.h>
-#include <jive/vsdg/theta.h>
 
 #include <typeindex>
 #include <unordered_map>

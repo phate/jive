@@ -11,10 +11,10 @@
 #include <string.h>
 
 #include <jive/arch/immediate-type.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/nullary.h>
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/simple-node.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/nullary.h>
+#include <jive/rvsdg/region.h>
+#include <jive/rvsdg/simple-node.h>
 
 /* immediate node */
 

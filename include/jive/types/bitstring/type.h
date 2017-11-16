@@ -7,7 +7,7 @@
 #ifndef JIVE_TYPES_BITSTRING_TYPE_H
 #define JIVE_TYPES_BITSTRING_TYPE_H
 
-#include <jive/vsdg/type.h>
+#include <jive/rvsdg/type.h>
 
 namespace jive {
 namespace bits {

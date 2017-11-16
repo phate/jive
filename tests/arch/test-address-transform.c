@@ -17,10 +17,10 @@
 #include <jive/arch/memlayout-simple.h>
 #include <jive/arch/memorytype.h>
 #include <jive/arch/store.h>
+#include <jive/rvsdg.h>
+#include <jive/rvsdg/label.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
-#include <jive/vsdg.h>
-#include <jive/vsdg/label.h>
 
 #include "testnodes.h"
 

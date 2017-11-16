@@ -13,17 +13,17 @@
 #include <jive/arch/memlayout.h>
 #include <jive/arch/memorytype.h>
 #include <jive/arch/store.h>
+#include <jive/rvsdg/label.h>
+#include <jive/rvsdg/region.h>
+#include <jive/rvsdg/substitution.h>
+#include <jive/rvsdg/structural-node.h>
+#include <jive/rvsdg/traverser.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
 #include <jive/types/function/fcttype.h>
-#include <jive/vsdg/label.h>
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/substitution.h>
-#include <jive/vsdg/structural-node.h>
-#include <jive/vsdg/traverser.h>
 
 static bool
 type_contains_address(const jive::type * type)

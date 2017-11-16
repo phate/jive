@@ -12,10 +12,10 @@
 #include <jive/arch/load.h>
 #include <jive/arch/store.h>
 #include <jive/common.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/unary.h>
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/unary.h>
 
 namespace jive {
 

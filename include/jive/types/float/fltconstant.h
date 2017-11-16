@@ -7,10 +7,10 @@
 #ifndef JIVE_TYPES_FLOAT_FLTCONSTANT_H
 #define JIVE_TYPES_FLOAT_FLTCONSTANT_H
 
+#include <jive/rvsdg/node.h>
+#include <jive/rvsdg/nullary.h>
 #include <jive/types/float/flttype.h>
 #include <jive/types/float/value-representation.h>
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/nullary.h>
 
 namespace jive {
 namespace flt {

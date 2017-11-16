@@ -16,12 +16,12 @@
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
+#include <jive/rvsdg/control.h>
+#include <jive/rvsdg/controltype.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/traverser.h>
 #include <jive/types/bitstring.h>
 #include <jive/util/typeinfo-map.h>
-#include <jive/vsdg/control.h>
-#include <jive/vsdg/controltype.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/traverser.h>
 
 static inline bool
 is_gpr_immediate(jive::output * arg)

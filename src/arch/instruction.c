@@ -9,11 +9,11 @@
 #include <jive/arch/immediate-type.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/label-mapper.h>
-#include <jive/vsdg/control.h>
-#include <jive/vsdg/controltype.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/traverser.h>
+#include <jive/rvsdg/control.h>
+#include <jive/rvsdg/controltype.h>
+#include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/region.h>
+#include <jive/rvsdg/traverser.h>
 
 #include <stdio.h>
 #include <string.h>

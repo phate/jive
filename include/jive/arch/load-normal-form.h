@@ -6,7 +6,7 @@
 #ifndef JIVE_ARCH_LOAD_NORMAL_FORM_H
 #define JIVE_ARCH_LOAD_NORMAL_FORM_H
 
-#include <jive/vsdg/simple-normal-form.h>
+#include <jive/rvsdg/simple-normal-form.h>
 
 namespace jive {
 
