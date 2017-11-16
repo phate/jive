@@ -43,14 +43,12 @@ private:
 
 }
 
-namespace mem {
-
-class type final : public jive::statetype {
+class memtype final : public jive::statetype {
 public:
-	virtual ~type() noexcept;
+	virtual ~memtype() noexcept;
 
 	inline constexpr
-	type() noexcept
+	memtype() noexcept
 	: jive::statetype()
 	{}
 
@@ -62,13 +60,11 @@ public:
 	virtual std::unique_ptr<jive::type>
 	copy() const override;
 
-	inline static const type & instance() { return instance_; }
+	inline static const memtype & instance() { return instance_; }
 
 private:
-	static const type instance_;
+	static const memtype instance_;
 };
-
-}
 
 }
 

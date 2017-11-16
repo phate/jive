@@ -42,30 +42,27 @@ const type type::instance_;
 
 /* memory type */
 
-namespace mem {
-
-type::~type() noexcept {}
+memtype::~memtype() noexcept
+{}
 
 std::string
-type::debug_string() const
+memtype::debug_string() const
 {
 	return "mem";
 }
 
 bool
-type::operator==(const jive::type & other) const noexcept
+memtype::operator==(const jive::type & other) const noexcept
 {
-	return dynamic_cast<const jive::mem::type*>(&other) != nullptr;
+	return dynamic_cast<const jive::memtype*>(&other) != nullptr;
 }
 
 std::unique_ptr<jive::type>
-type::copy() const
+memtype::copy() const
 {
-	return std::unique_ptr<jive::type>(new type(*this));
+	return std::unique_ptr<jive::type>(new memtype(*this));
 }
 
-const type type::instance_;
-
-}
+const memtype memtype::instance_;
 
 }

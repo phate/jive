@@ -132,7 +132,7 @@ jive_subroutine_begin(
 				sub.signature.passthroughs[n].name, rescls);
 		} else {
 			sub.builder_state->passthroughs[n].gate = graph->create_gate(
-				sub.signature.passthroughs[n].name, jive::mem::type::instance());
+				sub.signature.passthroughs[n].name, jive::memtype::instance());
 		}
 
 		sub.builder_state->passthroughs[n].gate->may_spill = sub.signature.passthroughs[n].may_spill;
@@ -155,7 +155,7 @@ jive_subroutine_end(jive_subroutine & self)
 	for (const auto & res : self.builder_state->results)
 		self.region->add_result(res.output, nullptr, res.gate);
 
-	self.node->add_output(jive::mem::type::instance());
+	self.node->add_output(jive::memtype::instance());
 
 	return self.node;
 }

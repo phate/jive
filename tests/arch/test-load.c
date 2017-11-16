@@ -21,7 +21,7 @@ static int test_main()
 {
 	jive::graph graph;
 
-	jive::mem::type memtype;
+	jive::memtype memtype;
 	jive::addr::type addrtype;
 	jive::bits::type bits32(32);
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {addrtype, addrtype, memtype,

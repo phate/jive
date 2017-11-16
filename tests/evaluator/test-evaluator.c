@@ -236,7 +236,7 @@ test_loadstore(jive::graph * graph)
 	using namespace jive::eval;
 
 	jive::bits::type bits64(64), bits4(4);
-	const auto & mem = jive::mem::type::instance();
+	const auto & mem = jive::memtype::instance();
 
 	jive::lambda_builder lb;
 	auto arguments = lb.begin_lambda(graph->root(), {{&mem, &bits64}, {&mem}});

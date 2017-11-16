@@ -29,7 +29,7 @@ test_address_transform(void)
 	jive::graph graph;
 
 	jive::addr::type addr;
-	jive::mem::type mem;
+	jive::memtype mem;
 	jive::bits::type bits64(64);
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits64, bits64, mem});
 

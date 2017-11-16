@@ -63,8 +63,8 @@ convert_address_to_bitstring_type(
 		return std::unique_ptr<jive::type>(new jive::fct::type(argument_types, return_types));
 	}
 
-	if (dynamic_cast<const jive::mem::type*>(&type))
-		return std::unique_ptr<jive::type>(new jive::mem::type());
+	if (dynamic_cast<const jive::memtype*>(&type))
+		return std::unique_ptr<jive::type>(new jive::memtype());
 
 	if (dynamic_cast<const jive::bits::type*>(&type))
 		return std::unique_ptr<jive::type>(type.copy());

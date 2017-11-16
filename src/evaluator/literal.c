@@ -133,7 +133,7 @@ memliteral::~memliteral()
 const jive::type &
 memliteral::type() const noexcept
 {
-	return jive::mem::type::instance();
+	return jive::memtype::instance();
 }
 
 std::unique_ptr<literal>
