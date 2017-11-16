@@ -23,4 +23,7 @@ theta_op::copy() const
 	return std::unique_ptr<jive::operation>(new theta_op(*this));
 }
 
+theta_node::~theta_node()
+{}
+
 }

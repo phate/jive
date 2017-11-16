@@ -18,7 +18,7 @@ class structural_input;
 class structural_op;
 class structural_output;
 
-class structural_node final : public node {
+class structural_node : public node {
 public:
 	virtual
 	~structural_node();

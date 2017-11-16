@@ -43,16 +43,15 @@ fib(size_t n)
 	auto j = create_bitconstant(lb.subregion(), 32, 0);
 	auto k = create_bitconstant(lb.subregion(), 32, 1);
 
-	jive::theta_builder tb;
-	auto theta_region = tb.begin_theta(lb.subregion());
-	auto lv_i = tb.add_loopvar(i);
-	auto lv_j = tb.add_loopvar(j);
-	auto lv_k = tb.add_loopvar(k);
-	auto lv_n = tb.add_loopvar(n);
+	auto theta = jive::theta_node::create(lb.subregion());
+	auto lv_i = theta->add_loopvar(i);
+	auto lv_j = theta->add_loopvar(j);
+	auto lv_k = theta->add_loopvar(k);
+	auto lv_n = theta->add_loopvar(n);
 
 	auto t = jive::bits::create_add(32, lv_i->argument(), lv_j->argument());
 
-	auto one = create_bitconstant(theta_region, 32, 1);
+	auto one = create_bitconstant(theta->subregion(), 32, 1);
 
 	auto new_k = jive::bits::create_add(32, one, lv_k->argument());
 
@@ -63,7 +62,7 @@ fib(size_t n)
 	lv_i->result()->divert_origin(lv_j->argument());
 	lv_j->result()->divert_origin(t);
 	lv_n->result()->divert_origin(lv_n->argument());
-	tb.end_theta(predicate);
+	theta->set_predicate(predicate);
 
 	cmp = jive::bits::create_ule(32, k, n);
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);

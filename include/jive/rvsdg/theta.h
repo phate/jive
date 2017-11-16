@@ -36,11 +36,10 @@ is_theta_node(const jive::node * node) noexcept
 	return is_opnode<theta_op>(node);
 }
 
-class theta;
-class theta_builder;
+class theta_node;
 
 class loopvar final {
-	friend theta;
+	friend theta_node;
 
 public:
 	inline constexpr
@@ -110,7 +109,7 @@ private:
 	jive::structural_output * output_;
 };
 
-class theta final {
+class theta_node final : public structural_node {
 public:
 	class loopvar_iterator {
 	public:
@@ -174,51 +173,65 @@ public:
 		loopvar lv_;
 	};
 
+	virtual
+	~theta_node();
+
+private:
 	inline
-	theta(jive::structural_node * node)
-	: node_(node)
+	theta_node(jive::region * parent)
+	: structural_node(jive::theta_op(), parent, 1)
 	{
-		if (!dynamic_cast<const jive::theta_op*>(&node->operation()))
-			throw jive::compiler_error("Expected theta node.");
+		auto predicate = jive_control_false(subregion());
+		subregion()->add_result(predicate, nullptr, jive::ctl::type(2));
 	}
 
-	inline jive::structural_node *
-	node() const noexcept
+public:
+	static jive::theta_node *
+	create(jive::region * parent)
 	{
-		return node_;
+		return new jive::theta_node(parent);
 	}
 
 	inline jive::region *
 	subregion() const noexcept
 	{
-		return node_->subregion(0);
+		return structural_node::subregion(0);
 	}
 
 	inline jive::result *
 	predicate() const noexcept
 	{
-		auto result = node_->subregion(0)->result(0);
+		auto result = subregion()->result(0);
 		JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&result->type()));
 		return result;
+	}
+
+	inline void
+	set_predicate(jive::output * p)
+	{
+		auto node = predicate()->origin()->node();
+		predicate()->divert_origin(p);
+		if (node && !node->has_users())
+			remove(node);
 	}
 
 	inline size_t
 	nloopvars() const noexcept
 	{
-		JIVE_DEBUG_ASSERT(node_->ninputs() == node_->noutputs());
-		return node_->ninputs();
+		JIVE_DEBUG_ASSERT(ninputs() == noutputs());
+		return ninputs();
 	}
 
-	inline theta::loopvar_iterator
+	inline theta_node::loopvar_iterator
 	begin() const
 	{
-		if (node_->ninputs() == 0)
+		if (ninputs() == 0)
 			return loopvar_iterator({});
 
-		return loopvar_iterator({node_->input(0), node_->output(0)});
+		return loopvar_iterator({input(0), output(0)});
 	}
 
-	inline theta::loopvar_iterator
+	inline theta_node::loopvar_iterator
 	end() const
 	{
 		return loopvar_iterator({});
@@ -227,76 +240,12 @@ public:
 	inline std::shared_ptr<jive::loopvar>
 	add_loopvar(jive::output * origin)
 	{
-		auto input = node_->add_input(origin->type(), origin);
-		auto output = node_->add_output(origin->type());
-		auto argument = node_->subregion(0)->add_argument(input, origin->type());
-		node_->subregion(0)->add_result(argument, output, origin->type());
+		auto input = add_input(origin->type(), origin);
+		auto output = add_output(origin->type());
+		auto argument = subregion()->add_argument(input, origin->type());
+		subregion()->add_result(argument, output, origin->type());
 		return std::make_shared<loopvar>(loopvar(input, output));
 	}
-
-private:
-	jive::structural_node * node_;
-};
-
-
-class theta_builder final {
-public:
-	inline jive::region *
-	subregion() const noexcept
-	{
-		return theta_ ? theta_->node()->subregion(0) : nullptr;
-	}
-
-	inline theta::loopvar_iterator
-	begin() const
-	{
-		return theta_ ? theta_->begin() : theta::loopvar_iterator({});
-	}
-
-	inline theta::loopvar_iterator
-	end() const
-	{
-		return theta_ ? theta_->end() : theta::loopvar_iterator({});
-	}
-
-	inline jive::region *
-	begin_theta(jive::region * parent)
-	{
-		if (theta_)
-			return theta_->node()->subregion(0);
-
-		auto node = parent->add_structural_node(jive::theta_op(), 1);
-		auto predicate = jive_control_false(node->subregion(0));
-		node->subregion(0)->add_result(predicate, nullptr, jive::ctl::type(2));
-		theta_ = std::make_unique<jive::theta>(node);
-		return node->subregion(0);
-	}
-
-	inline std::shared_ptr<jive::loopvar>
-	add_loopvar(jive::output * origin)
-	{
-		if (!theta_)
-			return nullptr;
-
-		return theta_ ? theta_->add_loopvar(origin) : nullptr;
-	}
-
-	inline std::unique_ptr<jive::theta>
-	end_theta(jive::output * predicate)
-	{
-		if (!theta_)
-			return nullptr;
-
-		auto p = theta_->node()->subregion(0)->result(0);
-		auto ctlconstant = p->origin()->node();
-		p->divert_origin(predicate);
-		if (!ctlconstant->has_users())
-			remove(ctlconstant);
-		return std::move(theta_);
-	}
-
-private:
-	std::unique_ptr<jive::theta> theta_;
 };
 
 }
