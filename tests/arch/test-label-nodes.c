@@ -61,7 +61,7 @@ static int test_main(void)
 	assert(o2->node()->operation() != *attrs4);
 	assert(o2->node()->operation() != *attrs3);
 	
-	jive::addr::type addr;
+	jive::addrtype addr;
 	jive::bits::type bits32(32);
 	jive::bits::type bits16(16);
 	auto bottom = jive::test::simple_node_create(graph.root(),

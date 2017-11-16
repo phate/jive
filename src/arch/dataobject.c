@@ -86,7 +86,7 @@ flatten_data_items(
 
 		items.resize(type->nbits() / 8, nullptr);
 		items[0] = data;
-	} else if (dynamic_cast<const jive::addr::type*>(type_)) {
+	} else if (dynamic_cast<const jive::addrtype*>(type_)) {
 		const jive::dataitem_memlayout & layout = layout_mapper->map_address();
 		items.resize(layout.size(), nullptr);
 		items[0] = data;
@@ -165,7 +165,7 @@ jive_dataobj_internal(
 	for (const auto & item : data_items)
 		node->add_input(item->type(), item);
 
-	return node->add_output(jive::addr::type::instance());
+	return node->add_output(jive::addrtype::instance());
 }
 
 jive::output *

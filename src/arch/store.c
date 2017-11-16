@@ -112,7 +112,7 @@ jive_store_by_address_create(jive::output* address,
 			dynamic_cast<const jive::statetype &>(istates[n]->type()).copy());
 	}
 
-	jive::store_op op(jive::addr::type(), state_types, *datatype);
+	jive::store_op op(jive::addrtype(), state_types, *datatype);
 
 	return jive_store_node_normalized_create(nf, graph, op, address, value, nstates, istates);
 }

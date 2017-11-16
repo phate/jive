@@ -29,7 +29,7 @@ static int test_unnchoose(void)
 	static const jive::unn::declaration decl = {3, decl_elems};
 	static jive::unn::type unntype(&decl);
 
-	jive::addr::type addrtype;
+	jive::addrtype addrtype;
 	auto top = jive::test::simple_node_create(graph.root(), {}, {},
 		{bits8, unntype, unntype, addrtype});
 

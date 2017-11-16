@@ -121,7 +121,7 @@ jive_load_by_address_create(jive::output * address,
 			dynamic_cast<const jive::statetype &>(states[n]->type()).copy());
 	}
 
-	jive::load_op op(jive::addr::type(), state_types, *datatype);
+	jive::load_op op(jive::addrtype(), state_types, *datatype);
 
 	return jive_load_node_normalized_create(nf, graph, op, address, nstates, states);
 }

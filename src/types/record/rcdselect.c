@@ -90,7 +90,7 @@ select_operation::reduce_operand(
 		}
 
 		auto element_address = jive_memberof(address, decl, element());
-		if (dynamic_cast<const jive::addr::type*>(&address->type())) {
+		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
 			return jive_load_by_address_create(element_address, &decl->element(element()),
 				nstates, states);
 		} else {

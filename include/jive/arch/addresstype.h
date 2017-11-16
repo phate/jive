@@ -10,16 +10,15 @@
 #include <jive/rvsdg/type.h>
 
 namespace jive {
-namespace addr {
 
 /* address type */
 
-class type final : public jive::valuetype {
+class addrtype final : public jive::valuetype {
 public:
-	virtual ~type() noexcept;
+	virtual ~addrtype() noexcept;
 
 	inline constexpr
-	type() noexcept
+	addrtype() noexcept
 	: jive::valuetype()
 	{}
 
@@ -31,17 +30,15 @@ public:
 	virtual std::unique_ptr<jive::type>
 	copy() const override;
 
-	inline static const type &
+	inline static const addrtype &
 	instance()
 	{
 		return instance_;
 	}
 
 private:
-	static const type instance_;
+	static const addrtype instance_;
 };
-
-}
 
 class memtype final : public jive::statetype {
 public:

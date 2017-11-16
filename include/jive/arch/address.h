@@ -330,9 +330,9 @@ private:
 };
 
 struct type_of_value {
-	addr::type operator()(const value_repr & vr) const
+	addrtype operator()(const value_repr & vr) const
 	{
-		return jive::addr::type();
+		return jive::addrtype();
 	}
 };
 
@@ -344,7 +344,7 @@ struct format_value {
 };
 
 typedef base::domain_const_op<
-	addr::type, value_repr, format_value, type_of_value
+	addrtype, value_repr, format_value, type_of_value
 > constant_op;
 
 output *

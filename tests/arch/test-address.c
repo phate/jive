@@ -24,7 +24,7 @@ static int test_main(void)
 	jive::bits::type bits32(32);
 	std::shared_ptr<const jive::rcd::declaration> rec(new jive::rcd::declaration({&bits32, &bits32}));
 
-	jive::addr::type addrtype;
+	jive::addrtype addrtype;
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {addrtype, addrtype});
 	
 	auto memb1 = jive_memberof(top->output(0), rec, 0);

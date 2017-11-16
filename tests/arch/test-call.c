@@ -21,7 +21,7 @@ static int test_main(void)
 {
 	jive::graph graph;
 
-	jive::addr::type addr;
+	jive::addrtype addr;
 	jive::bits::type bits16(16);
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {addr, bits16, addr});
 

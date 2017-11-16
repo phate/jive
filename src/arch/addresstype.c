@@ -12,33 +12,31 @@
 #include <jive/rvsdg/node.h>
 
 namespace jive {
-namespace addr {
 
 /* address type */
 
-type::~type() noexcept {}
+addrtype::~addrtype() noexcept
+{}
 
 std::string
-type::debug_string() const
+addrtype::debug_string() const
 {
 	return "addr";
 }
 
 bool
-type::operator==(const jive::type & other) const noexcept
+addrtype::operator==(const jive::type & other) const noexcept
 {
-	return dynamic_cast<const jive::addr::type*>(&other) != nullptr;
+	return dynamic_cast<const jive::addrtype*>(&other) != nullptr;
 }
 
 std::unique_ptr<jive::type>
-type::copy() const
+addrtype::copy() const
 {
-	return std::unique_ptr<jive::type>(new type(*this));
+	return std::unique_ptr<jive::type>(new addrtype(*this));
 }
 
-const type type::instance_;
-
-}
+const addrtype addrtype::instance_;
 
 /* memory type */
 

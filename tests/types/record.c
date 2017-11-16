@@ -60,7 +60,7 @@ static int _test_rcdselect()
 
 	jive::graph graph;
 
-	jive::addr::type addrtype;
+	jive::addrtype addrtype;
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);

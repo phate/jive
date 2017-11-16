@@ -83,7 +83,7 @@ choose_operation::reduce_operand(
 			states[n] = arg->node()->input(n+1)->origin();
 		}
 	
-		if (dynamic_cast<const jive::addr::type*>(&address->type())) {
+		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
 			return jive_load_by_address_create(address, decl->elements[element()],
 				nstates, states);
 		} else {

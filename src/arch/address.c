@@ -41,7 +41,7 @@ const jive::port &
 memberof_op::argument(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < narguments());
-	static const jive::port p(addr::type::instance());
+	static const jive::port p(addrtype::instance());
 	return p;
 }
 
@@ -49,7 +49,7 @@ const jive::port &
 memberof_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < narguments());
-	static const jive::port p(addr::type::instance());
+	static const jive::port p(addrtype::instance());
 	return p;
 }
 
@@ -129,7 +129,7 @@ const jive::port &
 containerof_op::argument(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < narguments());
-	static const jive::port p(addr::type::instance());
+	static const jive::port p(addrtype::instance());
 	return p;
 }
 
@@ -137,7 +137,7 @@ const jive::port &
 containerof_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
-	static const jive::port p(addr::type::instance());
+	static const jive::port p(addrtype::instance());
 	return p;
 }
 
@@ -233,7 +233,7 @@ arraysubscript_op::argument(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < narguments());
 	if (index == 0) {
-		static const jive::port p(addr::type::instance());
+		static const jive::port p(addrtype::instance());
 		return p;
 	}
 
@@ -250,7 +250,7 @@ const jive::port &
 arraysubscript_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
-	static const jive::port p(addr::type::instance());
+	static const jive::port p(addrtype::instance());
 	return p;
 }
 
@@ -329,7 +329,7 @@ const jive::port &
 arrayindex_op::argument(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < narguments());
-	static const jive::port p(addr::type::instance());
+	static const jive::port p(addrtype::instance());
 	return p;
 }
 
@@ -391,7 +391,7 @@ const jive::port &
 label_to_address_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
-	static const jive::port p(addr::type::instance());
+	static const jive::port p(addrtype::instance());
 	return p;
 }
 

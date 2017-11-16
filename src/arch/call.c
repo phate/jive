@@ -88,7 +88,7 @@ jive_call_by_address_node_create(jive::region * region,
 	call_args.push_back(target_address);
 
 	std::vector<std::unique_ptr<jive::type>> argtypes;
-	argtypes.emplace_back(new jive::addr::type());
+	argtypes.emplace_back(new jive::addrtype());
 	for (size_t n = 0; n < narguments; ++n) {
 		argtypes.emplace_back(arguments[n]->type().copy());
 		call_args.push_back(arguments[n]);

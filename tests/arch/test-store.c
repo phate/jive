@@ -38,7 +38,7 @@ static int test_main(void)
 	static jive::unn::type empty_unntype(&empty_unndecl);
 
 	jive::memtype memtype;
-	jive::addr::type addrtype;
+	jive::addrtype addrtype;
 	auto top = jive::test::simple_node_create(graph.root(), {}, {},
 		{addrtype, memtype, bits8, bits16, bits32, memtype, addrtype});
 

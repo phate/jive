@@ -28,7 +28,7 @@ static int test_main(void)
 	jive::bits::type bits8(8);
 	jive::bits::type bits18(18);
 	jive::bits::type bits32(32);
-	jive::addr::type addr;
+	jive::addrtype addr;
 	std::shared_ptr<const jive::rcd::declaration> r_decl(
 		new jive::rcd::declaration({&bits4, &bits8, &bits18}));
 

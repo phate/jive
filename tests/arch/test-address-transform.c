@@ -28,7 +28,7 @@ test_address_transform(void)
 {
 	jive::graph graph;
 
-	jive::addr::type addr;
+	jive::addrtype addr;
 	jive::memtype mem;
 	jive::bits::type bits64(64);
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits64, bits64, mem});
@@ -85,7 +85,7 @@ test_address_transform_nodes(void)
 {
 	jive::graph graph;
 
-	jive::addr::type addrtype;
+	jive::addrtype addrtype;
 	jive::bits::type bits32(32);
 	jive::bits::type bits64(64);
 	auto i0 = graph.import(addrtype, "i0");
@@ -131,7 +131,7 @@ test_apply_transform(void)
 {
 	jive::graph graph;
 
-	jive::addr::type addrtype;
+	jive::addrtype addrtype;
 	jive::fct::type fcttype({&addrtype}, {&addrtype});
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {fcttype, addrtype});
 
@@ -160,7 +160,7 @@ test_containerof_transform(void)
 {
 	jive::graph graph;
 
-	jive::addr::type addrtype;
+	jive::addrtype addrtype;
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);
@@ -200,10 +200,10 @@ test_containerof_transform(void)
 
 	for (jive::node * node : jive::topdown_traverser(graph.root())) {
 		for (size_t i = 0; i < node->ninputs(); i++){
-			assert(!dynamic_cast<const jive::addr::type*>(&node->input(i)->type()));
+			assert(!dynamic_cast<const jive::addrtype*>(&node->input(i)->type()));
 		}
 		for (size_t i = 0; i < node->noutputs(); i++){
-			assert(!dynamic_cast<const jive::addr::type*>(&node->output(i)->type()));
+			assert(!dynamic_cast<const jive::addrtype*>(&node->output(i)->type()));
 		}
 	}
 
@@ -238,7 +238,7 @@ test_memberof_transform(void)
 {
 	jive::graph graph;
 
-	jive::addr::type addrtype;
+	jive::addrtype addrtype;
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);
@@ -275,10 +275,10 @@ test_memberof_transform(void)
 
 	for (jive::node * node : jive::topdown_traverser(graph.root())) {
 		for (size_t i = 0; i < node->ninputs(); i++){
-			assert(!dynamic_cast<const jive::addr::type*>(&node->input(i)->type()));
+			assert(!dynamic_cast<const jive::addrtype*>(&node->input(i)->type()));
 		}
 		for (size_t i = 0; i < node->noutputs(); i++){
-			assert(!dynamic_cast<const jive::addr::type*>(&node->output(i)->type()));
+			assert(!dynamic_cast<const jive::addrtype*>(&node->output(i)->type()));
 		}
 	}
 

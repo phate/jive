@@ -42,7 +42,7 @@ memlayout_mapper::map_value_type(const valuetype & type)
 	if (auto t = dynamic_cast<const bits::type*>(&type))
 		return map_bitstring(t->nbits());
 
-	if (dynamic_cast<const addr::type*>(&type))
+	if (dynamic_cast<const addrtype*>(&type))
 		return map_address();
 
 	if (auto t = dynamic_cast<const jive::rcd::type*>(&type)) {
