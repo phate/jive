@@ -3,7 +3,7 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/arch/memorytype.h>
+#include <jive/arch/addresstype.h>
 #include <jive/evaluator/literal.h>
 #include <jive/util/ptr-collection.h>
 

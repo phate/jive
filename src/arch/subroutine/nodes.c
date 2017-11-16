@@ -6,7 +6,7 @@
 
 #include <jive/arch/subroutine/nodes.h>
 
-#include <jive/arch/memorytype.h>
+#include <jive/arch/addresstype.h>
 #include <jive/arch/subroutine.h>
 #include <jive/rvsdg/controltype.h>
 #include <jive/rvsdg/simple-node.h>

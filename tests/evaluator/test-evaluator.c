@@ -5,8 +5,8 @@
 
 #include "test-registry.h"
 
+#include <jive/arch/addresstype.h>
 #include <jive/arch/load.h>
-#include <jive/arch/memorytype.h>
 #include <jive/arch/store.h>
 #include <jive/evaluator/eval.h>
 #include <jive/evaluator/literal.h>

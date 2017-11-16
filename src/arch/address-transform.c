@@ -11,7 +11,6 @@
 #include <jive/arch/call.h>
 #include <jive/arch/load.h>
 #include <jive/arch/memlayout.h>
-#include <jive/arch/memorytype.h>
 #include <jive/arch/store.h>
 #include <jive/rvsdg/label.h>
 #include <jive/rvsdg/region.h>

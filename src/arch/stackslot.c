@@ -11,9 +11,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <jive/arch/addresstype.h>
 #include <jive/common.h>
-
-#include <jive/arch/memorytype.h>
 #include <jive/util/strfmt.h>
 
 #include <unordered_map>

@@ -9,7 +9,6 @@
 #include <jive/arch/address-transform.h>
 #include <jive/arch/address.h>
 #include <jive/arch/addresstype.h>
-#include <jive/arch/memorytype.h>
 #include <jive/rvsdg/graph.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/record/rcdgroup.h>

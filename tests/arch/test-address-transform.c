@@ -15,7 +15,6 @@
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/load.h>
 #include <jive/arch/memlayout-simple.h>
-#include <jive/arch/memorytype.h>
 #include <jive/arch/store.h>
 #include <jive/rvsdg.h>
 #include <jive/rvsdg/label.h>

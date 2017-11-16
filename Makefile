@@ -100,7 +100,6 @@ LIBJIVE_SRC += \
 	src/arch/load.c \
 	src/arch/memlayout-simple.c \
 	src/arch/memlayout.c \
-	src/arch/memorytype.c \
 	src/arch/registers.c \
 	src/arch/regselector.c \
 	src/arch/regvalue.c \

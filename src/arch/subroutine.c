@@ -8,7 +8,7 @@
 
 #include <string.h>
 
-#include <jive/arch/memorytype.h>
+#include <jive/arch/addresstype.h>
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/common.h>
 #include <jive/rvsdg/controltype.h>

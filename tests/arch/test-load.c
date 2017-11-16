@@ -10,7 +10,6 @@
 
 #include <jive/arch/addresstype.h>
 #include <jive/arch/load.h>
-#include <jive/arch/memorytype.h>
 #include <jive/arch/store.h>
 #include <jive/rvsdg.h>
 #include <jive/types/bitstring/type.h>
