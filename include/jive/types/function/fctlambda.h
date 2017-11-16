@@ -77,18 +77,20 @@ jive_inline_lambda_apply(jive::node * apply_node);
 namespace jive {
 
 class argument;
+class lambda_builder;
 
-class lambda final {
+class lambda_node final : public jive::structural_node {
+	friend lambda_builder;
 public:
-	inline
-	lambda(jive::structural_node * node)
-	: node_(node)
-	{
-		if (!fct::is_lambda_op(node->operation()))
-			throw jive::compiler_error("Expected lambda node.");
-	}
+	virtual
+	~lambda_node();
 
 private:
+	inline
+	lambda_node(jive::region * parent, jive::fct::type type)
+	: jive::structural_node(jive::fct::lambda_op(std::move(type)), parent, 1)
+	{}
+
 	class dependency_iterator {
 	public:
 		inline constexpr
@@ -135,20 +137,20 @@ private:
 		jive::input * input_;
 	};
 
-public:
-	inline jive::structural_node *
-	node() const noexcept
+	static jive::lambda_node *
+	create(jive::region * parent, jive::fct::type type)
 	{
-		return node_;
+		return new jive::lambda_node(parent, std::move(type));
 	}
 
+public:
 	inline jive::region *
 	subregion() const noexcept
 	{
-		return node_->subregion(0);
+		return structural_node::subregion(0);
 	}
 
-	inline lambda::dependency_iterator
+	inline lambda_node::dependency_iterator
 	begin() const
 	{
 		auto argument = subregion()->argument(0);
@@ -158,7 +160,7 @@ public:
 		return dependency_iterator(argument->input());
 	}
 
-	inline lambda::dependency_iterator
+	inline lambda_node::dependency_iterator
 	end() const
 	{
 		return dependency_iterator(nullptr);
@@ -167,20 +169,28 @@ public:
 	inline jive::argument *
 	add_dependency(jive::output * origin)
 	{
-		auto input = node_->add_input(origin->type(), origin);
+		auto input = add_input(origin->type(), origin);
 		return subregion()->add_argument(input, origin->type());
 	}
 
-private:
-	jive::structural_node * node_;
+	inline const jive::fct::type &
+	function_type() const noexcept
+	{
+		return static_cast<const jive::fct::lambda_op*>(&operation())->function_type();
+	}
 };
 
 class lambda_builder final {
 public:
-	inline std::vector<jive::output*>
+	inline
+	lambda_builder()
+	: lambda_(nullptr)
+	{}
+
+	inline std::vector<jive::argument*>
 	begin_lambda(jive::region * parent, jive::fct::type type)
 	{
-		std::vector<jive::output*> arguments;
+		std::vector<jive::argument*> arguments;
 
 		if (lambda_) {
 			auto argument = lambda_->subregion()->argument(0);
@@ -191,12 +201,11 @@ public:
 			return arguments;
 		}
 
-		auto node = parent->add_structural_node(jive::fct::lambda_op(std::move(type)), 1);
-		lambda_ = std::make_unique<jive::lambda>(node);
-
-		for (size_t n = 0; n < type.narguments(); n++)
-			arguments.push_back(lambda_->subregion()->add_argument(nullptr, type.argument_type(n)));
-
+		lambda_ = jive::lambda_node::create(parent, std::move(type));
+		for (size_t n = 0; n < lambda_->function_type().narguments(); n++) {
+			auto & argument_type = lambda_->function_type().argument_type(n);
+			arguments.push_back(lambda_->subregion()->add_argument(nullptr, argument_type));
+		}
 		return arguments;
 	}
 
@@ -212,26 +221,27 @@ public:
 		return lambda_ ? lambda_->add_dependency(value) : nullptr;
 	}
 
-	inline std::unique_ptr<jive::lambda>
+	inline jive::lambda_node *
 	end_lambda(const std::vector<jive::output*> & results)
 	{
 		if (!lambda_)
 			return nullptr;
 
-		const auto & ftype = static_cast<const fct::lambda_op*>(
-			&lambda_->node()->operation())->function_type();
+		const auto & ftype = lambda_->function_type();
 		if (results.size() != ftype.nresults())
 			throw jive::compiler_error("Incorrect number of results.");
 
 		for (size_t n = 0; n < results.size(); n++)
-			lambda_->node()->subregion(0)->add_result(results[n], nullptr, ftype.result_type(n));
-		lambda_->node()->add_output(ftype);
+			lambda_->subregion()->add_result(results[n], nullptr, ftype.result_type(n));
+		lambda_->add_output(ftype);
 
-		return std::move(lambda_);
+		auto lambda = lambda_;
+		lambda_ = nullptr;
+		return lambda;
 	}
 
 private:
-	std::unique_ptr<jive::lambda> lambda_;
+	jive::lambda_node * lambda_;
 };
 
 }

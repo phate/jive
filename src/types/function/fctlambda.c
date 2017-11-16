@@ -54,6 +54,10 @@ lambda_op::copy() const
 }
 
 }
+
+lambda_node::~lambda_node()
+{}
+
 }
 
 bool

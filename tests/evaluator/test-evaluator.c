@@ -82,7 +82,7 @@ fib(size_t n)
 	auto exk = gamma->add_exitvar({evk->argument(0), evlvk->argument(1)});
 	auto exn = gamma->add_exitvar({evn->argument(0), evlvn->argument(1)});
 
-	return lb.end_lambda({gamma->output(1)})->node()->output(0);
+	return lb.end_lambda({gamma->output(1)})->output(0);
 }
 
 static void
@@ -173,7 +173,7 @@ unsigned int fib(unsigned int n){
 	auto ev2 = gamma->add_entryvar(n);
 	auto ex = gamma->add_exitvar({ev1->argument(0), ev2->argument(1)});
 
-	auto fib = lb.end_lambda({gamma->output(0)})->node()->output(0);
+	auto fib = lb.end_lambda({gamma->output(0)})->output(0);
 	rv->set_value(fib);
 	pb.end_phi();
 
@@ -236,7 +236,7 @@ test_loadstore(jive::graph * graph)
 	jive::lambda_builder lb;
 	auto arguments = lb.begin_lambda(graph->root(), {{&mem, &bits64}, {&mem}});
 
-	auto state = arguments[0];
+	jive::output * state = arguments[0];
 	auto address = arguments[1];
 
 	auto value = jive_load_by_bitstring_create(address, 64, &bits4, 1, &state);
@@ -246,7 +246,7 @@ test_loadstore(jive::graph * graph)
 
 	state = jive_store_by_bitstring_create(address, 64, &bits4, value, 1, &state)[0];
 
-	auto f = lb.end_lambda({state})->node()->output(0);
+	auto f = lb.end_lambda({state})->output(0);
 
 	graph->export_port(f, "loadstore");
 
@@ -278,7 +278,7 @@ test_external_function()
 	auto sum = jive::bits::create_add(64, arguments[0], v);
 	auto lambda = lb.end_lambda({sum});
 
-	graph.export_port(lambda->node()->output(0), "test");
+	graph.export_port(lambda->output(0), "test");
 
 	jive::view(graph.root(), stdout);
 

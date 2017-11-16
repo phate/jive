@@ -29,7 +29,7 @@ static int function_test_build_lambda(void)
 
 	auto sum = jive::bits::create_add(32, arguments[0], arguments[1]);
 
-	auto fct = lb.end_lambda({sum})->node()->output(0);
+	auto fct = lb.end_lambda({sum})->output(0);
 
 	jive::view(graph.root(), stderr);
 	

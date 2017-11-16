@@ -33,15 +33,15 @@ static int test_main()
 
 	jive::lambda_builder lb;
 	lb.begin_lambda(pb.region(), f0type);
-	auto lambda0 = lb.end_lambda({})->node()->output(0);
+	auto lambda0 = lb.end_lambda({})->output(0);
 
 	lb.begin_lambda(pb.region(), f0type);
-	auto lambda1 = lb.end_lambda({})->node()->output(0);
+	auto lambda1 = lb.end_lambda({})->output(0);
 
 	auto arguments = lb.begin_lambda(pb.region(), f1type);
 	auto dep = lb.add_dependency(rv3->value());
 	auto ret = jive::fct::create_apply(dep, {arguments[0]})[0];
-	auto lambda2 = lb.end_lambda({ret})->node()->output(0);
+	auto lambda2 = lb.end_lambda({ret})->output(0);
 
 	rv1->set_value(lambda0);
 	rv2->set_value(lambda1);
