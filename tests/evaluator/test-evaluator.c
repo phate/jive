@@ -67,24 +67,22 @@ fib(size_t n)
 	cmp = jive::bits::create_ule(32, k, n);
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
-	jive::gamma_builder gb;
-	gb.begin_gamma(predicate);
-	auto evi = gb.add_entryvar(i);
-	auto evj = gb.add_entryvar(j);
-	auto evk = gb.add_entryvar(k);
-	auto evn = gb.add_entryvar(n);
-	auto evlvi = gb.add_entryvar(lv_i->output());
-	auto evlvj = gb.add_entryvar(lv_j->output());
-	auto evlvk = gb.add_entryvar(lv_k->output());
-	auto evlvn = gb.add_entryvar(lv_n->output());
+	auto gamma = jive::gamma_node::create(predicate, 2);
+	auto evi = gamma->add_entryvar(i);
+	auto evj = gamma->add_entryvar(j);
+	auto evk = gamma->add_entryvar(k);
+	auto evn = gamma->add_entryvar(n);
+	auto evlvi = gamma->add_entryvar(lv_i->output());
+	auto evlvj = gamma->add_entryvar(lv_j->output());
+	auto evlvk = gamma->add_entryvar(lv_k->output());
+	auto evlvn = gamma->add_entryvar(lv_n->output());
 
-	auto exi = gb.add_exitvar({evi->argument(0), evlvi->argument(1)});
-	auto exj = gb.add_exitvar({evj->argument(0), evlvj->argument(1)});
-	auto exk = gb.add_exitvar({evk->argument(0), evlvk->argument(1)});
-	auto exn = gb.add_exitvar({evn->argument(0), evlvn->argument(1)});
-	auto gamma = gb.end_gamma();
+	auto exi = gamma->add_exitvar({evi->argument(0), evlvi->argument(1)});
+	auto exj = gamma->add_exitvar({evj->argument(0), evlvj->argument(1)});
+	auto exk = gamma->add_exitvar({evk->argument(0), evlvk->argument(1)});
+	auto exn = gamma->add_exitvar({evn->argument(0), evlvn->argument(1)});
 
-	return lb.end_lambda({gamma->node()->output(1)})->node()->output(0);
+	return lb.end_lambda({gamma->output(1)})->node()->output(0);
 }
 
 static void
@@ -170,14 +168,12 @@ unsigned int fib(unsigned int n){
 	auto cmp = jive::bits::create_ult(32, n, two);
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
-	jive::gamma_builder gb;
-	gb.begin_gamma(predicate);
-	auto ev1 = gb.add_entryvar(result);
-	auto ev2 = gb.add_entryvar(n);
-	auto ex = gb.add_exitvar({ev1->argument(0), ev2->argument(1)});
-	auto gamma = gb.end_gamma();
+	auto gamma = jive::gamma_node::create(predicate, 2);
+	auto ev1 = gamma->add_entryvar(result);
+	auto ev2 = gamma->add_entryvar(n);
+	auto ex = gamma->add_exitvar({ev1->argument(0), ev2->argument(1)});
 
-	auto fib = lb.end_lambda({gamma->node()->output(0)})->node()->output(0);
+	auto fib = lb.end_lambda({gamma->output(0)})->node()->output(0);
 	rv->set_value(fib);
 	pb.end_phi();
 

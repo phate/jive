@@ -22,39 +22,36 @@ namespace jive {
 /* gamma normal form */
 
 static bool
-is_predicate_reducible(const jive::structural_node * node)
+is_predicate_reducible(const jive::gamma_node * gamma)
 {
-	auto constant = node->input(0)->origin()->node();
+	auto constant = gamma->predicate()->origin()->node();
 	return constant && is_ctlconstant_op(constant->operation());
 }
 
 static void
-perform_predicate_reduction(jive::structural_node * node)
+perform_predicate_reduction(jive::gamma_node * gamma)
 {
-	jive::gamma gamma(node);
-	auto constant = gamma.predicate()->origin()->node();
+	auto constant = gamma->predicate()->origin()->node();
 	auto cop = static_cast<const jive::ctl::constant_op*>(&constant->operation());
 	auto alternative = cop->value().alternative();
 
 	jive::substitution_map smap;
-	for (auto it = gamma.begin_entryvar(); it != gamma.end_entryvar(); it++)
+	for (auto it = gamma->begin_entryvar(); it != gamma->end_entryvar(); it++)
 		smap.insert(it->argument(alternative), it->input()->origin());
 
-	gamma.subregion(alternative)->copy(gamma.region(), smap, false, false);
+	gamma->subregion(alternative)->copy(gamma->region(), smap, false, false);
 
-	for (auto it = gamma.begin_exitvar(); it != gamma.end_exitvar(); it++)
+	for (auto it = gamma->begin_exitvar(); it != gamma->end_exitvar(); it++)
 		it->output()->replace(smap.lookup(it->result(alternative)->origin()));
 
-	remove(node);
+	remove(gamma);
 }
 
 static bool
-perform_invariant_reduction(jive::structural_node * node)
+perform_invariant_reduction(jive::gamma_node * gamma)
 {
-	jive::gamma gamma(node);
-
 	bool was_normalized = true;
-	for (auto it = gamma.begin_exitvar(); it != gamma.end_exitvar(); it++) {
+	for (auto it = gamma->begin_exitvar(); it != gamma->end_exitvar(); it++) {
 		auto argument = dynamic_cast<const jive::argument*>(it->result(0)->origin());
 		if (!argument) continue;
 
@@ -76,12 +73,10 @@ perform_invariant_reduction(jive::structural_node * node)
 }
 
 static std::unordered_set<jive::structural_output*>
-is_control_constant_reducible(jive::structural_node * node)
+is_control_constant_reducible(jive::gamma_node * gamma)
 {
-	jive::gamma gamma(node);
-
 	/* check gamma predicate */
-	auto match = gamma.predicate()->origin()->node();
+	auto match = gamma->predicate()->origin()->node();
 	if (!match) return {};
 
 	auto match_op = dynamic_cast<const ctl::match_op*>(&match->operation());
@@ -92,12 +87,12 @@ is_control_constant_reducible(jive::structural_node * node)
 	for (const auto & pair : *match_op)
 		set.insert(pair.second);
 
-	if (set.size() != gamma.nsubregions())
+	if (set.size() != gamma->nsubregions())
 		return {};
 
 	/* check for constants */
 	std::unordered_set<jive::structural_output*> exitvars;
-	for (auto it = gamma.begin_exitvar(); it != gamma.end_exitvar(); it++) {
+	for (auto it = gamma->begin_exitvar(); it != gamma->end_exitvar(); it++) {
 		if (!is_ctltype(it->output()->type()))
 			continue;
 
@@ -116,15 +111,15 @@ is_control_constant_reducible(jive::structural_node * node)
 static void
 perform_control_constant_reduction(std::unordered_set<jive::structural_output*> & exitvars)
 {
-	jive::gamma gamma(static_cast<jive::structural_node*>((*exitvars.begin())->node()));
-	auto match = gamma.predicate()->origin()->node();
+	auto gamma = static_cast<jive::gamma_node*>((*exitvars.begin())->node());
+	auto match = gamma->predicate()->origin()->node();
 	auto & match_op = to_match_op(match->operation());
 
 	std::unordered_map<uint64_t, uint64_t> map;
 	for (const auto & pair : match_op)
 		map[pair.second] = pair.first;
 
-	for (auto xv = gamma.begin_exitvar(); xv != gamma.end_exitvar(); xv++) {
+	for (auto xv = gamma->begin_exitvar(); xv != gamma->end_exitvar(); xv++) {
 		if (exitvars.find(xv->output()) == exitvars.end())
 			continue;
 
@@ -167,8 +162,8 @@ gamma_normal_form::gamma_normal_form(
 bool
 gamma_normal_form::normalize_node(jive::node * node_) const
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_op*>(&node_->operation()));
-	auto node = static_cast<jive::structural_node*>(node_);
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_node*>(node_));
+	auto node = static_cast<jive::gamma_node*>(node_);
 
 	if (!get_mutable())
 		return true;
@@ -258,6 +253,11 @@ gamma_op::operator==(const operation & other) const noexcept
 	const gamma_op * op = dynamic_cast<const gamma_op*>(&other);
 	return op && op->predicate_type_ == predicate_type_;
 }
+
+/* gamma node */
+
+gamma_node::~gamma_node()
+{}
 
 }
 
