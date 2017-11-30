@@ -64,16 +64,4 @@ graph::node_normal_form(const std::type_info & type) noexcept
 	return result;
 }
 
-jive::gate *
-graph::create_gate(const std::string & name, const jive::type & type)
-{
-	return new jive::gate(this, name, type);
-}
-
-jive::gate *
-graph::create_gate(const std::string & name, const jive::resource_class * rescls)
-{
-	return new jive::gate(this, name, rescls);
-}
-
 }

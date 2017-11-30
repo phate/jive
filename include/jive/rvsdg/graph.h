@@ -58,19 +58,22 @@ public:
 	jive::node_normal_form *
 	node_normal_form(const std::type_info & type) noexcept;
 
-	jive::gate *
-	create_gate(const std::string & name, const jive::type & type);
+	inline jive::gate *
+	create_gate(const std::string & name, const jive::type & type)
+	{
+		return gate::create(this, name, type);
+	}
 
-	jive::gate *
-	create_gate(const std::string & name, const jive::resource_class * rescls);
+	inline jive::gate *
+	create_gate(const std::string & name, const jive::resource_class * rescls)
+	{
+		return gate::create(this, name, rescls);
+	}
 
 	inline jive::gate *
 	create_gate(const jive::gate * gate)
 	{
-		if (gate->rescls() != &jive_root_resource_class)
-			return create_gate(gate->name(), gate->rescls());
-
-		return create_gate(gate->name(), gate->type());
+		return gate::create(this, gate);
 	}
 
 	inline jive::argument *

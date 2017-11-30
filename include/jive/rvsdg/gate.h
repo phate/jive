@@ -6,6 +6,7 @@
 #ifndef JIVE_RVSDG_GATE_H
 #define JIVE_RVSDG_GATE_H
 
+#include <jive/rvsdg/resource.h>
 #include <jive/util/intrusive-hash.h>
 
 /* gate interference */
@@ -58,6 +59,7 @@ class gate final {
 public:
 	~gate() noexcept;
 
+private:
 	gate(
 		jive::graph * graph,
 		const std::string & name,
@@ -67,6 +69,44 @@ public:
 		jive::graph * graph,
 		const std::string & name,
 		const struct jive::resource_class * rescls);
+
+	gate(const gate&) = delete;
+
+	gate(gate&&) = delete;
+
+	gate &
+	operator=(const gate&) = delete;
+
+	gate &
+	operator=(gate&&) = delete;
+
+public:
+	static inline gate *
+	create(
+		jive::graph * graph,
+		const std::string & name,
+		const jive::type & type)
+	{
+		return new jive::gate(graph, name, type);
+	}
+
+	static inline gate *
+	create(
+		jive::graph * graph,
+		const std::string & name,
+		const jive::resource_class * rescls)
+	{
+		return new jive::gate(graph, name, rescls);
+	}
+
+	static inline gate *
+	create(jive::graph * graph, const jive::gate * gate)
+	{
+		if (gate->rescls() != &jive_root_resource_class)
+			return create(graph, gate->name(), gate->rescls());
+
+		return create(graph, gate->name(), gate->type());
+	}
 
 	const jive::type &
 	type() const noexcept
