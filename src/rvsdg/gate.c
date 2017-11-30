@@ -21,7 +21,6 @@ gate::gate(
 {
 	inputs.first = inputs.last = nullptr;
 	outputs.first = outputs.last = nullptr;
-	may_spill = true;
 	graph_gate_list.prev = graph_gate_list.next = nullptr;
 
 	JIVE_LIST_PUSH_BACK(graph->gates, this, graph_gate_list);
@@ -38,7 +37,6 @@ gate::gate(
 {
 	inputs.first = inputs.last = nullptr;
 	outputs.first = outputs.last = nullptr;
-	may_spill = true;
 	graph_gate_list.prev = graph_gate_list.next = nullptr;
 
 	JIVE_LIST_PUSH_BACK(graph->gates, this, graph_gate_list);

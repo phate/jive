@@ -135,7 +135,6 @@ jive_subroutine_begin(
 				sub.signature.passthroughs[n].name, jive::memtype::instance());
 		}
 
-		sub.builder_state->passthroughs[n].gate->may_spill = sub.signature.passthroughs[n].may_spill;
 		sub.builder_state->passthroughs[n].output = sub.region->add_argument(nullptr,
 			sub.builder_state->passthroughs[n].gate);
 	}

@@ -119,8 +119,6 @@ public:
 		jive::output * last;
 	}	outputs;
 
-	bool may_spill;
-
 private:
 	std::string name_;
 	jive::graph * graph_;
