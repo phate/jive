@@ -16,8 +16,8 @@ gate::gate(
 	const jive::type & type)
 : name_(name)
 , graph_(graph)
-, rescls_(&jive_root_resource_class)
 , type_(type.copy())
+, rescls_(&jive_root_resource_class)
 {
 	inputs.first = inputs.last = nullptr;
 	outputs.first = outputs.last = nullptr;
@@ -32,8 +32,8 @@ gate::gate(
 	const resource_class * rescls)
 : name_(name)
 , graph_(graph)
-, rescls_(rescls)
 , type_(rescls->type().copy())
+, rescls_(rescls)
 {
 	inputs.first = inputs.last = nullptr;
 	outputs.first = outputs.last = nullptr;

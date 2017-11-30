@@ -122,15 +122,10 @@ public:
 private:
 	std::string name_;
 	jive::graph * graph_;
+	std::unique_ptr<jive::type> type_;
 	jive_gate_interference_hash interference_;
 	const struct jive::resource_class * rescls_;
 
-	/*
-		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the
-		number given by the operation. Once this is fixed, the attribute can be removed and the type
-		can be taken from the operation.
-	*/
-	std::unique_ptr<jive::type> type_;
 };
 
 }
