@@ -152,10 +152,8 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 		if (input(n)->port().gate()) {
 			auto gate = input(n)->port().gate();
 			auto new_gate = smap.lookup(gate);
-			if (!new_gate) {
-				new_gate = graph()->create_gate(gate);
-				smap.insert(gate, new_gate);
-			}
+			if (!new_gate)
+				smap.insert(gate, gate::create(graph(), gate));
 
 			new_input = node->add_input(new_gate, origin);
 		} else {
@@ -170,10 +168,8 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 		if (output(n)->port().gate()) {
 			auto gate = output(n)->port().gate();
 			auto new_gate = smap.lookup(gate);
-			if (!new_gate) {
-				new_gate = graph()->create_gate(gate);
-				smap.insert(gate, new_gate);
-			}
+			if (!new_gate)
+				smap.insert(gate, gate::create(graph(), gate));
 
 			new_output = node->add_output(new_gate);
 		} else {

@@ -114,24 +114,25 @@ jive_subroutine_begin(
 
 	for (size_t n = 0; n < sub.signature.arguments.size(); n++) {
 		auto rescls = sub.signature.arguments[n].rescls;
-		sub.builder_state->arguments[n].gate = graph->create_gate(sub.signature.arguments[n].name,
-			rescls);
+		sub.builder_state->arguments[n].gate = jive::gate::create(graph,
+			sub.signature.arguments[n].name, rescls);
 		sub.builder_state->arguments[n].output = sub.region->add_argument(nullptr,
 			sub.builder_state->arguments[n].gate);
 	}
 
 	for (size_t n = 0; n < sub.signature.results.size(); n++) {
 		auto rescls = sub.signature.results[n].rescls;
-		sub.builder_state->results[n].gate = graph->create_gate(sub.signature.results[n].name, rescls);
+		sub.builder_state->results[n].gate = jive::gate::create(graph, sub.signature.results[n].name,
+			rescls);
 	}
 
 	for (size_t n = 0; n < sub.signature.passthroughs.size(); n++) {
 		if (sub.signature.passthroughs[n].rescls) {
 			auto rescls = sub.signature.passthroughs[n].rescls;
-			sub.builder_state->passthroughs[n].gate = graph->create_gate(
+			sub.builder_state->passthroughs[n].gate = jive::gate::create(graph,
 				sub.signature.passthroughs[n].name, rescls);
 		} else {
-			sub.builder_state->passthroughs[n].gate = graph->create_gate(
+			sub.builder_state->passthroughs[n].gate = jive::gate::create(graph,
 				sub.signature.passthroughs[n].name, jive::memtype::instance());
 		}
 

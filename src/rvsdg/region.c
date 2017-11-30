@@ -228,10 +228,8 @@ region::copy(
 			if (argument(n)->port().gate()) {
 				auto gate = argument(n)->port().gate();
 				auto new_gate = smap.lookup(gate);
-				if (!new_gate) {
-					new_gate = graph()->create_gate(gate);
-					smap.insert(gate, new_gate);
-				}
+				if (!new_gate)
+					smap.insert(gate, gate::create(graph(), gate));
 
 				new_argument = target->add_argument(smap.lookup(argument(n)->input()), gate);
 			} else {
@@ -259,10 +257,8 @@ region::copy(
 			if (result(n)->port().gate()) {
 				auto gate = result(n)->port().gate();
 				auto new_gate = smap.lookup(gate);
-				if (!new_gate) {
-					new_gate = graph()->create_gate(gate);
-					smap.insert(gate, new_gate);
-				}
+				if (!new_gate)
+					smap.insert(gate, gate::create(graph(), gate));
 
 				target->add_result(origin, output, gate);
 			} else {
