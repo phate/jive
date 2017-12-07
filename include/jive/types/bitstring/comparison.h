@@ -40,6 +40,9 @@ public: \
 \
 	virtual std::unique_ptr<jive::operation> \
 	copy() const override; \
+\
+	virtual std::unique_ptr<bits::compare_op> \
+	create(size_t nbits) const override; \
 }; \
 \
 static inline jive::output * \

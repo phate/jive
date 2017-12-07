@@ -58,6 +58,9 @@ public:
 	reduce_constant(
 		const value_repr & arg) const = 0;
 
+	virtual std::unique_ptr<bits::unary_op>
+	create(size_t nbits) const = 0;
+
 private:
 	jive::port port_;
 };
@@ -104,6 +107,8 @@ public:
 		const value_repr & arg1,
 		const value_repr & arg2) const = 0;
 
+	virtual std::unique_ptr<bits::binary_op>
+	create(size_t nbits) const = 0;
 
 	inline const jive::bits::type &
 	type() const noexcept
@@ -164,6 +169,9 @@ public:
 	reduce_constants(
 		const value_repr & arg1,
 		const value_repr & arg2) const = 0;
+
+	virtual std::unique_ptr<bits::compare_op>
+	create(size_t nbits) const = 0;
 
 	inline const jive::bits::type &
 	type() const noexcept

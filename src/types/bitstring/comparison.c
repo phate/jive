@@ -49,6 +49,12 @@ NAME ## _op::copy() const \
 { \
 	return std::unique_ptr<jive::operation>(new NAME ## _op(*this)); \
 } \
+\
+std::unique_ptr<bits::compare_op> \
+NAME ## _op::create(size_t nbits) const \
+{ \
+	return std::unique_ptr<bits::compare_op>(new NAME ## _op(nbits)); \
+} \
 
 DEFINE_BITCOMPARISON_OPERATION(eq, jive_binary_operation_commutative, BITEQ);
 DEFINE_BITCOMPARISON_OPERATION(ne, jive_binary_operation_commutative, BITNE);

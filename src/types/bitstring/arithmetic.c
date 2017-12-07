@@ -40,6 +40,12 @@ NAME ## _op::copy() const \
 { \
 	return std::unique_ptr<jive::operation>(new NAME ## _op(*this)); \
 } \
+\
+std::unique_ptr<bits::unary_op> \
+NAME ## _op::create(size_t nbits) const \
+{ \
+	return std::unique_ptr<bits::unary_op>(new NAME ## _op(nbits)); \
+} \
 
 #define DEFINE_BITBINARY_OPERATION(NAME, REDUCTION, DEBUG_STRING, FLAGS) \
 NAME ## _op::~NAME ## _op() noexcept \
@@ -76,6 +82,12 @@ std::unique_ptr<jive::operation> \
 NAME ## _op::copy() const \
 { \
 	return std::unique_ptr<jive::operation>(new NAME ## _op(*this)); \
+} \
+\
+std::unique_ptr<bits::binary_op> \
+NAME ## _op::create(size_t nbits) const \
+{ \
+	return std::unique_ptr<bits::binary_op>(new NAME ## _op(nbits)); \
 } \
 
 DEFINE_BITUNARY_OPERATION(neg, arg.neg(), BITNEGATE);

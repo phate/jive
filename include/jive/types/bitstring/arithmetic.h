@@ -34,6 +34,9 @@ public: \
 \
 	virtual std::unique_ptr<jive::operation> \
 	copy() const override; \
+\
+	virtual std::unique_ptr<bits::unary_op> \
+	create(size_t nbits) const override; \
 }; \
 \
 static inline jive::output * \
@@ -75,6 +78,9 @@ public: \
 \
 	virtual std::unique_ptr<jive::operation> \
 	copy() const override; \
+\
+	virtual std::unique_ptr<bits::binary_op> \
+	create(size_t nbits) const override; \
 }; \
 \
 static inline jive::output * \
