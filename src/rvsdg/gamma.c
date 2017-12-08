@@ -269,7 +269,7 @@ gamma_node::copy(jive::region * region, jive::substitution_map & smap) const
 	for (auto oev = begin_entryvar(); oev != end_entryvar(); oev++) {
 		auto nev = gamma->add_entryvar(smap.lookup(oev->input()->origin()));
 		for (size_t n = 0; n < nev->narguments(); n++)
-			smap.insert(oev->argument(n), nev->argument(n));
+			rmap[n].insert(oev->argument(n), nev->argument(n));
 	}
 
 	/* copy subregions */
@@ -280,7 +280,7 @@ gamma_node::copy(jive::region * region, jive::substitution_map & smap) const
 	for (auto oex = begin_exitvar(); oex != end_exitvar(); oex++) {
 		std::vector<jive::output*> operands;
 		for (size_t n = 0; n < oex->nresults(); n++)
-			operands.push_back(smap.lookup(oex->result(n)->origin()));
+			operands.push_back(rmap[n].lookup(oex->result(n)->origin()));
 		auto nex = gamma->add_exitvar(operands);
 		smap.insert(oex->output(), nex->output());
 	}
