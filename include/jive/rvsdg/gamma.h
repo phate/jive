@@ -410,6 +410,9 @@ public:
 
 		return std::shared_ptr<exitvar>(new exitvar(output));
 	}
+
+	virtual jive::gamma_node *
+	copy(jive::region * region, jive::substitution_map & smap) const override;
 };
 
 }

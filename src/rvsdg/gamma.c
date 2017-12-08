@@ -259,6 +259,35 @@ gamma_op::operator==(const operation & other) const noexcept
 gamma_node::~gamma_node()
 {}
 
+jive::gamma_node *
+gamma_node::copy(jive::region * region, jive::substitution_map & smap) const
+{
+	auto gamma = create(smap.lookup(predicate()->origin()), nsubregions());
+
+	/* add entry variables to new gamma */
+	jive::substitution_map rmap[nsubregions()];
+	for (auto oev = begin_entryvar(); oev != end_entryvar(); oev++) {
+		auto nev = gamma->add_entryvar(smap.lookup(oev->input()->origin()));
+		for (size_t n = 0; n < nev->narguments(); n++)
+			smap.insert(oev->argument(n), nev->argument(n));
+	}
+
+	/* copy subregions */
+	for (size_t r = 0; r < nsubregions(); r++)
+		subregion(r)->copy(gamma->subregion(r), rmap[r], false, false);
+
+	/* add exit variables to new gamma */
+	for (auto oex = begin_exitvar(); oex != end_exitvar(); oex++) {
+		std::vector<jive::output*> operands;
+		for (size_t n = 0; n < oex->nresults(); n++)
+			operands.push_back(smap.lookup(oex->result(n)->origin()));
+		auto nex = gamma->add_exitvar(operands);
+		smap.insert(oex->output(), nex->output());
+	}
+
+	return gamma;
+}
+
 }
 
 jive::node_normal_form *

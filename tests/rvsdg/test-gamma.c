@@ -10,6 +10,7 @@
 #include <jive/rvsdg/control.h>
 #include <jive/rvsdg/gamma.h>
 #include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/substitution.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/view.h>
 
@@ -35,9 +36,11 @@ test_gamma(void)
 	gamma->add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
 
 	graph.export_port(gamma->output(0), "dummy");
+	auto gamma2 = static_cast<jive::structural_node*>(gamma)->copy(graph.root(), {pred, v0, v1, v2});
 	jive::view(graph.root(), stdout);
 
 	assert(gamma && gamma->operation() == jive::gamma_op(3));
+	assert(dynamic_cast<const jive::gamma_node*>(gamma2));
 }
 
 static void
