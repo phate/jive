@@ -14,6 +14,9 @@
 namespace jive {
 
 class gate;
+class output;
+class region;
+class structural_input;
 
 class substitution_map final {
 public:
