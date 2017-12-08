@@ -4,6 +4,7 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <jive/rvsdg/substitution.h>
 #include <jive/rvsdg/theta.h>
 
 namespace jive {
@@ -25,5 +26,34 @@ theta_op::copy() const
 
 theta_node::~theta_node()
 {}
+
+jive::theta_node *
+theta_node::copy(jive::region * region, jive::substitution_map & smap) const
+{
+	auto nf = graph()->node_normal_form(typeid(jive::operation));
+	nf->set_mutable(false);
+
+	jive::substitution_map rmap;
+	auto theta = create(region);
+
+	/* add loop variables */
+	for (auto olv : *this) {
+		auto nlv = theta->add_loopvar(smap.lookup(olv.input()->origin()));
+		rmap.insert(olv.argument(), nlv->argument());
+	}
+
+	/* copy subregion */
+	subregion()->copy(theta->subregion(), rmap, false, false);
+	theta->set_predicate(rmap.lookup(predicate()->origin()));
+
+	/* redirect loop variables */
+	for (auto olv = begin(), nlv = theta->begin(); olv != end(); olv++, nlv++) {
+		nlv->result()->divert_origin(rmap.lookup(olv->result()->origin()));
+		smap.insert(olv->output(), nlv->output());
+	}
+
+	nf->set_mutable(true);
+	return theta;
+}
 
 }

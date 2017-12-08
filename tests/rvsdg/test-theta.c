@@ -32,7 +32,7 @@ test_main()
 	theta->set_predicate(lv1->argument());
 
 	graph.export_port(theta->output(0), "exp");
-
+	auto theta2 = static_cast<jive::structural_node*>(theta)->copy(graph.root(), {imp1, imp2, imp3});
 	jive::view(graph.root(), stdout);
 
 	assert(lv1->output()->node() == theta);
@@ -42,6 +42,8 @@ test_main()
 	assert(theta->predicate() == theta->subregion()->result(0));
 	assert(theta->nloopvars() == 3);
 	assert(theta->begin()->result() == theta->subregion()->result(1));
+
+	assert(dynamic_cast<const jive::theta_node*>(theta2));
 
 	return 0;
 }

@@ -246,6 +246,9 @@ public:
 		subregion()->add_result(argument, output, origin->type());
 		return std::make_shared<loopvar>(loopvar(input, output));
 	}
+
+	virtual jive::theta_node *
+	copy(jive::region * region, jive::substitution_map & smap) const override;
 };
 
 }
