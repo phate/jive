@@ -34,7 +34,7 @@ function_test_build_lambda(void)
 	auto sum = jive::bits::create_add(32, arguments[0], arguments[1]);
 
 	auto f1 = lb.end_lambda({sum});
-	auto f2 = static_cast<jive::lambda_node*>(f1)->copy(graph.root(), {x});
+	auto f2 = static_cast<jive::structural_node*>(f1)->copy(graph.root(), {x});
 
 	jive::view(graph.root(), stderr);
 	
