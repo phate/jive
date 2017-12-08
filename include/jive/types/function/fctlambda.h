@@ -178,6 +178,9 @@ public:
 	{
 		return static_cast<const jive::fct::lambda_op*>(&operation())->function_type();
 	}
+
+	virtual jive::lambda_node *
+	copy(jive::region * region, jive::substitution_map & smap) const override;
 };
 
 class lambda_builder final {

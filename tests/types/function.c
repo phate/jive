@@ -19,23 +19,27 @@
 #include <jive/types/function/fcttype.h>
 #include <jive/view.h>
 
-static int function_test_build_lambda(void)
+static int
+function_test_build_lambda(void)
 {
+	jive::bits::type bt32(32);
+
 	jive::graph graph;
-	jive::bits::type bits32(32);
+	auto x = graph.import(bt32, "x");
 
 	jive::lambda_builder lb;
-	auto arguments = lb.begin_lambda(graph.root(), {{&bits32, &bits32}, {&bits32}});
+	auto arguments = lb.begin_lambda(graph.root(), {{&bt32, &bt32}, {&bt32}});
+	lb.add_dependency(x);
 
 	auto sum = jive::bits::create_add(32, arguments[0], arguments[1]);
 
-	auto fct = lb.end_lambda({sum})->output(0);
+	auto f1 = lb.end_lambda({sum});
+	auto f2 = static_cast<jive::lambda_node*>(f1)->copy(graph.root(), {x});
 
 	jive::view(graph.root(), stderr);
 	
-	jive::fct::type ftype({&bits32, &bits32}, {&bits32});
-
-	assert(ftype == fct->type());
+	assert(f1->output(0)->type() == jive::fct::type({&bt32, &bt32}, {&bt32}));
+	assert(dynamic_cast<const jive::lambda_node*>(f2));
 	
 	return 0;
 }

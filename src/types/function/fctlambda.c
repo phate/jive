@@ -12,6 +12,7 @@
 
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/phi.h>
+#include <jive/rvsdg/substitution.h>
 
 /* lambda node */
 
@@ -55,8 +56,38 @@ lambda_op::copy() const
 
 }
 
+/* lambda node class */
+
 lambda_node::~lambda_node()
 {}
+
+jive::lambda_node *
+lambda_node::copy(jive::region * region, jive::substitution_map & smap) const
+{
+	jive::lambda_builder lb;
+	auto arguments = lb.begin_lambda(region, function_type());
+
+	/* add dependencies */
+	jive::substitution_map rmap;
+	for (size_t n = 0; n < function_type().narguments(); n++)
+		rmap.insert(subregion()->argument(n), arguments[n]);
+	for (const auto & odv : *this) {
+		auto ndv = lb.add_dependency(smap.lookup(odv->origin()));
+		rmap.insert(dynamic_cast<structural_input*>(odv)->arguments.first, ndv);
+	}
+
+	/* copy subregion */
+	subregion()->copy(lb.subregion(), rmap, false, false);
+
+	/* collect results */
+	std::vector<jive::output*> results;
+	for (size_t n = 0; n < subregion()->nresults(); n++)
+		results.push_back(rmap.lookup(subregion()->result(n)->origin()));
+
+	auto lambda = lb.end_lambda(results);
+	smap.insert(output(0), lambda->output(0));
+	return lambda;
+}
 
 }
 
