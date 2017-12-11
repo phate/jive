@@ -41,7 +41,7 @@ NAME ## _op::flags() const noexcept \
 std::string \
 NAME ## _op::debug_string() const \
 { \
-	return #DEBUG_STRING; \
+	return jive::detail::strfmt(#DEBUG_STRING, type().nbits()); \
 } \
 \
 std::unique_ptr<jive::operation> \

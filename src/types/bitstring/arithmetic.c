@@ -8,6 +8,7 @@
 #include <jive/types/bitstring/constant.h>
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/region.h>
+#include <jive/util/strfmt.h>
 
 namespace jive {
 namespace bits {
@@ -32,7 +33,7 @@ NAME ## _op::reduce_constant(const value_repr & arg) const \
 std::string \
 NAME ## _op::debug_string() const \
 { \
-	return #DEBUG_STRING; \
+	return jive::detail::strfmt(#DEBUG_STRING, type().nbits()); \
 } \
 \
 std::unique_ptr<jive::operation> \
@@ -75,7 +76,7 @@ NAME ## _op::flags() const noexcept \
 std::string \
 NAME ## _op::debug_string() const \
 { \
-	return #DEBUG_STRING; \
+	return jive::detail::strfmt(#DEBUG_STRING, type().nbits()); \
 } \
 \
 std::unique_ptr<jive::operation> \
