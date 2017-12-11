@@ -46,17 +46,7 @@ unary_normal_form::normalize_node(jive::node * node) const
 		}
 	}
 
-	if (get_cse()) {
-		jive::node * new_node = jive_node_cse(node->region(), op, {node->input(0)->origin()});
-		JIVE_DEBUG_ASSERT(new_node);
-		if (new_node != node) {
-			node->output(0)->replace(new_node->output(0));
-			node->region()->remove_node(node);
-			return false;
-		}
-	}
-
-	return true;
+	return simple_normal_form::normalize_node(node);
 }
 
 std::vector<jive::output*>
