@@ -384,6 +384,15 @@ operands(const jive::node * node)
 	return operands;
 }
 
+static inline std::vector<jive::output*>
+outputs(const jive::node * node)
+{
+	std::vector<jive::output*> outputs;
+	for (size_t n = 0; n < node->noutputs(); n++)
+		outputs.push_back(node->output(n));
+	return outputs;
+}
+
 static inline void
 replace(
 	jive::node * node,
