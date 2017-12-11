@@ -13,9 +13,87 @@
 #include <jive/rvsdg/node.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/simple-node.h>
+#include <jive/rvsdg/unary.h>
 
 namespace jive {
 namespace test {
+
+/* unary operation */
+
+class unary_op final : public jive::unary_op {
+public:
+	virtual
+	~unary_op() noexcept;
+
+	inline
+	unary_op(
+		const jive::port & srcport,
+		const jive::port & dstport) noexcept
+	: jive::unary_op()
+	, srcport_(srcport)
+	, dstport_(dstport)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual const jive::port &
+	argument(size_t index) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
+	virtual jive_unop_reduction_path_t
+	can_reduce_operand(
+		const jive::output * operand) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand(
+		jive_unop_reduction_path_t path,
+		jive::output * operand) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
+	static inline jive::node *
+	create(
+		jive::region * region,
+		const jive::port & srcport,
+		jive::output * operand,
+		const jive::port & dstport)
+	{
+		return region->add_simple_node(jive::test::unary_op(srcport, dstport), {operand});
+	}
+
+	static inline jive::output *
+	create_normalized(
+		const jive::port & srcport,
+		jive::output * operand,
+		const jive::port & dstport)
+	{
+		unary_op op(srcport, dstport);
+		return jive::create_normalized(operand->region(), op, {operand})[0];
+	}
+
+private:
+	jive::port srcport_;
+	jive::port dstport_;
+};
+
+static inline bool
+is_unary_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const unary_op*>(&op);
+}
+
+static inline bool
+is_unary_node(const jive::node * node) noexcept
+{
+	return is_opnode<unary_op>(node);
+}
 
 /* simple operation */
 
