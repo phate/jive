@@ -65,7 +65,7 @@ test_address_transform(void)
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
 		{bits64, mem}, {o_addr, store->output(0)}, {bits64});
-	graph.export_port(bottom->output(0), "dummy");
+	graph.add_export(bottom->output(0), "dummy");
 
 	jive::view(graph.root(), stdout);
 
@@ -98,8 +98,8 @@ test_address_transform_nodes(void)
 	auto a1 = jive_bitstring_to_address_create(i1, 32, &addrtype);
 	auto b1 = jive_address_to_bitstring_create(a1, 32, &addrtype);
 
-	auto x0 = graph.export_port(a0, "x0");
-	auto x1 = graph.export_port(b1, "x1");
+	auto x0 = graph.add_export(a0, "x0");
+	auto x1 = graph.add_export(b1, "x1");
 
 	assert(x0->origin() == i0);
 	assert(x1->origin() == i1);
@@ -187,7 +187,7 @@ test_containerof_transform(void)
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
 		std::vector<jive::port>(4, bits32), {offset0, offset1, offset2, offset3}, {bits32});
-	graph.export_port(bottom->output(0), "dummy");
+	graph.add_export(bottom->output(0), "dummy");
 
 	jive::view(graph.root(), stdout);
 
@@ -262,7 +262,7 @@ test_memberof_transform(void)
 	auto bottom = jive::test::simple_node_create(graph.root(),
 		std::vector<jive::port>(4, bits32), {offset0, offset1, offset2, offset3},
 		{bits32});
-	graph.export_port(bottom->output(0), "dummy");
+	graph.add_export(bottom->output(0), "dummy");
 
 	jive::view(graph.root(), stdout);
 

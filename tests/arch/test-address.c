@@ -70,7 +70,7 @@ static int test_main(void)
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
 		{addrtype, addrtype, bits32}, {memberof, arraysub, diff2}, {addrtype});
-	graph.export_port(bottom->output(0), "dummy");
+	graph.add_export(bottom->output(0), "dummy");
 
 	jive_node_address_transform(cont3->node(), &mapper);
 	jive_node_address_transform(memberof->node(), &mapper);

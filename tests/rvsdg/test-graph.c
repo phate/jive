@@ -46,8 +46,8 @@ test_recursive_prune()
 
 	auto n6 = jive::test::structural_node_create(n3->subregion(0), 1);
 
-	graph.export_port(n2->output(0), "n2");
-	graph.export_port(o1, "n3");
+	graph.add_export(n2->output(0), "n2");
+	graph.add_export(o1, "n3");
 
 	jive::view(graph.root(), stdout);
 	graph.prune();
@@ -94,8 +94,8 @@ test_prune_replace(void)
 	auto n2 = jive::test::simple_node_create(region, {type}, {n1->output(0)}, {type});
 	auto n3 = jive::test::simple_node_create(region, {type}, {n2->output(0)}, {type});
 
-	graph.export_port(n2->output(0), "n2");
-	graph.export_port(n3->output(0), "n3");
+	graph.add_export(n2->output(0), "n2");
+	graph.add_export(n3->output(0), "n3");
 
 	auto n4 = jive::test::simple_node_create(region, {type}, {n1->output(0)}, {type});
 

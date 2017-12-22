@@ -23,9 +23,9 @@ test_initialization()
 	auto binary = jive::test::simple_node_create(graph.root(), {vtype, vtype},
 		{i, unary->output(0)}, {vtype});
 
-	graph.export_port(constant->output(0), "c");
-	graph.export_port(unary->output(0), "u");
-	graph.export_port(binary->output(0), "b");
+	graph.add_export(constant->output(0), "c");
+	graph.add_export(unary->output(0), "u");
+	graph.add_export(binary->output(0), "b");
 
 	bool unary_visited = false;
 	bool binary_visited = false;
@@ -50,7 +50,7 @@ test_basic_traversal()
 	auto n2 = jive::test::simple_node_create(graph.root(), {type, type},
 		{n1->output(0), n1->output(1)}, {type});
 
-	graph.export_port(n2->output(0), "dummy");
+	graph.add_export(n2->output(0), "dummy");
 
 	{
 		jive::node * tmp;
@@ -103,7 +103,7 @@ test_traversal_insertion()
 	auto n2 = jive::test::simple_node_create(graph.root(), {type, type},
 		{n1->output(0), n1->output(1)}, {type});
 
-	graph.export_port(n2->output(0), "dummy");
+	graph.add_export(n2->output(0), "dummy");
 
 	{
 		jive::node * node;

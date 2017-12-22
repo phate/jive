@@ -35,7 +35,7 @@ test_gamma(void)
 	auto ev2 = gamma->add_entryvar(v2);
 	gamma->add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
 
-	graph.export_port(gamma->output(0), "dummy");
+	graph.add_export(gamma->output(0), "dummy");
 	auto gamma2 = static_cast<jive::structural_node*>(gamma)->copy(graph.root(), {pred, v0, v1, v2});
 	jive::view(graph.root(), stdout);
 
@@ -64,7 +64,7 @@ test_predicate_reduction(void)
 	auto ev2 = gamma->add_entryvar(v2);
 	gamma->add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
 
-	auto r = graph.export_port(gamma->output(0), "");
+	auto r = graph.add_export(gamma->output(0), "");
 
 	graph.normalize();
 //	jive::view(graph.root(), stdout);
@@ -89,7 +89,7 @@ test_invariant_reduction(void)
 	auto ev = gamma->add_entryvar(v);
 	gamma->add_exitvar({ev->argument(0), ev->argument(1)});
 
-	auto r = graph.export_port(gamma->output(0), "");
+	auto r = graph.add_export(gamma->output(0), "");
 
 	graph.normalize();
 //	jive::view(graph.root(), stdout);
@@ -118,7 +118,7 @@ test_control_constant_reduction()
 
 	gamma->add_exitvar({t, f});
 
-	auto ex = graph.export_port(gamma->output(0), "c");
+	auto ex = graph.add_export(gamma->output(0), "c");
 
 	jive::view(graph.root(), stdout);
 	graph.normalize();

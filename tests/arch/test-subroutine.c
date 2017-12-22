@@ -37,7 +37,7 @@ static int test_main(void)
 		{s1, arg3})->output(0);
 	jive_subroutine_simple_set_result(subroutine, 0, dynamic_cast<jive::simple_output*>(s2));
 	
-	graph.export_port(jive_subroutine_end(subroutine)->output(0), "dummy");
+	graph.add_export(jive_subroutine_end(subroutine)->output(0), "dummy");
 	
 	jive::view(graph.root(), stdout);
 

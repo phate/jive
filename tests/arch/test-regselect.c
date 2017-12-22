@@ -40,7 +40,7 @@ static int test_main(void)
 	auto res = jive::bits::create_udiv(32, sum1, sum2);
 	jive_subroutine_simple_set_result(subroutine, 0, dynamic_cast<jive::simple_output*>(res));
 	
-	graph.export_port(jive_subroutine_end(subroutine)->output(0), "dummy");
+	graph.add_export(jive_subroutine_end(subroutine)->output(0), "dummy");
 	
 	jive::view(graph.root(), stdout);
 	

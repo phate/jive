@@ -64,7 +64,7 @@ static int test_main(void)
 		std::vector<jive::port>(6, memtype),
 		{states0[0], states1[0], states1[0], states2[0], states4[0], states5[0]},
 		{memtype});
-	graph.export_port(bottom->output(0), "dummy");
+	graph.add_export(bottom->output(0), "dummy");
 
 	graph.normalize();
 	graph.prune();

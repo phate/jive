@@ -31,7 +31,7 @@ test_main()
 	lv3->result()->divert_origin(lv3->argument());
 	theta->set_predicate(lv1->argument());
 
-	graph.export_port(theta->output(0), "exp");
+	graph.add_export(theta->output(0), "exp");
 	auto theta2 = static_cast<jive::structural_node*>(theta)->copy(graph.root(), {imp1, imp2, imp3});
 	jive::view(graph.root(), stdout);
 

@@ -34,7 +34,7 @@ static int test_main(void)
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
 		{bits16, addr, addr}, {call->output(0), call->output(1), call->output(2)}, {addr});
-	graph.export_port(bottom->output(0), "dummy");
+	graph.add_export(bottom->output(0), "dummy");
 
 	jive::view(graph.root(), stdout);
 

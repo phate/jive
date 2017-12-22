@@ -17,7 +17,7 @@ types_float_arithmetic_test_fltdifference(void)
 	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto sub = jive_fltdifference(s0, s1);
 
-	graph.export_port(sub, "dummy");
+	graph.add_export(sub, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -36,7 +36,7 @@ types_float_arithmetic_test_fltnegate(void)
 	auto s0 = graph.add_import(jive::flt::type(), "s0");
 	auto neg = jive_fltnegate(s0);
 
-	graph.export_port(neg, "dummy");
+	graph.add_export(neg, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -56,7 +56,7 @@ static int types_float_arithmetic_test_fltproduct(void)
 	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto mul = jive_fltproduct(s0, s1);
 
-	graph.export_port(mul, "dummy");
+	graph.add_export(mul, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -75,7 +75,7 @@ static int types_float_arithmetic_test_fltquotient(void)
 	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto div = jive_fltquotient(s0, s1);
 
-	graph.export_port(div, "dummy");
+	graph.add_export(div, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -94,7 +94,7 @@ static int types_float_arithmetic_test_fltsum(void)
 	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto add = jive_fltsum(s0, s1);
 
-	graph.export_port(add, "dummy");
+	graph.add_export(add, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -113,7 +113,7 @@ static int types_float_comparison_test_fltequal(void)
 	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto equal = jive_fltequal(s0, s1);
 
-	graph.export_port(equal, "dummy");
+	graph.add_export(equal, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -132,7 +132,7 @@ static int types_float_comparison_test_fltgreater(void)
 	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto greater = jive_fltgreater(s0, s1);
 
-	graph.export_port(greater, "dummy");
+	graph.add_export(greater, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -151,7 +151,7 @@ static int types_float_comparison_test_fltgreatereq(void)
 	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto geq = jive_fltgreatereq(s0, s1);
 
-	graph.export_port(geq, "dummy");
+	graph.add_export(geq, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -170,7 +170,7 @@ static int types_float_comparison_test_fltless(void)
 	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto less = jive_fltless(s0, s1);
 
-	graph.export_port(less, "dummy");
+	graph.add_export(less, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -189,7 +189,7 @@ static int types_float_comparison_test_fltlesseq(void)
 	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto lesseq = jive_fltlesseq(s0, s1);
 
-	graph.export_port(lesseq, "dummy");
+	graph.add_export(lesseq, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -209,7 +209,7 @@ types_float_comparison_test_fltnotequal(void)
 	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto neq = jive_fltnotequal(s0, s1);
 
-	graph.export_port(neq, "dummy");
+	graph.add_export(neq, "dummy");
 
 	graph.normalize();
 	graph.prune();

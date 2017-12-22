@@ -40,7 +40,7 @@ static int _test_rcdgroup(void)
 	auto bottom = jive::test::simple_node_create(graph.root(), {rcdtype, rcdtype_empty}, {g0, g1},
 		{bits8});
 
-	graph.export_port(bottom->output(0), "dummy");
+	graph.add_export(bottom->output(0), "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -83,10 +83,10 @@ static int _test_rcdselect()
 	auto s2 = jive_select_create(2, a4);
 	auto s3 = jive_select_create(0, load);
 
-	graph.export_port(s0, "");
-	graph.export_port(s1, "");
-	graph.export_port(s2, "");
-	graph.export_port(s3, "");
+	graph.add_export(s0, "");
+	graph.add_export(s1, "");
+	graph.add_export(s2, "");
+	graph.add_export(s3, "");
 
 	graph.normalize();
 	graph.prune();

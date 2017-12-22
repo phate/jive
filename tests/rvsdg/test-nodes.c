@@ -99,7 +99,7 @@ test_node_depth()
 	auto null = simple_node_create(graph.root(), {}, {}, {vt});
 	auto bin = simple_node_create(graph.root(), {vt, vt}, {null->output(0), x}, {vt});
 
-	graph.export_port(bin->output(0), "x");
+	graph.add_export(bin->output(0), "x");
 
 	jive::view(graph.root(), stdout);
 

@@ -66,7 +66,7 @@ static int test_main(void)
 	jive::bits::type bits16(16);
 	auto bottom = jive::test::simple_node_create(graph.root(),
 		{addr, addr, bits32, bits32, bits16}, {o0, o1, o2, o3, o4}, {addr});
-	graph.export_port(bottom->output(0), "dummy");
+	graph.add_export(bottom->output(0), "dummy");
 
 	jive::view(graph.root(), stderr);
 

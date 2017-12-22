@@ -32,8 +32,8 @@ static int types_bitstring_arithmetic_test_bitand(void)
 	auto and0 = jive::bits::create_and(32, s0, s1);
 	auto and1 = jive::bits::create_and(32, c0, c1);
 
-	graph.export_port(and0, "dummy");
-	graph.export_port(and1, "dummy");
+	graph.add_export(and0, "dummy");
+	graph.add_export(and1, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -64,11 +64,11 @@ static int types_bitstring_arithmetic_test_bitashr(void)
 	auto ashr3 = jive::bits::create_ashr(32, c1, c2);
 	auto ashr4 = jive::bits::create_ashr(32, c1, c3);
 
-	graph.export_port(ashr0, "dummy");
-	graph.export_port(ashr1, "dummy");
-	graph.export_port(ashr2, "dummy");
-	graph.export_port(ashr3, "dummy");
-	graph.export_port(ashr4, "dummy");
+	graph.add_export(ashr0, "dummy");
+	graph.add_export(ashr1, "dummy");
+	graph.add_export(ashr2, "dummy");
+	graph.add_export(ashr3, "dummy");
+	graph.add_export(ashr4, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -93,7 +93,7 @@ static int types_bitstring_arithmetic_test_bitdifference(void)
 
 	auto diff = jive::bits::create_sub(32, s0, s1);
 
-	graph.export_port(diff, "dummy");
+	graph.add_export(diff, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -117,9 +117,9 @@ static int types_bitstring_arithmetic_test_bitnegate(void)
 	auto neg1 = jive::bits::create_neg(32, c0);
 	auto neg2 = jive::bits::create_neg(32, neg1);
 
-	graph.export_port(neg0, "dummy");
-	graph.export_port(neg1, "dummy");
-	graph.export_port(neg2, "dummy");
+	graph.add_export(neg0, "dummy");
+	graph.add_export(neg1, "dummy");
+	graph.add_export(neg2, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -144,9 +144,9 @@ static int types_bitstring_arithmetic_test_bitnot(void)
 	auto not1 = jive::bits::create_not(32, c0);
 	auto not2 = jive::bits::create_not(32, not1);
 
-	graph.export_port(not0, "dummy");
-	graph.export_port(not1, "dummy");
-	graph.export_port(not2, "dummy");
+	graph.add_export(not0, "dummy");
+	graph.add_export(not1, "dummy");
+	graph.add_export(not2, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -173,8 +173,8 @@ static int types_bitstring_arithmetic_test_bitor(void)
 	auto or0 = jive::bits::create_or(32, s0, s1);
 	auto or1 = jive::bits::create_or(32, c0, c1);
 
-	graph.export_port(or0, "dummy");
-	graph.export_port(or1, "dummy");
+	graph.add_export(or0, "dummy");
+	graph.add_export(or1, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -200,8 +200,8 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 	auto product0 = jive::bits::create_mul(32, s0, s1);
 	auto product1 = jive::bits::create_mul(32, c0, c1);
 
-	graph.export_port(product0, "dummy");
-	graph.export_port(product1, "dummy");
+	graph.add_export(product0, "dummy");
+	graph.add_export(product1, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -224,7 +224,7 @@ static int types_bitstring_arithmetic_test_bitshiproduct(void)
 
 	auto shiproduct = jive::bits::create_smulh(32, s0, s1);
 
-	graph.export_port(shiproduct, "dummy");
+	graph.add_export(shiproduct, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -252,9 +252,9 @@ static int types_bitstring_arithmetic_test_bitshl(void)
 	auto shl1 = jive::bits::create_shl(32, c0, c1);
 	auto shl2 = jive::bits::create_shl(32, c0, c2);
 
-	graph.export_port(shl0, "dummy");
-	graph.export_port(shl1, "dummy");
-	graph.export_port(shl2, "dummy");
+	graph.add_export(shl0, "dummy");
+	graph.add_export(shl1, "dummy");
+	graph.add_export(shl2, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -283,9 +283,9 @@ static int types_bitstring_arithmetic_test_bitshr(void)
 	auto shr1 = jive::bits::create_shr(32, c0, c1);
 	auto shr2 = jive::bits::create_shr(32, c0, c2);
 
-	graph.export_port(shr0, "dummy");
-	graph.export_port(shr1, "dummy");
-	graph.export_port(shr2, "dummy");
+	graph.add_export(shr0, "dummy");
+	graph.add_export(shr1, "dummy");
+	graph.add_export(shr2, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -312,8 +312,8 @@ static int types_bitstring_arithmetic_test_bitsmod(void)
 	auto smod0 = jive::bits::create_smod(32, s0, s1);
 	auto smod1 = jive::bits::create_smod(32, c0, c1);
 
-	graph.export_port(smod0, "dummy");
-	graph.export_port(smod1, "dummy");
+	graph.add_export(smod0, "dummy");
+	graph.add_export(smod1, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -340,8 +340,8 @@ static int types_bitstring_arithmetic_test_bitsquotient(void)
 	auto squot0 = jive::bits::create_sdiv(32, s0, s1);
 	auto squot1 = jive::bits::create_sdiv(32, c0, c1);
 
-	graph.export_port(squot0, "dummy");
-	graph.export_port(squot1, "dummy");
+	graph.add_export(squot0, "dummy");
+	graph.add_export(squot1, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -368,8 +368,8 @@ static int types_bitstring_arithmetic_test_bitsum(void)
 	auto sum0 = jive::bits::create_add(32, s0, s1);
 	auto sum1 = jive::bits::create_add(32, c0, c1);
 
-	graph.export_port(sum0, "dummy");
-	graph.export_port(sum1, "dummy");
+	graph.add_export(sum0, "dummy");
+	graph.add_export(sum1, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -392,7 +392,7 @@ static int types_bitstring_arithmetic_test_bituhiproduct(void)
 
 	auto uhiproduct = jive::bits::create_umulh(32, s0, s1);
 
-	graph.export_port(uhiproduct, "dummy");
+	graph.add_export(uhiproduct, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -418,8 +418,8 @@ static int types_bitstring_arithmetic_test_bitumod(void)
 	auto umod0 = jive::bits::create_umod(32, s0, s1);
 	auto umod1 = jive::bits::create_umod(32, c0, c1);
 
-	graph.export_port(umod0, "dummy");
-	graph.export_port(umod1, "dummy");
+	graph.add_export(umod0, "dummy");
+	graph.add_export(umod1, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -446,8 +446,8 @@ static int types_bitstring_arithmetic_test_bituquotient(void)
 	auto uquot0 = jive::bits::create_udiv(32, s0, s1);
 	auto uquot1 = jive::bits::create_udiv(32, c0, c1);
 
-	graph.export_port(uquot0, "dummy");
-	graph.export_port(uquot1, "dummy");
+	graph.add_export(uquot0, "dummy");
+	graph.add_export(uquot1, "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -474,8 +474,8 @@ static int types_bitstring_arithmetic_test_bitxor(void)
 	auto xor0 = jive::bits::create_xor(32, s0, s1);
 	auto xor1 = jive::bits::create_xor(32, c0, c1);
 
-	graph.export_port(xor0, "dummy");
-	graph.export_port(xor1, "dummy");
+	graph.add_export(xor0, "dummy");
+	graph.add_export(xor1, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -517,10 +517,10 @@ static int types_bitstring_comparison_test_bitequal(void)
 	auto equal2 = jive::bits::create_eq(32, c0, c1);
 	auto equal3 = jive::bits::create_eq(32, c0, c2);
 
-	graph.export_port(equal0, "dummy");
-	graph.export_port(equal1, "dummy");
-	graph.export_port(equal2, "dummy");
-	graph.export_port(equal3, "dummy");
+	graph.add_export(equal0, "dummy");
+	graph.add_export(equal1, "dummy");
+	graph.add_export(equal2, "dummy");
+	graph.add_export(equal3, "dummy");
 	
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -550,10 +550,10 @@ static int types_bitstring_comparison_test_bitnotequal(void)
 	auto nequal2 = jive::bits::create_ne(32, c0, c1);
 	auto nequal3 = jive::bits::create_ne(32, c0, c2);
 
-	graph.export_port(nequal0, "dummy");
-	graph.export_port(nequal1, "dummy");
-	graph.export_port(nequal2, "dummy");
-	graph.export_port(nequal3, "dummy");
+	graph.add_export(nequal0, "dummy");
+	graph.add_export(nequal1, "dummy");
+	graph.add_export(nequal2, "dummy");
+	graph.add_export(nequal3, "dummy");
 	
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -585,11 +585,11 @@ static int types_bitstring_comparison_test_bitsgreater(void)
 	auto sgreater3 = jive::bits::create_sgt(32, s0, c2);
 	auto sgreater4 = jive::bits::create_sgt(32, c3, s1);
 
-	graph.export_port(sgreater0, "dummy");
-	graph.export_port(sgreater1, "dummy");
-	graph.export_port(sgreater2, "dummy");
-	graph.export_port(sgreater3, "dummy");
-	graph.export_port(sgreater4, "dummy");
+	graph.add_export(sgreater0, "dummy");
+	graph.add_export(sgreater1, "dummy");
+	graph.add_export(sgreater2, "dummy");
+	graph.add_export(sgreater3, "dummy");
+	graph.add_export(sgreater4, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -623,12 +623,12 @@ static int types_bitstring_comparison_test_bitsgreatereq(void)
 	auto sgreatereq4 = jive::bits::create_sge(32, c2, s0);
 	auto sgreatereq5 = jive::bits::create_sge(32, s1, c3);
 
-	graph.export_port(sgreatereq0, "dummy");
-	graph.export_port(sgreatereq1, "dummy");
-	graph.export_port(sgreatereq2, "dummy");
-	graph.export_port(sgreatereq3, "dummy");
-	graph.export_port(sgreatereq4, "dummy");
-	graph.export_port(sgreatereq5, "dummy");
+	graph.add_export(sgreatereq0, "dummy");
+	graph.add_export(sgreatereq1, "dummy");
+	graph.add_export(sgreatereq2, "dummy");
+	graph.add_export(sgreatereq3, "dummy");
+	graph.add_export(sgreatereq4, "dummy");
+	graph.add_export(sgreatereq5, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -662,11 +662,11 @@ static int types_bitstring_comparison_test_bitsless(void)
 	auto sless3 = jive::bits::create_slt(32, c2, s0);
 	auto sless4 = jive::bits::create_slt(32, s1, c3);
 
-	graph.export_port(sless0, "dummy");
-	graph.export_port(sless1, "dummy");
-	graph.export_port(sless2, "dummy");
-	graph.export_port(sless3, "dummy");
-	graph.export_port(sless4, "dummy");
+	graph.add_export(sless0, "dummy");
+	graph.add_export(sless1, "dummy");
+	graph.add_export(sless2, "dummy");
+	graph.add_export(sless3, "dummy");
+	graph.add_export(sless4, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -700,12 +700,12 @@ static int types_bitstring_comparison_test_bitslesseq(void)
 	auto slesseq4 = jive::bits::create_sle(32, s0, c2);
 	auto slesseq5 = jive::bits::create_sle(32, c3, s1);
 
-	graph.export_port(slesseq0, "dummy");
-	graph.export_port(slesseq1, "dummy");
-	graph.export_port(slesseq2, "dummy");
-	graph.export_port(slesseq3, "dummy");
-	graph.export_port(slesseq4, "dummy");
-	graph.export_port(slesseq5, "dummy");
+	graph.add_export(slesseq0, "dummy");
+	graph.add_export(slesseq1, "dummy");
+	graph.add_export(slesseq2, "dummy");
+	graph.add_export(slesseq3, "dummy");
+	graph.add_export(slesseq4, "dummy");
+	graph.add_export(slesseq5, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -739,11 +739,11 @@ static int types_bitstring_comparison_test_bitugreater(void)
 	auto ugreater3 = jive::bits::create_ugt(32, s0, c2);
 	auto ugreater4 = jive::bits::create_ugt(32, c3, s1);
 
-	graph.export_port(ugreater0, "dummy");
-	graph.export_port(ugreater1, "dummy");
-	graph.export_port(ugreater2, "dummy");
-	graph.export_port(ugreater3, "dummy");
-	graph.export_port(ugreater4, "dummy");
+	graph.add_export(ugreater0, "dummy");
+	graph.add_export(ugreater1, "dummy");
+	graph.add_export(ugreater2, "dummy");
+	graph.add_export(ugreater3, "dummy");
+	graph.add_export(ugreater4, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -777,12 +777,12 @@ static int types_bitstring_comparison_test_bitugreatereq(void)
 	auto ugreatereq4 = jive::bits::create_uge(32, c2, s0);
 	auto ugreatereq5 = jive::bits::create_uge(32, s1, c3);
 
-	graph.export_port(ugreatereq0, "dummy");
-	graph.export_port(ugreatereq1, "dummy");
-	graph.export_port(ugreatereq2, "dummy");
-	graph.export_port(ugreatereq3, "dummy");
-	graph.export_port(ugreatereq4, "dummy");
-	graph.export_port(ugreatereq5, "dummy");
+	graph.add_export(ugreatereq0, "dummy");
+	graph.add_export(ugreatereq1, "dummy");
+	graph.add_export(ugreatereq2, "dummy");
+	graph.add_export(ugreatereq3, "dummy");
+	graph.add_export(ugreatereq4, "dummy");
+	graph.add_export(ugreatereq5, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -816,11 +816,11 @@ static int types_bitstring_comparison_test_bituless(void)
 	auto uless3 = jive::bits::create_ult(32, c2, s0);
 	auto uless4 = jive::bits::create_ult(32, s1, c3);
 
-	graph.export_port(uless0, "dummy");
-	graph.export_port(uless1, "dummy");
-	graph.export_port(uless2, "dummy");
-	graph.export_port(uless3, "dummy");
-	graph.export_port(uless4, "dummy");
+	graph.add_export(uless0, "dummy");
+	graph.add_export(uless1, "dummy");
+	graph.add_export(uless2, "dummy");
+	graph.add_export(uless3, "dummy");
+	graph.add_export(uless4, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -854,12 +854,12 @@ static int types_bitstring_comparison_test_bitulesseq(void)
 	auto ulesseq4 = jive::bits::create_ule(32, s0, c2);
 	auto ulesseq5 = jive::bits::create_ule(32, c3, s1);
 
-	graph.export_port(ulesseq0, "dummy");
-	graph.export_port(ulesseq1, "dummy");
-	graph.export_port(ulesseq2, "dummy");
-	graph.export_port(ulesseq3, "dummy");
-	graph.export_port(ulesseq4, "dummy");
-	graph.export_port(ulesseq5, "dummy");
+	graph.add_export(ulesseq0, "dummy");
+	graph.add_export(ulesseq1, "dummy");
+	graph.add_export(ulesseq2, "dummy");
+	graph.add_export(ulesseq3, "dummy");
+	graph.add_export(ulesseq4, "dummy");
+	graph.add_export(ulesseq5, "dummy");
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -970,7 +970,7 @@ static int types_bitstring_test_normalize(void)
 	assert(sum1->node()->operation() == jive::bits::add_op(32));
 	assert(sum1->node()->ninputs() == 2);
 
-	auto exp = graph.export_port(sum1, "dummy");
+	auto exp = graph.add_export(sum1, "dummy");
 
 	sum_nf->set_mutable(true);
 	graph.normalize();

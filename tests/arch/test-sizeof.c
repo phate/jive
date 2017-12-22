@@ -53,7 +53,7 @@ static int test_main(void)
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
 		std::vector<jive::port>(8, bits32), {s0, s1, s2, s3, s4, s5, s6, s7}, {bits32});
-	graph.export_port(bottom->output(0), "dummy");
+	graph.add_export(bottom->output(0), "dummy");
 
 	jive::view(graph.root(), stdout);
 

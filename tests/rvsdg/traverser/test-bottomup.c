@@ -18,7 +18,7 @@ test_initialization()
 	auto n1 = jive::test::simple_node_create(graph.root(), {}, {}, {});
 	auto n2 = jive::test::simple_node_create(graph.root(), {}, {}, {vtype});
 
-	graph.export_port(n2->output(0), "dummy");
+	graph.add_export(n2->output(0), "dummy");
 
 	bool n1_visited = false;
 	bool n2_visited = false;
@@ -40,7 +40,7 @@ test_basic_traversal()
 	auto n2 = jive::test::simple_node_create(graph.root(), {type, type},
 		{n1->output(0), n1->output(1)}, {type});
 
-	graph.export_port(n2->output(0), "dummy");
+	graph.add_export(n2->output(0), "dummy");
 
 	{
 		jive::node * tmp;

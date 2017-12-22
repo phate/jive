@@ -63,7 +63,7 @@ public:
 	}
 
 	inline jive::input *
-	export_port(jive::output * operand, const std::string & name)
+	add_export(jive::output * operand, const std::string & name)
 	{
 		auto gate = gate::create(this, name, operand->type());
 		return root()->add_result(operand, nullptr, gate);

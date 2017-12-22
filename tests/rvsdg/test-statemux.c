@@ -34,7 +34,7 @@ test_mux_mux_reduction()
 	auto mux2 = jive::create_state_split(st, z, 2);
 	auto mux3 = jive::create_state_merge(st, {mux1, mux2[0], mux2[1], z});
 
-	auto ex = graph.export_port(mux3, "m");
+	auto ex = graph.add_export(mux3, "m");
 
 //	jive::view(graph.root(), stdout);
 
@@ -66,7 +66,7 @@ test_multiple_origin_reduction()
 
 	auto x = graph.add_import(st, "x");
 	auto mux1 = jive::create_state_merge(st, {x, x});
-	auto ex = graph.export_port(mux1, "m");
+	auto ex = graph.add_export(mux1, "m");
 
 	jive::view(graph.root(), stdout);
 

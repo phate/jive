@@ -43,7 +43,7 @@ static int test_unnchoose(void)
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
 		{bits16, bits8, bits16, bits8}, {c0, c1, c2, c3}, {bits8});
-	graph.export_port(bottom->output(0), "dummy");
+	graph.add_export(bottom->output(0), "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -81,7 +81,7 @@ static int test_unnunify(void)
 
 	auto bottom = jive::test::simple_node_create(graph.root(), {unntype, unntype_empty}, {u0, u1},
 		{bits8});
-	graph.export_port(bottom->output(0), "dummy");
+	graph.add_export(bottom->output(0), "dummy");
 
 	graph.normalize();
 	graph.prune();
