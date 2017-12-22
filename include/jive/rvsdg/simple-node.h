@@ -32,6 +32,9 @@ public:
 	jive::simple_output *
 	output(size_t index) const noexcept;
 
+	const jive::simple_op &
+	operation() const noexcept;
+
 	virtual jive::node *
 	copy(jive::region * region, const std::vector<jive::output*> & operands) const override;
 
@@ -102,6 +105,12 @@ inline jive::simple_output *
 simple_node::output(size_t index) const noexcept
 {
 	return static_cast<simple_output*>(node::output(index));
+}
+
+inline const jive::simple_op &
+simple_node::operation() const noexcept
+{
+	return *static_cast<const simple_op*>(&node::operation());
 }
 
 }
