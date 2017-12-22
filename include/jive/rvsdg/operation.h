@@ -16,11 +16,14 @@
 namespace jive {
 
 class gate;
+class graph;
 class node;
 class node_normal_form;
 class output;
 class region;
 class resource_class;
+class simple_normal_form;
+class structural_normal_form;
 
 /* port */
 
@@ -149,6 +152,9 @@ public:
 	{
 		return ! (*this == other);
 	}
+
+	static jive::node_normal_form *
+	normal_form(jive::graph * graph) noexcept;
 };
 
 /* simple operation */
@@ -157,6 +163,9 @@ class simple_op : public operation {
 public:
 	virtual
 	~simple_op();
+
+	static jive::simple_normal_form *
+	normal_form(jive::graph * graph) noexcept;
 };
 
 /* structural operation */
@@ -177,6 +186,9 @@ public:
 
 	virtual const jive::port &
 	result(size_t index) const noexcept override;
+
+	static jive::structural_normal_form *
+	normal_form(jive::graph * graph) noexcept;
 };
 
 }
