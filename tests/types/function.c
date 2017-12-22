@@ -25,7 +25,7 @@ function_test_build_lambda(void)
 	jive::bits::type bt32(32);
 
 	jive::graph graph;
-	auto x = graph.import(bt32, "x");
+	auto x = graph.add_import(bt32, "x");
 
 	jive::lambda_builder lb;
 	auto arguments = lb.begin_lambda(graph.root(), {{&bt32, &bt32}, {&bt32}});
@@ -54,7 +54,7 @@ static int function_test_call(void)
 	jive::fct::type ftype({&btype}, {&btype}) ;
 
 	auto constant = create_bitconstant(graph.root(), "00001111");
-	auto func = graph.import(ftype, "sin");
+	auto func = graph.add_import(ftype, "sin");
 	auto ret = jive::fct::create_apply(func, {constant})[0];
 
 	assert(ret->type() == btype);

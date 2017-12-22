@@ -56,7 +56,7 @@ public:
 	node_normal_form(const std::type_info & type) noexcept;
 
 	inline jive::argument *
-	import(const jive::type & type, const std::string & name)
+	add_import(const jive::type & type, const std::string & name)
 	{
 		auto gate = gate::create(this, name, type);
 		return root()->add_argument(nullptr, gate);

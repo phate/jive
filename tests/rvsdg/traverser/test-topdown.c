@@ -16,7 +16,7 @@ test_initialization()
 	jive::test::valuetype vtype;
 
 	jive::graph graph;
-	auto i = graph.import(vtype, "i");
+	auto i = graph.add_import(vtype, "i");
 
 	auto constant = jive::test::simple_node_create(graph.root(), {}, {}, {vtype});
 	auto unary = jive::test::simple_node_create(graph.root(), {vtype}, {i}, {vtype});

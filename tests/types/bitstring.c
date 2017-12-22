@@ -23,8 +23,8 @@ static int types_bitstring_arithmetic_test_bitand(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
@@ -50,8 +50,8 @@ static int types_bitstring_arithmetic_test_bitashr(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 16);
 	auto c1 = create_bitconstant(graph.root(), 32, -16);
@@ -88,8 +88,8 @@ static int types_bitstring_arithmetic_test_bitdifference(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto diff = jive::bits::create_sub(32, s0, s1);
 
@@ -110,7 +110,7 @@ static int types_bitstring_arithmetic_test_bitnegate(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 
 	auto neg0 = jive::bits::create_neg(32, s0);
@@ -137,7 +137,7 @@ static int types_bitstring_arithmetic_test_bitnot(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 
 	auto not0 = jive::bits::create_not(32, s0);
@@ -164,8 +164,8 @@ static int types_bitstring_arithmetic_test_bitor(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
@@ -191,8 +191,8 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
@@ -219,8 +219,8 @@ static int types_bitstring_arithmetic_test_bitshiproduct(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto shiproduct = jive::bits::create_smulh(32, s0, s1);
 
@@ -241,8 +241,8 @@ static int types_bitstring_arithmetic_test_bitshl(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 16);
 	auto c1 = create_bitconstant(graph.root(), 32, 2);
@@ -272,8 +272,8 @@ static int types_bitstring_arithmetic_test_bitshr(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 16);
 	auto c1 = create_bitconstant(graph.root(), 32, 2);
@@ -303,8 +303,8 @@ static int types_bitstring_arithmetic_test_bitsmod(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, -7);
 	auto c1 = create_bitconstant(graph.root(), 32, 3);
@@ -331,8 +331,8 @@ static int types_bitstring_arithmetic_test_bitsquotient(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 7);
 	auto c1 = create_bitconstant(graph.root(), 32, -3);
@@ -359,8 +359,8 @@ static int types_bitstring_arithmetic_test_bitsum(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
@@ -387,8 +387,8 @@ static int types_bitstring_arithmetic_test_bituhiproduct(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto uhiproduct = jive::bits::create_umulh(32, s0, s1);
 
@@ -409,8 +409,8 @@ static int types_bitstring_arithmetic_test_bitumod(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 7);
 	auto c1 = create_bitconstant(graph.root(), 32, 3);
@@ -437,8 +437,8 @@ static int types_bitstring_arithmetic_test_bituquotient(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 7);
 	auto c1 = create_bitconstant(graph.root(), 32, 3);
@@ -465,8 +465,8 @@ static int types_bitstring_arithmetic_test_bitxor(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
@@ -506,8 +506,8 @@ static int types_bitstring_comparison_test_bitequal(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 	auto c0 = create_bitconstant(graph.root(), 32, 4);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant_undefined(graph.root(), 32);
@@ -539,8 +539,8 @@ static int types_bitstring_comparison_test_bitnotequal(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 	auto c0 = create_bitconstant(graph.root(), 32, 4);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant_undefined(graph.root(), 32);
@@ -572,8 +572,8 @@ static int types_bitstring_comparison_test_bitsgreater(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 	auto c0 = create_bitconstant(graph.root(), 32, 4);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant(graph.root(), 32, 0x7fffffffL);
@@ -609,8 +609,8 @@ static int types_bitstring_comparison_test_bitsgreatereq(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 	auto c0 = create_bitconstant(graph.root(), 32, 4);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant(graph.root(), 32, 0x7fffffffL);
@@ -649,8 +649,8 @@ static int types_bitstring_comparison_test_bitsless(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 	auto c0 = create_bitconstant(graph.root(), 32, 4);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant(graph.root(), 32, 0x7fffffffL);
@@ -686,8 +686,8 @@ static int types_bitstring_comparison_test_bitslesseq(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 	auto c0 = create_bitconstant(graph.root(), 32, 4);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant(graph.root(), 32, 0x7fffffffL);
@@ -726,8 +726,8 @@ static int types_bitstring_comparison_test_bitugreater(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 	auto c0 = create_bitconstant(graph.root(), 32, 4);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant(graph.root(), 32, (0xffffffffUL));
@@ -763,8 +763,8 @@ static int types_bitstring_comparison_test_bitugreatereq(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 	auto c0 = create_bitconstant(graph.root(), 32, 4);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant(graph.root(), 32, (0xffffffffUL));
@@ -803,8 +803,8 @@ static int types_bitstring_comparison_test_bituless(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 	auto c0 = create_bitconstant(graph.root(), 32, 4);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant(graph.root(), 32, (0xffffffffUL));
@@ -840,8 +840,8 @@ static int types_bitstring_comparison_test_bitulesseq(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::bits::type(32), "s0");
-	auto s1 = graph.import(jive::bits::type(32), "s1");
+	auto s0 = graph.add_import(jive::bits::type(32), "s0");
+	auto s1 = graph.add_import(jive::bits::type(32), "s1");
 	auto c0 = create_bitconstant(graph.root(), 32, 4);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant(graph.root(), 32, (0xffffffffUL));
@@ -953,7 +953,7 @@ static int types_bitstring_test_normalize(void)
 	jive::graph graph;
 
 	jive::bits::type bits32(32);
-	auto imp = graph.import(bits32, "imp");
+	auto imp = graph.add_import(bits32, "imp");
 
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 	auto c1 = create_bitconstant(graph.root(), 32, 4);
@@ -1019,8 +1019,8 @@ static int types_bitstring_test_reduction(void)
 	
 	graph.prune();
 	
-	auto x = graph.import(jive::bits::type(16), "x");
-	auto y = graph.import(jive::bits::type(16), "y");
+	auto x = graph.add_import(jive::bits::type(16), "x");
+	auto y = graph.add_import(jive::bits::type(16), "y");
 	
 	{
 		auto concat = jive_bitconcat({x, y});
@@ -1064,9 +1064,9 @@ static int types_bitstring_test_slice_concat(void)
 	auto base_const1 = create_bitconstant(graph.root(), "00110111");
 	auto base_const2 = create_bitconstant(graph.root(), "11001000");
 	
-	auto base_x = graph.import(jive::bits::type(8), "x");
-	auto base_y = graph.import(jive::bits::type(8), "y");
-	auto base_z = graph.import(jive::bits::type(8), "z");
+	auto base_x = graph.add_import(jive::bits::type(8), "x");
+	auto base_y = graph.add_import(jive::bits::type(8), "y");
+	auto base_z = graph.add_import(jive::bits::type(8), "z");
 	
 	{
 		/* slice of constant */

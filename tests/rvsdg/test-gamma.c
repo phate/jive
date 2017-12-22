@@ -22,10 +22,10 @@ test_gamma(void)
 	jive::bits::type bits2(2);
 	jive::bits::type bits32(32);
 
-	auto cmp = graph.import(bits2, "");
-	auto v0 = graph.import(bits32, "");
-	auto v1 = graph.import(bits32, "");
-	auto v2 = graph.import(bits32, "");
+	auto cmp = graph.add_import(bits2, "");
+	auto v0 = graph.add_import(bits32, "");
+	auto v1 = graph.add_import(bits32, "");
+	auto v2 = graph.add_import(bits32, "");
 
 	auto pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 
@@ -52,9 +52,9 @@ test_predicate_reduction(void)
 	jive::bits::type bits2(2);
 	jive::bits::type bits32(32);
 
-	auto v0 = graph.import(bits32, "");
-	auto v1 = graph.import(bits32, "");
-	auto v2 = graph.import(bits32, "");
+	auto v0 = graph.add_import(bits32, "");
+	auto v1 = graph.add_import(bits32, "");
+	auto v2 = graph.add_import(bits32, "");
 
 	auto pred = jive_control_constant(graph.root(), 3, 1);
 
@@ -82,8 +82,8 @@ test_invariant_reduction(void)
 
 	jive::test::valuetype vtype;
 
-	auto pred = graph.import(jive::ctl::boolean, "");
-	auto v = graph.import(vtype, "");
+	auto pred = graph.add_import(jive::ctl::boolean, "");
+	auto v = graph.add_import(vtype, "");
 
 	auto gamma = jive::gamma_node::create(pred, 2);
 	auto ev = gamma->add_entryvar(v);
@@ -107,7 +107,7 @@ test_control_constant_reduction()
 	jive::graph graph;
 	jive::gamma_op::normal_form(&graph)->set_control_constant_reduction(true);
 
-	auto x = graph.import(bt, "x");
+	auto x = graph.add_import(bt, "x");
 
 	auto c = jive::ctl::match(1, {{0, 0}}, 1, 2, x);
 

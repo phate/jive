@@ -13,8 +13,8 @@ types_float_arithmetic_test_fltdifference(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::flt::type(), "s0");
-	auto s1 = graph.import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import(jive::flt::type(), "s0");
+	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto sub = jive_fltdifference(s0, s1);
 
 	graph.export_port(sub, "dummy");
@@ -33,7 +33,7 @@ types_float_arithmetic_test_fltnegate(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::flt::type(), "s0");
+	auto s0 = graph.add_import(jive::flt::type(), "s0");
 	auto neg = jive_fltnegate(s0);
 
 	graph.export_port(neg, "dummy");
@@ -52,8 +52,8 @@ static int types_float_arithmetic_test_fltproduct(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::flt::type(), "s0");
-	auto s1 = graph.import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import(jive::flt::type(), "s0");
+	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto mul = jive_fltproduct(s0, s1);
 
 	graph.export_port(mul, "dummy");
@@ -71,8 +71,8 @@ static int types_float_arithmetic_test_fltquotient(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::flt::type(), "s0");
-	auto s1 = graph.import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import(jive::flt::type(), "s0");
+	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto div = jive_fltquotient(s0, s1);
 
 	graph.export_port(div, "dummy");
@@ -90,8 +90,8 @@ static int types_float_arithmetic_test_fltsum(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::flt::type(), "s0");
-	auto s1 = graph.import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import(jive::flt::type(), "s0");
+	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto add = jive_fltsum(s0, s1);
 
 	graph.export_port(add, "dummy");
@@ -109,8 +109,8 @@ static int types_float_comparison_test_fltequal(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::flt::type(), "s0");
-	auto s1 = graph.import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import(jive::flt::type(), "s0");
+	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto equal = jive_fltequal(s0, s1);
 
 	graph.export_port(equal, "dummy");
@@ -128,8 +128,8 @@ static int types_float_comparison_test_fltgreater(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::flt::type(), "s0");
-	auto s1 = graph.import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import(jive::flt::type(), "s0");
+	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto greater = jive_fltgreater(s0, s1);
 
 	graph.export_port(greater, "dummy");
@@ -147,8 +147,8 @@ static int types_float_comparison_test_fltgreatereq(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::flt::type(), "s0");
-	auto s1 = graph.import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import(jive::flt::type(), "s0");
+	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto geq = jive_fltgreatereq(s0, s1);
 
 	graph.export_port(geq, "dummy");
@@ -166,8 +166,8 @@ static int types_float_comparison_test_fltless(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::flt::type(), "s0");
-	auto s1 = graph.import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import(jive::flt::type(), "s0");
+	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto less = jive_fltless(s0, s1);
 
 	graph.export_port(less, "dummy");
@@ -185,8 +185,8 @@ static int types_float_comparison_test_fltlesseq(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::flt::type(), "s0");
-	auto s1 = graph.import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import(jive::flt::type(), "s0");
+	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto lesseq = jive_fltlesseq(s0, s1);
 
 	graph.export_port(lesseq, "dummy");
@@ -205,8 +205,8 @@ types_float_comparison_test_fltnotequal(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.import(jive::flt::type(), "s0");
-	auto s1 = graph.import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import(jive::flt::type(), "s0");
+	auto s1 = graph.add_import(jive::flt::type(), "s1");
 	auto neq = jive_fltnotequal(s0, s1);
 
 	graph.export_port(neq, "dummy");

@@ -17,9 +17,9 @@ test_main()
 	jive::ctl::type ctl(2);
 	jive::test::valuetype t;
 
-	auto imp1 = graph.import(ctl, "imp1");
-	auto imp2 = graph.import(t, "imp2");
-	auto imp3 = graph.import(t, "imp3");
+	auto imp1 = graph.add_import(ctl, "imp1");
+	auto imp2 = graph.add_import(t, "imp2");
+	auto imp3 = graph.add_import(t, "imp3");
 
 	auto theta = jive::theta_node::create(graph.root());
 

@@ -31,7 +31,7 @@ test_recursive_prune()
 {
 	jive::graph graph;
 	jive::test::valuetype t;
-	auto imp = graph.import(t, "i");
+	auto imp = graph.add_import(t, "i");
 
 	auto n1 = jive::test::simple_node_create(graph.root(), {t}, {imp}, {t});
 	auto n2 = jive::test::simple_node_create(graph.root(), {t}, {imp}, {t});

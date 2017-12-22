@@ -270,7 +270,7 @@ test_external_function()
 	graph.node_normal_form(typeid(jive::operation))->set_mutable(false);
 
 	jive::bits::type bits64(64);
-	auto i = graph.import(bits64, "v");
+	auto i = graph.add_import(bits64, "v");
 
 	jive::lambda_builder lb;
 	auto arguments = lb.begin_lambda(graph.root(), {{&bits64}, {&bits64}});

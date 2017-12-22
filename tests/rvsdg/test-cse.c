@@ -16,7 +16,7 @@ test_main()
 {
 	jive::test::valuetype t;
 	jive::graph graph;
-	auto i = graph.import(t, "i");
+	auto i = graph.add_import(t, "i");
 
 	auto o1 = jive::test::simple_node_create(graph.root(), {}, {}, {t})->output(0);
 	auto o2 = jive::test::simple_node_create(graph.root(), {t}, {i}, {t})->output(0);

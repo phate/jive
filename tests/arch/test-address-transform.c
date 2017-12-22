@@ -88,9 +88,9 @@ test_address_transform_nodes(void)
 	jive::addrtype addrtype;
 	jive::bits::type bits32(32);
 	jive::bits::type bits64(64);
-	auto i0 = graph.import(addrtype, "i0");
-	auto i1 = graph.import(bits32, "i1");
-	auto i2 = graph.import(bits64, "i2");
+	auto i0 = graph.add_import(addrtype, "i0");
+	auto i1 = graph.add_import(bits32, "i1");
+	auto i2 = graph.add_import(bits64, "i2");
 
 	auto b0 = jive_address_to_bitstring_create(i0, 32, &i0->type());
 	auto a0 = jive_bitstring_to_address_create(b0, 32, &addrtype);
