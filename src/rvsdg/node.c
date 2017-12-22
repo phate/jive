@@ -275,37 +275,6 @@ producer(const jive::output * output) noexcept
 
 }
 
-static bool
-jive_node_cse_test(
-	jive::node * node,
-	const jive::operation & op,
-	const std::vector<jive::output*> & arguments)
-{
-	return node->operation() == op && arguments == jive::operands(node);
-}
-
-jive::node *
-jive_node_cse(
-	jive::region * region,
-	const jive::operation & op,
-	const std::vector<jive::output*> & arguments)
-{
-	if (!arguments.empty()) {
-		for (const auto & user : *arguments[0]) {
-			auto node = user->node();
-			if (node && jive_node_cse_test(node, op, arguments))
-				return node;
-		}
-	} else {
-		jive::node * node;
-		JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
-		if (jive_node_cse_test(node, op, arguments))
-			return node;
-	}
-
-	return nullptr;
-}
-
 bool
 jive_node_normalize(jive::node * self)
 {

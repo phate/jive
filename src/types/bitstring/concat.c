@@ -129,29 +129,14 @@ public:
 			}
 		}
 		
-		bool changes = (args != new_args);
-
-		if (changes) {
-			jive::node * new_node = nullptr;
+		if (args != new_args) {
 			concat_op op(types_from_arguments(new_args));
-
-			if (get_cse()) {
-				jive_node_cse(node->region(), op, new_args);
-			}
-
-			JIVE_DEBUG_ASSERT(new_args.size() >= 2);
-			if (!new_node) {
-				new_node = node->region()->add_simple_node(op, new_args);
-			}
-
-			if (new_node != node) {
-				node->output(0)->replace(new_node->output(0));
-				node->region()->remove_node(node);
-				return false;
-			}
+			replace(node, create_normalized(node->region(), op, new_args));
+			remove(node);
+			return false;
 		}
 
-		return true;
+		return simple_normal_form::normalize_node(node);
 	}
 
 	virtual std::vector<jive::output*>

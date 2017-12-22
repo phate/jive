@@ -432,12 +432,6 @@ jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 	return nullptr;
 }
 
-jive::node *
-jive_node_cse(
-	jive::region * region,
-	const jive::operation & op,
-	const std::vector<jive::output*> & arguments);
-
 /* normal forms */
 
 bool
