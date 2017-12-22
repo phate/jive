@@ -1290,7 +1290,7 @@ DEFINE_I386_INSTRUCTION(
 }}
 
 jive_xfer_description
-jive_i386_create_xfer(struct jive::region * region, jive::simple_output * origin,
+jive_i386_create_xfer(jive::region * region, jive::simple_output * origin,
 	const jive::resource_class * in_class, const jive::resource_class * out_class);
 
 

@@ -22,9 +22,6 @@
 
 /* graph */
 
-struct jive_resource;
-struct jive_resource_name;
-
 namespace jive {
 
 class graph {

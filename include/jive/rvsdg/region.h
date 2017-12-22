@@ -17,12 +17,6 @@
 #include <jive/util/list.h>
 
 namespace jive {
-	class substitution_map;
-}
-
-struct jive_cut;
-
-namespace jive {
 
 class node;
 class simple_node;
@@ -30,6 +24,7 @@ class simple_op;
 class structural_input;
 class structural_op;
 class structural_output;
+class substitution_map;
 
 class argument final : public output {
 public:

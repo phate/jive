@@ -12,8 +12,6 @@
 
 #include <jive/util/callbacks.h>
 
-struct jive_notifier;
-
 namespace jive {
 
 static const size_t tracker_nodestate_none = (size_t) -1;

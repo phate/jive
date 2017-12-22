@@ -76,9 +76,6 @@ public:
 
 }
 
-typedef struct jive_unary_operation_normal_form jive_unary_operation_normal_form;
-typedef struct jive_unary_operation_normal_form_class jive_unary_operation_normal_form_class;
-
 static const jive_unop_reduction_path_t jive_unop_reduction_none = 0;
 /* operation is applied to constant, compute immediately */
 static const jive_unop_reduction_path_t jive_unop_reduction_constant = 1;

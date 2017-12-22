@@ -68,7 +68,7 @@ private:
 	gate(
 		jive::graph * graph,
 		const std::string & name,
-		const struct jive::resource_class * rescls);
+		const jive::resource_class * rescls);
 
 	gate(const gate&) = delete;
 
@@ -132,7 +132,7 @@ public:
 		return name_;
 	}
 
-	inline const struct jive::resource_class *
+	inline const jive::resource_class *
 	rescls() const noexcept
 	{
 		return rescls_;
@@ -163,8 +163,8 @@ private:
 	std::string name_;
 	jive::graph * graph_;
 	std::unique_ptr<jive::type> type_;
+	const jive::resource_class * rescls_;
 	jive_gate_interference_hash interference_;
-	const struct jive::resource_class * rescls_;
 
 };
 
