@@ -214,12 +214,9 @@ region::copy(
 	smap.insert(this, target);
 
 	/* order nodes top-down */
-	std::vector<std::vector<const jive::node*>> context;
-	for (const auto & node : nodes) {
-		if (node.depth() >= context.size())
-			context.resize(node.depth()+1);
+	std::vector<std::vector<const jive::node*>> context(nnodes());
+	for (const auto & node : nodes)
 		context[node.depth()].push_back(&node);
-	}
 
 	/* copy arguments */
 	if (copy_arguments) {
