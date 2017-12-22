@@ -419,6 +419,9 @@ is_opnode(const jive::node * node) noexcept
 jive::node *
 producer(const jive::output * output) noexcept;
 
+bool
+normalize(jive::node * node);
+
 }
 
 static inline jive::output *
@@ -431,10 +434,5 @@ jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 	}
 	return nullptr;
 }
-
-/* normal forms */
-
-bool
-jive_node_normalize(jive::node * self);
 
 #endif

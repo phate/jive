@@ -273,11 +273,11 @@ producer(const jive::output * output) noexcept
 	return producer(argument->input()->origin());
 }
 
+bool
+normalize(jive::node * node)
+{
+	auto nf = node->graph()->node_normal_form(typeid(node->operation()));
+	return nf->normalize_node(node);
 }
 
-bool
-jive_node_normalize(jive::node * self)
-{
-	auto nf = self->graph()->node_normal_form(typeid(self->operation()));
-	return nf->normalize_node(self);
 }
