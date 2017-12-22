@@ -72,16 +72,16 @@ public:
 	virtual
 	~gamma_op() noexcept;
 
-	inline
+	inline constexpr
 	gamma_op(size_t nalternatives) noexcept
-		: predicate_type_(nalternatives)
-	{
-	}
+	: structural_op()
+	, nalternatives_(nalternatives)
+	{}
 
 	inline size_t
 	nalternatives() const noexcept
 	{
-		return predicate_type_.nalternatives();
+		return nalternatives_;
 	}
 
 	virtual std::string
@@ -100,7 +100,7 @@ public:
 	}
 
 private:
-	jive::ctl::type predicate_type_;
+	size_t nalternatives_;
 };
 
 static inline bool

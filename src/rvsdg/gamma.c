@@ -250,8 +250,8 @@ gamma_op::copy() const
 bool
 gamma_op::operator==(const operation & other) const noexcept
 {
-	const gamma_op * op = dynamic_cast<const gamma_op*>(&other);
-	return op && op->predicate_type_ == predicate_type_;
+	auto op = dynamic_cast<const gamma_op*>(&other);
+	return op && op->nalternatives_ == nalternatives_;
 }
 
 /* gamma node */
