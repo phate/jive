@@ -129,18 +129,6 @@ public:
 	virtual bool
 	operator==(const operation & other) const noexcept = 0;
 
-	virtual size_t
-	narguments() const noexcept = 0;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept = 0;
-
-	virtual size_t
-	nresults() const noexcept = 0;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept = 0;
-
 	virtual std::string
 	debug_string() const = 0;
 
@@ -164,6 +152,18 @@ public:
 	virtual
 	~simple_op();
 
+	virtual size_t
+	narguments() const noexcept = 0;
+
+	virtual const jive::port &
+	argument(size_t index) const noexcept = 0;
+
+	virtual size_t
+	nresults() const noexcept = 0;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept = 0;
+
 	static jive::simple_normal_form *
 	normal_form(jive::graph * graph) noexcept;
 };
@@ -174,18 +174,6 @@ class structural_op : public operation {
 public:
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	static jive::structural_normal_form *
 	normal_form(jive::graph * graph) noexcept;

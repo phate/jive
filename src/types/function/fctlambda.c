@@ -30,18 +30,6 @@ lambda_op::operator==(const operation & other) const noexcept
 	return op && op->function_type() == function_type();
 }
 
-size_t
-lambda_op::narguments() const noexcept
-{
-	return 0;
-}
-
-size_t
-lambda_op::nresults() const noexcept
-{
-	return 1;
-}
-
 std::string
 lambda_op::debug_string() const
 {

@@ -30,9 +30,6 @@ public:
 
 	subroutine_op(subroutine_op && other) noexcept = default;
 
-	virtual size_t
-	nresults() const noexcept override;
-
 	virtual std::string
 	debug_string() const override;
 

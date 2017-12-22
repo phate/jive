@@ -17,12 +17,6 @@ subroutine_op::~subroutine_op() noexcept
 {
 }
 
-size_t
-subroutine_op::nresults() const noexcept
-{
-	return 1;
-}
-
 std::string
 subroutine_op::debug_string() const
 {

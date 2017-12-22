@@ -23,18 +23,6 @@ dataobj_op::~dataobj_op() noexcept
 {
 }
 
-size_t
-dataobj_op::narguments() const noexcept
-{
-	return types_.size();
-}
-
-size_t
-dataobj_op::nresults() const noexcept
-{
-	return 1;
-}
-
 std::string
 dataobj_op::debug_string() const
 {

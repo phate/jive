@@ -38,12 +38,6 @@ public:
 	inline
 	dataobj_op(dataobj_op && other) noexcept = default;
 
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
 	virtual std::string
 	debug_string() const override;
 
