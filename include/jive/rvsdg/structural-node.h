@@ -77,14 +77,14 @@ private:
 
 /* structural input class */
 
-class structural_input final : public input {
+class structural_input : public input {
 	friend structural_node;
 
 public:
 	virtual
 	~structural_input() noexcept;
 
-private:
+protected:
 	structural_input(
 		jive::structural_node * node,
 		size_t index,
@@ -106,14 +106,14 @@ private:
 
 /* structural output class */
 
-class structural_output final : public output {
+class structural_output : public output {
 	friend structural_node;
 
 public:
 	virtual
 	~structural_output() noexcept;
 
-private:
+protected:
 	structural_output(
 		jive::structural_node * node,
 		size_t index,

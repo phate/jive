@@ -35,13 +35,13 @@ test_main()
 	auto theta2 = static_cast<jive::structural_node*>(theta)->copy(graph.root(), {imp1, imp2, imp3});
 	jive::view(graph.root(), stdout);
 
-	assert(lv1->output()->node() == theta);
-	assert(lv2->output()->node() == theta);
-	assert(lv3->output()->node() == theta);
+	assert(lv1->node() == theta);
+	assert(lv2->node() == theta);
+	assert(lv3->node() == theta);
 
 	assert(theta->predicate() == theta->subregion()->result(0));
 	assert(theta->nloopvars() == 3);
-	assert(theta->begin()->result() == theta->subregion()->result(1));
+	assert((*theta->begin())->result() == theta->subregion()->result(1));
 
 	assert(dynamic_cast<const jive::theta_node*>(theta2));
 

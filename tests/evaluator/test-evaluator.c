@@ -72,10 +72,10 @@ fib(size_t n)
 	auto evj = gamma->add_entryvar(j);
 	auto evk = gamma->add_entryvar(k);
 	auto evn = gamma->add_entryvar(n);
-	auto evlvi = gamma->add_entryvar(lv_i->output());
-	auto evlvj = gamma->add_entryvar(lv_j->output());
-	auto evlvk = gamma->add_entryvar(lv_k->output());
-	auto evlvn = gamma->add_entryvar(lv_n->output());
+	auto evlvi = gamma->add_entryvar(lv_i);
+	auto evlvj = gamma->add_entryvar(lv_j);
+	auto evlvk = gamma->add_entryvar(lv_k);
+	auto evlvn = gamma->add_entryvar(lv_n);
 
 	auto exi = gamma->add_exitvar({evi->argument(0), evlvi->argument(1)});
 	auto exj = gamma->add_exitvar({evj->argument(0), evlvj->argument(1)});

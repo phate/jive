@@ -9,6 +9,8 @@
 
 namespace jive {
 
+/* theta operation */
+
 theta_op::~theta_op() noexcept
 {
 }
@@ -24,8 +26,74 @@ theta_op::copy() const
 	return std::unique_ptr<jive::operation>(new theta_op(*this));
 }
 
+/* theta input */
+
+theta_input::~theta_input()
+{
+	if (output_)
+		output_->input_ = nullptr;
+}
+
+jive::theta_node *
+theta_input::node() const noexcept
+{
+	return static_cast<theta_node*>(structural_input::node());
+}
+
+/* theta output */
+
+theta_output::~theta_output()
+{
+	if (input_)
+		input_->output_ = nullptr;
+}
+
+jive::theta_node *
+theta_output::node() const noexcept
+{
+	return static_cast<theta_node*>(structural_output::node());
+}
+
+/* theta node */
+
 theta_node::~theta_node()
 {}
+
+const theta_node::loopvar_iterator &
+theta_node::loopvar_iterator::operator++() noexcept
+{
+	if (output_ == nullptr)
+		return *this;
+
+	auto node = output_->node();
+	auto index = output_->index();
+	if (index == node->noutputs()-1) {
+		output_ = nullptr;
+		return *this;
+	}
+
+	index++;
+	output_ = node->output(index);
+	return *this;
+}
+
+jive::theta_output *
+theta_node::add_loopvar(jive::output * origin)
+{
+	node::add_input(std::unique_ptr<jive::input>(
+		new theta_input(this, ninputs(), origin, origin->type())));
+	node::add_output(std::unique_ptr<jive::output>(
+		new theta_output(this, noutputs(), origin->type())));
+
+	auto input = theta_node::input(ninputs()-1);
+	auto output = theta_node::output(noutputs()-1);
+	input->output_ = output;
+	output->input_ = input;
+
+	auto argument = subregion()->add_argument(input, origin->type());
+	subregion()->add_result(argument, output, origin->type());
+	return output;
+}
 
 jive::theta_node *
 theta_node::copy(jive::region * region, jive::substitution_map & smap) const
@@ -38,8 +106,8 @@ theta_node::copy(jive::region * region, jive::substitution_map & smap) const
 
 	/* add loop variables */
 	for (auto olv : *this) {
-		auto nlv = theta->add_loopvar(smap.lookup(olv.input()->origin()));
-		rmap.insert(olv.argument(), nlv->argument());
+		auto nlv = theta->add_loopvar(smap.lookup(olv->input()->origin()));
+		rmap.insert(olv->argument(), nlv->argument());
 	}
 
 	/* copy subregion */
@@ -48,8 +116,8 @@ theta_node::copy(jive::region * region, jive::substitution_map & smap) const
 
 	/* redirect loop variables */
 	for (auto olv = begin(), nlv = theta->begin(); olv != end(); olv++, nlv++) {
-		nlv->result()->divert_origin(rmap.lookup(olv->result()->origin()));
-		smap.insert(olv->output(), nlv->output());
+		(*nlv)->result()->divert_origin(rmap.lookup((*olv)->result()->origin()));
+		smap.insert(olv.output(), nlv.output());
 	}
 
 	nf->set_mutable(true);

@@ -13,6 +13,8 @@
 
 namespace jive {
 
+/* theta operation */
+
 class theta_op final : public structural_op {
 public:
 	virtual
@@ -36,106 +38,22 @@ is_theta_node(const jive::node * node) noexcept
 	return is_opnode<theta_op>(node);
 }
 
-class theta_node;
+/* theta node */
 
-class loopvar final {
-	friend theta_node;
-
-public:
-	inline constexpr
-	loopvar()
-	: input_(nullptr)
-	, output_(nullptr)
-	{}
-
-private:
-	inline constexpr
-	loopvar(
-		jive::structural_input * input,
-		jive::structural_output * output)
-	: input_(input)
-	, output_(output)
-	{}
-
-public:
-	inline jive::structural_input *
-	input() const noexcept
-	{
-		return input_;
-	}
-
-	inline jive::structural_output *
-	output() const noexcept
-	{
-		return output_;
-	}
-
-	inline jive::argument *
-	argument() const noexcept
-	{
-		if (input_ == nullptr)
-			return nullptr;
-
-		JIVE_DEBUG_ASSERT(input_->arguments.first != nullptr
-		&& input_->arguments.first == input_->arguments.last);
-		return input_->arguments.first;
-	}
-
-	inline jive::result *
-	result() const noexcept
-	{
-		if (output_ == nullptr)
-			return nullptr;
-
-		JIVE_DEBUG_ASSERT(output_->results.first != nullptr
-		&& output_->results.first == output_->results.last);
-		return output_->results.first;
-	}
-
-	inline bool
-	operator==(const loopvar & other) const noexcept
-	{
-		return input_ == other.input_ && output_ == other.output_;
-	}
-
-	inline bool
-	operator!=(const loopvar & other) const noexcept
-	{
-		return !(*this == other);
-	}
-
-private:
-	jive::structural_input * input_;
-	jive::structural_output * output_;
-};
+class theta_input;
+class theta_output;
 
 class theta_node final : public structural_node {
 public:
 	class loopvar_iterator {
 	public:
 		inline constexpr
-		loopvar_iterator(const jive::loopvar & lv) noexcept
-		: lv_(lv)
+		loopvar_iterator(jive::theta_output * output) noexcept
+		: output_(output)
 		{}
 
-		inline const loopvar_iterator &
-		operator++() noexcept
-		{
-			auto input = lv_.input();
-			if (input == nullptr)
-				return *this;
-
-			auto node = input->node();
-			auto index = input->index();
-			if (index == node->ninputs()-1) {
-				lv_ = loopvar(nullptr, nullptr);
-				return *this;
-			}
-
-			index++;
-			lv_ = loopvar(node->input(index), node->output(index));
-			return *this;
-		}
+		const loopvar_iterator &
+		operator++() noexcept;
 
 		inline const loopvar_iterator
 		operator++(int) noexcept
@@ -148,7 +66,7 @@ public:
 		inline bool
 		operator==(const loopvar_iterator & other) const noexcept
 		{
-			return lv_ == other.lv_;
+			return output_ == other.output_;
 		}
 
 		inline bool
@@ -157,20 +75,26 @@ public:
 			return !(*this == other);
 		}
 
-		inline loopvar &
+		inline theta_output *
 		operator*() noexcept
 		{
-			return lv_;
+			return output_;
 		}
 
-		inline loopvar *
+		inline theta_output **
 		operator->() noexcept
 		{
-			return &lv_;
+			return &output_;
+		}
+
+		inline jive::theta_output *
+		output() const noexcept
+		{
+			return output_;
 		}
 
 	private:
-		loopvar lv_;
+		jive::theta_output * output_;
 	};
 
 	virtual
@@ -226,30 +150,141 @@ public:
 	begin() const
 	{
 		if (ninputs() == 0)
-			return loopvar_iterator({});
+			return loopvar_iterator(nullptr);
 
-		return loopvar_iterator({input(0), output(0)});
+		return loopvar_iterator(output(0));
 	}
 
 	inline theta_node::loopvar_iterator
 	end() const
 	{
-		return loopvar_iterator({});
+		return loopvar_iterator(nullptr);
 	}
 
-	inline std::shared_ptr<jive::loopvar>
-	add_loopvar(jive::output * origin)
-	{
-		auto input = add_input(origin->type(), origin);
-		auto output = add_output(origin->type());
-		auto argument = subregion()->add_argument(input, origin->type());
-		subregion()->add_result(argument, output, origin->type());
-		return std::make_shared<loopvar>(loopvar(input, output));
-	}
+	theta_input *
+	input(size_t index) const noexcept;
+
+	theta_output *
+	output(size_t index) const noexcept;
+
+	jive::theta_output *
+	add_loopvar(jive::output * origin);
 
 	virtual jive::theta_node *
 	copy(jive::region * region, jive::substitution_map & smap) const override;
 };
+
+/* theta input */
+
+class theta_input final : public structural_input {
+	friend theta_node;
+	friend theta_output;
+public:
+	virtual
+	~theta_input() noexcept;
+
+private:
+	inline
+	theta_input(
+		theta_node * node,
+		size_t index,
+		jive::output * origin,
+		const jive::port & port)
+	: structural_input(node, index, origin, port)
+	, output_(nullptr)
+	{}
+
+public:
+	virtual jive::theta_node *
+	node() const noexcept override;
+
+	inline jive::theta_output *
+	output() const noexcept
+	{
+		return output_;
+	}
+
+	inline jive::argument *
+	argument() const noexcept
+	{
+		JIVE_DEBUG_ASSERT(arguments.first == arguments.last);
+		return arguments.first;
+	}
+
+	jive::result *
+	result() const noexcept;
+
+private:
+	jive::theta_output * output_;
+};
+
+/* theta output */
+
+class theta_output final : public structural_output {
+	friend theta_node;
+	friend theta_input;
+public:
+	virtual
+	~theta_output() noexcept;
+
+private:
+	inline
+	theta_output(
+		theta_node * node,
+		size_t index,
+		const jive::port & port)
+	: structural_output(node, index, port)
+	, input_(nullptr)
+	{}
+
+public:
+	virtual jive::theta_node *
+	node() const noexcept override;
+
+	inline jive::theta_input *
+	input() const noexcept
+	{
+		return input_;
+	}
+
+	inline jive::argument *
+	argument() const noexcept
+	{
+		return input_->argument();
+	}
+
+	inline jive::result *
+	result() const noexcept
+	{
+		JIVE_DEBUG_ASSERT(results.first == results.last);
+		return results.first;
+	}
+
+private:
+	jive::theta_input * input_;
+};
+
+/* theta node method definitions */
+
+inline jive::theta_input *
+theta_node::input(size_t index) const noexcept
+{
+	return static_cast<theta_input*>(node::input(index));
+}
+
+inline jive::theta_output *
+theta_node::output(size_t index) const noexcept
+{
+	return static_cast<theta_output*>(node::output(index));
+}
+
+/* theta input method definitions */
+
+inline jive::result *
+theta_input::result() const noexcept
+{
+	return output_->result();
+}
 
 }
 
