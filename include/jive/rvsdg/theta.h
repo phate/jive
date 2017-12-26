@@ -218,6 +218,12 @@ private:
 	jive::theta_output * output_;
 };
 
+static inline bool
+is_invariant(const jive::theta_input * input) noexcept
+{
+	return input->result()->origin() == input->argument();
+}
+
 /* theta output */
 
 class theta_output final : public structural_output {
@@ -263,6 +269,12 @@ public:
 private:
 	jive::theta_input * input_;
 };
+
+static inline bool
+is_invariant(const jive::theta_output * output) noexcept
+{
+	return output->result()->origin() == output->argument();
+}
 
 /* theta node method definitions */
 
