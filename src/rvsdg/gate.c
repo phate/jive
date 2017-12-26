@@ -5,6 +5,7 @@
 
 #include <jive/rvsdg/gate.h>
 #include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/notifiers.h>
 #include <jive/rvsdg/resource.h>
 #include <jive/rvsdg/type.h>
 
@@ -72,7 +73,7 @@ gate::add_interference(jive::gate * other)
 	interference_.insert(&i->second);
 	other->interference_.insert(&i->first);
 
-	graph()->on_gate_interference_add(this, other);
+	on_gate_interference_add(this, other);
 }
 
 void
@@ -84,7 +85,7 @@ gate::clear_interferences()
 		if (i->count == 0) {
 			i->first.gate->interference_.erase(&i->second);
 			i->second.gate->interference_.erase(&i->first);
-			graph()->on_gate_interference_remove(this, i->second.gate);
+			on_gate_interference_remove(this, i->second.gate);
 			delete i;
 		}
 	}

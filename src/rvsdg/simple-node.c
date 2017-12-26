@@ -4,6 +4,7 @@
  */
 
 #include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/notifiers.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/simple-normal-form.h>
@@ -17,7 +18,7 @@ namespace jive {
 
 simple_input::~simple_input() noexcept
 {
-	node()->graph()->on_input_destroy(this);
+	on_input_destroy(this);
 
 	if (port().gate())
 		port().gate()->clear_interferences();
@@ -66,7 +67,7 @@ simple_output::simple_output(
 
 simple_output::~simple_output() noexcept
 {
-	node_->graph()->on_output_destroy(this);
+	on_output_destroy(this);
 
 	if (port().gate())
 		port().gate()->clear_interferences();
@@ -82,7 +83,7 @@ simple_output::node() const noexcept
 
 simple_node::~simple_node()
 {
-	graph()->on_node_destroy(this);
+	on_node_destroy(this);
 }
 
 simple_node::simple_node(
@@ -104,7 +105,7 @@ simple_node::simple_node(
 		node::add_output(std::move(std::unique_ptr<jive::output>(
 			new simple_output(this, n, operation().result(n)))));
 
-	graph()->on_node_create(this);
+	on_node_create(this);
 }
 
 jive::node *

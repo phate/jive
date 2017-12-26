@@ -7,6 +7,7 @@
 #include <jive/common.h>
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/negotiator.h>
+#include <jive/rvsdg/notifiers.h>
 #include <jive/rvsdg/node.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/simple-node.h>
@@ -423,9 +424,9 @@ jive_negotiator_init_(
 	
 	self->tmp_option = jive_negotiator_option_create(self);
 	
-	self->node_create_callback = graph->on_node_create.connect(
+	self->node_create_callback = jive::on_node_create.connect(
 		std::bind(jive_negotiator_on_node_create_, self, std::placeholders::_1));
-	self->node_destroy_callback = graph->on_node_destroy.connect(
+	self->node_destroy_callback = jive::on_node_destroy.connect(
 		std::bind(jive_negotiator_on_node_destroy_, self, std::placeholders::_1));
 }
 

@@ -7,6 +7,7 @@
 #include <jive/common.h>
 
 #include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/notifiers.h>
 #include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/substitution.h>
@@ -19,7 +20,7 @@ namespace jive {
 
 argument::~argument() noexcept
 {
-	region()->graph()->on_output_destroy(this);
+	on_output_destroy(this);
 
 	if (input())
 		JIVE_LIST_REMOVE(input()->arguments, this, input_argument_list);
@@ -59,7 +60,7 @@ argument::node() const noexcept
 
 result::~result() noexcept
 {
-	region()->graph()->on_input_destroy(this);
+	on_input_destroy(this);
 
 	if (output())
 		JIVE_LIST_REMOVE(output()->results, this, output_result_list);
@@ -101,7 +102,7 @@ result::node() const noexcept
 
 region::~region()
 {
-	graph_->on_region_destroy(this);
+	on_region_destroy(this);
 
 	while (results_.size())
 		remove_result(results_.size()-1);
@@ -121,7 +122,7 @@ region::region(jive::region * parent, jive::graph * graph)
 {
 	top_nodes.first = top_nodes.last = nullptr;
 	bottom_nodes.first = bottom_nodes.last = nullptr;
-	graph->on_region_create(this);
+	on_region_create(this);
 }
 
 region::region(jive::structural_node * node)
@@ -130,7 +131,7 @@ region::region(jive::structural_node * node)
 {
 	top_nodes.first = top_nodes.last = nullptr;
 	bottom_nodes.first = bottom_nodes.last = nullptr;
-	graph()->on_region_create(this);
+	on_region_create(this);
 }
 
 jive::argument *
@@ -139,7 +140,7 @@ region::add_argument(jive::structural_input * input, const jive::port & port)
 	jive::argument * argument = new jive::argument(this, narguments(), input, port);
 	arguments_.push_back(argument);
 
-	graph()->on_output_create(argument);
+	on_output_create(argument);
 
 	return argument;
 }
@@ -167,7 +168,7 @@ region::add_result(jive::output * origin, structural_output * output, const jive
 	if (origin->region() != this)
 		throw jive::compiler_error("Invalid region result");
 
-	graph()->on_input_create(result);
+	on_input_create(result);
 
 	return result;
 }

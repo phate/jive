@@ -19,6 +19,7 @@ LIBJIVE_SRC = \
 	src/rvsdg/negotiator.c \
 	src/rvsdg/node-normal-form.c \
 	src/rvsdg/node.c \
+	src/rvsdg/notifiers.c \
 	src/rvsdg/nullary.c \
 	src/rvsdg/operation.c \
 	src/rvsdg/phi.c \

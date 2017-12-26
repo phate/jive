@@ -4,6 +4,7 @@
  */
 
 #include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/notifiers.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/structural-node.h>
 #include <jive/rvsdg/substitution.h>
@@ -16,7 +17,7 @@ structural_input::~structural_input()
 {
 	JIVE_DEBUG_ASSERT(arguments.first == nullptr && arguments.last == nullptr);
 
-	node()->graph()->on_input_destroy(this);
+	on_input_destroy(this);
 
 	if (port().gate())
 		port().gate()->clear_interferences();
@@ -40,7 +41,7 @@ structural_input::structural_input(
 		}
 	}
 
-	node->graph()->on_input_create(this);
+	on_input_create(this);
 }
 
 jive::structural_node *
@@ -55,7 +56,7 @@ structural_output::~structural_output()
 {
 	JIVE_DEBUG_ASSERT(results.first == nullptr && results.last == nullptr);
 
-	node()->graph()->on_output_destroy(this);
+	on_output_destroy(this);
 
 	if (port().gate())
 		port().gate()->clear_interferences();
@@ -78,7 +79,7 @@ structural_output::structural_output(
 		}
 	}
 
-	node->graph()->on_output_create(this);
+	on_output_create(this);
 }
 
 jive::structural_node *
@@ -91,7 +92,7 @@ structural_output::node() const noexcept
 
 structural_node::~structural_node()
 {
-	graph()->on_node_destroy(this);
+	on_node_destroy(this);
 
 	subregions_.clear();
 }
@@ -106,7 +107,7 @@ structural_node::structural_node(
 	for (size_t n = 0; n < nsubregions; n++)
 		subregions_.emplace_back(std::unique_ptr<jive::region>(new jive::region(this)));
 
-	graph()->on_node_create(this);
+	on_node_create(this);
 }
 
 jive::structural_input *

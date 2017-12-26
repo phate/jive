@@ -6,6 +6,7 @@
 
 #include <jive/common.h>
 #include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/notifiers.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/tracker.h>
@@ -42,9 +43,9 @@ topdown_traverser::topdown_traverser(jive::region * region)
 		}
 	}
 
-	callbacks_.push_back(region->graph()->on_node_create.connect(
+	callbacks_.push_back(on_node_create.connect(
 		std::bind(&topdown_traverser::node_create, this, _1)));
-	callbacks_.push_back(region->graph()->on_input_change.connect(
+	callbacks_.push_back(on_input_change.connect(
 		std::bind(&topdown_traverser::input_change, this, _1, _2, _3)));
 }
 
@@ -132,11 +133,11 @@ bottomup_traverser::bottomup_traverser(jive::region * region, bool revisit)
 			tracker_.set_nodestate(node, traversal_nodestate::frontier);
 	}
 
-	callbacks_.push_back(region->graph()->on_node_create.connect(
+	callbacks_.push_back(on_node_create.connect(
 		std::bind(&bottomup_traverser::node_create, this, _1)));
-	callbacks_.push_back(region->graph()->on_node_destroy.connect(
+	callbacks_.push_back(on_node_destroy.connect(
 		std::bind(&bottomup_traverser::node_destroy, this, _1)));
-	callbacks_.push_back(region->graph()->on_input_change.connect(
+	callbacks_.push_back(on_input_change.connect(
 		std::bind(&bottomup_traverser::input_change, this, _1, _2, _3)));
 }
 

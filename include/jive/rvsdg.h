@@ -10,6 +10,7 @@
 #include <jive/rvsdg/control.h>
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/node.h>
+#include <jive/rvsdg/notifiers.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/resource.h>
 #include <jive/rvsdg/simple-node.h>

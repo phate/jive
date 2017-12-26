@@ -13,7 +13,6 @@
 #include <typeindex>
 
 #include <jive/common.h>
-#include <jive/util/callbacks.h>
 #include <jive/rvsdg/gate.h>
 #include <jive/rvsdg/node-normal-form.h>
 #include <jive/rvsdg/node.h>
@@ -79,29 +78,6 @@ public:
 		jive::gate * first;
 		jive::gate * last;
 	} gates;
-
-	/* FIXME: notifiers should become private, but need to turn more things
-	 * into classes first */
-	jive::notifier<jive::region *> on_region_create;
-	jive::notifier<jive::region *> on_region_destroy;
-
-	jive::notifier<jive::node *> on_node_create;
-	jive::notifier<jive::node *> on_node_destroy;
-	jive::notifier<jive::node *, size_t> on_node_depth_change;
-
-	jive::notifier<jive::input *> on_input_create;
-	jive::notifier<
-		jive::input *,
-		jive::output *,	/* old */
-		jive::output *		/* new */
-	> on_input_change;
-	jive::notifier<jive::input *> on_input_destroy;
-	
-	jive::notifier<jive::output *> on_output_create;
-	jive::notifier<jive::output *> on_output_destroy;
-
-	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_add;
-	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_remove;
 
 private:
 	bool normalized_;

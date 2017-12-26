@@ -6,6 +6,7 @@
 
 #include <jive/common.h>
 #include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/notifiers.h>
 #include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/tracker.h>
 
@@ -176,10 +177,9 @@ tracker::tracker(jive::graph * graph, size_t nstates)
 	for (size_t n = 0; n < states_.size(); n++)
 		states_[n]= std::make_unique<tracker_depth_state>();
 
-	depth_callback_ = graph->on_node_depth_change.connect(
+	depth_callback_ = on_node_depth_change.connect(
 		std::bind(&tracker::node_depth_change, this, _1, _2));
-	destroy_callback_ = graph->on_node_destroy.connect(
-		std::bind(&tracker::node_destroy, this, _1));
+	destroy_callback_ = on_node_destroy.connect(std::bind(&tracker::node_destroy, this, _1));
 
 	register_tracker(this);
 }

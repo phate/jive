@@ -10,6 +10,7 @@
 
 #include <jive/rvsdg/controltype.h>
 #include <jive/rvsdg/node-normal-form.h>
+#include <jive/rvsdg/notifiers.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/resource.h>
 #include <jive/rvsdg/simple-node.h>
@@ -81,7 +82,7 @@ input::divert_origin(jive::output * new_origin)
 
 	if (node()) node()->recompute_depth(this);
 	region()->graph()->mark_denormalized();
-	region()->graph()->on_input_change(this, old_origin, new_origin);
+	on_input_change(this, old_origin, new_origin);
 }
 
 /* output */
@@ -244,7 +245,7 @@ node::recompute_depth(jive::input * input)
 
 	size_t old_depth = depth_;
 	depth_ = new_depth;
-	graph()->on_node_depth_change(this, old_depth);
+	on_node_depth_change(this, old_depth);
 
 	for (size_t n = 0; n < noutputs(); n++) {
 		for (auto user : *output(n)) {
