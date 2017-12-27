@@ -277,6 +277,12 @@ private:
 };
 
 static inline bool
+is_theta_output(const jive::theta_output * output) noexcept
+{
+	return dynamic_cast<const jive::theta_output*>(output) != nullptr;
+}
+
+static inline bool
 is_invariant(const jive::theta_output * output) noexcept
 {
 	return output->result()->origin() == output->argument();
