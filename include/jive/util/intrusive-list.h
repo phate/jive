@@ -527,6 +527,18 @@ public:
 		return const_iterator(this, element);
 	}
 
+	ElementType *
+	first() const noexcept
+	{
+		return first_;
+	}
+
+	ElementType *
+	last() const noexcept
+	{
+		return last_;
+	}
+
 private:
 	ElementType * first_;
 	ElementType * last_;
