@@ -15,7 +15,7 @@ namespace jive {
 
 structural_input::~structural_input()
 {
-	JIVE_DEBUG_ASSERT(arguments.first == nullptr && arguments.last == nullptr);
+	JIVE_DEBUG_ASSERT(arguments.empty());
 
 	on_input_destroy(this);
 
@@ -31,8 +31,6 @@ structural_input::structural_input(
 	: input(index, origin, node->region(), port)
 	, node_(node)
 {
-	arguments.first = arguments.last = nullptr;
-
 	if (port.gate()) {
 		for (size_t n = 0; n < index; n++) {
 			auto other = node->input(n);

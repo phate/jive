@@ -207,8 +207,8 @@ public:
 	inline jive::argument *
 	argument() const noexcept
 	{
-		JIVE_DEBUG_ASSERT(arguments.first == arguments.last);
-		return arguments.first;
+		JIVE_DEBUG_ASSERT(arguments.size() == 1);
+		return arguments.first();
 	}
 
 	jive::result *

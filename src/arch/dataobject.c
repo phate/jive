@@ -9,6 +9,7 @@
 #include <jive/arch/addresstype.h>
 #include <jive/arch/memlayout.h>
 #include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/structural-node.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/float/flttype.h>

@@ -10,6 +10,7 @@
 #include <jive/rvsdg/notifiers.h>
 #include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/region.h>
+#include <jive/rvsdg/structural-node.h>
 #include <jive/rvsdg/substitution.h>
 #include <jive/rvsdg/traverser.h>
 #include <jive/util/list.h>
@@ -23,7 +24,7 @@ argument::~argument() noexcept
 	on_output_destroy(this);
 
 	if (input())
-		JIVE_LIST_REMOVE(input()->arguments, this, input_argument_list);
+		input()->arguments.erase(this);
 
 	if (port().gate())
 		port().gate()->clear_interferences();
@@ -37,9 +38,8 @@ argument::argument(
 	: output(index, region, port)
 	, input_(input)
 {
-	input_argument_list.prev = input_argument_list.next = nullptr;
 	if (input)
-		JIVE_LIST_PUSH_BACK(input->arguments, this, input_argument_list);
+		input->arguments.push_back(this);
 
 	if (port.gate()) {
 		for (size_t n = 0; n < index; n++) {
@@ -294,6 +294,66 @@ region::normalize(bool recursive)
 
 		graph()->node_normal_form(typeid(node->operation()))->normalize_node(node);
 	}
+}
+
+size_t
+nnodes(const jive::region * region) noexcept
+{
+	size_t n = region->nnodes();
+	for (const auto & node : region->nodes) {
+		if (auto snode = dynamic_cast<const jive::structural_node*>(&node)) {
+			for (size_t r = 0; r < snode->nsubregions(); r++)
+				n += nnodes(snode->subregion(r));
+		}
+	}
+
+	return n;
+}
+
+size_t
+nstructnodes(const jive::region * region) noexcept
+{
+	size_t n = 0;
+	for (const auto & node : region->nodes) {
+		if (auto snode = dynamic_cast<const jive::structural_node*>(&node)) {
+			for (size_t r = 0; r < snode->nsubregions(); r++)
+				n += nstructnodes(snode->subregion(r));
+			n += 1;
+		}
+	}
+
+	return n;
+}
+
+size_t
+nsimpnodes(const jive::region * region) noexcept
+{
+	size_t n = 0;
+	for (const auto & node : region->nodes) {
+		if (auto snode = dynamic_cast<const jive::structural_node*>(&node)) {
+			for (size_t r = 0; r < snode->nsubregions(); r++)
+				n += nsimpnodes(snode->subregion(r));
+		} else {
+			n += 1;
+		}
+	}
+
+	return n;
+}
+
+size_t
+ninputs(const jive::region * region) noexcept
+{
+	size_t n = region->nresults();
+	for (const auto & node : region->nodes) {
+		if (auto snode = dynamic_cast<const jive::structural_node*>(&node)) {
+			for (size_t r = 0; r < snode->nsubregions(); r++)
+				n += ninputs(snode->subregion(r));
+		}
+		n += node.ninputs();
+	}
+
+	return n;
 }
 
 }	//namespace

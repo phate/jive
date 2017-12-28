@@ -8,6 +8,7 @@
 #include "testtypes.h"
 
 #include <jive/rvsdg/graph.h>
+#include <jive/rvsdg/structural-node.h>
 #include <jive/rvsdg/substitution.h>
 #include <jive/view.h>
 

@@ -7,13 +7,12 @@
 #define JIVE_RVSDG_STRUCTURAL_NODE_H
 
 #include <jive/rvsdg/node.h>
+#include <jive/rvsdg/region.h>
 
 namespace jive {
 
 /* structural node */
 
-class argument;
-class result;
 class structural_input;
 class structural_op;
 class structural_output;
@@ -77,9 +76,13 @@ private:
 
 /* structural input class */
 
+typedef jive::detail::intrusive_list<
+	jive::argument,
+	jive::argument::structural_input_accessor
+> argument_list;
+
 class structural_input : public input {
 	friend structural_node;
-
 public:
 	virtual
 	~structural_input() noexcept;
@@ -95,10 +98,7 @@ public:
 	virtual jive::structural_node *
 	node() const noexcept override;
 
-	struct {
-		jive::argument * first;
-		jive::argument * last;
-	} arguments;
+	argument_list arguments;
 
 private:
 	jive::structural_node * node_;
@@ -144,6 +144,26 @@ inline jive::structural_output *
 structural_node::output(size_t index) const noexcept
 {
 	return static_cast<structural_output*>(node::output(index));
+}
+
+/* other functions */
+
+template <class T> static inline bool
+contains(const jive::region * region, bool recursive)
+{
+	for (const auto & node : region->nodes) {
+		if (is_opnode<T>(node))
+			return true;
+
+
+		auto structnode = dynamic_cast<const jive::structural_node*>(node);
+		if (recursive && structnode) {
+			for (size_t n = 0; n < structnode->nsubregions(); n++)
+				return contains<T>(structnode->subregion(n), recursive);
+		}
+	}
+
+	return false;
 }
 
 }

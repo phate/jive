@@ -15,6 +15,7 @@
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/resource.h>
 #include <jive/rvsdg/simple-node.h>
+#include <jive/rvsdg/structural-node.h>
 
 namespace jive {
 
