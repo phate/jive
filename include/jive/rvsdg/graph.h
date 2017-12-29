@@ -23,6 +23,11 @@
 
 namespace jive {
 
+typedef jive::detail::intrusive_list<
+	jive::gate,
+	jive::gate::graph_gate_accessor
+> graph_gate_list;
+
 class graph {
 public:
 	~graph();
@@ -74,10 +79,7 @@ public:
 		root()->prune(true);
 	}
 
-	struct {
-		jive::gate * first;
-		jive::gate * last;
-	} gates;
+	graph_gate_list gates;
 
 private:
 	bool normalized_;

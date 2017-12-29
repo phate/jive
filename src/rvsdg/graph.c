@@ -25,16 +25,14 @@ graph::~graph()
 
 	delete root_;
 
-	while (gates.first)
-		delete gates.first;
+	while (gates.first())
+		delete gates.first();
 }
 
 graph::graph()
 	: normalized_(false)
 	, root_(new jive::region(nullptr, this))
-{
-	gates.first = gates.last = 0;
-}
+{}
 
 std::unique_ptr<jive::graph>
 graph::copy() const

@@ -20,9 +20,7 @@ gate::gate(
 , type_(type.copy())
 , rescls_(&jive_root_resource_class)
 {
-	graph_gate_list.prev = graph_gate_list.next = nullptr;
-
-	JIVE_LIST_PUSH_BACK(graph->gates, this, graph_gate_list);
+	graph->gates.push_back(this);
 }
 
 gate::gate(
@@ -34,9 +32,7 @@ gate::gate(
 , type_(rescls->type().copy())
 , rescls_(rescls)
 {
-	graph_gate_list.prev = graph_gate_list.next = nullptr;
-
-	JIVE_LIST_PUSH_BACK(graph->gates, this, graph_gate_list);
+	graph->gates.push_back(this);
 }
 
 gate::~gate() noexcept
@@ -45,7 +41,7 @@ gate::~gate() noexcept
 	JIVE_DEBUG_ASSERT(outputs.empty());
 	JIVE_DEBUG_ASSERT(interference_.empty());
 
-	JIVE_LIST_REMOVE(graph()->gates, this, graph_gate_list);
+	graph()->gates.erase(this);
 }
 
 void

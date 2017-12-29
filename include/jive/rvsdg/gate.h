@@ -68,8 +68,17 @@ typedef jive::detail::intrusive_list<
 > gate_output_list;
 
 class gate final {
+	jive::detail::intrusive_list_anchor<
+		jive::gate
+	> graph_gate_anchor_;
+
 public:
 	~gate() noexcept;
+
+	typedef jive::detail::intrusive_list_accessor<
+		jive::gate,
+		&jive::gate::graph_gate_anchor_
+	> graph_gate_accessor;
 
 private:
 	gate(
@@ -155,11 +164,6 @@ public:
 
 	void
 	clear_interferences();
-
-	struct {
-		jive::gate * prev;
-		jive::gate * next;
-	} graph_gate_list;
 
 	gate_input_list inputs;
 
