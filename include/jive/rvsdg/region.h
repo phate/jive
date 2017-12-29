@@ -70,7 +70,16 @@ private:
 };
 
 class result final : public input {
+	jive::detail::intrusive_list_anchor<
+		jive::result
+	> structural_output_anchor_;
+
 public:
+	typedef jive::detail::intrusive_list_accessor<
+		jive::result,
+		&jive::result::structural_output_anchor_
+	> structural_output_accessor;
+
 	virtual
 	~result() noexcept;
 
@@ -99,11 +108,6 @@ public:
 	{
 		return output_;
 	}
-
-	struct {
-		jive::result * prev;
-		jive::result * next;
-	} output_result_list;
 
 private:
 	jive::structural_output * output_;

@@ -268,8 +268,8 @@ public:
 	inline jive::result *
 	result() const noexcept
 	{
-		JIVE_DEBUG_ASSERT(results.first == results.last);
-		return results.first;
+		JIVE_DEBUG_ASSERT(results.size() == 1);
+		return results.first();
 	}
 
 private:

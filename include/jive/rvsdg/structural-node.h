@@ -106,6 +106,11 @@ private:
 
 /* structural output class */
 
+typedef jive::detail::intrusive_list<
+	jive::result,
+	jive::result::structural_output_accessor
+> result_list;
+
 class structural_output : public output {
 	friend structural_node;
 
@@ -123,10 +128,7 @@ public:
 	virtual jive::structural_node *
 	node() const noexcept override;
 
-	struct {
-		jive::result * first;
-		jive::result * last;
-	} results;
+	result_list results;
 
 private:
 	jive::structural_node * node_;

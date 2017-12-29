@@ -63,7 +63,7 @@ result::~result() noexcept
 	on_input_destroy(this);
 
 	if (output())
-		JIVE_LIST_REMOVE(output()->results, this, output_result_list);
+		output()->results.erase(this);
 
 	if (port().gate())
 		port().gate()->clear_interferences();
@@ -78,10 +78,8 @@ result::result(
 	: input(index, origin, region, port)
 	, output_(output)
 {
-	output_result_list.prev = output_result_list.next = nullptr;
-
 	if (output)
-		JIVE_LIST_PUSH_BACK(output->results, this, output_result_list);
+		output->results.push_back(this);
 
 	if (port.gate()) {
 		for (size_t n = 0; n < index; n++) {

@@ -52,7 +52,7 @@ structural_input::node() const noexcept
 
 structural_output::~structural_output()
 {
-	JIVE_DEBUG_ASSERT(results.first == nullptr && results.last == nullptr);
+	JIVE_DEBUG_ASSERT(results.empty());
 
 	on_output_destroy(this);
 
@@ -67,8 +67,6 @@ structural_output::structural_output(
 	: output(index, node->region(), port)
 	, node_(node)
 {
-	results.first = results.last = nullptr;
-
 	if (port.gate()) {
 		for (size_t n = 0; n < index; n++) {
 			auto other = node->output(n);
