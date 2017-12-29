@@ -27,7 +27,7 @@ input::~input() noexcept
 	origin()->remove_user(this);
 
 	if (port().gate())
-		JIVE_LIST_REMOVE(port().gate()->inputs, this, gate_input_list);
+		port().gate()->inputs.erase(this);
 }
 
 input::input(
@@ -40,8 +40,6 @@ input::input(
 , origin_(origin)
 , region_(region)
 {
-	gate_input_list.prev = gate_input_list.next = nullptr;
-
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
 
@@ -49,7 +47,7 @@ input::input(
 		throw jive::type_error(port.type().debug_string(), origin->type().debug_string());
 
 	if (port.gate())
-		JIVE_LIST_PUSH_BACK(port.gate()->inputs, this, gate_input_list);
+		port.gate()->inputs.push_back(this);
 
 	origin->add_user(this);
 }

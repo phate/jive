@@ -13,7 +13,6 @@
 #include <unordered_set>
 #include <utility>
 
-#include <jive/rvsdg/gate.h>
 #include <jive/rvsdg/operation.h>
 #include <jive/rvsdg/resource.h>
 #include <jive/util/intrusive-list.h>
@@ -36,7 +35,16 @@ class input {
 	friend jive::node;
 	friend jive::region;
 
+	jive::detail::intrusive_list_anchor<
+		jive::input
+	> gate_input_anchor_;
+
 public:
+	typedef jive::detail::intrusive_list_accessor<
+		jive::input,
+		&jive::input::gate_input_anchor_
+	> gate_input_accessor;
+
 	virtual
 	~input() noexcept;
 
@@ -94,11 +102,6 @@ public:
 
 	virtual std::string
 	debug_string() const;
-
-	struct {
-		jive::input * prev;
-		jive::input * next;
-	} gate_input_list;
 
 private:
 	size_t index_;

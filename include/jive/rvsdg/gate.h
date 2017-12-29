@@ -6,8 +6,10 @@
 #ifndef JIVE_RVSDG_GATE_H
 #define JIVE_RVSDG_GATE_H
 
+#include <jive/rvsdg/node.h>
 #include <jive/rvsdg/resource.h>
 #include <jive/util/intrusive-hash.h>
+#include <jive/util/intrusive-list.h>
 
 /* gate interference */
 
@@ -54,6 +56,11 @@ class resource_class;
 class type;
 
 /* gate */
+
+typedef jive::detail::intrusive_list<
+	jive::input,
+	jive::input::gate_input_accessor
+> gate_input_list;
 
 class gate final {
 public:
@@ -149,10 +156,7 @@ public:
 		jive::gate * next;
 	} graph_gate_list;
 
-	struct {
-		jive::input * first;
-		jive::input * last;
-	} inputs;
+	gate_input_list inputs;
 
 	struct {
 		jive::output * first;
