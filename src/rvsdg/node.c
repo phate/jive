@@ -90,7 +90,7 @@ output::~output()
 	JIVE_DEBUG_ASSERT(nusers() == 0);
 
 	if (port().gate())
-		JIVE_LIST_REMOVE(port().gate()->outputs, this, gate_output_list);
+		port().gate()->outputs.erase(this);
 }
 
 output::output(
@@ -101,10 +101,8 @@ output::output(
 , port_(port)
 , region_(region)
 {
-	gate_output_list.prev = gate_output_list.next = nullptr;
-
 	if (port.gate())
-		JIVE_LIST_PUSH_BACK(port.gate()->outputs, this, gate_output_list);
+		port.gate()->outputs.push_back(this);
 }
 
 std::string

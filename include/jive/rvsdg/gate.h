@@ -62,6 +62,11 @@ typedef jive::detail::intrusive_list<
 	jive::input::gate_input_accessor
 > gate_input_list;
 
+typedef jive::detail::intrusive_list<
+	jive::output,
+	jive::output::gate_output_accessor
+> gate_output_list;
+
 class gate final {
 public:
 	~gate() noexcept;
@@ -158,10 +163,7 @@ public:
 
 	gate_input_list inputs;
 
-	struct {
-		jive::output * first;
-		jive::output * last;
-	}	outputs;
+	gate_output_list outputs;
 
 private:
 	std::string name_;

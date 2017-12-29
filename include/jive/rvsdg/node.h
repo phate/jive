@@ -119,7 +119,16 @@ class output {
 
 	typedef std::unordered_set<jive::input*>::const_iterator user_iterator;
 
+	jive::detail::intrusive_list_anchor<
+		jive::output
+	> gate_output_anchor_;
+
 public:
+	typedef jive::detail::intrusive_list_accessor<
+		jive::output,
+		&jive::output::gate_output_anchor_
+	> gate_output_accessor;
+
 	virtual
 	~output() noexcept;
 
@@ -195,11 +204,6 @@ public:
 
 	virtual std::string
 	debug_string() const;
-
-	struct {
-		jive::output * prev;
-		jive::output * next;
-	} gate_output_list;
 
 private:
 	void
