@@ -121,9 +121,8 @@ bottomup_traverser::bottomup_traverser(jive::region * region, bool revisit)
 	, tracker_(region->graph())
 	, new_node_state_(revisit ? traversal_nodestate::frontier : traversal_nodestate::behind)
 {
-	jive::node * node;
-	JIVE_LIST_ITERATE(region->bottom_nodes, node, region_bottom_list)
-		tracker_.set_nodestate(node, traversal_nodestate::frontier);
+	for (auto & node : region->bottom_nodes)
+		tracker_.set_nodestate(&node, traversal_nodestate::frontier);
 
 	for (size_t n = 0; n < region->nresults(); n++) {
 		auto node = region->result(n)->origin()->node();

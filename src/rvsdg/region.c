@@ -108,7 +108,7 @@ region::~region()
 	prune(false);
 	JIVE_DEBUG_ASSERT(nodes.empty());
 	JIVE_DEBUG_ASSERT(top_nodes.empty());
-	JIVE_DEBUG_ASSERT(bottom_nodes.first == nullptr && bottom_nodes.last == nullptr);
+	JIVE_DEBUG_ASSERT(bottom_nodes.empty());
 
 	while (arguments_.size())
 		remove_argument(arguments_.size()-1);
@@ -118,7 +118,6 @@ region::region(jive::region * parent, jive::graph * graph)
 	: graph_(graph)
 	, node_(nullptr)
 {
-	bottom_nodes.first = bottom_nodes.last = nullptr;
 	on_region_create(this);
 }
 
@@ -126,7 +125,6 @@ region::region(jive::structural_node * node)
 	: graph_(node->graph())
 	, node_(node)
 {
-	bottom_nodes.first = bottom_nodes.last = nullptr;
 	on_region_create(this);
 }
 
@@ -265,8 +263,8 @@ region::copy(
 void
 region::prune(bool recursive)
 {
-	while (bottom_nodes.first)
-		remove_node(bottom_nodes.first);
+	while (bottom_nodes.first())
+		remove_node(bottom_nodes.first());
 
 	if (!recursive)
 		return;

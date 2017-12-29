@@ -121,7 +121,7 @@ output::remove_user(jive::input * user)
 
 	users_.erase(user);
 	if (node() && !node()->has_users())
-		JIVE_LIST_PUSH_BACK(region()->bottom_nodes, node(), region_bottom_list);
+		region()->bottom_nodes.push_back(node());
 }
 
 void
@@ -130,7 +130,7 @@ output::add_user(jive::input * user)
 	JIVE_DEBUG_ASSERT(users_.find(user) == users_.end());
 
 	if (node() && !node()->has_users())
-		JIVE_LIST_REMOVE(region()->bottom_nodes, node(), region_bottom_list);
+		region()->bottom_nodes.erase(node());
 	users_.insert(user);
 }
 
@@ -162,8 +162,8 @@ node::node(std::unique_ptr<jive::operation> op, jive::region * region)
 	, region_(region)
 	, operation_(std::move(op))
 {
+	region->bottom_nodes.push_back(this);
 	region->top_nodes.push_back(this);
-	JIVE_LIST_PUSH_BACK(region->bottom_nodes, this, region_bottom_list);
 	region->nodes.push_back(this);
 }
 
@@ -175,10 +175,9 @@ node::~node()
 	while(noutputs())
 		remove_output(noutputs()-1);
 
-	region_->nodes.erase(this);
-
-	JIVE_LIST_REMOVE(region()->bottom_nodes, this, region_bottom_list);
+	region()->nodes.erase(this);
 	region()->top_nodes.erase(this);
+	region()->bottom_nodes.erase(this);
 }
 
 void

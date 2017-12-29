@@ -353,11 +353,6 @@ public:
 	void
 	recompute_depth(jive::input * input);
 
-	struct {
-		jive::node * prev;
-		jive::node * next;
-	} region_bottom_list;
-
 private:
 	jive::detail::intrusive_list_anchor<
 		jive::node
@@ -366,6 +361,10 @@ private:
 	jive::detail::intrusive_list_anchor<
 		jive::node
 	> region_top_node_list_anchor_;
+
+	jive::detail::intrusive_list_anchor<
+		jive::node
+	> region_bottom_node_list_anchor_;
 
 public:
 	typedef jive::detail::intrusive_list_accessor<
@@ -377,6 +376,11 @@ public:
 		jive::node,
 		&jive::node::region_top_node_list_anchor_
 	> region_top_node_list_accessor;
+
+	typedef jive::detail::intrusive_list_accessor<
+		jive::node,
+		&jive::node::region_bottom_node_list_anchor_
+	> region_bottom_node_list_accessor;
 
 private:
 	size_t depth_;
