@@ -27,10 +27,10 @@ node_cse(
 				return node;
 		}
 	} else {
-		jive::node * node;
-		JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
-		if (cse_test(node))
-			return node;
+		for (auto & node : region->top_nodes) {
+			if (cse_test(&node))
+				return &node;
+		}
 	}
 
 	return nullptr;

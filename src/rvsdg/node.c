@@ -162,7 +162,7 @@ node::node(std::unique_ptr<jive::operation> op, jive::region * region)
 	, region_(region)
 	, operation_(std::move(op))
 {
-	JIVE_LIST_PUSH_BACK(region->top_nodes, this, region_top_node_list);
+	region->top_nodes.push_back(this);
 	JIVE_LIST_PUSH_BACK(region->bottom_nodes, this, region_bottom_list);
 	region->nodes.push_back(this);
 }
@@ -178,14 +178,14 @@ node::~node()
 	region_->nodes.erase(this);
 
 	JIVE_LIST_REMOVE(region()->bottom_nodes, this, region_bottom_list);
-	JIVE_LIST_REMOVE(region_->top_nodes, this, region_top_node_list);
+	region()->top_nodes.erase(this);
 }
 
 void
 node::add_input(std::unique_ptr<jive::input> input)
 {
 	if (ninputs() == 0)
-		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
+		region()->top_nodes.erase(this);
 
 	inputs_.push_back(std::move(input));
 	recompute_depth(inputs_.back().get());
@@ -203,7 +203,7 @@ node::remove_input(size_t index)
 	inputs_.pop_back();
 
 	if (ninputs() == 0)
-		JIVE_LIST_PUSH_BACK(region()->top_nodes, this, region_top_node_list);
+		region()->top_nodes.push_back(this);
 }
 
 void

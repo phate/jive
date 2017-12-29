@@ -119,6 +119,11 @@ class region {
 		jive::node::region_node_list_accessor
 	> region_nodes_list;
 
+	typedef jive::detail::intrusive_list<
+		jive::node,
+		jive::node::region_top_node_list_accessor
+	> region_top_node_list;
+
 public:
 	~region();
 
@@ -242,10 +247,7 @@ public:
 
 	region_nodes_list nodes;
 
-	struct {
-		jive::node * first;
-		jive::node * last;
-	} top_nodes;
+	region_top_node_list top_nodes;
 
 	struct {
 		jive::node * first;

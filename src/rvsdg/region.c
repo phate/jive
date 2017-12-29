@@ -107,7 +107,7 @@ region::~region()
 
 	prune(false);
 	JIVE_DEBUG_ASSERT(nodes.empty());
-	JIVE_DEBUG_ASSERT(top_nodes.first == nullptr && top_nodes.last == nullptr);
+	JIVE_DEBUG_ASSERT(top_nodes.empty());
 	JIVE_DEBUG_ASSERT(bottom_nodes.first == nullptr && bottom_nodes.last == nullptr);
 
 	while (arguments_.size())
@@ -118,7 +118,6 @@ region::region(jive::region * parent, jive::graph * graph)
 	: graph_(graph)
 	, node_(nullptr)
 {
-	top_nodes.first = top_nodes.last = nullptr;
 	bottom_nodes.first = bottom_nodes.last = nullptr;
 	on_region_create(this);
 }
@@ -127,7 +126,6 @@ region::region(jive::structural_node * node)
 	: graph_(node->graph())
 	, node_(node)
 {
-	top_nodes.first = top_nodes.last = nullptr;
 	bottom_nodes.first = bottom_nodes.last = nullptr;
 	on_region_create(this);
 }

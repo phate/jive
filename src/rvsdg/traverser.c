@@ -28,10 +28,8 @@ topdown_traverser::topdown_traverser(jive::region * region)
 	: region_(region)
 	, tracker_(region->graph())
 {
-	jive::node * node;
-	JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list) {
-		tracker_.set_nodestate(node, traversal_nodestate::frontier);
-	}
+	for (auto & node : region->top_nodes)
+		tracker_.set_nodestate(&node, traversal_nodestate::frontier);
 
 	for (size_t n = 0; n < region->narguments(); n++) {
 		auto argument = region->argument(n);
