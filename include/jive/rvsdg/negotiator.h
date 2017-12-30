@@ -157,11 +157,6 @@ typedef enum {
 
 struct jive_negotiator_port {
 	jive_negotiator_constraint * constraint;
-	struct {
-		jive_negotiator_port * prev;
-		jive_negotiator_port * next;
-	} constraint_port_list;
-	
 	jive_negotiator_connection * connection;
 	struct {
 		jive_negotiator_port * prev;
@@ -179,6 +174,9 @@ struct jive_negotiator_port {
 	} specialized_list;
 
 private:
+	jive::detail::intrusive_list_anchor<
+		jive_negotiator_port
+	> constraint_port_anchor;
 	jive::detail::intrusive_hash_anchor<jive_negotiator_port> hash_chain_;
 
 public:
@@ -186,6 +184,11 @@ public:
 		const jive::simple_input * input;
 		const jive::output * output;
 	} hash_key_;
+
+	typedef jive::detail::intrusive_list_accessor<
+		jive_negotiator_port,
+		&jive_negotiator_port::constraint_port_anchor
+	> constraint_port_accessor;
 
 	class input_hash_chain_accessor {
 	public:
@@ -282,14 +285,16 @@ jive_negotiator_connection_invalidate(jive_negotiator_connection * self);
 
 /* constraints */
 
+typedef jive::detail::intrusive_list<
+	jive_negotiator_port,
+	jive_negotiator_port::constraint_port_accessor
+> constraint_port_list;
+
 struct jive_negotiator_constraint {
 	const jive_negotiator_constraint_class * class_;
 	jive_negotiator * negotiator;
-	struct {
-		jive_negotiator_port * first;
-		jive_negotiator_port * last;
-	} ports;
-	
+	constraint_port_list ports;
+
 	struct {
 		jive_negotiator_constraint * prev;
 		jive_negotiator_constraint * next;

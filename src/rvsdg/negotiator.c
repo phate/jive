@@ -136,8 +136,8 @@ jive_negotiator_port_create(
 	jive_negotiator_port * self = new jive_negotiator_port;
 	
 	self->constraint = constraint;
-	JIVE_LIST_PUSH_BACK(constraint->ports, self, constraint_port_list);
-	
+	constraint->ports.push_back(self);
+
 	self->connection = connection;
 	JIVE_LIST_PUSH_BACK(connection->ports, self, connection_port_list);
 	
@@ -188,7 +188,7 @@ jive_negotiator_port_split(jive_negotiator_port * self)
 void
 jive_negotiator_port_destroy(jive_negotiator_port * self)
 {
-	JIVE_LIST_REMOVE(self->constraint->ports, self, constraint_port_list);
+	self->constraint->ports.erase(self);
 	JIVE_LIST_REMOVE(self->connection->ports, self, connection_port_list);
 	
 	jive_negotiator * negotiator = self->constraint->negotiator;
@@ -335,8 +335,7 @@ jive_negotiator_constraint_init_(
 {
 	self->class_ = class_;
 	self->negotiator = negotiator;
-	self->ports.first = self->ports.last = 0;
-	
+
 	JIVE_LIST_PUSH_BACK(negotiator->constraints, self, negotiator_constraint_list);
 }
 
@@ -349,7 +348,7 @@ jive_negotiator_constraint_fini_(jive_negotiator_constraint * self)
 void
 jive_negotiator_constraint_destroy(jive_negotiator_constraint * self)
 {
-	JIVE_DEBUG_ASSERT(self->ports.first == 0 && self->ports.last == 0);
+	JIVE_DEBUG_ASSERT(self->ports.empty());
 	self->class_->fini(self);
 	delete self;
 }
@@ -361,12 +360,11 @@ jive_negotiator_identity_constraint_revalidate(
 	jive_negotiator_constraint * self,
 	jive_negotiator_port * port)
 {
-	jive_negotiator_port * tmp;
-	JIVE_LIST_ITERATE(self->ports, tmp, constraint_port_list) {
-		if (tmp == port)
+	for (const auto & tmp : self->ports) {
+		if (&tmp == port)
 			continue;
-		if (tmp->option->assign(*port->option))
-			jive_negotiator_connection_invalidate(tmp->connection);
+		if (tmp.option->assign(*port->option))
+			jive_negotiator_connection_invalidate(tmp.connection);
 	}
 }
 
@@ -439,10 +437,8 @@ jive_negotiator_fini_(jive_negotiator * self)
 		jive_negotiator_constraint * constraint = self->constraints.first;
 		JIVE_LIST_REMOVE(self->constraints, constraint, negotiator_constraint_list);
 		
-		jive_negotiator_port * port, * next;
-		JIVE_LIST_ITERATE_SAFE(constraint->ports, port, next, constraint_port_list) {
-			jive_negotiator_port_destroy(port);
-		}
+		while (constraint->ports.first())
+			jive_negotiator_port_destroy(constraint->ports.first());
 		
 		jive_negotiator_constraint_destroy(constraint);
 	}
