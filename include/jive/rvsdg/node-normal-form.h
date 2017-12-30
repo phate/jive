@@ -11,6 +11,7 @@
 
 #include <typeindex>
 #include <typeinfo>
+#include <unordered_set>
 #include <vector>
 
 #include <jive/common.h>
@@ -42,10 +43,9 @@ public:
 		, graph_(graph)
 		, enable_mutable_(true)
 	{
-		subclasses_.first = subclasses_.last = nullptr;
 		if (parent) {
 			enable_mutable_ = parent->enable_mutable_;
-			JIVE_LIST_PUSH_BACK(parent->subclasses_, this, normal_form_subclass_list_);
+			parent->subclasses_.insert(this);
 		}
 	}
 
@@ -110,11 +110,9 @@ protected:
 	void
 	children_set(bool enable)
 	{
-		jive::node_normal_form * child;
-		JIVE_LIST_ITERATE(subclasses_, child, normal_form_subclass_list_) {
-			if (auto nf = dynamic_cast<X *>(child)) {
+		for (const auto & subclass : subclasses_) {
+			if (auto nf = dynamic_cast<X*>(subclass))
 				(nf->*fn)(enable);
-			}
 		}
 	}
 
@@ -129,16 +127,7 @@ private:
 	} new_hash_chain;
 
 	bool enable_mutable_;
-
-	struct {
-		node_normal_form * first;
-		node_normal_form * last;
-	} subclasses_;
-
-	struct {
-		node_normal_form * prev;
-		node_normal_form * next;
-	} normal_form_subclass_list_;
+	std::unordered_set<node_normal_form*> subclasses_;
 };
 
 typedef jive::detail::owner_intrusive_hash<
