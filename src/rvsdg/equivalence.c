@@ -8,8 +8,8 @@
 
 #include <jive/rvsdg/equivalence.h>
 
-typedef struct jive_node_equiv_entry jive_node_equiv_entry;
-struct jive_node_equiv_entry {
+class jive_node_equiv_entry {
+public:
 	const jive::node * first;
 	const jive::node * second;
 	bool pending;
@@ -17,26 +17,29 @@ struct jive_node_equiv_entry {
 		jive_node_equiv_entry * prev;
 		jive_node_equiv_entry * next;
 	} hash_chain;
-	struct {
-		jive_node_equiv_entry * prev;
-		jive_node_equiv_entry * next;
-	} pending_chain;
+
+private:
+	jive::detail::intrusive_list_anchor<
+		jive_node_equiv_entry
+	> pending_anchor;
+
+public:
+	typedef jive::detail::intrusive_list_accessor<
+		jive_node_equiv_entry,
+		&jive_node_equiv_entry::pending_anchor
+	> pending_accessor;
 };
 
-typedef struct jive_equiv_state jive_equiv_state;
-struct jive_equiv_state {
+typedef jive::detail::intrusive_list<
+	jive_node_equiv_entry,
+	jive_node_equiv_entry::pending_accessor
+> pending_list;
+
+class jive_equiv_state {
+public:
+	pending_list pending;
 	std::unordered_map<const jive::node *, jive_node_equiv_entry*> node_mapping;
-	struct {
-		jive_node_equiv_entry * first;
-		jive_node_equiv_entry * last;
-	} pending;
 };
-
-static void
-jive_equiv_state_init(jive_equiv_state * self)
-{
-	self->pending.first = self->pending.last = 0;
-}
 
 static void
 jive_equiv_state_fini(jive_equiv_state * self)
@@ -59,7 +62,7 @@ jive_equiv_state_lookup(jive_equiv_state * self, const jive::node * node)
 		entry->second = 0;
 		entry->pending = true;
 		self->node_mapping[node] = entry;
-		JIVE_LIST_PUSH_BACK(self->pending, entry, pending_chain);
+		self->pending.push_back(entry);
 	} else
 		entry = i->second;
 
@@ -71,7 +74,7 @@ jive_equiv_state_mark_verified(jive_equiv_state * self, jive_node_equiv_entry * 
 {
 	JIVE_DEBUG_ASSERT(entry->pending);
 	entry->pending = false;
-	JIVE_LIST_REMOVE(self->pending, entry, pending_chain);
+	self->pending.erase(entry);
 }
 
 static bool
@@ -113,8 +116,7 @@ jive_graphs_equivalent(
 	size_t nassumed, jive::node * const ass1[], jive::node * const ass2[])
 {
 	jive_equiv_state state;
-	jive_equiv_state_init(&state);
-	
+
 	bool satisfied = true;
 	size_t n;
 	
@@ -137,9 +139,8 @@ jive_graphs_equivalent(
 		entry->second = check2[n];
 	}
 	
-	while (satisfied && state.pending.first) {
-		jive_node_equiv_entry * entry = state.pending.first;
-		
+	while (satisfied && state.pending.first()) {
+		auto entry = state.pending.first();
 		satisfied = jive_equiv_state_check_node(&state, entry->first, entry->second);
 		jive_equiv_state_mark_verified(&state, entry);
 	}
