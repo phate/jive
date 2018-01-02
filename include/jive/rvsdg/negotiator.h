@@ -284,10 +284,15 @@ struct jive_negotiator_connection {
 
 	connection_port_list ports;
 
-	struct {
-		jive_negotiator_connection * prev;
-		jive_negotiator_connection * next;
-	} negotiator_connection_list;
+	jive::detail::intrusive_list_anchor<
+		jive_negotiator_connection
+	> connection_list_anchor;
+
+	typedef jive::detail::intrusive_list_accessor<
+		jive_negotiator_connection,
+		&jive_negotiator_connection::connection_list_anchor
+	> connection_list_accessor;
+
 	bool validated;
 };
 
@@ -430,6 +435,16 @@ typedef jive::detail::intrusive_list<
 	jive_negotiator_port::specialized_port_accessor
 > unspecialized_port_list;
 
+typedef jive::detail::intrusive_list<
+	jive_negotiator_connection,
+	jive_negotiator_connection::connection_list_accessor
+> validated_connection_list;
+
+typedef jive::detail::intrusive_list<
+	jive_negotiator_connection,
+	jive_negotiator_connection::connection_list_accessor
+> invalidated_connection_list;
+
 struct jive_negotiator {
 	const jive_negotiator_class * class_;
 	
@@ -439,16 +454,9 @@ struct jive_negotiator {
 	jive_negotiator_gate_hash gate_map;
 	jive_negotiator_node_hash node_map;
 
-	struct {
-		jive_negotiator_connection * first;
-		jive_negotiator_connection * last;
-	} validated_connections;
-	
-	struct {
-		jive_negotiator_connection * first;
-		jive_negotiator_connection * last;
-	} invalidated_connections;
-	
+	validated_connection_list validated_connections;
+	invalidated_connection_list invalidated_connections;
+
 	struct {
 		jive_negotiator_constraint * first;
 		jive_negotiator_constraint * last;

@@ -229,7 +229,7 @@ jive_negotiator_connection_create(jive_negotiator * negotiator)
 	jive_negotiator_connection * self = new jive_negotiator_connection;
 	self->negotiator = negotiator;
 	self->validated = true;
-	JIVE_LIST_PUSH_BACK(negotiator->validated_connections, self, negotiator_connection_list);
+	negotiator->validated_connections.push_back(self);
 	return self;
 }
 
@@ -238,9 +238,9 @@ jive_negotiator_connection_destroy(jive_negotiator_connection * self)
 {
 	JIVE_DEBUG_ASSERT(self->ports.empty());
 	if (self->validated) {
-		JIVE_LIST_REMOVE(self->negotiator->validated_connections, self, negotiator_connection_list);
+		self->negotiator->validated_connections.erase(self);
 	} else {
-		JIVE_LIST_REMOVE(self->negotiator->invalidated_connections, self, negotiator_connection_list);
+		self->negotiator->invalidated_connections.erase(self);
 	}
 	delete self;
 }
@@ -297,8 +297,8 @@ jive_negotiator_connection_invalidate(jive_negotiator_connection * self)
 	if (!self->validated)
 		return;
 	self->validated = false;
-	JIVE_LIST_REMOVE(self->negotiator->validated_connections, self, negotiator_connection_list);
-	JIVE_LIST_PUSH_BACK(self->negotiator->invalidated_connections, self, negotiator_connection_list);
+	self->negotiator->validated_connections.erase(self);
+	self->negotiator->invalidated_connections.push_back(self);
 }
 
 static void
@@ -407,8 +407,6 @@ jive_negotiator_init_(
 	self->class_ = class_;
 	self->graph = graph;
 
-	self->validated_connections.first = self->validated_connections.last = 0;
-	self->invalidated_connections.first = self->invalidated_connections.last = 0;
 	self->constraints.first = self->constraints.last = 0;
 
 	self->tmp_option = jive_negotiator_option_create(self);
@@ -434,23 +432,20 @@ jive_negotiator_fini_(jive_negotiator * self)
 		jive_negotiator_constraint_destroy(constraint);
 	}
 	
-	while(self->validated_connections.first) {
-		jive_negotiator_connection_destroy(self->validated_connections.first);
-	}
-	
-	while(self->invalidated_connections.first) {
-		jive_negotiator_connection_destroy(self->invalidated_connections.first);
-	}
+	while(!self->validated_connections.empty())
+		jive_negotiator_connection_destroy(self->validated_connections.first());
+
+	while(!self->invalidated_connections.empty())
+		jive_negotiator_connection_destroy(self->invalidated_connections.first());
 }
 
 void
 jive_negotiator_negotiate(jive_negotiator * self)
 {
-	while(self->invalidated_connections.first) {
-		jive_negotiator_connection * connection = self->invalidated_connections.first;
+	while(auto connection = self->invalidated_connections.first()) {
 		connection->validated = true;
-		JIVE_LIST_REMOVE(self->invalidated_connections, connection, negotiator_connection_list);
-		JIVE_LIST_PUSH_BACK(self->validated_connections, connection, negotiator_connection_list);
+		self->invalidated_connections.erase(connection);
+		self->validated_connections.push_back(connection);
 		jive_negotiator_connection_revalidate(connection);
 	}
 }
