@@ -139,8 +139,8 @@ jive_negotiator_port_create(
 	constraint->ports.push_back(self);
 
 	self->connection = connection;
-	JIVE_LIST_PUSH_BACK(connection->ports, self, connection_port_list);
-	
+	connection->ports.push_back(self);
+
 	self->specialized = false;
 	JIVE_LIST_PUSH_BACK(negotiator->unspecialized_ports, self, specialized_list);
 	
@@ -159,12 +159,12 @@ jive_negotiator_port_divert(
 	jive_negotiator_connection * new_connection)
 {
 	jive_negotiator_connection * old_connection = self->connection;
-	JIVE_LIST_REMOVE(old_connection->ports, self, connection_port_list);
-	JIVE_LIST_PUSH_BACK(new_connection->ports, self, connection_port_list);
+	old_connection->ports.erase(self);
+	new_connection->ports.push_back(self);
 	self->connection = new_connection;
 	
 	/* don't need to keep around connections with no port attached any longer */
-	if (old_connection->ports.first == 0)
+	if (old_connection->ports.empty())
 		jive_negotiator_connection_destroy(old_connection);
 	
 	jive_negotiator_connection_invalidate(new_connection);
@@ -177,11 +177,11 @@ jive_negotiator_port_split(jive_negotiator_port * self)
 	jive_negotiator * negotiator = old_connection->negotiator;
 	jive_negotiator_connection * new_connection = jive_negotiator_connection_create(negotiator);
 	
-	JIVE_LIST_REMOVE(old_connection->ports, self, connection_port_list);
-	JIVE_LIST_PUSH_BACK(new_connection->ports, self, connection_port_list);
+	old_connection->ports.erase(self);
+	new_connection->ports.push_back(self);
 	self->connection = new_connection;
 	
-	if (old_connection->ports.first == 0)
+	if (old_connection->ports.empty())
 		jive_negotiator_connection_destroy(old_connection);
 }
 
@@ -189,8 +189,8 @@ void
 jive_negotiator_port_destroy(jive_negotiator_port * self)
 {
 	self->constraint->ports.erase(self);
-	JIVE_LIST_REMOVE(self->connection->ports, self, connection_port_list);
-	
+	self->connection->ports.erase(self);
+
 	jive_negotiator * negotiator = self->constraint->negotiator;
 	
 	switch (self->attach) {
@@ -228,7 +228,6 @@ jive_negotiator_connection_create(jive_negotiator * negotiator)
 {
 	jive_negotiator_connection * self = new jive_negotiator_connection;
 	self->negotiator = negotiator;
-	self->ports.first = self->ports.last = 0;
 	self->validated = true;
 	JIVE_LIST_PUSH_BACK(negotiator->validated_connections, self, negotiator_connection_list);
 	return self;
@@ -237,7 +236,7 @@ jive_negotiator_connection_create(jive_negotiator * negotiator)
 void
 jive_negotiator_connection_destroy(jive_negotiator_connection * self)
 {
-	JIVE_DEBUG_ASSERT(self->ports.first == 0 && self->ports.last == 0);
+	JIVE_DEBUG_ASSERT(self->ports.empty());
 	if (self->validated) {
 		JIVE_LIST_REMOVE(self->negotiator->validated_connections, self, negotiator_connection_list);
 	} else {
@@ -252,45 +251,41 @@ jive_negotiator_connection_revalidate(jive_negotiator_connection * self)
 	jive_negotiator * negotiator = self->negotiator;
 	
 	/* compute common intersection of options */
-	jive_negotiator_port * port;
 	jive_negotiator_option * option = 0;
-	JIVE_LIST_ITERATE(self->ports, port, connection_port_list) {
+	for (auto & port : self->ports) {
 		if (option) {
-			option->intersect(*port->option);
+			option->intersect(*port.option);
 		} else {
 			option = negotiator->tmp_option;
-			option->assign(*port->option);
+			option->assign(*port.option);
 		}
 	}
-	
-	struct {
-		jive_negotiator_port * first;
-		jive_negotiator_port * last;
-	} unsatisfied = { 0, 0 };
-	
+
 	/* apply new constraint to all ports, determine those that are
 	incompatible with changed option */
-	jive_negotiator_port * next;
-	JIVE_LIST_ITERATE_SAFE(self->ports, port, next, connection_port_list) {
-		if (*port->option == *option)
-			continue;
-		if (port->option->intersect(*option))
-			jive_negotiator_constraint_revalidate(port->constraint, port);
-		else {
-			JIVE_LIST_REMOVE(self->ports, port, connection_port_list);
-			JIVE_LIST_PUSH_BACK(unsatisfied, port, connection_port_list);
+	std::vector<jive_negotiator_port*> unsatisfied;
+	for (auto it = self->ports.begin(); it != self->ports.end();) {
+		if (*it->option == *option) {
+			it++; continue;
 		}
+
+		if (it->option->intersect(*option)) {
+			jive_negotiator_constraint_revalidate(it->constraint, it.ptr());
+			it++; continue;
+		}
+
+		unsatisfied.push_back(it.ptr());
+		it = self->ports.erase(it);
 	}
 	
 	/* if any ports with non-matchable options remain, split them off
 	and group them in a new connection */
-	if (!unsatisfied.first)
+	if (unsatisfied.empty())
 		return;
 	
-	jive_negotiator_connection * new_connection = jive_negotiator_connection_create(negotiator);
-	JIVE_LIST_ITERATE_SAFE(unsatisfied, port, next, connection_port_list) {
-		JIVE_LIST_REMOVE(unsatisfied, port, connection_port_list);
-		JIVE_LIST_PUSH_BACK(new_connection->ports, port, connection_port_list);
+	auto new_connection = jive_negotiator_connection_create(negotiator);
+	for (const auto & port : unsatisfied) {
+		new_connection->ports.push_back(port);
 		port->connection = new_connection;
 		jive_negotiator_connection_invalidate(new_connection);
 	}
@@ -313,14 +308,12 @@ jive_negotiator_connection_merge(
 {
 	if (self == other)
 		return;
-	jive_negotiator_port * port;
-	jive_negotiator_port * next;
-	JIVE_LIST_ITERATE_SAFE(other->ports, port, next, connection_port_list) {
-		JIVE_LIST_REMOVE(other->ports, port, connection_port_list);
-		JIVE_LIST_PUSH_BACK(self->ports, port, connection_port_list);
-		port->connection = self;
+
+	while (auto port = other->ports.first()) {
+		other->ports.erase(port);
+		self->ports.push_back(port);
 	}
-	
+
 	jive_negotiator_connection_destroy(other);
 	jive_negotiator_connection_invalidate(self);
 }
