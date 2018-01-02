@@ -142,8 +142,8 @@ jive_negotiator_port_create(
 	connection->ports.push_back(self);
 
 	self->specialized = false;
-	JIVE_LIST_PUSH_BACK(negotiator->unspecialized_ports, self, specialized_list);
-	
+	negotiator->unspecialized_ports.push_back(self);
+
 	self->option = option->copy();
 	
 	self->attach = jive_negotiator_port_attach_none;
@@ -213,8 +213,8 @@ jive_negotiator_port_specialize(jive_negotiator_port * self)
 	jive_negotiator * negotiator = self->constraint->negotiator;
 	
 	JIVE_DEBUG_ASSERT(!self->specialized);
-	JIVE_LIST_REMOVE(negotiator->unspecialized_ports, self, specialized_list);
-	JIVE_LIST_PUSH_BACK(negotiator->specialized_ports, self, specialized_list);
+	negotiator->unspecialized_ports.erase(self);
+	negotiator->specialized_ports.push_back(self);
 	self->specialized = true;
 	
 	if (!self->option->specialize())
@@ -410,9 +410,7 @@ jive_negotiator_init_(
 	self->validated_connections.first = self->validated_connections.last = 0;
 	self->invalidated_connections.first = self->invalidated_connections.last = 0;
 	self->constraints.first = self->constraints.last = 0;
-	self->unspecialized_ports.first = self->unspecialized_ports.last = 0;
-	self->specialized_ports.first = self->specialized_ports.last = 0;
-	
+
 	self->tmp_option = jive_negotiator_option_create(self);
 	
 	self->node_create_callback = jive::on_node_create.connect(
@@ -460,8 +458,7 @@ jive_negotiator_negotiate(jive_negotiator * self)
 void
 jive_negotiator_fully_specialize(jive_negotiator * self)
 {
-	while (self->unspecialized_ports.first) {
-		jive_negotiator_port * port = self->unspecialized_ports.first;
+	while (auto port = self->unspecialized_ports.first()) {
 		jive_negotiator_port_specialize(port);
 		jive_negotiator_negotiate(self);
 	}

@@ -164,10 +164,6 @@ struct jive_negotiator_port {
 	jive_negotiator_port_attach attach;
 
 	bool specialized;
-	struct {
-		jive_negotiator_port * prev;
-		jive_negotiator_port * next;
-	} specialized_list;
 
 private:
 	jive::detail::intrusive_list_anchor<
@@ -177,6 +173,10 @@ private:
 	jive::detail::intrusive_list_anchor<
 		jive_negotiator_port
 	> connection_port_anchor;
+
+	jive::detail::intrusive_list_anchor<
+		jive_negotiator_port
+	> specialized_port_anchor;
 
 	jive::detail::intrusive_hash_anchor<jive_negotiator_port> hash_chain_;
 
@@ -195,6 +195,11 @@ public:
 		jive_negotiator_port,
 		&jive_negotiator_port::connection_port_anchor
 	> connection_port_accessor;
+
+	typedef jive::detail::intrusive_list_accessor<
+		jive_negotiator_port,
+		&jive_negotiator_port::specialized_port_anchor
+	> specialized_port_accessor;
 
 	class input_hash_chain_accessor {
 	public:
@@ -415,6 +420,16 @@ struct jive_negotiator_class {
 	void (*process_region)(jive_negotiator * self, struct jive::region * region);
 };
 
+typedef jive::detail::intrusive_list<
+	jive_negotiator_port,
+	jive_negotiator_port::specialized_port_accessor
+> specialized_port_list;
+
+typedef jive::detail::intrusive_list<
+	jive_negotiator_port,
+	jive_negotiator_port::specialized_port_accessor
+> unspecialized_port_list;
+
 struct jive_negotiator {
 	const jive_negotiator_class * class_;
 	
@@ -443,17 +458,10 @@ struct jive_negotiator {
 	
 	jive::callback node_create_callback;
 	jive::callback node_destroy_callback;
-	
-	struct {
-		jive_negotiator_port * first;
-		jive_negotiator_port * last;
-	} unspecialized_ports;
-	
-	struct {
-		jive_negotiator_port * first;
-		jive_negotiator_port * last;
-	} specialized_ports;
-	
+
+	specialized_port_list specialized_ports;
+	unspecialized_port_list unspecialized_ports;
+
 	jive_negotiator_option * tmp_option;
 };
 
