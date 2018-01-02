@@ -328,14 +328,13 @@ jive_negotiator_constraint_init_(
 {
 	self->class_ = class_;
 	self->negotiator = negotiator;
-
-	JIVE_LIST_PUSH_BACK(negotiator->constraints, self, negotiator_constraint_list);
+	negotiator->constraints.push_back(self);
 }
 
 void
 jive_negotiator_constraint_fini_(jive_negotiator_constraint * self)
 {
-	JIVE_LIST_REMOVE(self->negotiator->constraints, self, negotiator_constraint_list);
+	self->negotiator->constraints.erase(self);
 }
 
 void
@@ -407,8 +406,6 @@ jive_negotiator_init_(
 	self->class_ = class_;
 	self->graph = graph;
 
-	self->constraints.first = self->constraints.last = 0;
-
 	self->tmp_option = jive_negotiator_option_create(self);
 	
 	self->node_create_callback = jive::on_node_create.connect(
@@ -422,10 +419,9 @@ jive_negotiator_fini_(jive_negotiator * self)
 {
 	delete self->tmp_option;
 	
-	while(self->constraints.first) {
-		jive_negotiator_constraint * constraint = self->constraints.first;
-		JIVE_LIST_REMOVE(self->constraints, constraint, negotiator_constraint_list);
-		
+	while (auto constraint = self->constraints.first()) {
+		self->constraints.erase(constraint);
+
 		while (constraint->ports.first())
 			jive_negotiator_port_destroy(constraint->ports.first());
 		

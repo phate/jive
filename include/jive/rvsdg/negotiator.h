@@ -321,7 +321,14 @@ struct jive_negotiator_constraint {
 	
 private:
 	jive::detail::intrusive_hash_anchor<jive_negotiator_constraint> hash_chain_;
+	jive::detail::intrusive_list_anchor<jive_negotiator_constraint> constraint_list_anchor_;
+
 public:
+	typedef jive::detail::intrusive_list_accessor<
+		jive_negotiator_constraint,
+		&jive_negotiator_constraint::constraint_list_anchor_
+	> constraint_list_accessor;
+
 	union {
 		const jive::node * node;
 		const jive::gate * gate;
@@ -445,6 +452,11 @@ typedef jive::detail::intrusive_list<
 	jive_negotiator_connection::connection_list_accessor
 > invalidated_connection_list;
 
+typedef jive::detail::intrusive_list<
+	jive_negotiator_constraint,
+	jive_negotiator_constraint::constraint_list_accessor
+> constraint_list;
+
 struct jive_negotiator {
 	const jive_negotiator_class * class_;
 	
@@ -454,14 +466,11 @@ struct jive_negotiator {
 	jive_negotiator_gate_hash gate_map;
 	jive_negotiator_node_hash node_map;
 
+	constraint_list constraints;
+
 	validated_connection_list validated_connections;
 	invalidated_connection_list invalidated_connections;
 
-	struct {
-		jive_negotiator_constraint * first;
-		jive_negotiator_constraint * last;
-	} constraints;
-	
 	std::unordered_set<jive::node *> split_nodes;
 	
 	jive::callback node_create_callback;
