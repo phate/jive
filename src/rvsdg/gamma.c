@@ -37,12 +37,12 @@ perform_predicate_reduction(jive::gamma_node * gamma)
 
 	jive::substitution_map smap;
 	for (auto it = gamma->begin_entryvar(); it != gamma->end_entryvar(); it++)
-		smap.insert(it->argument(alternative), it->input()->origin());
+		smap.insert(it->argument(alternative), it->origin());
 
 	gamma->subregion(alternative)->copy(gamma->region(), smap, false, false);
 
 	for (auto it = gamma->begin_exitvar(); it != gamma->end_exitvar(); it++)
-		it->output()->replace(smap.lookup(it->result(alternative)->origin()));
+		it->replace(smap.lookup(it->result(alternative)->origin()));
 
 	remove(gamma);
 }
@@ -64,7 +64,7 @@ perform_invariant_reduction(jive::gamma_node * gamma)
 		}
 
 		if (n == it->nresults()) {
-			it->output()->replace(argument->input()->origin());
+			it->replace(argument->input()->origin());
 			was_normalized = false;
 		}
 	}
@@ -91,9 +91,9 @@ is_control_constant_reducible(jive::gamma_node * gamma)
 		return {};
 
 	/* check for constants */
-	std::unordered_set<jive::structural_output*> exitvars;
+	std::unordered_set<jive::structural_output*> outputs;
 	for (auto it = gamma->begin_exitvar(); it != gamma->end_exitvar(); it++) {
-		if (!is_ctltype(it->output()->type()))
+		if (!is_ctltype(it->type()))
 			continue;
 
 		size_t n;
@@ -102,16 +102,16 @@ is_control_constant_reducible(jive::gamma_node * gamma)
 				break;
 		}
 		if (n == it->nresults())
-			exitvars.insert(it->output());
+			outputs.insert(it.output());
 	}
 
-	return exitvars;
+	return outputs;
 }
 
 static void
-perform_control_constant_reduction(std::unordered_set<jive::structural_output*> & exitvars)
+perform_control_constant_reduction(std::unordered_set<jive::structural_output*> & outputs)
 {
-	auto gamma = static_cast<jive::gamma_node*>((*exitvars.begin())->node());
+	auto gamma = static_cast<jive::gamma_node*>((*outputs.begin())->node());
 	auto match = gamma->predicate()->origin()->node();
 	auto & match_op = to_match_op(match->operation());
 
@@ -120,7 +120,7 @@ perform_control_constant_reduction(std::unordered_set<jive::structural_output*> 
 		map[pair.second] = pair.first;
 
 	for (auto xv = gamma->begin_exitvar(); xv != gamma->end_exitvar(); xv++) {
-		if (exitvars.find(xv->output()) == exitvars.end())
+		if (outputs.find(xv.output()) == outputs.end())
 			continue;
 
 		size_t defalt;
@@ -136,7 +136,7 @@ perform_control_constant_reduction(std::unordered_set<jive::structural_output*> 
 		auto nalt = new_mapping.size()+1;
 		auto origin = match->input(0)->origin();
 		auto m = jive::ctl::match(match_op.nbits(), new_mapping, defalt, nalt, origin);
-		xv->output()->replace(m);
+		xv->replace(m);
 	}
 }
 
@@ -177,9 +177,9 @@ gamma_normal_form::normalize_node(jive::node * node_) const
 	if (get_invariant_reduction())
 		was_normalized |= perform_invariant_reduction(node);
 
-	auto exitvars = is_control_constant_reducible(node);
-	if (get_control_constant_reduction() && !exitvars.empty()) {
-		perform_control_constant_reduction(exitvars);
+	auto outputs = is_control_constant_reducible(node);
+	if (get_control_constant_reduction() && !outputs.empty()) {
+		perform_control_constant_reduction(outputs);
 		was_normalized = false;
 	}
 
@@ -254,10 +254,66 @@ gamma_op::operator==(const operation & other) const noexcept
 	return op && op->nalternatives_ == nalternatives_;
 }
 
+/* gamma input */
+
+gamma_input::~gamma_input()
+{}
+
+jive::gamma_node *
+gamma_input::node() const noexcept
+{
+	return static_cast<gamma_node*>(structural_input::node());
+}
+
+/* gamma output */
+
+gamma_output::~gamma_output()
+{}
+
+jive::gamma_node *
+gamma_output::node() const noexcept
+{
+	return static_cast<gamma_node*>(structural_output::node());
+}
+
 /* gamma node */
 
 gamma_node::~gamma_node()
 {}
+
+const gamma_node::entryvar_iterator &
+gamma_node::entryvar_iterator::operator++() noexcept
+{
+	if (input_ == nullptr)
+		return *this;
+
+	auto node = input_->node();
+	auto index = input_->index();
+	if (index == node->ninputs()-1) {
+		input_ = nullptr;
+		return *this;
+	}
+
+	input_ = static_cast<jive::gamma_input*>(node->input(++index));
+	return *this;
+}
+
+const gamma_node::exitvar_iterator &
+gamma_node::exitvar_iterator::operator++() noexcept
+{
+	if (output_ == nullptr)
+		return *this;
+
+	auto node = output_->node();
+	auto index = output_->index();
+	if (index == node->nexitvars()-1) {
+		output_ = nullptr;
+		return *this;
+	}
+
+	output_ = node->exitvar(++index);
+	return *this;
+}
 
 jive::gamma_node *
 gamma_node::copy(jive::region * region, jive::substitution_map & smap) const
@@ -267,7 +323,7 @@ gamma_node::copy(jive::region * region, jive::substitution_map & smap) const
 	/* add entry variables to new gamma */
 	jive::substitution_map rmap[nsubregions()];
 	for (auto oev = begin_entryvar(); oev != end_entryvar(); oev++) {
-		auto nev = gamma->add_entryvar(smap.lookup(oev->input()->origin()));
+		auto nev = gamma->add_entryvar(smap.lookup(oev->origin()));
 		for (size_t n = 0; n < nev->narguments(); n++)
 			rmap[n].insert(oev->argument(n), nev->argument(n));
 	}
@@ -282,7 +338,7 @@ gamma_node::copy(jive::region * region, jive::substitution_map & smap) const
 		for (size_t n = 0; n < oex->nresults(); n++)
 			operands.push_back(rmap[n].lookup(oex->result(n)->origin()));
 		auto nex = gamma->add_exitvar(operands);
-		smap.insert(oex->output(), nex->output());
+		smap.insert(oex.output(), nex);
 	}
 
 	return gamma;

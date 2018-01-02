@@ -77,10 +77,10 @@ fib(size_t n)
 	auto evlvk = gamma->add_entryvar(lv_k);
 	auto evlvn = gamma->add_entryvar(lv_n);
 
-	auto exi = gamma->add_exitvar({evi->argument(0), evlvi->argument(1)});
-	auto exj = gamma->add_exitvar({evj->argument(0), evlvj->argument(1)});
-	auto exk = gamma->add_exitvar({evk->argument(0), evlvk->argument(1)});
-	auto exn = gamma->add_exitvar({evn->argument(0), evlvn->argument(1)});
+	gamma->add_exitvar({evi->argument(0), evlvi->argument(1)});
+	gamma->add_exitvar({evj->argument(0), evlvj->argument(1)});
+	gamma->add_exitvar({evk->argument(0), evlvk->argument(1)});
+	gamma->add_exitvar({evn->argument(0), evlvn->argument(1)});
 
 	return lb.end_lambda({gamma->output(1)})->output(0);
 }
@@ -171,7 +171,7 @@ unsigned int fib(unsigned int n){
 	auto gamma = jive::gamma_node::create(predicate, 2);
 	auto ev1 = gamma->add_entryvar(result);
 	auto ev2 = gamma->add_entryvar(n);
-	auto ex = gamma->add_exitvar({ev1->argument(0), ev2->argument(1)});
+	gamma->add_exitvar({ev1->argument(0), ev2->argument(1)});
 
 	auto fib = lb.end_lambda({gamma->output(0)})->output(0);
 	rv->set_value(fib);
