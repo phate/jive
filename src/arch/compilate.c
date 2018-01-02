@@ -13,17 +13,14 @@
 static void jive_section_init(jive_section * self, jive_stdsectionid sectionid)
 {
 	self->id = sectionid;
-	self->relocations.first = self->relocations.last = 0;
 }
 
 static void jive_section_clear(jive_section * self)
 {
 	jive_buffer_resize(&self->contents, 0);
-	jive_relocation_entry * entry, * saved_entry;
-	JIVE_LIST_ITERATE_SAFE(self->relocations, entry, saved_entry, section_relocation_list) {
-		JIVE_LIST_REMOVE(self->relocations, entry, section_relocation_list);
-		delete entry;
-	}
+	for (const auto & relocation : self->relocations)
+		delete relocation;
+	self->relocations.clear();
 }
 
 static void jive_section_fini(jive_section * self)
@@ -44,7 +41,7 @@ jive_section_put_reloc(jive_section * self, const void * data, size_t size,
 	entry->type = type;
 	entry->target = target;
 	entry->value = value;
-	JIVE_LIST_PUSH_BACK(self->relocations, entry, section_relocation_list);
+	self->relocations.insert(entry);
 }
 
 
@@ -181,8 +178,7 @@ section_process_relocations(
 	const jive_linker_symbol_resolver * sym_resolver,
 	jive_process_relocation_function relocate)
 {
-	const jive_relocation_entry * entry;
-	JIVE_LIST_ITERATE(section->relocations, entry, section_relocation_list) {
+	for (auto & entry : section->relocations) {
 		void * where = entry->offset + (char *) base_writable;
 		jive_offset offset = entry->offset + base;
 		const void * target;

@@ -41,10 +41,6 @@ struct jive_relocation_entry {
 	jive_symref target;
 	/** \brief Additional offset to be applied to symbol */
 	jive_offset value;
-	struct {
-		jive_relocation_entry * prev;
-		jive_relocation_entry * next;
-	} section_relocation_list;
 };
 
 /**
@@ -67,10 +63,9 @@ typedef bool (*jive_process_relocation_function)(
 struct jive_section {
 	jive_stdsectionid id;
 	jive_buffer contents;
-	struct {
-		jive_relocation_entry * first;
-		jive_relocation_entry * last;
-	} relocations;
+
+	std::unordered_set<jive_relocation_entry*> relocations;
+
 	struct {
 		jive_section * prev;
 		jive_section * next;
