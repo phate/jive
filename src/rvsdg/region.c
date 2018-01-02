@@ -13,7 +13,6 @@
 #include <jive/rvsdg/structural-node.h>
 #include <jive/rvsdg/substitution.h>
 #include <jive/rvsdg/traverser.h>
-#include <jive/util/list.h>
 
 namespace jive {
 

@@ -13,7 +13,6 @@
 #include <jive/common.h>
 #include <jive/rvsdg/node.h>
 #include <jive/rvsdg/section.h>
-#include <jive/util/list.h>
 
 namespace jive {
 

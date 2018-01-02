@@ -11,7 +11,6 @@
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/node.h>
 #include <jive/rvsdg/region.h>
-#include <jive/util/list.h>
 #include <jive/util/strfmt.h>
 
 namespace jive {

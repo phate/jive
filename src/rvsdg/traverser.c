@@ -12,7 +12,6 @@
 #include <jive/rvsdg/tracker.h>
 #include <jive/rvsdg/traverser.h>
 #include <jive/rvsdg/type.h>
-#include <jive/util/list.h>
 
 #include <string.h>
 

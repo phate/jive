@@ -9,7 +9,6 @@
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/resource.h>
 #include <jive/rvsdg/type.h>
-#include <jive/util/list.h>
 
 namespace jive {
 

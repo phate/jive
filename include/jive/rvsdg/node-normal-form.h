@@ -16,7 +16,6 @@
 
 #include <jive/common.h>
 #include <jive/util/intrusive-hash.h>
-#include <jive/util/list.h>
 
 /* normal forms */
 

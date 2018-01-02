@@ -16,7 +16,6 @@
 #include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/substitution.h>
 #include <jive/rvsdg/theta.h>
-#include <jive/util/list.h>
 
 namespace jive {
 
