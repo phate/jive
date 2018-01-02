@@ -83,9 +83,7 @@ public:
 	tracker_nodestate(jive::node * node)
 	: state_(tracker_nodestate_none)
 	, node_(node)
-	{
-		state_node_list.prev = state_node_list.next = nullptr;
-	}
+	{}
 
 	tracker_nodestate(const tracker_nodestate&) = delete;
 
@@ -108,11 +106,6 @@ public:
 	{
 		return state_;
 	}
-
-	struct {
-		tracker_nodestate * prev;
-		tracker_nodestate * next;
-	} state_node_list;
 
 private:
 	size_t state_;

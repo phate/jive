@@ -12,11 +12,6 @@
 
 using namespace std::placeholders;
 
-struct jive_tracker_nodestate_list {
-	jive::tracker_nodestate * first;
-	jive::tracker_nodestate * last;
-};
-
 namespace {
 
 typedef std::unordered_set<const jive::graph*> tracker_set;
@@ -78,29 +73,23 @@ public:
 	inline tracker_nodestate *
 	peek_top() const noexcept
 	{
-		return count_ ? nodestates_[top_depth_].first : nullptr;
+		return count_ ? *nodestates_.at(top_depth_).begin() : nullptr;
 	}
 
 	inline tracker_nodestate *
 	peek_bottom() const noexcept
 	{
-		return count_ ? nodestates_[bottom_depth_].first : nullptr;
+		return count_ ? *nodestates_.at(bottom_depth_).begin() : nullptr;
 	}
 
 	inline void
 	add(tracker_nodestate * nodestate, size_t depth)
 	{
-		size_t old_size = nodestates_.size();
-		if (depth >= old_size) {
-			size_t new_size = old_size * 2 + 1;
-			if (new_size <= depth) new_size = depth + 1;
-
-			nodestates_.resize(new_size);
-			for (size_t n = old_size; n < new_size; n++)
-				nodestates_[n].first = nodestates_[n].last = nullptr;
-		}
-
-		JIVE_LIST_PUSH_BACK(nodestates_[depth], nodestate, state_node_list);
+		auto it = nodestates_.find(depth);
+		if (it != nodestates_.end())
+			it->second.insert(nodestate);
+		else
+			nodestates_[depth] = {nodestate};
 
 		count_++;
 		if (count_ == 1) {
@@ -117,19 +106,19 @@ public:
 	inline void
 	remove(tracker_nodestate * nodestate, size_t depth)
 	{
-		JIVE_LIST_REMOVE(nodestates_[depth], nodestate, state_node_list);
+		nodestates_[depth].erase(nodestate);
 
 		count_--;
 		if (count_ == 0)
 			return;
 
 		if (depth == top_depth_) {
-			while (!nodestates_[top_depth_].first)
+			while (nodestates_[top_depth_].empty())
 				top_depth_++;
 		}
 
 		if (depth == bottom_depth_) {
-			while (!nodestates_[bottom_depth_].first)
+			while (nodestates_[bottom_depth_].empty())
 				bottom_depth_--;
 		}
 
@@ -160,7 +149,10 @@ private:
 	size_t count_;
 	size_t top_depth_;
 	size_t bottom_depth_;
-	std::vector<jive_tracker_nodestate_list> nodestates_;
+	std::unordered_map<
+		size_t,
+		std::unordered_set<tracker_nodestate*>
+	> nodestates_;
 };
 
 /* tracker */
