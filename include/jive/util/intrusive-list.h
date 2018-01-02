@@ -390,10 +390,13 @@ public:
 		}
 	}
 
-	inline void
+	inline iterator
 	erase(iterator i) noexcept
 	{
-		erase(i.ptr());
+		auto element = i.ptr();
+		++i;
+		erase(element);
+		return i;
 	}
 
 	inline void
