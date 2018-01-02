@@ -65,11 +65,6 @@ struct jive_section {
 	jive_buffer contents;
 
 	std::unordered_set<jive_relocation_entry*> relocations;
-
-	struct {
-		jive_section * prev;
-		jive_section * next;
-	} compilate_section_list;
 };
 
 static inline void
@@ -90,10 +85,7 @@ jive_section_put_reloc(jive_section * self, const void * data, size_t size,
 	jive_offset value);
 
 struct jive_compilate {
-	struct {
-		jive_section * first;
-		jive_section * last;
-	} sections;
+	std::vector<jive_section*> sections;
 };
 
 class jive_compilate_section {

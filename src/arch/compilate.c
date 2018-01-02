@@ -55,27 +55,23 @@ static size_t jive_section_size_roundup(const jive_section * self)
 
 void
 jive_compilate_init(struct jive_compilate * self)
-{
-	self->sections.first = self->sections.last = 0;
-}
+{}
 
 void
 jive_compilate_fini(struct jive_compilate * self)
 {
-	jive_section * section, * saved_section;
-	JIVE_LIST_ITERATE_SAFE(self->sections, section, saved_section, compilate_section_list) {
+	for (auto & section : self->sections) {
 		jive_section_fini(section);
 		delete section;
 	}
+	self->sections.clear();
 }
 
 void
 jive_compilate_clear(jive_compilate * self)
 {
-	jive_section * section;
-	JIVE_LIST_ITERATE(self->sections, section, compilate_section_list) {
+	for (auto & section : self->sections)
 		jive_section_clear(section);
-	}
 }
 
 jive_section *
@@ -84,17 +80,16 @@ jive_compilate_get_standard_section(jive_compilate * self,
 {
 	if ((int) sectionid <= 0)
 		return NULL;
-	
-	jive_section * section;
-	JIVE_LIST_ITERATE(self->sections, section, compilate_section_list) {
+
+	for (const auto & section : self->sections) {
 		if (section->id == sectionid)
 			return section;
 	}
 	
-	section = new jive_section;
+	auto section = new jive_section;
 	jive_section_init(section, sectionid);
-	JIVE_LIST_PUSH_BACK(self->sections, section, compilate_section_list);
-	
+	self->sections.push_back(section);
+
 	return section;
 }
 
@@ -199,11 +194,9 @@ jive_compilate_load(const jive_compilate * self,
 	jive_process_relocation_function relocate)
 {
 	size_t total_size = 0;
-	const jive_section * section;
-	JIVE_LIST_ITERATE(self->sections, section, compilate_section_list) {
+	for (const auto & section : self->sections)
 		total_size += jive_section_size_roundup(section);
-	}
-	
+
 	int fd = get_tmpfd(total_size);
 	if (fd == -1)
 		return NULL;
@@ -225,7 +218,7 @@ jive_compilate_load(const jive_compilate * self,
 	of their designation, so relocation processing can modify their
 	contents */
 	size_t offset = 0;
-	JIVE_LIST_ITERATE(self->sections, section, compilate_section_list) {
+	for (const auto & section : self->sections) {
 		void * addr = offset + (char *) writable;
 		map->sections.push_back(jive_compilate_section(section, addr,
 			jive_section_size_roundup(section)));
@@ -255,7 +248,7 @@ jive_compilate_load(const jive_compilate * self,
 	offset = 0;
 	size_t n = 0;
 	bool success = true;
-	JIVE_LIST_ITERATE(self->sections, section, compilate_section_list) {
+	for (const auto & section : self->sections) {
 		void * base = offset + (char *) writable;
 		
 		success = success && section_process_relocations(base,
