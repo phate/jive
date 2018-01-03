@@ -10,99 +10,6 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-static void jive_section_init(jive_section * self, jive_stdsectionid sectionid)
-{
-	self->id = sectionid;
-}
-
-static void jive_section_clear(jive_section * self)
-{
-	jive_buffer_resize(&self->contents, 0);
-	for (const auto & relocation : self->relocations)
-		delete relocation;
-	self->relocations.clear();
-}
-
-static void jive_section_fini(jive_section * self)
-{
-	jive_section_clear(self);
-}
-
-void
-jive_section_put_reloc(jive_section * self, const void * data, size_t size,
-	jive_relocation_type type, jive_symref target,
-	jive_offset value)
-{
-	jive_offset offset = self->contents.data.size();
-	jive_section_put(self, data, size);
-
-	jive_relocation_entry * entry = new jive_relocation_entry;
-	entry->offset = offset;
-	entry->type = type;
-	entry->target = target;
-	entry->value = value;
-	self->relocations.insert(entry);
-}
-
-
-/* round up size of section to next multiple of 4096 (which is assumed
- to be the page size... */
-static size_t jive_section_size_roundup(const jive_section * self)
-{
-	size_t size = self->contents.data.size();
-	return (size + 4095) & ~4095;
-}
-
-void
-jive_compilate_init(struct jive_compilate * self)
-{}
-
-void
-jive_compilate_fini(struct jive_compilate * self)
-{
-	for (auto & section : self->sections) {
-		jive_section_fini(section);
-		delete section;
-	}
-	self->sections.clear();
-}
-
-void
-jive_compilate_clear(jive_compilate * self)
-{
-	for (auto & section : self->sections)
-		jive_section_clear(section);
-}
-
-jive_section *
-jive_compilate_get_standard_section(jive_compilate * self,
-	jive_stdsectionid sectionid)
-{
-	if ((int) sectionid <= 0)
-		return NULL;
-
-	for (const auto & section : self->sections) {
-		if (section->id == sectionid)
-			return section;
-	}
-	
-	auto section = new jive_section;
-	jive_section_init(section, sectionid);
-	self->sections.push_back(section);
-
-	return section;
-}
-
-jive_buffer *
-jive_compilate_get_buffer(struct jive_compilate * self, jive_stdsectionid id)
-{
-	jive_section * section = jive_compilate_get_standard_section(self, id);
-	if (section)
-		return &section->contents;
-	else
-		return 0;
-}
-
 static int
 get_tmpfd(size_t size)
 {
@@ -122,12 +29,6 @@ get_tmpfd(size_t size)
 		return fd = -1;
 	}
 	return fd;
-}
-
-void
-jive_compilate_map_destroy(jive_compilate_map * self)
-{
-	delete self;
 }
 
 static bool
@@ -188,14 +89,92 @@ section_process_relocations(
 	return true;
 }
 
+static void jive_section_init(jive_section * self, jive_stdsectionid sectionid)
+{
+	self->id = sectionid;
+}
+
+static void jive_section_clear(jive_section * self)
+{
+	jive_buffer_resize(&self->contents, 0);
+	for (const auto & relocation : self->relocations)
+		delete relocation;
+	self->relocations.clear();
+}
+
+static void jive_section_fini(jive_section * self)
+{
+	jive_section_clear(self);
+}
+
+void
+jive_section_put_reloc(jive_section * self, const void * data, size_t size,
+	jive_relocation_type type, jive_symref target,
+	jive_offset value)
+{
+	jive_offset offset = self->contents.data.size();
+	jive_section_put(self, data, size);
+
+	jive_relocation_entry * entry = new jive_relocation_entry;
+	entry->offset = offset;
+	entry->type = type;
+	entry->target = target;
+	entry->value = value;
+	self->relocations.insert(entry);
+}
+
+
+/* round up size of section to next multiple of 4096 (which is assumed
+ to be the page size... */
+static size_t jive_section_size_roundup(const jive_section * self)
+{
+	size_t size = self->contents.data.size();
+	return (size + 4095) & ~4095;
+}
+
+namespace jive {
+
+/* compilate */
+
+compilate::~compilate()
+{
+	for (auto & section : sections_)
+		jive_section_fini(section.get());
+	sections_.clear();
+}
+
+void
+compilate::clear()
+{
+	for (auto & section : sections_)
+		jive_section_clear(section.get());
+}
+
+jive_section *
+compilate::section(jive_stdsectionid sectionid)
+{
+	if ((int) sectionid <= 0)
+		return nullptr;
+
+	for (const auto & section : sections_) {
+		if (section->id == sectionid)
+			return section.get();
+	}
+
+	sections_.push_back(std::make_unique<jive_section>());
+	jive_section_init(sections_.back().get(), sectionid);
+
+	return sections_.back().get();
+}
+
 jive_compilate_map *
-jive_compilate_load(const jive_compilate * self,
+compilate::load(
 	const jive_linker_symbol_resolver * sym_resolver,
 	jive_process_relocation_function relocate)
 {
 	size_t total_size = 0;
-	for (const auto & section : self->sections)
-		total_size += jive_section_size_roundup(section);
+	for (const auto & section : sections_)
+		total_size += jive_section_size_roundup(section.get());
 
 	int fd = get_tmpfd(total_size);
 	if (fd == -1)
@@ -218,10 +197,10 @@ jive_compilate_load(const jive_compilate * self,
 	of their designation, so relocation processing can modify their
 	contents */
 	size_t offset = 0;
-	for (const auto & section : self->sections) {
+	for (const auto & section : sections_) {
 		void * addr = offset + (char *) writable;
-		map->sections.push_back(jive_compilate_section(section, addr,
-			jive_section_size_roundup(section)));
+		map->sections.push_back(jive_compilate_section(section.get(), addr,
+			jive_section_size_roundup(section.get())));
 		size_t n = map->sections.size()-1;
 		
 		memcpy(addr, &section->contents.data[0], section->contents.data.size());
@@ -248,12 +227,12 @@ jive_compilate_load(const jive_compilate * self,
 	offset = 0;
 	size_t n = 0;
 	bool success = true;
-	for (const auto & section : self->sections) {
+	for (const auto & section : sections_) {
 		void * base = offset + (char *) writable;
 		
 		success = success && section_process_relocations(base,
 			(jive_offset) (uintptr_t) map->sections[n].base,
-			map, section, sym_resolver, relocate);
+			map, section.get(), sym_resolver, relocate);
 		
 		switch (section->id) {
 			case jive_stdsectionid_code: {
@@ -290,6 +269,14 @@ jive_compilate_load(const jive_compilate * self,
 	}
 	
 	return map;
+}
+
+}	//jive namespace
+
+void
+jive_compilate_map_destroy(jive_compilate_map * self)
+{
+	delete self;
 }
 
 void

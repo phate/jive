@@ -35,13 +35,10 @@ process_relocation(
 
 static int test_main()
 {
-	jive_compilate compilate;
-	jive_compilate_init(&compilate);
-	
-	jive_section * data = jive_compilate_get_standard_section(&compilate,
-		jive_stdsectionid_data);
-	jive_section * rodata = jive_compilate_get_standard_section(&compilate,
-		jive_stdsectionid_rodata);
+	jive::compilate compilate;
+
+	auto data = compilate.section(jive_stdsectionid_data);
+	auto rodata = compilate.section(jive_stdsectionid_rodata);
 	
 	int64_t value = 0;
 	jive_section_put_reloc(data, &value, sizeof(value), ABS64,
@@ -51,11 +48,7 @@ static int test_main()
 		jive_symref_section(jive_stdsectionid_data),
 		0);
 	
-	jive_compilate_map * map = jive_compilate_load(&compilate,
-		NULL,
-		process_relocation);
-	
-	jive_compilate_fini(&compilate);
+	auto map = compilate.load(nullptr, process_relocation);
 	
 	uint64_t * data64 = (uint64_t *) map->sections[0].base;
 	const uint64_t * rodata64 = (const uint64_t *) map->sections[1].base;

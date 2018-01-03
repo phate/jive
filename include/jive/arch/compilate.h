@@ -16,7 +16,6 @@
 
 struct jive_linker_symbol_resolver;
 
-typedef struct jive_compilate jive_compilate;
 typedef struct jive_compilate_map jive_compilate_map;
 typedef struct jive_relocation_entry jive_relocation_entry;
 typedef struct jive_relocation_type jive_relocation_type;
@@ -84,9 +83,65 @@ jive_section_put_reloc(jive_section * self, const void * data, size_t size,
 	jive_relocation_type type, jive_symref target,
 	jive_offset value);
 
-struct jive_compilate {
-	std::vector<jive_section*> sections;
+namespace jive {
+
+class compilate final {
+public:
+	~compilate();
+
+	inline
+	compilate()
+	{}
+
+	compilate(const compilate &) = delete;
+
+	compilate(compilate &&) = delete;
+
+	compilate &
+	operator=(const compilate &) = delete;
+
+	compilate &
+	operator=(compilate &&) = delete;
+
+	/**
+		\brief Clear compilation object
+
+		Clears the contents of the given compilation object, i.e. subsequently
+		it behaves as if it were newly allocated (actual buffers allocated
+		might be reused as an optimization, though).
+	*/
+	void
+	clear();
+
+	jive_section *
+	section(jive_stdsectionid sectionid);
+
+	inline jive_buffer *
+	buffer(jive_stdsectionid id)
+	{
+		auto s = section(id);
+		return s ? &s->contents : nullptr;
+	}
+
+	/**
+		\brief Load a compilate into process' address space
+
+		\returns A description of where sections have been mapped
+
+		Maps all of the sections contained in the compilate into the process'
+		address space. Returns a structure describing the mapping of the
+		sections to the address space.
+	*/
+	jive_compilate_map *
+	load(
+		const struct jive_linker_symbol_resolver * sym_resolver,
+		jive_process_relocation_function relocate);
+
+private:
+	std::vector<std::unique_ptr<jive_section>> sections_;
 };
+
+}
 
 class jive_compilate_section {
 public:
@@ -110,43 +165,6 @@ struct jive_compilate_map {
 	std::vector<jive_compilate_section> sections;
 };
 
-void
-jive_compilate_init(jive_compilate * self);
-
-void
-jive_compilate_fini(jive_compilate * self);
-
-/**
-	\brief Clear compilation object
-	\param self The compilate to be cleared
-	
-	Clears the contents of the given compilation object, i.e. subsequently
-	it behaves as if it were newly allocated (actual buffers allocated
-	might be reused as an optimization, though).
-*/
-void
-jive_compilate_clear(jive_compilate * self);
-
-jive_section *
-jive_compilate_get_standard_section(jive_compilate * self,
-	jive_stdsectionid id);
-
-jive_buffer *
-jive_compilate_get_buffer(jive_compilate * self, jive_stdsectionid section);
-
-/**
-	\brief Load a compilate into process' address space
-	\param self The compilate to be loaded
-	\returns A description of where sections have been mapped
-	
-	Maps all of the sections contained in the compilate into the process'
-	address space. Returns a structure describing the mapping of the
-	sections to the address space.
-*/
-jive_compilate_map *
-jive_compilate_load(const jive_compilate * self,
-	const struct jive_linker_symbol_resolver * sym_resolver,
-	jive_process_relocation_function relocate);
 
 /**
 	\brief Destroy a compilate map
