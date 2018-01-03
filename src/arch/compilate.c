@@ -42,7 +42,7 @@ resolve_relocation_target(
 		case jive_symref_type_section: {
 			size_t n;
 			for (n = 0; n < map->sections.size(); ++n) {
-				if (map->sections[n].section->id == target.ref.section) {
+				if (map->sections[n].section->id() == target.ref.section) {
 					*resolved = map->sections[n].base;
 					return true;
 				}
@@ -70,7 +70,7 @@ section_process_relocations(
 	void * base_writable,
 	jive_offset base,
 	const jive_compilate_map * map,
-	const jive_section * section,
+	const jive::section * section,
 	const jive_linker_symbol_resolver * sym_resolver,
 	jive_process_relocation_function relocate)
 {
@@ -80,7 +80,7 @@ section_process_relocations(
 		const void * target;
 		if (!resolve_relocation_target(entry->target, map, sym_resolver, &target))
 			return false;
-		if (!relocate(where, section->contents.data.size() - entry->offset,
+		if (!relocate(where, section->size() - entry->offset,
 			offset, entry->type, (uintptr_t) target, entry->value)) {
 			return false;
 		}
@@ -89,57 +89,41 @@ section_process_relocations(
 	return true;
 }
 
-static void jive_section_init(jive_section * self, jive_stdsectionid sectionid)
+/* round up size of section to next multiple of 4096 (which is assumed
+ to be the page size... */
+static size_t
+jive_section_size_roundup(const jive::section * self)
 {
-	self->id = sectionid;
+	return (self->size() + 4095) & ~4095;
 }
 
-static void jive_section_clear(jive_section * self)
-{
-	jive_buffer_resize(&self->contents, 0);
-	for (const auto & relocation : self->relocations)
-		delete relocation;
-	self->relocations.clear();
-}
+namespace jive {
 
-static void jive_section_fini(jive_section * self)
-{
-	jive_section_clear(self);
-}
+/* section */
 
 void
-jive_section_put_reloc(jive_section * self, const void * data, size_t size,
-	jive_relocation_type type, jive_symref target,
+section::add_relocation(
+	const void * data,
+	size_t size,
+	jive_relocation_type type,
+	jive_symref target,
 	jive_offset value)
 {
-	jive_offset offset = self->contents.data.size();
-	jive_section_put(self, data, size);
+	jive_offset offset = this->size();
+	put(data, size);
 
 	jive_relocation_entry * entry = new jive_relocation_entry;
 	entry->offset = offset;
 	entry->type = type;
 	entry->target = target;
 	entry->value = value;
-	self->relocations.insert(entry);
+	relocations.insert(entry);
 }
-
-
-/* round up size of section to next multiple of 4096 (which is assumed
- to be the page size... */
-static size_t jive_section_size_roundup(const jive_section * self)
-{
-	size_t size = self->contents.data.size();
-	return (size + 4095) & ~4095;
-}
-
-namespace jive {
 
 /* compilate */
 
 compilate::~compilate()
 {
-	for (auto & section : sections_)
-		jive_section_fini(section.get());
 	sections_.clear();
 }
 
@@ -147,22 +131,21 @@ void
 compilate::clear()
 {
 	for (auto & section : sections_)
-		jive_section_clear(section.get());
+		section->clear();
 }
 
-jive_section *
+jive::section *
 compilate::section(jive_stdsectionid sectionid)
 {
 	if ((int) sectionid <= 0)
 		return nullptr;
 
 	for (const auto & section : sections_) {
-		if (section->id == sectionid)
+		if (section->id() == sectionid)
 			return section.get();
 	}
 
-	sections_.push_back(std::make_unique<jive_section>());
-	jive_section_init(sections_.back().get(), sectionid);
+	sections_.push_back(std::make_unique<jive::section>(sectionid));
 
 	return sections_.back().get();
 }
@@ -203,7 +186,7 @@ compilate::load(
 			jive_section_size_roundup(section.get())));
 		size_t n = map->sections.size()-1;
 		
-		memcpy(addr, &section->contents.data[0], section->contents.data.size());
+		memcpy(addr, &section->buffer()->data[0], section->size());
 		
 		/* If this is a code section, create another mapping, this time
 		executable. We cannot generally assume that we can later change
@@ -213,7 +196,7 @@ compilate::load(
 		separate mapping allows the kernel to set things up properly. */
 		/* FIXME: use section attributes instead of id to decide
 		whether section should be executable. */
-		if (section->id == jive_stdsectionid_code) {
+		if (section->id() == jive_stdsectionid_code) {
 			void * exec_addr = mmap(0, map->sections[n].size,
 				PROT_READ|PROT_EXEC, MAP_SHARED, fd, offset);
 			map->sections[n].base = exec_addr;
@@ -234,7 +217,7 @@ compilate::load(
 			(jive_offset) (uintptr_t) map->sections[n].base,
 			map, section.get(), sym_resolver, relocate);
 		
-		switch (section->id) {
+		switch (section->id()) {
 			case jive_stdsectionid_code: {
 				munmap(base, map->sections[n].size);
 				/* The contents of the memory region might

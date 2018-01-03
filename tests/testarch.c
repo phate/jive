@@ -84,7 +84,7 @@ instr_##NAME::instr_##NAME() \
 \
 void \
 instr_##NAME::encode( \
-	struct jive_section * target, \
+	jive::section * target, \
 	const jive::register_name * inputs[], \
 	const jive::register_name * outputs[], \
 	const jive_codegen_imm immediates[], \

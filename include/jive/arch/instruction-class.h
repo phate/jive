@@ -20,7 +20,6 @@ struct jive_buffer;
 struct jive_compilate;
 struct jive_label;
 struct jive_label_symbol_mapper;
-struct jive_section;
 
 typedef struct jive_asmgen_imm jive_asmgen_imm;
 typedef struct jive_codegen_imm jive_codegen_imm;
@@ -151,6 +150,8 @@ operator&(jive_instruction_encoding_flags a, jive_instruction_encoding_flags b)
 
 namespace jive {
 
+class section;
+
 class instruction_class {
 public:
 	inline
@@ -245,7 +246,7 @@ public:
 	*/
 	virtual void
 	encode(
-		struct jive_section * target,
+		jive::section * target,
 		const jive::register_name * inputs[],
 		const jive::register_name * outputs[],
 		const jive_codegen_imm immediates[],

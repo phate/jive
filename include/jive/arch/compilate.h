@@ -19,7 +19,6 @@ struct jive_linker_symbol_resolver;
 typedef struct jive_compilate_map jive_compilate_map;
 typedef struct jive_relocation_entry jive_relocation_entry;
 typedef struct jive_relocation_type jive_relocation_type;
-typedef struct jive_section jive_section;
 
 /**
 	\brief Architecture-specific representation of relocation type
@@ -56,34 +55,89 @@ typedef bool (*jive_process_relocation_function)(
 	void * where, size_t max_size, jive_offset offset,
 	jive_relocation_type type, jive_offset target, jive_offset value);
 
+namespace jive {
+
 /**
 	\brief Section of a compilate
 */
-struct jive_section {
-	jive_stdsectionid id;
-	jive_buffer contents;
+class section {
+public:
+	inline
+	~section()
+	{
+		clear();
+	}
+
+	inline
+	section(jive_stdsectionid id)
+	: id_(id)
+	{}
+
+	section(const section &) = delete;
+
+	section(section &&) = delete;
+
+	section &
+	operator=(const section &) = delete;
+
+	section &
+	operator=(section &&) = delete;
+
+	inline jive_stdsectionid
+	id() const noexcept
+	{
+		return id_;
+	}
+
+	inline jive_buffer *
+	buffer()
+	{
+		return &contents_;
+	}
+
+	inline size_t
+	size() const noexcept
+	{
+		return contents_.data.size();
+	}
+
+	inline void
+	put(const void * data, size_t size)
+	{
+		jive_buffer_put(&contents_, data, size);
+	}
+
+	inline void
+	putbyte(uint8_t byte)
+	{
+		jive_buffer_putbyte(&contents_, byte);
+	}
+
+	inline void
+	clear()
+	{
+		jive_buffer_resize(&contents_, 0);
+		for (const auto & relocation : relocations)
+			delete relocation;
+		relocations.clear();
+	}
+
+	void
+	add_relocation(
+		const void * data,
+		size_t size,
+		jive_relocation_type type,
+		jive_symref target,
+		jive_offset value);
 
 	std::unordered_set<jive_relocation_entry*> relocations;
+
+private:
+	jive_buffer contents_;
+	jive_stdsectionid id_;
 };
 
-static inline void
-jive_section_put(jive_section * self, const void * data, size_t size)
-{
-	jive_buffer_put(&self->contents, data, size);
-}
-
-static inline void
-jive_section_putbyte(jive_section * self, uint8_t byte)
-{
-	jive_buffer_putbyte(&self->contents, byte);
-}
-
-void
-jive_section_put_reloc(jive_section * self, const void * data, size_t size,
-	jive_relocation_type type, jive_symref target,
-	jive_offset value);
-
-namespace jive {
+/* compilate */
 
 class compilate final {
 public:
@@ -113,14 +167,14 @@ public:
 	void
 	clear();
 
-	jive_section *
+	jive::section *
 	section(jive_stdsectionid sectionid);
 
 	inline jive_buffer *
 	buffer(jive_stdsectionid id)
 	{
 		auto s = section(id);
-		return s ? &s->contents : nullptr;
+		return s ? s->buffer() : nullptr;
 	}
 
 	/**
@@ -138,7 +192,7 @@ public:
 		jive_process_relocation_function relocate);
 
 private:
-	std::vector<std::unique_ptr<jive_section>> sections_;
+	std::vector<std::unique_ptr<jive::section>> sections_;
 };
 
 }
@@ -146,14 +200,14 @@ private:
 class jive_compilate_section {
 public:
 	inline
-	jive_compilate_section(const jive_section * _section, void * _base, size_t _size)
+	jive_compilate_section(const jive::section * _section, void * _base, size_t _size)
 		: section(_section)
 		, base(_base)
 		, size(_size)
 	{}
 
 	/** \brief Section descriptor from compilate */
-	const jive_section * section;
+	const jive::section * section;
 	/** \brief Base address in process' address space */
 	void * base;
 	/** \brief Size of loaded section */
@@ -191,7 +245,7 @@ jive_compilate_map_get_stdsection(const jive_compilate_map * self, jive_stdsecti
 {
 	size_t n;
 	for (n = 0; n < self->sections.size(); ++n) {
-		if (self->sections[n].section->id == id)
+		if (self->sections[n].section->id() == id)
 			return self->sections[n].base;
 	}
 	return NULL;

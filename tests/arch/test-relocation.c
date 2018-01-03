@@ -41,12 +41,10 @@ static int test_main()
 	auto rodata = compilate.section(jive_stdsectionid_rodata);
 	
 	int64_t value = 0;
-	jive_section_put_reloc(data, &value, sizeof(value), ABS64,
-		jive_symref_section(jive_stdsectionid_rodata),
-		0);
-	jive_section_put_reloc(rodata, &value, sizeof(value), REL64,
-		jive_symref_section(jive_stdsectionid_data),
-		0);
+	data->add_relocation(&value, sizeof(value), ABS64,
+		jive_symref_section(jive_stdsectionid_rodata), 0);
+	rodata->add_relocation(&value, sizeof(value), REL64,
+		jive_symref_section(jive_stdsectionid_data), 0);
 	
 	auto map = compilate.load(nullptr, process_relocation);
 	

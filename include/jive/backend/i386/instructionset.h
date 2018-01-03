@@ -19,7 +19,7 @@ public: \
 \
 	virtual void \
 	encode(	\
-		struct jive_section * target, \
+		jive::section * target, \
 		const jive::register_name * inputs[], \
 		const jive::register_name * outputs[], \
 		const jive_codegen_imm immediates[], \
