@@ -19,6 +19,13 @@
 
 namespace jive {
 
+/* subroutine abi */
+
+subroutine_abi::~subroutine_abi()
+{}
+
+/* subroutine high-level builder interface */
+
 subroutine_hl_builder_interface::~subroutine_hl_builder_interface() noexcept
 {
 }
@@ -37,7 +44,7 @@ jive_subroutine_node_prepare_stackframe(
 		op, region, frame, xfrm);
 }
 
-jive::simple_input *
+jive::input *
 jive_subroutine_node_add_fp_dependency(
 	const jive::node * self,
 	const jive::subroutine_op & op,
@@ -48,7 +55,7 @@ jive_subroutine_node_add_fp_dependency(
 		op, region, node);
 }
 
-jive::simple_input *
+jive::input *
 jive_subroutine_node_add_sp_dependency(
 	const jive::node * self,
 	const jive::subroutine_op & op,
@@ -76,7 +83,7 @@ jive_region_get_instructionset(const jive::region * region)
 	jive::node * sub = jive_region_get_subroutine_node(region);
 	if (sub) {
 		return static_cast<const jive::subroutine_op &>(sub->operation())
-			.signature().abi_class->instructionset;
+			.signature().abi_class->instructionset();
 	} else {
 		return NULL;
 	}

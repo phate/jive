@@ -14,10 +14,10 @@
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/node.h>
 
-struct jive_subroutine_abi_class;
-
 namespace jive {
+
 class output;
+class subroutine_abi;
 
 class subroutine_machine_signature {
 public:
@@ -50,7 +50,7 @@ public:
 	ssize_t stack_frame_lower_bound;
 	ssize_t stack_frame_upper_bound;
 	bool use_frame_pointer;
-	const jive_subroutine_abi_class * abi_class;
+	const jive::subroutine_abi * abi_class;
 };
 
 }

@@ -389,23 +389,66 @@ public:
 	}
 };
 
-}
+/* subroutine abi */
 
-static void
-jive_testarch_subroutine_prepare_stackframe_(
-	const jive::subroutine_op & op,
-	jive::region * region,
-	jive_subroutine_stackframe_info * frame,
-	const jive_subroutine_late_transforms * xfrm)
-{
-}
+class jive_testarch_subroutine_abi final : public jive::subroutine_abi {
+public:
+	virtual
+	~jive_testarch_subroutine_abi()
+	{}
 
-static const jive_subroutine_abi_class JIVE_TESTARCH_SUBROUTINE_ABI = {
-	prepare_stackframe : jive_testarch_subroutine_prepare_stackframe_,
-	add_fp_dependency : NULL,
-	add_sp_dependency : NULL,
-	instructionset : testarch_isa::get()
+private:
+	inline constexpr
+	jive_testarch_subroutine_abi()
+	: jive::subroutine_abi()
+	{}
+
+	jive_testarch_subroutine_abi(const jive_testarch_subroutine_abi &) = delete;
+
+	jive_testarch_subroutine_abi(jive_testarch_subroutine_abi &&) = delete;
+
+public:
+	virtual void
+	prepare_stackframe(
+		const jive::subroutine_op & op,
+		jive::region * region,
+		jive_subroutine_stackframe_info * frame,
+		const jive_subroutine_late_transforms * xform) const override
+	{}
+
+	virtual jive::input *
+	add_fp_dependency(
+		const jive::subroutine_op & op,
+		jive::region * region,
+		jive::node * node) const override
+	{
+		JIVE_ASSERT(0);
+	}
+
+	virtual jive::input *
+	add_sp_dependency(
+		const jive::subroutine_op & op,
+		jive::region * region,
+		jive::node * node) const override
+	{
+		JIVE_ASSERT(0);
+	}
+
+	virtual const jive::instructionset *
+	instructionset() const noexcept override
+	{
+		return testarch_isa::get();
+	}
+
+	static inline const jive::subroutine_abi *
+	get()
+	{
+		static const jive_testarch_subroutine_abi abi;
+		return &abi;
+	}
 };
+
+}
 
 jive_subroutine
 jive_testarch_subroutine_begin(jive::graph * graph,
@@ -441,8 +484,8 @@ jive_testarch_subroutine_begin(jive::graph * graph,
 		pt{"mem", nullptr, false});
 	sig.passthroughs.emplace_back(pt{"stackptr", &jive_testarch_regcls_r0, false});
 	
-	sig.abi_class = &JIVE_TESTARCH_SUBROUTINE_ABI;
-	
+	sig.abi_class = jive_testarch_subroutine_abi::get();
+
 	std::unique_ptr<jive::subroutine_hl_builder_interface> builder(
 		new testarch_c_builder_interface());
 	return jive_subroutine_begin(

@@ -151,22 +151,37 @@ struct jive_subroutine_stackframe_info {
 	size_t call_area_size;
 };
 
-struct jive_subroutine_abi_class {
-	void (*prepare_stackframe)(
+namespace jive {
+
+class subroutine_abi {
+public:
+	virtual
+	~subroutine_abi();
+
+	virtual void
+	prepare_stackframe(
 		const jive::subroutine_op & op,
 		jive::region * region,
 		jive_subroutine_stackframe_info * frame,
-		const jive_subroutine_late_transforms * xfrm);
-	jive::simple_input *(*add_fp_dependency)(
+		const jive_subroutine_late_transforms * xform) const = 0;
+
+	virtual jive::input *
+	add_fp_dependency(
 		const jive::subroutine_op & op,
 		jive::region * region,
-		jive::node * node);
-	jive::simple_input *(*add_sp_dependency)(
+		jive::node * node) const = 0;
+
+	virtual jive::input *
+	add_sp_dependency(
 		const jive::subroutine_op & op,
 		jive::region * region,
-		jive::node * node);
-	const jive::instructionset * instructionset;
+		jive::node * node) const = 0;
+
+	virtual const jive::instructionset *
+	instructionset() const noexcept = 0;
 };
+
+}
 
 void
 jive_subroutine_node_prepare_stackframe(
@@ -175,13 +190,13 @@ jive_subroutine_node_prepare_stackframe(
 	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm);
 
-jive::simple_input *
+jive::input *
 jive_subroutine_node_add_fp_dependency(
 	const jive::node * self,
 	const jive::subroutine_op & op,
 	jive::node * node);
 
-jive::simple_input *
+jive::input *
 jive_subroutine_node_add_sp_dependency(
 	const jive::node * self,
 	const jive::subroutine_op & op,
