@@ -303,37 +303,35 @@ public:
 		return jive_testarch_reg_classifier::get();
 	}
 
-	virtual jive_xfer_description
+	virtual jive::xfer_description
 	create_xfer(
 		jive::region * region,
-		jive::simple_output * origin,
+		jive::output * origin,
 		const jive::resource_class * in_class,
 		const jive::resource_class * out_class) override
 	{
-		jive_xfer_description xfer;
 		auto in_relaxed = jive_resource_class_relax(in_class);
 		auto out_relaxed = jive_resource_class_relax(out_class);
 
 		if (in_relaxed == CLS(gpr) && out_relaxed == CLS(gpr)) {
-			xfer.node = create_instruction(region, &jive::testarch::instr_move_gpr::instance(),
+			auto node = create_instruction(region, &jive::testarch::instr_move_gpr::instance(),
 				{origin});
-			xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
-			xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
-		} else if (in_relaxed == CLS(gpr)) {
-			xfer.node = create_instruction(region, &jive::testarch::instr_spill_gpr::instance(),
-				{origin}, {}, {out_class->type()});
-			xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
-			xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
-		} else if (out_relaxed == CLS(gpr)) {
-			xfer.node = create_instruction(region, &jive::testarch::instr_restore_gpr::instance(),
-				{origin}, {in_class->type()}, {});
-			xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
-			xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
-		} else {
-			JIVE_DEBUG_ASSERT(false);
+			return jive::xfer_description(node->input(0), node, node->output(0));
 		}
 
-		return xfer;
+		if (in_relaxed == CLS(gpr)) {
+			auto node = create_instruction(region, &jive::testarch::instr_spill_gpr::instance(),
+				{origin}, {}, {out_class->type()});
+			return jive::xfer_description(node->input(0), node, node->output(0));
+		}
+
+		if (out_relaxed == CLS(gpr)) {
+			auto node = create_instruction(region, &jive::testarch::instr_restore_gpr::instance(),
+				{origin}, {in_class->type()}, {});
+			return jive::xfer_description(node->input(0), node, node->output(0));
+		}
+
+		JIVE_ASSERT(0);
 	}
 
 	static inline const testarch_isa *

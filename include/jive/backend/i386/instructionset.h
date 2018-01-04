@@ -129,10 +129,10 @@ public:
 	virtual const jive_reg_classifier *
 	classifier() const noexcept override;
 
-	virtual jive_xfer_description
+	virtual jive::xfer_description
 	create_xfer(
 		jive::region * region,
-		jive::simple_output * origin,
+		jive::output * origin,
 		const jive::resource_class * in_class,
 		const jive::resource_class * out_class) override;
 

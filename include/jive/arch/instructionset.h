@@ -10,25 +10,53 @@
 #include <jive/common.h>
 
 namespace jive {
+	class input;
 	class instruction_class;
 	class node;
+	class output;
 	class region;
 	class resource_class;
-	class simple_input;
-	class simple_output;
 }
 
 class jive_reg_classifier;
 
-typedef struct jive_xfer_description jive_xfer_description;
-
-struct jive_xfer_description {
-	jive::simple_input * input;
-	jive::node * node;
-	jive::simple_output * output;
-};
-
 namespace jive {
+
+class xfer_description {
+public:
+	inline
+	xfer_description(
+		jive::input * input,
+		jive::node * node,
+		jive::output * output)
+	: node_(node)
+	, input_(input)
+	, output_(output)
+	{}
+
+	inline jive::input *
+	input() const noexcept
+	{
+		return input_;
+	}
+
+	inline jive::node *
+	node() const noexcept
+	{
+		return node_;
+	}
+
+	inline jive::output *
+	output() const noexcept
+	{
+		return output_;
+	}
+
+private:
+	jive::node * node_;
+	jive::input * input_;
+	jive::output * output_;
+};
 
 class instructionset {
 public:
@@ -45,10 +73,10 @@ public:
 	virtual const jive_reg_classifier *
 	classifier() const noexcept = 0;
 
-	virtual jive_xfer_description
+	virtual xfer_description
 	create_xfer(
 		jive::region * region,
-		jive::simple_output * origin,
+		jive::output * origin,
 		const jive::resource_class * in_class,
 		const jive::resource_class * out_class) = 0;
 };
