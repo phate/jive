@@ -75,13 +75,13 @@ section_process_relocations(
 	jive_process_relocation_function relocate)
 {
 	for (auto & entry : section->relocations) {
-		void * where = entry->offset + (char *) base_writable;
-		jive_offset offset = entry->offset + base;
+		void * where = entry->offset() + (char *) base_writable;
+		jive_offset offset = entry->offset() + base;
 		const void * target;
-		if (!resolve_relocation_target(entry->target, map, sym_resolver, &target))
+		if (!resolve_relocation_target(entry->target(), map, sym_resolver, &target))
 			return false;
-		if (!relocate(where, section->size() - entry->offset,
-			offset, entry->type, (uintptr_t) target, entry->value)) {
+		if (!relocate(where, section->size() - entry->offset(),
+			offset, entry->type(), (uintptr_t) target, entry->value())) {
 			return false;
 		}
 	}
@@ -109,15 +109,8 @@ section::add_relocation(
 	jive_symref target,
 	jive_offset value)
 {
-	jive_offset offset = this->size();
+	relocations.insert(new relocation_entry(this->size(), type, target, value));
 	put(data, size);
-
-	jive_relocation_entry * entry = new jive_relocation_entry;
-	entry->offset = offset;
-	entry->type = type;
-	entry->target = target;
-	entry->value = value;
-	relocations.insert(entry);
 }
 
 /* compilate */

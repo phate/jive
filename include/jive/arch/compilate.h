@@ -17,7 +17,6 @@
 struct jive_linker_symbol_resolver;
 
 typedef struct jive_compilate_map jive_compilate_map;
-typedef struct jive_relocation_entry jive_relocation_entry;
 typedef struct jive_relocation_type jive_relocation_type;
 
 /**
@@ -27,19 +26,64 @@ struct jive_relocation_type {
 	uint32_t arch_code;
 };
 
+namespace jive {
+
 /**
 	\brief Relocation table entry
 */
-struct jive_relocation_entry {
+class relocation_entry {
+public:
+	inline constexpr
+	relocation_entry(
+		jive_offset offset,
+		const jive_relocation_type & type,
+		jive_symref target,
+		jive_offset value)
+	: offset_(offset)
+	, type_(type)
+	, target_(target)
+	, value_(value)
+	{}
+
+	inline jive_offset
+	offset() const noexcept
+	{
+		return offset_;
+	}
+
+	inline const jive_relocation_type &
+	type() const noexcept
+	{
+		return type_;
+	}
+
+	inline jive_symref
+	target() const noexcept
+	{
+		return target_;
+	}
+
+	inline jive_offset
+	value() const noexcept
+	{
+		return value_;
+	}
+
+private:
 	/** \brief Offset within section of relocation record */
-	jive_offset offset;
+	jive_offset offset_;
+
 	/** \brief Type of relocation to be applied */
-	jive_relocation_type type;
+	jive_relocation_type type_;
+
 	/** \brief Target address of relocation operation */
-	jive_symref target;
+	jive_symref target_;
+
 	/** \brief Additional offset to be applied to symbol */
-	jive_offset value;
+	jive_offset value_;
 };
+
+}
 
 /**
 	\brief Apply relocation processing in a single location
@@ -130,7 +174,7 @@ public:
 		jive_symref target,
 		jive_offset value);
 
-	std::unordered_set<jive_relocation_entry*> relocations;
+	std::unordered_set<relocation_entry*> relocations;
 
 private:
 	jive_buffer contents_;
