@@ -5,12 +5,13 @@
  */
 
 #include <jive/arch/compilate.h>
-#include <jive/arch/instructionset.h>
+#include <jive/arch/stackslot.h>
+#include <jive/arch/subroutine/nodes.h>
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instructionset.h>
-#include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/relocation.h>
+#include <jive/backend/i386/subroutine.h>
 #include <jive/util/buffer.h>
 
 #include <inttypes.h>
@@ -1285,18 +1286,77 @@ DEFINE_I386_INSTRUCTION(
 
 }}
 
+static void
+get_slot_memory_reference(const jive::resource_class * rescls,
+	jive::immediate * displacement, jive::output ** base,
+	jive::output * sp, jive::output * fp)
+{
+	if (jive_resource_class_isinstance(rescls, &JIVE_STACK_CALLSLOT_RESOURCE)) {
+		*displacement = jive::immediate(0, &jive_label_spoffset);
+		*base = sp;
+	} else {
+		*displacement = jive::immediate(0, &jive_label_fpoffset);
+		*base = fp;
+	}
+}
+
+/* instructionset */
+
+jive_i386_instructionset::~jive_i386_instructionset()
+{}
+
+const jive::instruction_class *
+jive_i386_instructionset::jump_instruction() const noexcept
+{
+	return &jive::i386::instr_jump::instance();
+}
+
+const jive_reg_classifier *
+jive_i386_instructionset::classifier() const noexcept
+{
+	return jive_i386_reg_classifier::get();
+}
+
 jive_xfer_description
-jive_i386_create_xfer(jive::region * region, jive::simple_output * origin,
-	const jive::resource_class * in_class, const jive::resource_class * out_class);
+jive_i386_instructionset::create_xfer(
+	jive::region * region,
+	jive::simple_output * origin,
+	const jive::resource_class * in_class,
+	const jive::resource_class * out_class)
+{
+	jive_xfer_description xfer;
+	auto sub = jive_region_get_subroutine_node(region);
 
+	auto sp = jive_subroutine_node_get_sp(sub);
+	auto fp = jive_subroutine_node_get_fp(sub);
 
-static const jive_instructionset_class jive_i386_instructionset_class = {
-	create_xfer : jive_i386_create_xfer,
-};
+	bool in_mem = !jive_resource_class_isinstance(in_class, &JIVE_REGISTER_RESOURCE);
+	bool out_mem = !jive_resource_class_isinstance(out_class, &JIVE_REGISTER_RESOURCE);
 
-static const jive_i386_reg_classifier classifier;
-const struct jive_instructionset jive_i386_instructionset = {
-	class_ : &jive_i386_instructionset_class,
-	jump_instruction_class : &jive::i386::instr_jump::instance(),
-	reg_classifier : &classifier
-};
+	if (in_mem) {
+		jive::output * base;
+		jive::immediate displacement;
+		get_slot_memory_reference(in_class, &displacement, &base, sp, fp);
+		auto imm = jive_immediate_create(region, &displacement);
+		xfer.node = jive::create_instruction(region, &jive::i386::instr_int_load32_disp::instance(),
+			{base, imm, origin}, {in_class}, {});
+		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(2));
+		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
+	} else if (out_mem) {
+		jive::output * base;
+		jive::immediate displacement;
+		get_slot_memory_reference(out_class, &displacement, &base, sp, fp);
+		auto imm = jive_immediate_create(region, &displacement);
+		xfer.node = jive::create_instruction(region, &jive::i386::instr_int_store32_disp::instance(),
+			{base, origin, imm}, {}, {out_class});
+		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(1));
+		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
+	} else {
+		xfer.node = jive::create_instruction(region, &jive::i386::instr_int_transfer::instance(),
+			{origin});
+		xfer.input = dynamic_cast<jive::simple_input*>(xfer.node->input(0));
+		xfer.output = dynamic_cast<jive::simple_output*>(xfer.node->output(0));
+	}
+
+	return xfer;
+}

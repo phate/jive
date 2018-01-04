@@ -8,6 +8,7 @@
 #define JIVE_BACKEND_I386_INSTRUCTIONSET_H
 
 #include <jive/arch/instruction.h>
+#include <jive/arch/instructionset.h>
 
 namespace jive {
 namespace i386 {
@@ -113,7 +114,34 @@ DECLARE_I386_INSTRUCTION(float_transfer);
 
 }}
 
-struct jive_instructionset;
-extern const struct jive_instructionset jive_i386_instructionset;
+class jive_i386_instructionset final : public jive::instructionset {
+public:
+	virtual
+	~jive_i386_instructionset();
+
+	inline constexpr
+	jive_i386_instructionset()
+	{}
+
+	virtual const jive::instruction_class *
+	jump_instruction() const noexcept override;
+
+	virtual const jive_reg_classifier *
+	classifier() const noexcept override;
+
+	virtual jive_xfer_description
+	create_xfer(
+		jive::region * region,
+		jive::simple_output * origin,
+		const jive::resource_class * in_class,
+		const jive::resource_class * out_class) override;
+
+	static inline jive_i386_instructionset *
+	get()
+	{
+		static jive_i386_instructionset instructionset;
+		return &instructionset;
+	}
+};
 
 #endif

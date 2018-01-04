@@ -44,6 +44,13 @@ public:
 
 	virtual const jive::register_class * const *
 	classes() const noexcept override;
+
+	static inline const jive_i386_reg_classifier *
+	get()
+	{
+		static const jive_i386_reg_classifier classifier;
+		return &classifier;
+	}
 };
 
 #endif

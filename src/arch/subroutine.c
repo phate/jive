@@ -70,7 +70,7 @@ jive_region_get_subroutine_node(const jive::region * region)
 	return nullptr;
 }
 
-const struct jive_instructionset *
+const jive::instructionset *
 jive_region_get_instructionset(const jive::region * region)
 {
 	jive::node * sub = jive_region_get_subroutine_node(region);

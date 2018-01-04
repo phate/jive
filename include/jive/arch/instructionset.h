@@ -10,16 +10,16 @@
 #include <jive/common.h>
 
 namespace jive {
-	class simple_input;
 	class instruction_class;
+	class node;
+	class region;
 	class resource_class;
+	class simple_input;
 	class simple_output;
 }
 
-struct jive_reg_classifier;
+class jive_reg_classifier;
 
-typedef struct jive_instructionset jive_instructionset;
-typedef struct jive_instructionset_class jive_instructionset_class;
 typedef struct jive_xfer_description jive_xfer_description;
 
 struct jive_xfer_description {
@@ -28,35 +28,31 @@ struct jive_xfer_description {
 	jive::simple_output * output;
 };
 
-struct jive_instructionset_class {
-	jive_xfer_description (*create_xfer)(struct jive::region * region, jive::simple_output * origin,
-		const jive::resource_class * in_class, const jive::resource_class * out_class);
+namespace jive {
+
+class instructionset {
+public:
+	virtual
+	~instructionset();
+
+	inline constexpr
+	instructionset()
+	{}
+
+	virtual const instruction_class *
+	jump_instruction() const noexcept = 0;
+
+	virtual const jive_reg_classifier *
+	classifier() const noexcept = 0;
+
+	virtual jive_xfer_description
+	create_xfer(
+		jive::region * region,
+		jive::simple_output * origin,
+		const jive::resource_class * in_class,
+		const jive::resource_class * out_class) = 0;
 };
 
-struct jive_instructionset {
-	const jive_instructionset_class * class_;
-	const jive::instruction_class * jump_instruction_class;
-	const struct jive_reg_classifier * reg_classifier;
-};
-
-static inline jive_xfer_description
-jive_instructionset_create_xfer(const jive_instructionset * self,
-	struct jive::region * region, jive::simple_output * origin,
-	const jive::resource_class * in_class, const jive::resource_class * out_class)
-{
-	return  self->class_->create_xfer(region, origin, in_class, out_class);
-}
-
-static inline const jive::instruction_class *
-jive_instructionset_get_jump_instruction_class(const jive_instructionset * self)
-{
-	return self->jump_instruction_class;
-}
-
-static inline const struct jive_reg_classifier *
-jive_instructionset_get_reg_classifier(const jive_instructionset * self)
-{
-	return self->reg_classifier;
 }
 
 #endif

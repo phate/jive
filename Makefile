@@ -96,6 +96,7 @@ LIBJIVE_SRC += \
 	src/arch/immediate-node.c \
 	src/arch/immediate-type.c \
 	src/arch/instruction.c \
+	src/arch/instructionset.c \
 	src/arch/label-mapper.c \
 	src/arch/load-normal-form.c \
 	src/arch/load.c \

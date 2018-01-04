@@ -124,6 +124,13 @@ public:
 
 	virtual const jive::register_class * const *
 	classes() const noexcept override;
+
+	static inline const jive_testarch_reg_classifier *
+	get()
+	{
+		static const jive_testarch_reg_classifier classifier;
+		return &classifier;
+	}
 };
 
 #endif

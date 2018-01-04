@@ -36,7 +36,7 @@ const jive_subroutine_abi_class JIVE_I386_SUBROUTINE_ABI = {
 	prepare_stackframe : jive_i386_subroutine_prepare_stackframe_,
 	add_fp_dependency : jive_i386_subroutine_add_fp_dependency_,
 	add_sp_dependency : jive_i386_subroutine_add_sp_dependency_,
-	instructionset : &jive_i386_instructionset
+	instructionset : jive_i386_instructionset::get()
 };
 
 namespace {

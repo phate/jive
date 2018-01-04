@@ -66,7 +66,9 @@ public:
 
 }
 
-struct jive_instructionset;
+namespace jive {
+	class instructionset;
+}
 
 struct jive_subroutine_abi_class;
 
@@ -163,7 +165,7 @@ struct jive_subroutine_abi_class {
 		const jive::subroutine_op & op,
 		jive::region * region,
 		jive::node * node);
-	const jive_instructionset * instructionset;
+	const jive::instructionset * instructionset;
 };
 
 void
@@ -188,7 +190,7 @@ jive_subroutine_node_add_sp_dependency(
 jive::node *
 jive_region_get_subroutine_node(const jive::region * region);
 
-const jive_instructionset *
+const jive::instructionset *
 jive_region_get_instructionset(const jive::region * region);
 
 jive::simple_output *

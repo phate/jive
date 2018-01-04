@@ -3,7 +3,6 @@ LIBJIVE_I386_SRC = \
 	classifier.c \
 	instrmatch.c \
 	instructionset.c \
-	machine.c \
 	registerset.c \
 	relocation.c \
 	subroutine.c \
