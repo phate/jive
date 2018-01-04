@@ -1292,10 +1292,10 @@ get_slot_memory_reference(const jive::resource_class * rescls,
 	jive::output * sp, jive::output * fp)
 {
 	if (jive_resource_class_isinstance(rescls, &JIVE_STACK_CALLSLOT_RESOURCE)) {
-		*displacement = jive::immediate(0, &jive_label_spoffset);
+		*displacement = jive::immediate(0, jive::spoffset_label::get());
 		*base = sp;
 	} else {
-		*displacement = jive::immediate(0, &jive_label_fpoffset);
+		*displacement = jive::immediate(0, jive::fpoffset_label::get());
 		*base = fp;
 	}
 }

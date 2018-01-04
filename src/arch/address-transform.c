@@ -173,9 +173,7 @@ jive_label_to_address_node_address_transform(
 	const jive::address::label_to_address_op & op,
 	size_t nbits)
 {
-	const jive_label * label = op.label();
-
-	auto label_o = jive_label_to_bitstring_create(node->graph()->root(), label, nbits);
+	auto label_o = jive_label_to_bitstring_create(node->graph()->root(), op.label(), nbits);
 	auto addr_o = jive_bitstring_to_address_create(label_o, nbits, &node->output(0)->type());
 	node->output(0)->replace(addr_o);
 }

@@ -101,11 +101,11 @@ jive_label_symbol_mapper_simple_destroy_(jive_label_symbol_mapper * self_)
 }
 
 static const struct jive_linker_symbol *
-jive_label_symbol_mapper_simple_map_label_external_(jive_label_symbol_mapper * self_,
-	const jive_label_external * label_)
+jive_label_symbol_mapper_simple_map_label_external_(
+	jive_label_symbol_mapper * self_,
+	const jive::external_label * label)
 {
-	const jive_label_external_symbol * label = (const jive_label_external_symbol *) label_;
-	return &label->symbol;
+	return label->symbol();
 }
 
 static const jive_label_symbol_mapper_class JIVE_LABEL_SYMBOL_MAPPER_SIMPLE = {

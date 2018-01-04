@@ -17,12 +17,13 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/types/record/rcdtype.h>
 
-struct jive_label;
-
 /* "memberof" operator: given an address that is the start of a record
 in memory, compute address of specified member of record */
 
 namespace jive {
+
+class label;
+
 namespace address {
 
 class memberof_op : public jive::unary_op {
@@ -227,7 +228,7 @@ public:
 	~label_to_address_op() noexcept;
 
 	inline constexpr
-	label_to_address_op(const jive_label * label) noexcept
+	label_to_address_op(const jive::label * label) noexcept
 		: label_(label)
 	{
 	}
@@ -241,14 +242,17 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	const jive_label *
-	label() const noexcept { return label_; }
+	const jive::label *
+	label() const noexcept
+	{
+		return label_;
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	const struct jive_label * label_;
+	const jive::label * label_;
 };
 
 class label_to_bitstring_op : public base::nullary_op {
@@ -258,7 +262,7 @@ public:
 
 	inline
 	label_to_bitstring_op(
-		const jive_label * label,
+		const jive::label * label,
 		size_t nbits) noexcept
 	: base::nullary_op()
 	, result_(jive::bits::type(nbits))
@@ -274,8 +278,11 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	const jive_label *
-	label() const noexcept { return label_; }
+	const jive::label *
+	label() const noexcept
+	{
+		return label_;
+	}
 
 	size_t
 	nbits() const noexcept
@@ -288,7 +295,7 @@ public:
 
 private:
 	jive::port result_;
-	const jive_label * label_;
+	const jive::label * label_;
 };
 
 class value_repr final {
@@ -387,11 +394,11 @@ jive_arrayindex(jive::output * addr1, jive::output * addr2,
 /* label_to_address node */
 
 jive::output *
-jive_label_to_address_create(jive::region * region, const jive_label * label);
+jive_label_to_address_create(jive::region * region, const jive::label * label);
 
 /* label_to_bitstring node */
 
 jive::output *
-jive_label_to_bitstring_create(jive::region * region, const jive_label * label, size_t nbits);
+jive_label_to_bitstring_create(jive::region * region, const jive::label * label, size_t nbits);
 
 #endif

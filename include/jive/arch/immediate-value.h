@@ -20,8 +20,8 @@ public:
 	inline constexpr
 	immediate(
 		jive_immediate_int offset = 0,
-		const struct jive_label * add_label = nullptr,
-		const struct jive_label * sub_label = nullptr,
+		const jive::label * add_label = nullptr,
+		const jive::label * sub_label = nullptr,
 		const void * modifier = nullptr) noexcept
 	: offset_(offset)
 	, add_label_(add_label)
@@ -42,10 +42,10 @@ public:
 	inline immediate &
 	operator+(const immediate & other)
 	{
-		const struct jive_label * add1 = add_label_;
-		const struct jive_label * add2 = other.add_label_;
-		const struct jive_label * sub1 = sub_label_;
-		const struct jive_label * sub2 = other.sub_label_;
+		auto add1 = add_label_;
+		auto add2 = other.add_label_;
+		auto sub1 = sub_label_;
+		auto sub2 = other.sub_label_;
 
 		if (add1 == sub2) {
 			add1 = nullptr;
@@ -92,10 +92,10 @@ public:
 	inline immediate &
 	operator-(const immediate & other)
 	{
-		const struct jive_label * add1 = add_label_;
-		const struct jive_label * add2 = other.sub_label_;
-		const struct jive_label * sub1 = sub_label_;
-		const struct jive_label * sub2 = other.add_label_;
+		auto add1 = add_label_;
+		auto add2 = other.sub_label_;
+		auto sub1 = sub_label_;
+		auto sub2 = other.add_label_;
 
 		if (add1 == sub2) {
 			add1 = nullptr;
@@ -186,26 +186,26 @@ public:
 		offset_ = offset;
 	}
 
-	const struct jive_label *
+	const jive::label *
 	add_label() const noexcept
 	{
 		return add_label_;
 	}
 
 	void
-	set_add_label(const struct jive_label * add_label) noexcept
+	set_add_label(const jive::label * add_label) noexcept
 	{
 		add_label_ = add_label;
 	}
 
-	const struct jive_label *
+	const jive::label *
 	sub_label() const noexcept
 	{
 		return sub_label_;
 	}
 
 	void
-	set_sub_label(const struct jive_label * sub_label) noexcept
+	set_sub_label(const jive::label * sub_label) noexcept
 	{
 		sub_label_ = sub_label;
 	}
@@ -224,8 +224,8 @@ public:
 
 private:
 	jive_immediate_int offset_;
-	const struct jive_label * add_label_;
-	const struct jive_label * sub_label_;
+	const jive::label * add_label_;
+	const jive::label * sub_label_;
 	const void * modifier_;
 };
 

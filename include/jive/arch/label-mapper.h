@@ -69,7 +69,7 @@ struct jive_label_symbol_mapper_class {
 	void (*destroy)(jive_label_symbol_mapper * self);
 	const jive_linker_symbol * (*map_label_external)(
 		jive_label_symbol_mapper * self,
-		const jive_label_external * label);
+		const jive::external_label * label);
 };
 
 struct jive_label_symbol_mapper {
@@ -85,17 +85,10 @@ jive_label_symbol_mapper_destroy(jive_label_symbol_mapper * self)
 static inline const struct jive_linker_symbol *
 jive_label_symbol_mapper_map_label_external(
 	jive_label_symbol_mapper * self,
-	const jive_label_external * label)
+	const jive::external_label * label)
 {
 	return self->class_->map_label_external(self, label);
 }
-
-/* simple label external that includes the symbol; to be used with simple
-mapper below */
-struct jive_label_external_symbol {
-	jive_label_external base;
-	jive_linker_symbol symbol;
-};
 
 jive_label_symbol_mapper *
 jive_label_symbol_mapper_simple_create();

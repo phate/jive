@@ -23,29 +23,27 @@ static int test_main(void)
 {
 	jive::graph graph;
 
-	jive_label_external foobar, bla;
-	
-	jive_linker_symbol foobar_symbol;
 	jive_linker_symbol bla_symbol;
-	jive_label_external_init(&foobar, "foobar", &foobar_symbol);
-	jive_label_external_init(&bla, "bla", &bla_symbol);
+	jive_linker_symbol foobar_symbol;
+	jive::external_label bla("bla", &bla_symbol);
+	jive::external_label foobar("foobar", &foobar_symbol);
 
-	auto o0 = jive_label_to_address_create(graph.root(), &foobar.base);
-	auto o1 = jive_label_to_address_create(graph.root(), &bla.base);
+	auto o0 = jive_label_to_address_create(graph.root(), &foobar);
+	auto o1 = jive_label_to_address_create(graph.root(), &bla);
 
 	const jive::address::label_to_address_op * attrs0;
 	const jive::address::label_to_address_op * attrs1;
 	attrs0 = dynamic_cast<const jive::address::label_to_address_op*>(&o0->node()->operation());
 	attrs1 = dynamic_cast<const jive::address::label_to_address_op*>(&o1->node()->operation());
 
-	assert(attrs0->label() == &foobar.base);
-	assert(attrs1->label() == &bla.base);
+	assert(attrs0->label() == &foobar);
+	assert(attrs1->label() == &bla);
 	
 	assert(o0->node()->operation() != *attrs1);
 	
-	auto o2 = jive_label_to_bitstring_create(graph.root(), &foobar.base, 32);
-	auto o3 = jive_label_to_bitstring_create(graph.root(), &bla.base, 32);
-	auto o4 = jive_label_to_bitstring_create(graph.root(), &foobar.base, 16);
+	auto o2 = jive_label_to_bitstring_create(graph.root(), &foobar, 32);
+	auto o3 = jive_label_to_bitstring_create(graph.root(), &bla, 32);
+	auto o4 = jive_label_to_bitstring_create(graph.root(), &foobar, 16);
 
 	const jive::address::label_to_bitstring_op * attrs2;
 	const jive::address::label_to_bitstring_op * attrs3;
@@ -54,9 +52,9 @@ static int test_main(void)
 	attrs3 = dynamic_cast<const jive::address::label_to_bitstring_op*>(&o3->node()->operation());
 	attrs4 = dynamic_cast<const jive::address::label_to_bitstring_op*>(&o4->node()->operation());
 
-	assert(attrs2->label() == &foobar.base);
-	assert(attrs3->label() == &bla.base);
-	assert(attrs4->label() == &foobar.base);
+	assert(attrs2->label() == &foobar);
+	assert(attrs3->label() == &bla);
+	assert(attrs4->label() == &foobar);
 	
 	assert(o2->node()->operation() != *attrs4);
 	assert(o2->node()->operation() != *attrs3);

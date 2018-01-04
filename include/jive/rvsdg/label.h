@@ -37,79 +37,151 @@ jive_address_init(jive_address * self, jive_stdsectionid section, jive_offset of
 	self->section = section;
 }
 
-struct jive_label_class {
-	const jive_label_class * parent;
-	void (*fini)(jive_label * self);
-};
-
-extern const jive_label_class JIVE_LABEL;
-
 typedef enum {
 	jive_label_flags_none = 0,
 	jive_label_flags_global = 1, /* whether label is supposed to be "globally visible" */
 	jive_label_flags_external = 2, /* whether label must be resolved outside the current graph */
 } jive_label_flags;
 
-struct jive_label {
-	const jive_label_class * class_;
-	
-	jive_label_flags flags;
-};
+namespace jive {
 
-static inline void
-jive_label_fini(jive_label * self)
-{
-	self->class_->fini(self);
-}
+/* label */
 
-static inline bool
-jive_label_isinstance(const jive_label * self, const jive_label_class * class_)
-{
-	const jive_label_class * cls = self->class_;
-	while (cls) {
-		if (cls == class_)
-			return true;
-		cls = cls->parent;
-	}
-	return false;
-}
+class label {
+public:
+	virtual
+	~label();
 
-struct jive_label_external {
-	jive_label base;
-	std::string asmname;
-	const struct jive_linker_symbol * symbol;
+protected:
+	inline constexpr
+	label()
+	{}
+
+public:
+	label(const label &) = delete;
+
+	label(label &&) = delete;
+
+	virtual jive_label_flags
+	flags() const noexcept;
 };
 
 /**
 	\brief Special label marking position of "current" instruction
 */
-extern const jive_label jive_label_current;
+class current_label final : public label {
+public:
+	virtual
+	~current_label();
 
-extern const jive_label_class JIVE_LABEL_CURRENT;
+private:
+	inline constexpr
+	current_label()
+	: label()
+	{}
+
+	current_label(const current_label &) = delete;
+
+	current_label(current_label &&) = delete;
+
+public:
+	static inline const current_label *
+	get()
+	{
+		static const current_label label;
+		return &label;
+	}
+};
 
 /**
 	\brief Special label marking offset from frame pointer
 */
-extern const jive_label jive_label_fpoffset;
+class fpoffset_label final : public label {
+public:
+	virtual
+	~fpoffset_label();
 
-extern const jive_label_class JIVE_LABEL_FPOFFSET;
+private:
+	inline constexpr
+	fpoffset_label()
+	: label()
+	{}
+
+	fpoffset_label(const fpoffset_label &) = delete;
+
+	fpoffset_label(fpoffset_label &&) = delete;
+
+public:
+	static inline const fpoffset_label *
+	get()
+	{
+		static const fpoffset_label label;
+		return &label;
+	}
+};
 
 /**
 	\brief Special label marking offset from stack pointer
 */
-extern const jive_label jive_label_spoffset;
+class spoffset_label final : public label {
+public:
+	virtual
+	~spoffset_label();
 
-extern const jive_label_class JIVE_LABEL_SPOFFSET;
+private:
+	inline constexpr
+	spoffset_label()
+	: label()
+	{}
 
-extern const jive_label_class JIVE_LABEL_EXTERNAL;
+	spoffset_label(const spoffset_label &) = delete;
 
-/**
-	\brief Initialize label external
-*/
-void
-jive_label_external_init(
-	jive_label_external * self,
-	const char * name,
-	const struct jive_linker_symbol * symbol);
+	spoffset_label(spoffset_label &&) = delete;
+
+public:
+	static inline const spoffset_label *
+	get()
+	{
+		static const spoffset_label label;
+		return &label;
+	}
+};
+
+/* external label */
+
+class external_label final : public label {
+public:
+	virtual
+	~external_label();
+
+	inline
+	external_label(
+		const std::string & asmname,
+		const struct jive_linker_symbol * symbol)
+	: asmname_(asmname)
+	, symbol_(symbol)
+	{}
+
+	inline const std::string &
+	asmname() const noexcept
+	{
+		return asmname_;
+	}
+
+	inline const struct jive_linker_symbol *
+	symbol() const noexcept
+	{
+		return symbol_;
+	}
+
+	virtual jive_label_flags
+	flags() const noexcept override;
+
+private:
+	std::string asmname_;
+	const struct jive_linker_symbol * symbol_;
+};
+
+}
 
 #endif
