@@ -6,118 +6,43 @@
 
 #include <jive/arch/label-mapper.h>
 
-#include <unordered_map>
+namespace jive {
 
-typedef struct jive_anon_label jive_anon_label;
-typedef struct jive_label_name_mapper_simple jive_label_name_mapper_simple;
+/* label name mapper */
 
-struct jive_anon_label {
-	const void * symbol;
-	std::string name;
-};
+label_name_mapper::~label_name_mapper()
+{}
 
-struct jive_label_name_mapper_simple {
-	jive_label_name_mapper base;
-	std::unordered_map<const void*, jive_anon_label> anon_labels;
-	size_t int_label_seqno;
-	
-	const jive_symbol_name_pair * pairs;
-	size_t npairs;
-};
+/* label name mapper simple */
 
-static void
-jive_label_name_mapper_simple_destroy_(jive_label_name_mapper * self_)
+label_name_mapper_simple::~label_name_mapper_simple()
+{}
+
+const char *
+label_name_mapper_simple::map_named_symbol(const jive_linker_symbol * symbol)
 {
-	jive_label_name_mapper_simple * self = (jive_label_name_mapper_simple *) self_;
-	delete self;
+	for (size_t n = 0; n < npairs_; n++) {
+		if (pairs_[n].symbol == symbol)
+			return pairs_[n].name;
+	}
+
+	return nullptr;
 }
 
-static const char *
-jive_label_name_mapper_simple_map_anon_symbol_(
-	jive_label_name_mapper * self_,
-	const void * symbol)
+const char *
+label_name_mapper_simple::map_anon_symbol(const void * symbol)
 {
-	jive_label_name_mapper_simple * self = (jive_label_name_mapper_simple *) self_;
-	
 	jive_anon_label entry;
-	auto i = self->anon_labels.find(symbol);
-	if (i != self->anon_labels.end())
+	auto i = anon_labels_.find(symbol);
+	if (i != anon_labels_.end())
 		entry = i->second;
 	else {
 		entry.symbol = symbol;
-		entry.name = jive::detail::strfmt(".L", ++self->int_label_seqno);
-		self->anon_labels[symbol] = entry;
+		entry.name = jive::detail::strfmt(".L", ++int_label_seqno_);
+		anon_labels_[symbol] = entry;
 	}
 	
 	return entry.name.c_str();
 }
 
-static const char *
-jive_label_name_mapper_simple_map_named_symbol_(
-	jive_label_name_mapper * self_,
-	const jive_linker_symbol * symbol)
-{
-	jive_label_name_mapper_simple * self = (jive_label_name_mapper_simple *) self_;
-	
-	size_t n;
-	for (n = 0; n < self->npairs; ++n) {
-		if (self->pairs[n].symbol == symbol)
-			return self->pairs[n].name;
-	}
-	
-	return 0;
-}
-
-static const jive_label_name_mapper_class JIVE_LABEL_NAME_MAPPER_SIMPLE = {
-	destroy : jive_label_name_mapper_simple_destroy_,
-	map_named_symbol : jive_label_name_mapper_simple_map_named_symbol_,
-	map_anon_symbol : jive_label_name_mapper_simple_map_anon_symbol_
-};
-
-jive_label_name_mapper *
-jive_label_name_mapper_simple_create(
-	const jive_symbol_name_pair * pairs,
-	size_t npairs)
-{
-	jive_label_name_mapper_simple * mapper = new jive_label_name_mapper_simple;
-	mapper->base.class_ = &JIVE_LABEL_NAME_MAPPER_SIMPLE;
-	mapper->int_label_seqno = 0;
-	mapper->pairs = pairs;
-	mapper->npairs = npairs;
-
-	return &mapper->base;
-}
-
-typedef struct jive_label_symbol_mapper_simple jive_label_symbol_mapper_simple;
-
-struct jive_label_symbol_mapper_simple {
-	jive_label_symbol_mapper base;
-};
-
-static void
-jive_label_symbol_mapper_simple_destroy_(jive_label_symbol_mapper * self_)
-{
-	delete self_;
-}
-
-static const struct jive_linker_symbol *
-jive_label_symbol_mapper_simple_map_label_external_(
-	jive_label_symbol_mapper * self_,
-	const jive::external_label * label)
-{
-	return label->symbol();
-}
-
-static const jive_label_symbol_mapper_class JIVE_LABEL_SYMBOL_MAPPER_SIMPLE = {
-	destroy : jive_label_symbol_mapper_simple_destroy_,
-	map_label_external : jive_label_symbol_mapper_simple_map_label_external_
-};
-
-jive_label_symbol_mapper *
-jive_label_symbol_mapper_simple_create()
-{
-	jive_label_symbol_mapper_simple * mapper = new jive_label_symbol_mapper_simple;
-	mapper->base.class_ = &JIVE_LABEL_SYMBOL_MAPPER_SIMPLE;
-	
-	return &mapper->base;
 }
