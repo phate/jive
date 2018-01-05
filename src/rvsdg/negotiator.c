@@ -123,7 +123,7 @@ jive_negotiator_constraint_revalidate(
 	jive_negotiator_constraint * self,
 	jive_negotiator_port * port)
 {
-	self->class_->revalidate(self, port);
+	self->revalidate(port);
 }
 
 jive_negotiator_port *
@@ -323,10 +323,8 @@ jive_negotiator_connection_merge(
 void
 jive_negotiator_constraint_init_(
 	jive_negotiator_constraint * self,
-	jive_negotiator * negotiator,
-	const jive_negotiator_constraint_class * class_)
+	jive_negotiator * negotiator)
 {
-	self->class_ = class_;
 	self->negotiator = negotiator;
 	negotiator->constraints.push_back(self);
 }
@@ -341,18 +339,13 @@ void
 jive_negotiator_constraint_destroy(jive_negotiator_constraint * self)
 {
 	JIVE_DEBUG_ASSERT(self->ports.empty());
-	self->class_->fini(self);
 	delete self;
 }
 
-/* identity constraint */
-
-static inline void
-jive_negotiator_identity_constraint_revalidate(
-	jive_negotiator_constraint * self,
-	jive_negotiator_port * port)
+void
+jive_negotiator_constraint::revalidate(jive_negotiator_port * port)
 {
-	for (const auto & tmp : self->ports) {
+	for (const auto & tmp : ports) {
 		if (&tmp == port)
 			continue;
 		if (tmp.option->assign(*port->option))
@@ -360,16 +353,11 @@ jive_negotiator_identity_constraint_revalidate(
 	}
 }
 
-static const jive_negotiator_constraint_class JIVE_NEGOTIATOR_IDENTITY_CONSTRAINT_CLASS = {
-	fini : jive_negotiator_constraint_fini_,
-	revalidate : jive_negotiator_identity_constraint_revalidate
-};
-
 jive_negotiator_constraint *
 jive_negotiator_identity_constraint_create(jive_negotiator * self)
 {
 	jive_negotiator_constraint * constraint = new jive_negotiator_constraint;
-	jive_negotiator_constraint_init_(constraint, self, &JIVE_NEGOTIATOR_IDENTITY_CONSTRAINT_CLASS);
+	jive_negotiator_constraint_init_(constraint, self);
 	return constraint;
 }
 

@@ -22,7 +22,6 @@ namespace jive {
 struct jive_negotiator;
 struct jive_negotiator_connection;
 struct jive_negotiator_constraint;
-struct jive_negotiator_constraint_class;
 
 /* options */
 
@@ -310,7 +309,6 @@ typedef jive::detail::intrusive_list<
 > constraint_port_list;
 
 struct jive_negotiator_constraint {
-	const jive_negotiator_constraint_class * class_;
 	jive_negotiator * negotiator;
 	constraint_port_list ports;
 
@@ -391,6 +389,9 @@ public:
 			obj->hash_chain_.next = next;
 		}
 	};
+
+	void
+	revalidate(jive_negotiator_port * port);
 };
 
 typedef jive::detail::intrusive_hash<
@@ -404,12 +405,6 @@ typedef jive::detail::intrusive_hash<
 	jive_negotiator_constraint,
 	jive_negotiator_constraint::node_hash_chain_accessor
 > jive_negotiator_node_hash;
-
-
-struct jive_negotiator_constraint_class {
-	void (*fini)(jive_negotiator_constraint * self);
-	void (*revalidate)(jive_negotiator_constraint * self, jive_negotiator_port * port);
-};
 
 jive_negotiator_constraint *
 jive_negotiator_identity_constraint_create(jive_negotiator * self);
@@ -500,8 +495,7 @@ jive_negotiator_port_split(jive_negotiator_port * self);
 void
 jive_negotiator_constraint_init_(
 	jive_negotiator_constraint * self,
-	jive_negotiator * negotiator,
-	const jive_negotiator_constraint_class * class_);
+	jive_negotiator * negotiator);
 
 /* inheritable finalizer for constraint */
 void
