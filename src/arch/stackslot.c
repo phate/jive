@@ -359,7 +359,7 @@ jive_callslot_class_get(size_t size, size_t alignment, ssize_t offset)
 		return 0;
 }
 
-const jive::resource_name *
+const jive::resource *
 jive_stackslot_name_get(size_t size, size_t alignment, ssize_t offset)
 {
 	auto rescls = jive_fixed_stackslot_class_get(size, alignment, offset);

@@ -33,8 +33,8 @@ typedef enum {
 namespace jive {
 
 class gate;
+class resource;
 class resource_class;
-class resource_name;
 class type;
 
 class resource_class_demotion final {
@@ -73,7 +73,7 @@ public:
 	resource_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
-		const std::unordered_set<const jive::resource_name*> resources,
+		const std::unordered_set<const jive::resource*> resources,
 		const jive::resource_class * parent,
 		jive_resource_class_priority pr,
 		const std::vector<resource_class_demotion> & demotions,
@@ -119,7 +119,7 @@ public:
 		return resources_.size();
 	}
 
-	inline const std::unordered_set<const jive::resource_name*> &
+	inline const std::unordered_set<const jive::resource*> &
 	resources() const noexcept
 	{
 		return resources_;
@@ -148,7 +148,7 @@ private:
 	const jive::resource_class * parent_;
 
 	/** \brief Available resources */
-	std::unordered_set<const jive::resource_name*> resources_;
+	std::unordered_set<const jive::resource*> resources_;
 
 	/** \brief Paths for "demoting" this resource to a different one */
 	std::vector<resource_class_demotion> demotions_;
@@ -197,13 +197,13 @@ extern const jive::resource_class jive_root_resource_class;
 
 namespace jive {
 
-class resource_name {
+class resource {
 public:
 	virtual
-	~resource_name();
+	~resource();
 
 	inline
-	resource_name(const std::string & name, const jive::resource_class * rescls)
+	resource(const std::string & name, const jive::resource_class * rescls)
 	: resource_class(rescls)
 	, name_(name)
 	{}

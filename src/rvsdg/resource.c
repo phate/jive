@@ -15,7 +15,9 @@ namespace jive {
 resource_class::~resource_class()
 {}
 
-resource_name::~resource_name()
+/* resource */
+
+resource::~resource()
 {}
 
 }

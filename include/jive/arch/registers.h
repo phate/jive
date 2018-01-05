@@ -14,7 +14,7 @@ namespace base {
 	class type;
 }
 
-class register_name : public resource_name {
+class register_name : public resource {
 public:
 	virtual
 	~register_name();
@@ -24,7 +24,7 @@ public:
 		const std::string & name,
 		const jive::resource_class * rescls,
 		size_t code)
-	: resource_name(name, rescls)
+	: resource(name, rescls)
 	, code_(code)
 	{}
 
@@ -47,7 +47,7 @@ public:
 	register_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
-		const std::unordered_set<const jive::resource_name*> & resources,
+		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
 		const std::vector<jive::resource_class_demotion> & demotions,

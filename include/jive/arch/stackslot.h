@@ -30,7 +30,7 @@ jive_fixed_stackslot_class_get(size_t size, size_t alignment, ssize_t offset);
 const jive::resource_class *
 jive_callslot_class_get(size_t size, size_t alignment, ssize_t offset);
 
-const jive::resource_name *
+const jive::resource *
 jive_stackslot_name_get(size_t size, size_t alignment, ssize_t offset);
 
 /* resource classes and names*/
@@ -44,7 +44,7 @@ public:
 	jive_stackslot_size_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
-		const std::unordered_set<const jive::resource_name*> & resources,
+		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
 		const std::vector<jive::resource_class_demotion> demotions,
@@ -68,23 +68,23 @@ public:
 	jive_fixed_stackslot_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
-		const std::unordered_set<const jive::resource_name*> & resources,
+		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
 		const std::vector<jive::resource_class_demotion> & demotions,
 		const jive::type * type,
 		size_t size,
 		size_t alignment,
-		const jive::resource_name * s)
+		const jive::resource * s)
 	: jive_stackslot_size_class(cls, name, resources, parent, priority, demotions, type, size,
 		alignment)
 	, slot(s)
 	{}
 	
-	const jive::resource_name * slot;
+	const jive::resource * slot;
 };
 
-class jive_stackslot : public jive::resource_name {
+class jive_stackslot : public jive::resource {
 public:
 	virtual
 	~jive_stackslot();
@@ -94,7 +94,7 @@ public:
 		const std::string & name,
 		const jive::resource_class * rescls,
 		int o)
-	: jive::resource_name(name, rescls)
+	: jive::resource(name, rescls)
 	, offset(o)
 	{}
 
@@ -110,7 +110,7 @@ public:
 	jive_callslot_class(
 		const jive_resource_class_class * cls,
 		const std::string & name,
-		const std::unordered_set<const jive::resource_name*> & resources,
+		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
 		jive_resource_class_priority priority,
 		const std::vector<jive::resource_class_demotion> & demotions,
@@ -118,7 +118,7 @@ public:
 		size_t size,
 		size_t alignment,
 		size_t o,
-		const jive::resource_name * s)
+		const jive::resource * s)
 	: jive_stackslot_size_class(cls, name, resources, parent, priority, demotions, type, size,
 		alignment)
 	, offset(o)
@@ -126,10 +126,10 @@ public:
 	{}
 
 	int offset;
-	const jive::resource_name * slot;
+	const jive::resource * slot;
 };
 
-class jive_callslot : public jive::resource_name {
+class jive_callslot : public jive::resource {
 public:
 	virtual
 	~jive_callslot();
@@ -139,7 +139,7 @@ public:
 		const std::string & name,
 		const jive::resource_class * rescls,
 		int o)
-	: jive::resource_name(name, rescls)
+	: jive::resource(name, rescls)
 	, offset(o)
 	{}
 
