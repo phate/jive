@@ -41,25 +41,25 @@ extern const jive::register_class jive_i386_regcls_sse_xmm5;
 extern const jive::register_class jive_i386_regcls_sse_xmm6;
 extern const jive::register_class jive_i386_regcls_sse_xmm7;
 
-extern const jive::register_name jive_i386_reg_cc;
-extern const jive::register_name jive_i386_reg_eax;
-extern const jive::register_name jive_i386_reg_ecx;
-extern const jive::register_name jive_i386_reg_edx;
-extern const jive::register_name jive_i386_reg_ebx;
-extern const jive::register_name jive_i386_reg_esi;
-extern const jive::register_name jive_i386_reg_edi;
-extern const jive::register_name jive_i386_reg_ebp;
-extern const jive::register_name jive_i386_reg_esp;
+extern const jive::registers jive_i386_reg_cc;
+extern const jive::registers jive_i386_reg_eax;
+extern const jive::registers jive_i386_reg_ecx;
+extern const jive::registers jive_i386_reg_edx;
+extern const jive::registers jive_i386_reg_ebx;
+extern const jive::registers jive_i386_reg_esi;
+extern const jive::registers jive_i386_reg_edi;
+extern const jive::registers jive_i386_reg_ebp;
+extern const jive::registers jive_i386_reg_esp;
 
-extern const jive::register_name jive_i386_reg_st0;
+extern const jive::registers jive_i386_reg_st0;
 
-extern const jive::register_name jive_i386_reg_xmm0;
-extern const jive::register_name jive_i386_reg_xmm1;
-extern const jive::register_name jive_i386_reg_xmm2;
-extern const jive::register_name jive_i386_reg_xmm3;
-extern const jive::register_name jive_i386_reg_xmm4;
-extern const jive::register_name jive_i386_reg_xmm5;
-extern const jive::register_name jive_i386_reg_xmm6;
-extern const jive::register_name jive_i386_reg_xmm7;
+extern const jive::registers jive_i386_reg_xmm0;
+extern const jive::registers jive_i386_reg_xmm1;
+extern const jive::registers jive_i386_reg_xmm2;
+extern const jive::registers jive_i386_reg_xmm3;
+extern const jive::registers jive_i386_reg_xmm4;
+extern const jive::registers jive_i386_reg_xmm5;
+extern const jive::registers jive_i386_reg_xmm6;
+extern const jive::registers jive_i386_reg_xmm7;
 
 #endif

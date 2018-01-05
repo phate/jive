@@ -14,13 +14,13 @@ namespace base {
 	class type;
 }
 
-class register_name : public resource {
+class registers : public resource {
 public:
 	virtual
-	~register_name();
+	~registers();
 
 	inline
-	register_name(
+	registers(
 		const std::string & name,
 		const jive::resource_class * rescls,
 		size_t code)

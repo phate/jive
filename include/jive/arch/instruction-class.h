@@ -247,8 +247,8 @@ public:
 	virtual void
 	encode(
 		jive::section * target,
-		const jive::register_name * inputs[],
-		const jive::register_name * outputs[],
+		const jive::registers * inputs[],
+		const jive::registers * outputs[],
 		const jive_codegen_imm immediates[],
 		jive_instruction_encoding_flags * flags) const = 0;
 
@@ -260,8 +260,8 @@ public:
 	virtual void
 	write_asm(
 		struct jive_buffer * target,
-		const jive::register_name * inputs[],
-		const jive::register_name * outputs[],
+		const jive::registers * inputs[],
+		const jive::registers * outputs[],
 		const jive_asmgen_imm immediates[],
 		jive_instruction_encoding_flags * flags) const = 0;
 

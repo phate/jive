@@ -8,7 +8,9 @@
 
 namespace jive {
 
-register_name::~register_name()
+/* registers class */
+
+registers::~registers()
 {}
 
 register_class::~register_class()

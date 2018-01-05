@@ -16,11 +16,11 @@
 #include <jive/rvsdg/splitnode.h>
 #include <jive/types/bitstring/type.h>
 
-const jive::register_name jive_testarch_reg_r0("r0", &jive_testarch_regcls_r0, 0);
-const jive::register_name jive_testarch_reg_r2("r2", &jive_testarch_regcls_r2, 2);
-const jive::register_name jive_testarch_reg_r1("r1", &jive_testarch_regcls_r1, 1);
-const jive::register_name jive_testarch_reg_r3("r3", &jive_testarch_regcls_r3, 3);
-const jive::register_name jive_testarch_reg_cc("cc", &jive_testarch_regcls_cc, 0);
+const jive::registers jive_testarch_reg_r0("r0", &jive_testarch_regcls_r0, 0);
+const jive::registers jive_testarch_reg_r2("r2", &jive_testarch_regcls_r2, 2);
+const jive::registers jive_testarch_reg_r1("r1", &jive_testarch_regcls_r1, 1);
+const jive::registers jive_testarch_reg_r3("r3", &jive_testarch_regcls_r3, 3);
+const jive::registers jive_testarch_reg_cc("cc", &jive_testarch_regcls_cc, 0);
 
 #define CLS(x) &jive_testarch_regcls_##x
 #define STACK4 &jive_stackslot_class_4_4
@@ -85,8 +85,8 @@ instr_##NAME::instr_##NAME() \
 void \
 instr_##NAME::encode( \
 	jive::section * target, \
-	const jive::register_name * inputs[], \
-	const jive::register_name * outputs[], \
+	const jive::registers * inputs[], \
+	const jive::registers * outputs[], \
 	const jive_codegen_imm immediates[], \
 	jive_instruction_encoding_flags * flags) const \
 { \
@@ -96,8 +96,8 @@ instr_##NAME::encode( \
 void \
 instr_##NAME::write_asm( \
 	struct jive_buffer * target, \
-	const jive::register_name * inputs[], \
-	const jive::register_name * outputs[], \
+	const jive::registers * inputs[], \
+	const jive::registers * outputs[], \
 	const jive_asmgen_imm immediates[], \
 	jive_instruction_encoding_flags * flags) const \
 { \

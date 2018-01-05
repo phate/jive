@@ -21,11 +21,11 @@ extern const jive::register_class jive_testarch_regcls_r3;
 extern const jive::register_class jive_testarch_regcls_evenreg;
 extern const jive::register_class jive_testarch_regcls_oddreg;
 
-extern const jive::register_name jive_testarch_reg_r0;
-extern const jive::register_name jive_testarch_reg_r1;
-extern const jive::register_name jive_testarch_reg_r2;
-extern const jive::register_name jive_testarch_reg_r3;
-extern const jive::register_name jive_testarch_reg_cc;
+extern const jive::registers jive_testarch_reg_r0;
+extern const jive::registers jive_testarch_reg_r1;
+extern const jive::registers jive_testarch_reg_r2;
+extern const jive::registers jive_testarch_reg_r3;
+extern const jive::registers jive_testarch_reg_cc;
 
 namespace jive {
 namespace testarch {
@@ -38,16 +38,16 @@ public: \
 	virtual void \
 	encode(	\
 		jive::section * target, \
-		const jive::register_name * inputs[], \
-		const jive::register_name * outputs[], \
+		const jive::registers * inputs[], \
+		const jive::registers * outputs[], \
 		const jive_codegen_imm immediates[], \
 		jive_instruction_encoding_flags * flags) const override; \
 \
 	virtual void \
 	write_asm( \
 		struct jive_buffer * target, \
-		const jive::register_name * inputs[], \
-		const jive::register_name * outputs[], \
+		const jive::registers * inputs[], \
+		const jive::registers * outputs[], \
 		const jive_asmgen_imm immediates[], \
 		jive_instruction_encoding_flags * flags) const override; \
 \

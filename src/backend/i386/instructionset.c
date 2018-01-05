@@ -157,7 +157,7 @@ jive_i386_encode_imm32(
 
 static void
 jive_buffer_putdisp(jive_buffer * target, const jive_asmgen_imm * disp,
-	const jive::register_name * reg)
+	const jive::registers * reg)
 {
 	jive_buffer_putimm(target, disp);
 	jive_buffer_putstr(target, "(%");
@@ -168,8 +168,8 @@ jive_buffer_putdisp(jive_buffer * target, const jive_asmgen_imm * disp,
 static void
 jive_i386_encode_simple(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -179,8 +179,8 @@ jive_i386_encode_simple(const jive::instruction_class * icls,
 static void
 jive_i386_asm_simple(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -190,8 +190,8 @@ jive_i386_asm_simple(const jive::instruction_class * icls,
 static void
 jive_i386_encode_int_load_imm(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -203,8 +203,8 @@ jive_i386_encode_int_load_imm(const jive::instruction_class * icls,
 static void
 jive_i386_asm_int_load_imm(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -217,8 +217,8 @@ jive_i386_asm_int_load_imm(const jive::instruction_class * icls,
 
 static inline void
 jive_i386_r2i(
-	const jive::register_name * r1,
-	const jive::register_name * r2,
+	const jive::registers * r1,
+	const jive::registers * r2,
 	const jive_codegen_imm * imm,
 	size_t coded_size_so_far,
 	jive_instruction_encoding_flags * flags,
@@ -262,12 +262,12 @@ jive_i386_r2i(
 static void
 jive_i386_encode_loadstore32_disp(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	const jive::register_name * r1 = inputs[0], * r2;
+	const jive::registers * r1 = inputs[0], * r2;
 	if (icls->code() == 0x89)
 		r2 = inputs[1];
 	else
@@ -280,8 +280,8 @@ jive_i386_encode_loadstore32_disp(const jive::instruction_class * icls,
 static void
 jive_i386_asm_load_disp(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -295,8 +295,8 @@ jive_i386_asm_load_disp(const jive::instruction_class * icls,
 static void
 jive_i386_asm_load_abs(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -310,8 +310,8 @@ jive_i386_asm_load_abs(const jive::instruction_class * icls,
 static void
 jive_i386_asm_store(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -325,8 +325,8 @@ jive_i386_asm_store(const jive::instruction_class * icls,
 static void
 jive_i386_encode_regreg(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -342,8 +342,8 @@ jive_i386_encode_regreg(const jive::instruction_class * icls,
 static void
 jive_i386_asm_regreg(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -357,8 +357,8 @@ jive_i386_asm_regreg(const jive::instruction_class * icls,
 static void
 jive_i386_encode_cmp_regreg(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -372,8 +372,8 @@ jive_i386_encode_cmp_regreg(const jive::instruction_class * icls,
 static void
 jive_i386_encode_cmp_regreg_sse(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -384,8 +384,8 @@ jive_i386_encode_cmp_regreg_sse(const jive::instruction_class * icls,
 static void
 jive_i386_asm_imul(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -400,8 +400,8 @@ jive_i386_asm_imul(const jive::instruction_class * icls,
 static void
 jive_i386_encode_imull(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -417,8 +417,8 @@ jive_i386_encode_imull(const jive::instruction_class * icls,
 static void
 jive_i386_encode_mul_regreg(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -435,8 +435,8 @@ jive_i386_encode_mul_regreg(const jive::instruction_class * icls,
 static void
 jive_i386_asm_mul(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -448,8 +448,8 @@ jive_i386_asm_mul(const jive::instruction_class * icls,
 static void
 jive_i386_encode_mull(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -465,8 +465,8 @@ jive_i386_encode_mull(const jive::instruction_class * icls,
 static void
 jive_i386_asm_div_reg(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -478,8 +478,8 @@ jive_i386_asm_div_reg(const jive::instruction_class * icls,
 static void
 jive_i386_encode_div_reg(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -492,8 +492,8 @@ jive_i386_encode_div_reg(const jive::instruction_class * icls,
 static void
 jive_i386_encode_shift_regimm(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -518,8 +518,8 @@ jive_i386_encode_shift_regimm(const jive::instruction_class * icls,
 static void
 jive_i386_asm_shift_regreg(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -531,8 +531,8 @@ jive_i386_asm_shift_regreg(const jive::instruction_class * icls,
 static void
 jive_i386_encode_shift_regreg(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -546,8 +546,8 @@ jive_i386_encode_shift_regreg(const jive::instruction_class * icls,
 static void
 jive_i386_encode_regimm_readonly(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -578,8 +578,8 @@ jive_i386_encode_regimm_readonly(const jive::instruction_class * icls,
 static void
 jive_i386_encode_regimm(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -590,8 +590,8 @@ jive_i386_encode_regimm(const jive::instruction_class * icls,
 static void
 jive_i386_asm_regimm(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -605,8 +605,8 @@ jive_i386_asm_regimm(const jive::instruction_class * icls,
 static void
 jive_i386_encode_mul_regimm(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -631,8 +631,8 @@ jive_i386_encode_mul_regimm(const jive::instruction_class * icls,
 static void
 jive_i386_asm_mul_regimm(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -648,8 +648,8 @@ jive_i386_asm_mul_regimm(const jive::instruction_class * icls,
 static void
 jive_i386_encode_unaryreg(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -664,8 +664,8 @@ jive_i386_encode_unaryreg(const jive::instruction_class * icls,
 static void
 jive_i386_asm_unaryreg(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -677,8 +677,8 @@ jive_i386_asm_unaryreg(const jive::instruction_class * icls,
 static void
 jive_i386_encode_regmove(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -692,8 +692,8 @@ jive_i386_encode_regmove(const jive::instruction_class * icls,
 static void
 jive_i386_encode_regmove_sse(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -705,8 +705,8 @@ jive_i386_encode_regmove_sse(const jive::instruction_class * icls,
 static void
 jive_i386_asm_regmove(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -720,8 +720,8 @@ jive_i386_asm_regmove(const jive::instruction_class * icls,
 static void
 jive_i386_encode_call(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -732,8 +732,8 @@ jive_i386_encode_call(const jive::instruction_class * icls,
 static void
 jive_i386_asm_call(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -745,8 +745,8 @@ jive_i386_asm_call(const jive::instruction_class * icls,
 static void
 jive_i386_encode_call_reg(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -759,8 +759,8 @@ jive_i386_encode_call_reg(const jive::instruction_class * icls,
 static void
 jive_i386_asm_call_reg(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -772,8 +772,8 @@ jive_i386_asm_call_reg(const jive::instruction_class * icls,
 static void
 jive_i386_asm_jump(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -785,8 +785,8 @@ jive_i386_asm_jump(const jive::instruction_class * icls,
 static void
 jive_i386_encode_jump(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -804,8 +804,8 @@ jive_i386_encode_jump(const jive::instruction_class * icls,
 static void
 jive_i386_encode_jump_conditional(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -824,12 +824,12 @@ jive_i386_encode_jump_conditional(const jive::instruction_class * icls,
 static void
 jive_i386_encode_loadstoresse_disp(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	const jive::register_name * r1 = inputs[0], * r2;
+	const jive::registers * r1 = inputs[0], * r2;
 
 	target->putbyte(0xF3);
 	target->putbyte(0x0F);
@@ -847,8 +847,8 @@ jive_i386_encode_loadstoresse_disp(const jive::instruction_class * icls,
 static void
 jive_i386_encode_sseload_abs(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -863,8 +863,8 @@ jive_i386_encode_sseload_abs(const jive::instruction_class * icls,
 static void
 jive_i386_encode_regreg_sse(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -881,8 +881,8 @@ jive_i386_encode_regreg_sse(const jive::instruction_class * icls,
 static void
 jive_i386_encode_regreg_sse_prefixed(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -895,8 +895,8 @@ jive_i386_encode_regreg_sse_prefixed(const jive::instruction_class * icls,
 static void
 jive_i386_asm_fp(const jive::instruction_class * icls,
 	jive_buffer * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
@@ -908,13 +908,13 @@ jive_i386_asm_fp(const jive::instruction_class * icls,
 static void
 jive_i386_encode_fp(const jive::instruction_class * icls,
 	jive::section * target,
-	const jive::register_name * inputs[],
-	const jive::register_name * outputs[],
+	const jive::registers * inputs[],
+	const jive::registers * outputs[],
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	const jive::register_name * r1 = inputs[0];
-	const jive::register_name * r2 = outputs[0];
+	const jive::registers * r1 = inputs[0];
+	const jive::registers * r2 = outputs[0];
 
 	target->putbyte(0xD9);
 	
@@ -939,8 +939,8 @@ instr_##NAME::instr_##NAME() \
 void \
 instr_##NAME::encode( \
 	jive::section * target, \
-	const jive::register_name * inputs[], \
-	const jive::register_name * outputs[], \
+	const jive::registers * inputs[], \
+	const jive::registers * outputs[], \
 	const jive_codegen_imm immediates[], \
 	jive_instruction_encoding_flags * flags) const \
 { \
@@ -950,8 +950,8 @@ instr_##NAME::encode( \
 void \
 instr_##NAME::write_asm( \
 	struct jive_buffer * target, \
-	const jive::register_name * inputs[], \
-	const jive::register_name * outputs[], \
+	const jive::registers * inputs[], \
+	const jive::registers * outputs[], \
 	const jive_asmgen_imm immediates[], \
 	jive_instruction_encoding_flags * flags) const \
 { \
