@@ -114,15 +114,15 @@ public:
 
 	inline
 	resource_class(
-		const jive::resource_type * cls,
+		const jive::resource_type * restype,
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> resources,
 		const jive::resource_class * parent,
 		jive_resource_class_priority pr,
 		const std::vector<resource_class_demotion> & demotions,
 		const jive::type * type)
-	: class_(cls)
-	, priority(pr)
+	: priority(pr)
+	, restype_(restype)
 	, depth_(parent ? parent->depth()+1 : 0)
 	, name_(name)
 	, type_(type)
@@ -174,12 +174,18 @@ public:
 		return demotions_;
 	}
 
-	const jive::resource_type * class_;
-	
+	inline const jive::resource_type *
+	resource_type() const noexcept
+	{
+		return restype_;
+	}
+
 	/** \brief Priority for register allocator */
 	jive_resource_class_priority priority;
 	
 private:
+	const jive::resource_type * restype_;
+
 	/** \brief Number of steps from root resource class */
 	size_t depth_;
 	std::string name_;
@@ -211,7 +217,7 @@ jive_resource_class_isinstance(
 	const jive::resource_class * self,
 	const jive::resource_type * cls)
 {
-	auto tmp = self->class_;
+	auto tmp = self->resource_type();
 	while (tmp) {
 		if (tmp == cls)
 			return true;
@@ -223,7 +229,7 @@ jive_resource_class_isinstance(
 static inline bool
 jive_resource_class_is_abstract(const jive::resource_class * self)
 {
-	return self->class_->is_abstract();
+	return self->resource_type()->is_abstract();
 }
 
 /** \brief Find largest resource class of same general type containing this class */
