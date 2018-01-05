@@ -180,6 +180,19 @@ public:
 		return restype_;
 	}
 
+	inline bool
+	is_resource(const jive::resource_type * restype) const noexcept
+	{
+		auto tmp = resource_type();
+		while (restype) {
+			if (tmp == restype)
+				return true;
+			tmp = tmp->parent();
+		}
+
+		return false;
+	}
+
 	/** \brief Priority for register allocator */
 	jive_resource_class_priority priority;
 	
@@ -211,20 +224,6 @@ jive_resource_class_union(const jive::resource_class * self, const jive::resourc
 const jive::resource_class *
 jive_resource_class_intersection(const jive::resource_class * self,
 	const jive::resource_class * other);
-
-static inline bool
-jive_resource_class_isinstance(
-	const jive::resource_class * self,
-	const jive::resource_type * cls)
-{
-	auto tmp = self->resource_type();
-	while (tmp) {
-		if (tmp == cls)
-			return true;
-		tmp = tmp->parent();
-	}
-	return false;
-}
 
 /** \brief Find largest resource class of same general type containing this class */
 const jive::resource_class *
