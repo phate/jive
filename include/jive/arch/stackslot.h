@@ -11,6 +11,10 @@
 
 #include <unistd.h>
 
+extern const jive::resource_type stack_resource;
+extern const jive::resource_type callslot_resource;
+extern const jive::resource_type frameslot_resource;
+
 typedef struct jive_stackframe jive_stackframe;
 typedef struct jive_stackframe_class jive_stackframe_class;
 
@@ -108,7 +112,6 @@ public:
 
 	inline
 	jive_callslot_class(
-		const jive::resource_type * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
@@ -119,8 +122,8 @@ public:
 		size_t alignment,
 		size_t o,
 		const jive::resource * s)
-	: jive_stackslot_size_class(cls, name, resources, parent, priority, demotions, type, size,
-		alignment)
+	: jive_stackslot_size_class(&callslot_resource, name, resources, parent, priority, demotions,
+		type, size, alignment)
 	, offset(o)
 	, slot(s)
 	{}
@@ -145,10 +148,6 @@ public:
 
 	int offset;
 };
-
-extern const jive::resource_type stack_resource;
-extern const jive::resource_type callslot_resource;
-extern const jive::resource_type frameslot_resource;
 
 extern const jive_stackslot_size_class jive_stackslot_class_1_1;
 extern const jive_stackslot_size_class jive_stackslot_class_2_2;

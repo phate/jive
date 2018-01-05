@@ -115,7 +115,7 @@ jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 	if (!slot)
 		return nullptr;
 
-	auto cls = new jive_callslot_class(&callslot_resource, name, {slot}, parent,
+	auto cls = new jive_callslot_class(name, {slot}, parent,
 		jive_resource_class_priority_mem_unique, {}, &stackvar_type, parent->size,
 		parent->alignment, offset, slot);
 	if (!cls) {
