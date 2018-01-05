@@ -18,13 +18,10 @@ register_class::~register_class()
 
 }
 
-const jive_resource_class_class JIVE_REGISTER_RESOURCE = {
-	parent : &JIVE_ABSTRACT_RESOURCE,
-	name : "register",
-	is_abstract : false
-};
+const jive::resource_class_class root_register_class_class(
+	false, "register", &root_resource_class_class);
 
 const jive::resource_class jive_root_register_class(
-	&JIVE_ABSTRACT_RESOURCE, "register", {},
+	&root_resource_class_class, "register", {},
 	&jive_root_resource_class, jive_resource_class_priority_lowest,
 	{}, nullptr);

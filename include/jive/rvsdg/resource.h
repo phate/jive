@@ -17,8 +17,6 @@
 #include <unordered_set>
 #include <vector>
 
-typedef struct jive_resource_class_class jive_resource_class_class;
-
 typedef enum {
 	jive_resource_class_priority_invalid = 0,
 	jive_resource_class_priority_control = 1,
@@ -36,6 +34,49 @@ class gate;
 class resource;
 class resource_class;
 class type;
+
+/* resource_class_class */
+
+class resource_class_class {
+public:
+	virtual
+	~resource_class_class();
+
+	inline
+	resource_class_class(
+		bool is_abstract,
+		const std::string & name,
+		const resource_class_class * parent)
+	: name_(name)
+	, is_abstract_(is_abstract)
+	, parent_(parent)
+	{}
+
+	inline const std::string &
+	name() const noexcept
+	{
+		return name_;
+	}
+
+	inline const resource_class_class *
+	parent() const noexcept
+	{
+		return parent_;
+	}
+
+	inline bool
+	is_abstract() const noexcept
+	{
+		return is_abstract_;
+	}
+
+private:
+	std::string name_;
+	bool is_abstract_;
+	const resource_class_class * parent_;
+};
+
+/* resource_class_demotion */
 
 class resource_class_demotion final {
 public:
@@ -71,7 +112,7 @@ public:
 
 	inline
 	resource_class(
-		const jive_resource_class_class * cls,
+		const jive::resource_class_class * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> resources,
 		const jive::resource_class * parent,
@@ -131,7 +172,7 @@ public:
 		return demotions_;
 	}
 
-	const jive_resource_class_class * class_;
+	const jive::resource_class_class * class_;
 	
 	/** \brief Priority for register allocator */
 	jive_resource_class_priority priority;
@@ -156,12 +197,6 @@ private:
 
 }
 
-struct jive_resource_class_class {
-	const jive_resource_class_class * parent;
-	const char * name;
-	bool is_abstract;
-};
-
 const jive::resource_class *
 jive_resource_class_union(const jive::resource_class * self, const jive::resource_class * other);
 
@@ -170,14 +205,15 @@ jive_resource_class_intersection(const jive::resource_class * self,
 	const jive::resource_class * other);
 
 static inline bool
-jive_resource_class_isinstance(const jive::resource_class * self,
-	const jive_resource_class_class * cls)
+jive_resource_class_isinstance(
+	const jive::resource_class * self,
+	const jive::resource_class_class * cls)
 {
-	const jive_resource_class_class * tmp = self->class_;
+	auto tmp = self->class_;
 	while (tmp) {
 		if (tmp == cls)
 			return true;
-		tmp = tmp->parent;
+		tmp = tmp->parent();
 	}
 	return false;
 }
@@ -185,14 +221,14 @@ jive_resource_class_isinstance(const jive::resource_class * self,
 static inline bool
 jive_resource_class_is_abstract(const jive::resource_class * self)
 {
-	return self->class_->is_abstract;
+	return self->class_->is_abstract();
 }
 
 /** \brief Find largest resource class of same general type containing this class */
 const jive::resource_class *
 jive_resource_class_relax(const jive::resource_class * self);
 
-extern const jive_resource_class_class JIVE_ABSTRACT_RESOURCE;
+extern const jive::resource_class_class root_resource_class_class;
 extern const jive::resource_class jive_root_resource_class;
 
 namespace jive {

@@ -21,7 +21,7 @@ public:
 
 	inline
 	register_class(
-		const jive_resource_class_class * cls,
+		const jive::resource_class_class * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
@@ -77,6 +77,6 @@ private:
 }
 
 extern const jive::resource_class jive_root_register_class;
-extern const jive_resource_class_class JIVE_REGISTER_RESOURCE;
+extern const jive::resource_class_class root_register_class_class;
 
 #endif

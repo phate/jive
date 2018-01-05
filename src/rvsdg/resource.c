@@ -20,6 +20,11 @@ resource_class::~resource_class()
 resource::~resource()
 {}
 
+/* resource_class_class */
+
+resource_class_class::~resource_class_class()
+{}
+
 }
 
 const jive::resource_class *
@@ -55,13 +60,9 @@ jive_resource_class_relax(const jive::resource_class * self)
 	return self;
 }
 
-const jive_resource_class_class JIVE_ABSTRACT_RESOURCE = {
-	parent : 0,
-	name : "root",
-	is_abstract : true
-};
+const jive::resource_class_class root_resource_class_class(true, "root", nullptr);
 
 const jive::resource_class jive_root_resource_class(
-	&JIVE_ABSTRACT_RESOURCE, "root", {}, nullptr,
+	&root_resource_class_class, "root", {}, nullptr,
 	jive_resource_class_priority_lowest,
 	{}, nullptr);

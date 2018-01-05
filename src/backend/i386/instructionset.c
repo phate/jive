@@ -1291,7 +1291,7 @@ get_slot_memory_reference(const jive::resource_class * rescls,
 	jive::immediate * displacement, jive::output ** base,
 	jive::output * sp, jive::output * fp)
 {
-	if (jive_resource_class_isinstance(rescls, &JIVE_STACK_CALLSLOT_RESOURCE)) {
+	if (jive_resource_class_isinstance(rescls, &stack_callslot_resource)) {
 		*displacement = jive::immediate(0, jive::spoffset_label::get());
 		*base = sp;
 	} else {
@@ -1328,8 +1328,8 @@ jive_i386_instructionset::create_xfer(
 
 	auto sp = jive_subroutine_node_get_sp(sub);
 	auto fp = jive_subroutine_node_get_fp(sub);
-	bool in_mem = !jive_resource_class_isinstance(in_class, &JIVE_REGISTER_RESOURCE);
-	bool out_mem = !jive_resource_class_isinstance(out_class, &JIVE_REGISTER_RESOURCE);
+	bool in_mem = !jive_resource_class_isinstance(in_class, &root_register_class_class);
+	bool out_mem = !jive_resource_class_isinstance(out_class, &root_register_class_class);
 
 	if (in_mem) {
 		jive::output * base;
