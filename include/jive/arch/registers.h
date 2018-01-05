@@ -14,30 +14,6 @@ namespace base {
 	class type;
 }
 
-class registers : public resource {
-public:
-	virtual
-	~registers();
-
-	inline
-	registers(
-		const std::string & name,
-		const jive::resource_class * rescls,
-		size_t code)
-	: resource(name, rescls)
-	, code_(code)
-	{}
-
-	inline size_t
-	code() const noexcept
-	{
-		return code_;
-	}
-
-private:
-	size_t code_;
-};
-
 class register_class : public jive::resource_class {
 public:
 	virtual
@@ -72,6 +48,30 @@ public:
 
 private:
 	size_t nbits_;
+};
+
+class registers : public resource {
+public:
+	virtual
+	~registers();
+
+	inline
+	registers(
+		const std::string & name,
+		const jive::register_class * rescls,
+		size_t code)
+	: resource(name, rescls)
+	, code_(code)
+	{}
+
+	inline size_t
+	code() const noexcept
+	{
+		return code_;
+	}
+
+private:
+	size_t code_;
 };
 
 }
