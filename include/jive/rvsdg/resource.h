@@ -35,18 +35,18 @@ class resource;
 class resource_class;
 class type;
 
-/* resource_class_class */
+/* resource_type */
 
-class resource_class_class {
+class resource_type {
 public:
 	virtual
-	~resource_class_class();
+	~resource_type();
 
 	inline
-	resource_class_class(
+	resource_type(
 		bool is_abstract,
 		const std::string & name,
-		const resource_class_class * parent)
+		const resource_type * parent)
 	: name_(name)
 	, is_abstract_(is_abstract)
 	, parent_(parent)
@@ -58,7 +58,7 @@ public:
 		return name_;
 	}
 
-	inline const resource_class_class *
+	inline const resource_type *
 	parent() const noexcept
 	{
 		return parent_;
@@ -73,8 +73,10 @@ public:
 private:
 	std::string name_;
 	bool is_abstract_;
-	const resource_class_class * parent_;
+	const resource_type * parent_;
 };
+
+extern const jive::resource_type root_resource;
 
 /* resource_class_demotion */
 
@@ -112,7 +114,7 @@ public:
 
 	inline
 	resource_class(
-		const jive::resource_class_class * cls,
+		const jive::resource_type * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> resources,
 		const jive::resource_class * parent,
@@ -172,7 +174,7 @@ public:
 		return demotions_;
 	}
 
-	const jive::resource_class_class * class_;
+	const jive::resource_type * class_;
 	
 	/** \brief Priority for register allocator */
 	jive_resource_class_priority priority;
@@ -207,7 +209,7 @@ jive_resource_class_intersection(const jive::resource_class * self,
 static inline bool
 jive_resource_class_isinstance(
 	const jive::resource_class * self,
-	const jive::resource_class_class * cls)
+	const jive::resource_type * cls)
 {
 	auto tmp = self->class_;
 	while (tmp) {
@@ -228,7 +230,6 @@ jive_resource_class_is_abstract(const jive::resource_class * self)
 const jive::resource_class *
 jive_resource_class_relax(const jive::resource_class * self);
 
-extern const jive::resource_class_class root_resource_class_class;
 extern const jive::resource_class jive_root_resource_class;
 
 namespace jive {

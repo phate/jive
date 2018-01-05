@@ -20,10 +20,12 @@ resource_class::~resource_class()
 resource::~resource()
 {}
 
-/* resource_class_class */
+/* resource_type */
 
-resource_class_class::~resource_class_class()
+resource_type::~resource_type()
 {}
+
+const resource_type root_resource(true, "root", nullptr);
 
 }
 
@@ -60,9 +62,7 @@ jive_resource_class_relax(const jive::resource_class * self)
 	return self;
 }
 
-const jive::resource_class_class root_resource_class_class(true, "root", nullptr);
-
 const jive::resource_class jive_root_resource_class(
-	&root_resource_class_class, "root", {}, nullptr,
+	&jive::root_resource, "root", {}, nullptr,
 	jive_resource_class_priority_lowest,
 	{}, nullptr);

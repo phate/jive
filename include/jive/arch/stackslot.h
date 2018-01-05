@@ -42,7 +42,7 @@ public:
 
 	inline
 	jive_stackslot_size_class(
-		const jive::resource_class_class * cls,
+		const jive::resource_type * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
@@ -66,7 +66,7 @@ public:
 
 	inline
 	jive_fixed_stackslot_class(
-		const jive::resource_class_class * cls,
+		const jive::resource_type * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
@@ -108,7 +108,7 @@ public:
 
 	inline
 	jive_callslot_class(
-		const jive::resource_class_class * cls,
+		const jive::resource_type * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
@@ -146,9 +146,9 @@ public:
 	int offset;
 };
 
-extern const jive::resource_class_class root_stack_resource_class_class;
-extern const jive::resource_class_class stack_frameslot_resource;
-extern const jive::resource_class_class stack_callslot_resource;
+extern const jive::resource_type stack_resource;
+extern const jive::resource_type callslot_resource;
+extern const jive::resource_type frameslot_resource;
 
 extern const jive_stackslot_size_class jive_stackslot_class_1_1;
 extern const jive_stackslot_size_class jive_stackslot_class_2_2;

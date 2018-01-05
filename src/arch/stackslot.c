@@ -32,25 +32,20 @@ jive_callslot_class::~jive_callslot_class()
 jive_callslot::~jive_callslot()
 {}
 
-const jive::resource_class_class root_stack_resource_class_class(
-	false, "stack", &root_resource_class_class);
-
-const jive::resource_class_class stack_frameslot_resource(
-	false, "stack_frameslot", &root_stack_resource_class_class);
-
-const jive::resource_class_class stack_callslot_resource(
-	false, "stack_callslot", &root_stack_resource_class_class);
+const jive::resource_type stack_resource(false, "stack", &jive::root_resource);
+const jive::resource_type callslot_resource(false, "stack_callslot", &stack_resource);
+const jive::resource_type frameslot_resource(false, "stack_frameslot", &stack_resource);
 
 static const jive::memtype stackvar_type;
 
 const jive::resource_class jive_root_stackslot_class(
-	&root_resource_class_class, "stackslot", {},
+	&jive::root_resource, "stackslot", {},
 	&jive_root_resource_class, jive_resource_class_priority_lowest,
 	{}, nullptr);
 
 #define MAKE_STACKSLOT_CLASS(SIZE, ALIGNMENT) \
 const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT(\
-	&root_stack_resource_class_class, "stack_s" #SIZE "a" #ALIGNMENT, {}, \
+	&stack_resource, "stack_s" #SIZE "a" #ALIGNMENT, {}, \
 	&jive_root_stackslot_class, jive_resource_class_priority_mem_generic,\
 	{}, &stackvar_type, SIZE, ALIGNMENT \
 );
@@ -81,7 +76,7 @@ static jive_stackslot_size_class *
 jive_stackslot_size_class_create(size_t size, size_t alignment)
 {
 	auto name = jive::detail::strfmt("stack_s", size, "a", alignment);
-	return new jive_stackslot_size_class(&root_stack_resource_class_class, name, {},
+	return new jive_stackslot_size_class(&stack_resource, name, {},
 		&jive_root_stackslot_class, jive_resource_class_priority_mem_generic,
 		{}, &stackvar_type, size, alignment);
 }
@@ -98,7 +93,7 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 	if (!slot)
 		return nullptr;
 
-	auto cls = new jive_fixed_stackslot_class(&stack_frameslot_resource, name, {slot},
+	auto cls = new jive_fixed_stackslot_class(&frameslot_resource, name, {slot},
 		parent, jive_resource_class_priority_mem_unique, {}, &stackvar_type, parent->size,
 		parent->alignment, slot);
 	if (!cls) {
@@ -120,7 +115,7 @@ jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 	if (!slot)
 		return nullptr;
 
-	auto cls = new jive_callslot_class(&stack_callslot_resource, name, {slot}, parent,
+	auto cls = new jive_callslot_class(&callslot_resource, name, {slot}, parent,
 		jive_resource_class_priority_mem_unique, {}, &stackvar_type, parent->size,
 		parent->alignment, offset, slot);
 	if (!cls) {
