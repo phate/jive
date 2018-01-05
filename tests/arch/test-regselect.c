@@ -45,10 +45,8 @@ static int test_main(void)
 	jive::view(graph.root(), stdout);
 	
 	jive_testarch_reg_classifier classifier;
-	jive_regselector regselect;
-	jive_regselector_init(&regselect, &graph, &classifier);
+	jive::register_selector regselect(&graph, &classifier);
 	jive_regselector_process(&regselect);
-	jive_regselector_fini(&regselect);
 
 /* FIXME: currently broken, comment in again when repaired
 	auto tmp1 = dynamic_cast<jive::output*>(sum1);	

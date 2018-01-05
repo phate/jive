@@ -517,7 +517,7 @@ match_gpr_store(jive::node * node)
 }
 
 static void
-match_single(jive::node * node, const jive_regselector * regselector)
+match_single(jive::node * node, const jive::register_selector * regselector)
 {
 	if (dynamic_cast<const jive::bits::binary_op *>(&node->operation())) {
 		auto regcls = jive_regselector_map_output(regselector,
@@ -573,7 +573,7 @@ match_single(jive::node * node, const jive_regselector * regselector)
 }
 
 void
-jive_i386_match_instructions(jive::graph * graph, const jive_regselector * regselector)
+jive_i386_match_instructions(jive::graph * graph, const jive::register_selector * regselector)
 {
 	for (jive::node * node : jive::bottomup_traverser(graph->root())) {
 		match_single(node, regselector);

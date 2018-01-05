@@ -81,27 +81,40 @@ public:
 	classes() const noexcept = 0;
 };
 
-typedef struct jive_regselector jive_regselector;
+namespace jive {
 
-struct jive_regselector {
+class register_selector {
+public:
+	virtual
+	~register_selector();
+
+	register_selector(
+		jive::graph * graph,
+		const jive_reg_classifier * _classifier);
+
+	register_selector(const register_selector &) = delete;
+
+	register_selector(register_selector &&) = delete;
+
+	register_selector &
+	operator=(const register_selector &) = delete;
+
+	register_selector &
+	operator=(register_selector &&) = delete;
+
 	jive_negotiator base;
 	const jive_reg_classifier * classifier;
 };
 
-void
-jive_regselector_init(jive_regselector * self, jive::graph * graph,
-	const jive_reg_classifier * classifier);
+}
 
 void
-jive_regselector_process(jive_regselector * self);
+jive_regselector_process(jive::register_selector * self);
 
 const jive::register_class *
-jive_regselector_map_output(const jive_regselector * self, jive::simple_output * output);
+jive_regselector_map_output(const jive::register_selector * self, jive::simple_output * output);
 
 const jive::register_class *
-jive_regselector_map_input(const jive_regselector * self, jive::simple_input * input);
-
-void
-jive_regselector_fini(jive_regselector * self);
+jive_regselector_map_input(const jive::register_selector * self, jive::simple_input * input);
 
 #endif

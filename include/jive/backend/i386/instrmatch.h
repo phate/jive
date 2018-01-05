@@ -9,6 +9,6 @@
 #include <jive/arch/regselector.h>
 
 void
-jive_i386_match_instructions(jive::graph * graph, const jive_regselector * regselector);
+jive_i386_match_instructions(jive::graph * graph, const jive::register_selector * regselector);
 
 #endif
