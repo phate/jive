@@ -216,18 +216,54 @@ private:
 	std::vector<resource_class_demotion> demotions_;
 };
 
+static inline const jive::resource_class *
+find_union(
+	const jive::resource_class * rescls1,
+	const jive::resource_class * rescls2) noexcept
+{
+	while (true) {
+		if (rescls1 == rescls2)
+			return rescls1;
+
+		if (rescls1->depth() > rescls2->depth())
+			rescls1 = rescls1->parent();
+		else
+			rescls2 = rescls2->parent();
+	}
+
+	JIVE_ASSERT(0);
 }
 
-const jive::resource_class *
-jive_resource_class_union(const jive::resource_class * self, const jive::resource_class * other);
+static inline const jive::resource_class *
+find_intersection(
+	const jive::resource_class * rescls1,
+	const jive::resource_class * rescls2) noexcept
+{
+	auto u = find_union(rescls1, rescls2);
+	if (u == rescls1)
+		return rescls2;
 
-const jive::resource_class *
-jive_resource_class_intersection(const jive::resource_class * self,
-	const jive::resource_class * other);
+	if (u == rescls2)
+		return rescls1;
 
-/** \brief Find largest resource class of same general type containing this class */
-const jive::resource_class *
-jive_resource_class_relax(const jive::resource_class * self);
+	return nullptr;
+}
+
+static inline const jive::resource_class *
+relax(const jive::resource_class * rescls)
+{
+	/*
+		FIXME: hopefully this function is transitionary --
+		currently everything that is needed is the
+		class directly below the root
+	*/
+	while (rescls->parent() && !rescls->parent()->resource_type()->is_abstract())
+		rescls = rescls->parent();
+
+	return rescls;
+}
+
+}
 
 extern const jive::resource_class jive_root_resource_class;
 

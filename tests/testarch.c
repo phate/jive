@@ -208,8 +208,8 @@ jive_regselect_mask
 jive_testarch_reg_classifier::classify_type(
 	const jive::type * type, const jive::resource_class * rescls) const
 {
-	rescls = jive_resource_class_relax(rescls);
-	
+	rescls = jive::relax(rescls);
+
 	if (rescls == &jive_testarch_regcls_gpr) {
 		return (1 << jive_testarch_classify_gpr);
 	} else if (rescls == &jive_testarch_regcls_cc) {
@@ -310,8 +310,8 @@ public:
 		const jive::resource_class * in_class,
 		const jive::resource_class * out_class) override
 	{
-		auto in_relaxed = jive_resource_class_relax(in_class);
-		auto out_relaxed = jive_resource_class_relax(out_class);
+		auto in_relaxed = jive::relax(in_class);
+		auto out_relaxed = jive::relax(out_class);
 
 		if (in_relaxed == CLS(gpr) && out_relaxed == CLS(gpr)) {
 			auto node = create_instruction(region, &jive::testarch::instr_move_gpr::instance(),
