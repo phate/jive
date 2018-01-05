@@ -93,7 +93,7 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 	if (!slot)
 		return nullptr;
 
-	auto cls = new jive_fixed_stackslot_class(&frameslot_resource, name, {slot},
+	auto cls = new jive_fixed_stackslot_class(name, {slot},
 		parent, jive_resource_class_priority_mem_unique, {}, &stackvar_type, parent->size,
 		parent->alignment, slot);
 	if (!cls) {

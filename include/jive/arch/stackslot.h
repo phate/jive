@@ -70,7 +70,6 @@ public:
 
 	inline
 	jive_fixed_stackslot_class(
-		const jive::resource_type * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
@@ -80,8 +79,8 @@ public:
 		size_t size,
 		size_t alignment,
 		const jive::resource * s)
-	: jive_stackslot_size_class(cls, name, resources, parent, priority, demotions, type, size,
-		alignment)
+	: jive_stackslot_size_class(&frameslot_resource, name, resources, parent, priority, demotions,
+		type, size, alignment)
 	, slot(s)
 	{}
 	
