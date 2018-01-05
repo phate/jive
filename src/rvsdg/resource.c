@@ -57,7 +57,7 @@ jive_resource_class_relax(const jive::resource_class * self)
 	/* hopefully this function is transitionary --
 	currently everything that is needed is the
 	class directly below the root */
-	while (self->parent() && !jive_resource_class_is_abstract(self->parent()))
+	while (self->parent() && !self->parent()->resource_type()->is_abstract())
 		self = self->parent();
 	return self;
 }

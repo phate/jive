@@ -226,12 +226,6 @@ jive_resource_class_isinstance(
 	return false;
 }
 
-static inline bool
-jive_resource_class_is_abstract(const jive::resource_class * self)
-{
-	return self->resource_type()->is_abstract();
-}
-
 /** \brief Find largest resource class of same general type containing this class */
 const jive::resource_class *
 jive_resource_class_relax(const jive::resource_class * self);
