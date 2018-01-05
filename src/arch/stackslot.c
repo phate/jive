@@ -81,9 +81,6 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 		{}, &stackvar_type, size, alignment);
 }
 
-jive_stackslot *
-jive_stackslot_create(const jive::resource_class * parent, long offset);
-
 static jive_fixed_stackslot_class *
 jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int offset)
 {
@@ -155,20 +152,14 @@ struct jive_slot_alignment {
 	lookup_stackslot(ssize_t offset)
 	{
 		auto i = stackslot_offset_map.find(offset);
-		if (i != stackslot_offset_map.end())
-			return i->second;
-		else
-			return nullptr;
+		return i != stackslot_offset_map.end() ? i->second : nullptr;
 	}
 
 	jive_callslot_class *
 	lookup_callslot(ssize_t offset)
 	{
 		auto i = callslot_offset_map.find(offset);
-		if (i != callslot_offset_map.end())
-			return i->second;
-		else
-			return nullptr;
+		return i != callslot_offset_map.end() ? i->second : nullptr;
 	}
 
 	const jive_stackslot_size_class * cls;
@@ -223,13 +214,11 @@ jive_stackslot_class_map_lookup_or_create_by_alignment(jive_stackslot_class_map 
 	jive_slot_alignment * slot_alignment = slot_size->create_or_lookup_slot_alignment(alignment);
 	
 	if (!slot_alignment->cls) {
-		const jive_stackslot_size_class * cls =
-			jive_stackslot_size_class_static(size, alignment);
+		auto cls = jive_stackslot_size_class_static(size, alignment);
 		if (!cls)
 			cls = jive_stackslot_size_class_create(size, alignment);
 
-		if (!cls)
-			return nullptr;
+		JIVE_DEBUG_ASSERT(cls);
 		slot_alignment->cls = cls;
 	}
 
@@ -257,8 +246,7 @@ jive_stackslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * s
 			if (!parent)
 				parent = jive_stackslot_size_class_create(size, alignment);
 
-			if (!parent)
-				return nullptr;
+			JIVE_DEBUG_ASSERT(parent);
 			slot_alignment->cls = parent;
 		}
 		
@@ -293,8 +281,7 @@ jive_callslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * se
 			if (!parent)
 				parent = jive_stackslot_size_class_create(size, alignment);
 
-			if (!parent)
-				return nullptr;
+			JIVE_DEBUG_ASSERT(parent);
 			slot_alignment->cls = parent;
 		}
 		
@@ -315,34 +302,19 @@ static jive_stackslot_class_map class_map;
 const jive::resource_class *
 jive_stackslot_size_class_get(size_t size, size_t alignment)
 {
-	const jive_stackslot_size_class * cls;
-	cls = jive_stackslot_class_map_lookup_or_create_by_alignment(&class_map, size, alignment);
-	if (cls)
-		return cls;
-	else
-		return 0;
+	return jive_stackslot_class_map_lookup_or_create_by_alignment(&class_map, size, alignment);
 }
 
 const jive::resource_class *
 jive_fixed_stackslot_class_get(size_t size, size_t alignment, ssize_t offset)
 {
-	const jive_fixed_stackslot_class * cls;
-	cls = jive_stackslot_class_map_lookup_or_create_by_offset(&class_map, size, alignment, offset);
-	if (cls)
-		return cls;
-	else
-		return 0;
+	return jive_stackslot_class_map_lookup_or_create_by_offset(&class_map, size, alignment, offset);
 }
 
 const jive::resource_class *
 jive_callslot_class_get(size_t size, size_t alignment, ssize_t offset)
 {
-	const jive_callslot_class * cls;
-	cls = jive_callslot_class_map_lookup_or_create_by_offset(&class_map, size, alignment, offset);
-	if (cls)
-		return cls;
-	else
-		return 0;
+	return jive_callslot_class_map_lookup_or_create_by_offset(&class_map, size, alignment, offset);
 }
 
 const jive::resource *

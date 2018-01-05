@@ -15,14 +15,6 @@ extern const jive::resource_type stack_resource;
 extern const jive::resource_type callslot_resource;
 extern const jive::resource_type frameslot_resource;
 
-typedef struct jive_stackframe jive_stackframe;
-typedef struct jive_stackframe_class jive_stackframe_class;
-
-typedef struct jive_stackvar_gate jive_stackvar_gate;
-typedef struct jive_stackvar_input jive_stackvar_input;
-typedef struct jive_stackvar_output jive_stackvar_output;
-typedef struct jive_stackvar_type jive_stackvar_type;
-
 extern const jive::resource_class jive_root_stackslot_class;
 
 const jive::resource_class *
