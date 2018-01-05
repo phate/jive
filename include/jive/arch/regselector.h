@@ -83,7 +83,7 @@ public:
 
 namespace jive {
 
-class register_selector {
+class register_selector : public negotiator {
 public:
 	virtual
 	~register_selector();
@@ -102,7 +102,6 @@ public:
 	register_selector &
 	operator=(register_selector &&) = delete;
 
-	jive_negotiator base;
 	const jive_reg_classifier * classifier;
 };
 

@@ -16,10 +16,10 @@
 
 namespace jive {
 	class gate;
+	class negotiator;
 	class output;
 }
 
-struct jive_negotiator;
 struct jive_negotiator_connection;
 struct jive_negotiator_constraint;
 
@@ -68,7 +68,7 @@ class negotiator_split_operation final : public jive::unary_op {
 public:
 	inline
 	negotiator_split_operation(
-		jive_negotiator * negotiator,
+		jive::negotiator * negotiator,
 		const jive::type & input_type,
 		const jive_negotiator_option & input_option,
 		const jive::type & output_type,
@@ -112,8 +112,11 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	inline jive_negotiator *
-	negotiator() const noexcept { return negotiator_; }
+	inline jive::negotiator *
+	negotiator() const noexcept
+	{
+		return negotiator_;
+	}
 
 	inline const jive::type &
 	input_type() const noexcept
@@ -139,7 +142,7 @@ public:
 private:
 	jive::port result_;
 	jive::port argument_;
-	jive_negotiator * negotiator_;
+	jive::negotiator * negotiator_;
 	std::unique_ptr<jive_negotiator_option> input_option_;
 	std::unique_ptr<jive_negotiator_option> output_option_;
 };
@@ -279,7 +282,7 @@ typedef jive::detail::intrusive_list<
 > connection_port_list;
 
 struct jive_negotiator_connection {
-	jive_negotiator * negotiator;
+	jive::negotiator * negotiator;
 
 	connection_port_list ports;
 
@@ -296,7 +299,7 @@ struct jive_negotiator_connection {
 };
 
 jive_negotiator_connection *
-jive_negotiator_connection_create(jive_negotiator * negotiator);
+jive_negotiator_connection_create(jive::negotiator * negotiator);
 
 void
 jive_negotiator_connection_invalidate(jive_negotiator_connection * self);
@@ -309,7 +312,7 @@ typedef jive::detail::intrusive_list<
 > constraint_port_list;
 
 struct jive_negotiator_constraint {
-	jive_negotiator * negotiator;
+	jive::negotiator * negotiator;
 	constraint_port_list ports;
 
 	struct {
@@ -407,24 +410,24 @@ typedef jive::detail::intrusive_hash<
 > jive_negotiator_node_hash;
 
 jive_negotiator_constraint *
-jive_negotiator_identity_constraint_create(jive_negotiator * self);
+jive_negotiator_identity_constraint_create(jive::negotiator * self);
 
 struct jive_negotiator_class {
 	/* create empty option (probably invalid) */
-	jive_negotiator_option * (*option_create)(const jive_negotiator * self);
+	jive_negotiator_option * (*option_create)(const jive::negotiator * self);
 	
 	/* store suitable default options for this type/resource class pair */
-	bool (*option_gate_default)(const jive_negotiator * self, jive_negotiator_option * dst,
+	bool (*option_gate_default)(const jive::negotiator * self, jive_negotiator_option * dst,
 		const jive::gate * gate);
 	
 	/* annotate non-gate ports of node */
-	void (*annotate_node_proper)(jive_negotiator * self, jive::node * node);
+	void (*annotate_node_proper)(jive::negotiator * self, jive::node * node);
 	
 	/* annotate ports of node */
-	void (*annotate_node)(jive_negotiator * self, jive::node * node);
+	void (*annotate_node)(jive::negotiator * self, jive::node * node);
 	
 	/* process region */
-	void (*process_region)(jive_negotiator * self, struct jive::region * region);
+	void (*process_region)(jive::negotiator * self, struct jive::region * region);
 };
 
 typedef jive::detail::intrusive_list<
@@ -452,7 +455,27 @@ typedef jive::detail::intrusive_list<
 	jive_negotiator_constraint::constraint_list_accessor
 > constraint_list;
 
-struct jive_negotiator {
+namespace jive {
+
+class negotiator {
+public:
+	virtual
+	~negotiator();
+
+	negotiator(
+		jive::graph * graph,
+		const jive_negotiator_class * class_);
+
+	negotiator(const negotiator &) = delete;
+
+	negotiator(negotiator &&) = delete;
+
+	negotiator &
+	operator=(const negotiator &) = delete;
+
+	negotiator &
+	operator=(negotiator &&) = delete;
+
 	const jive_negotiator_class * class_;
 	
 	jive::graph * graph;
@@ -477,6 +500,8 @@ struct jive_negotiator {
 	jive_negotiator_option * tmp_option;
 };
 
+}
+
 jive_negotiator_port *
 jive_negotiator_port_create(
 	jive_negotiator_constraint * constraint,
@@ -495,7 +520,7 @@ jive_negotiator_port_split(jive_negotiator_port * self);
 void
 jive_negotiator_constraint_init_(
 	jive_negotiator_constraint * self,
-	jive_negotiator * negotiator);
+	jive::negotiator * negotiator);
 
 /* inheritable finalizer for constraint */
 void
@@ -503,75 +528,66 @@ jive_negotiator_constraint_fini_(jive_negotiator_constraint * self);
 
 /* inheritable default node annotator */
 void
-jive_negotiator_annotate_node_(jive_negotiator * self, jive::node * node);
+jive_negotiator_annotate_node_(jive::negotiator * self, jive::node * node);
 
 /* inheritable default proper node annotator */
 void
-jive_negotiator_annotate_node_proper_(jive_negotiator * self, jive::node * node);
+jive_negotiator_annotate_node_proper_(jive::negotiator * self, jive::node * node);
 
 /* inheritable default gate annotator */
 bool
-jive_negotiator_option_gate_default_(const jive_negotiator * self, jive_negotiator_option * dst,
+jive_negotiator_option_gate_default_(const jive::negotiator * self, jive_negotiator_option * dst,
 	const jive::gate * gate);
 
 void
-jive_negotiator_process_region_(jive_negotiator * self, struct jive::region * region);
+jive_negotiator_process_region_(jive::negotiator * self, struct jive::region * region);
 
 void
-jive_negotiator_init_(
-	jive_negotiator * self,
-	const jive_negotiator_class * class_,
-	jive::graph * graph);
+jive_negotiator_process(jive::negotiator * self);
 
 void
-jive_negotiator_fini_(jive_negotiator * self);
+jive_negotiator_insert_split_nodes(jive::negotiator * self);
 
 void
-jive_negotiator_process(jive_negotiator * self);
-
-void
-jive_negotiator_insert_split_nodes(jive_negotiator * self);
-
-void
-jive_negotiator_remove_split_nodes(jive_negotiator * self);
+jive_negotiator_remove_split_nodes(jive::negotiator * self);
 
 jive_negotiator_constraint *
-jive_negotiator_annotate_identity(jive_negotiator * self,
+jive_negotiator_annotate_identity(jive::negotiator * self,
 	size_t ninputs, jive::simple_input * const inputs[],
 	size_t noutputs, jive::simple_output * const outputs[],
 	const jive_negotiator_option * option);
 
 jive_negotiator_constraint *
 jive_negotiator_annotate_identity_node(
-	jive_negotiator * self,
+	jive::negotiator * self,
 	jive::node * node,
 	const jive_negotiator_option * option);
 
 void
-jive_negotiator_fully_specialize(jive_negotiator * self);
+jive_negotiator_fully_specialize(jive::negotiator * self);
 
 const jive_negotiator_port *
-jive_negotiator_map_output(const jive_negotiator * self, jive::simple_output * output);
+jive_negotiator_map_output(const jive::negotiator * self, jive::simple_output * output);
 
 jive_negotiator_port *
-jive_negotiator_map_output(jive_negotiator * self, jive::simple_output * output);
+jive_negotiator_map_output(jive::negotiator * self, jive::simple_output * output);
 
 const jive_negotiator_port *
-jive_negotiator_map_input(const jive_negotiator * self, jive::simple_input * input);
+jive_negotiator_map_input(const jive::negotiator * self, jive::simple_input * input);
 
 jive_negotiator_port *
-jive_negotiator_map_input(jive_negotiator * self, jive::simple_input * input);
+jive_negotiator_map_input(jive::negotiator * self, jive::simple_input * input);
 
 /* protected functions that allow to manipulate negotiator state */
 void
 jive_negotiator_port_destroy(jive_negotiator_port * self);
 
 jive_negotiator_port *
-jive_negotiator_annotate_simple_input(jive_negotiator * self, jive::simple_input * input,
+jive_negotiator_annotate_simple_input(jive::negotiator * self, jive::simple_input * input,
 	const jive_negotiator_option * option);
 
 jive_negotiator_port *
-jive_negotiator_annotate_simple_output(jive_negotiator * self, jive::simple_output * output,
+jive_negotiator_annotate_simple_output(jive::negotiator * self, jive::simple_output * output,
 	const jive_negotiator_option * option);
 
 #endif
