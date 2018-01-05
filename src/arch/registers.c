@@ -8,6 +8,8 @@
 
 namespace jive {
 
+const resource_type register_resource(false, "register", &root_resource);
+
 /* registers class */
 
 registers::~registers()
@@ -17,8 +19,6 @@ register_class::~register_class()
 {}
 
 }
-
-const jive::resource_type register_resource(false, "register", &jive::root_resource);
 
 const jive::resource_class jive_root_register_class(
 	&jive::root_resource, "register", {},

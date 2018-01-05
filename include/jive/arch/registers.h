@@ -14,6 +14,8 @@ namespace base {
 	class type;
 }
 
+extern const jive::resource_type register_resource;
+
 class register_class : public jive::resource_class {
 public:
 	virtual
@@ -21,7 +23,6 @@ public:
 
 	inline
 	register_class(
-		const jive::resource_type * cls,
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
@@ -31,7 +32,7 @@ public:
 		size_t nbits,
 		size_t aw,
 		size_t lw)
-	: jive::resource_class(cls, name, resources, parent, priority, demotions, type)
+	: jive::resource_class(&register_resource, name, resources, parent, priority, demotions, type)
 	, int_arithmetic_width(aw)
 	, loadstore_width(lw)
 	, nbits_(nbits)
@@ -77,6 +78,5 @@ private:
 }
 
 extern const jive::resource_class jive_root_register_class;
-extern const jive::resource_type register_resource;
 
 #endif

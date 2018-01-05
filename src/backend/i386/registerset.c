@@ -40,127 +40,127 @@ static const jive::bits::type bits32(32);
 static const jive::flt::type flt;
 
 const jive::register_class jive_i386_regcls_flags(
-	&register_resource, "flags", {&jive_i386_reg_cc},
+	"flags", {&jive_i386_reg_cc},
 	&jive_root_register_class, jive_resource_class_priority_reg_high,
 	{{CLS(gpr_eax), {CLS(flags), CLS(gpr_eax)}}, {STACK4, {CLS(flags), CLS(gpr_eax), STACK4}}},
 	&bits16, 16, 0, 0);
 
 const jive::register_class jive_i386_regcls_gpr(
-	&register_resource, "gpr",
+	"gpr",
 	{&jive_i386_reg_eax, &jive_i386_reg_ecx, &jive_i386_reg_ebx, &jive_i386_reg_edx,
 	 &jive_i386_reg_esi, &jive_i386_reg_edi, &jive_i386_reg_ebp, &jive_i386_reg_esp},
 	&jive_root_register_class, jive_resource_class_priority_reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 32, 8|16|32);
 
 const jive::register_class jive_i386_regcls_gpr_byte(
-	&register_resource, "gpr_byte_addressible",
+	"gpr_byte_addressible",
 	{&jive_i386_reg_eax, &jive_i386_reg_ecx, &jive_i386_reg_ebx, &jive_i386_reg_edx},
 	&jive_i386_regcls_gpr, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class jive_i386_regcls_gpr_eax(
-	&register_resource, "gpr_eax", {&jive_i386_reg_eax},
+	"gpr_eax", {&jive_i386_reg_eax},
 	&jive_i386_regcls_gpr_byte, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class jive_i386_regcls_gpr_ecx(
-	&register_resource, "gpr_ecx", {&jive_i386_reg_ecx},
+	"gpr_ecx", {&jive_i386_reg_ecx},
 	&jive_i386_regcls_gpr_byte, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class jive_i386_regcls_gpr_ebx(
-	&register_resource, "gpr_ebx", {&jive_i386_reg_ebx},
+	"gpr_ebx", {&jive_i386_reg_ebx},
 	&jive_i386_regcls_gpr_byte, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class jive_i386_regcls_gpr_edx(
-	&register_resource, "gpr_edx", {&jive_i386_reg_edx},
+	"gpr_edx", {&jive_i386_reg_edx},
 	&jive_i386_regcls_gpr_byte, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class jive_i386_regcls_gpr_esi(
-	&register_resource, "gpr_esi", {&jive_i386_reg_esi},
+	"gpr_esi", {&jive_i386_reg_esi},
 	&jive_i386_regcls_gpr, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class jive_i386_regcls_gpr_edi(
-	&register_resource, "gpr_edi", {&jive_i386_reg_edi},
+	"gpr_edi", {&jive_i386_reg_edi},
 	&jive_i386_regcls_gpr, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class jive_i386_regcls_gpr_esp(
-	&register_resource, "gpr_esp", {&jive_i386_reg_esp},
+	"gpr_esp", {&jive_i386_reg_esp},
 	&jive_i386_regcls_gpr, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class jive_i386_regcls_gpr_ebp(
-	&register_resource, "gpr_ebp", {&jive_i386_reg_ebp},
+	"gpr_ebp", {&jive_i386_reg_ebp},
 	&jive_i386_regcls_gpr, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class jive_i386_regcls_fp(
-	&register_resource, "fp", {&jive_i386_reg_st0},
+	"fp", {&jive_i386_reg_st0},
 	&jive_root_register_class, jive_resource_class_priority_reg_low,
 	{{STACK4, {CLS(fp), STACK4}}}, &flt, 80, 80, 80);
 
 const jive::register_class jive_i386_regcls_fp_st0(
-	&register_resource, "fp_st0", {&jive_i386_reg_st0},
+	"fp_st0", {&jive_i386_reg_st0},
 	&jive_i386_regcls_fp, jive_resource_class_priority_reg_low,
 	{{CLS(fp), {CLS(fp), CLS(fp)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&flt, 80, 80, 80);
 
 const jive::register_class jive_i386_regcls_sse(
-	&register_resource, "sse",
+	"sse",
 	{&jive_i386_reg_xmm0, &jive_i386_reg_xmm1, &jive_i386_reg_xmm2, &jive_i386_reg_xmm3,
 	 &jive_i386_reg_xmm4, &jive_i386_reg_xmm5, &jive_i386_reg_xmm6, &jive_i386_reg_xmm7},
 	&jive_root_register_class, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
 const jive::register_class jive_i386_regcls_sse_xmm0(
-	&register_resource, "sse_xmm0", {&jive_i386_reg_xmm0},
+	"sse_xmm0", {&jive_i386_reg_xmm0},
 	&jive_i386_regcls_sse, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
 const jive::register_class jive_i386_regcls_sse_xmm1(
-	&register_resource, "sse_xmm1", {&jive_i386_reg_xmm1},
+	"sse_xmm1", {&jive_i386_reg_xmm1},
 	&jive_i386_regcls_sse, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
 const jive::register_class jive_i386_regcls_sse_xmm2(
-	&register_resource, "sse_xmm2", {&jive_i386_reg_xmm2},
+	"sse_xmm2", {&jive_i386_reg_xmm2},
 	&jive_i386_regcls_sse, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
 const jive::register_class jive_i386_regcls_sse_xmm3(
-	&register_resource, "sse_xmm3", {&jive_i386_reg_xmm3},
+	"sse_xmm3", {&jive_i386_reg_xmm3},
 	&jive_i386_regcls_sse, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
 const jive::register_class jive_i386_regcls_sse_xmm4(
-	&register_resource, "sse_xmm4", {&jive_i386_reg_xmm4},
+	"sse_xmm4", {&jive_i386_reg_xmm4},
 	&jive_i386_regcls_sse, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
 const jive::register_class jive_i386_regcls_sse_xmm5(
-	&register_resource, "sse_xmm5", {&jive_i386_reg_xmm5},
+	"sse_xmm5", {&jive_i386_reg_xmm5},
 	&jive_i386_regcls_sse, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
 const jive::register_class jive_i386_regcls_sse_xmm6(
-	&register_resource, "sse_xmm6", {&jive_i386_reg_xmm6},
+	"sse_xmm6", {&jive_i386_reg_xmm6},
 	&jive_i386_regcls_sse, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
 const jive::register_class jive_i386_regcls_sse_xmm7(
-	&register_resource, "sse_xmm7", {&jive_i386_reg_xmm7},
+	"sse_xmm7", {&jive_i386_reg_xmm7},
 	&jive_i386_regcls_sse, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);

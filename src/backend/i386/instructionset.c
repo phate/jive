@@ -1328,8 +1328,8 @@ jive_i386_instructionset::create_xfer(
 
 	auto sp = jive_subroutine_node_get_sp(sub);
 	auto fp = jive_subroutine_node_get_fp(sub);
-	bool in_mem = !jive_resource_class_isinstance(in_class, &register_resource);
-	bool out_mem = !jive_resource_class_isinstance(out_class, &register_resource);
+	bool in_mem = !jive_resource_class_isinstance(in_class, &jive::register_resource);
+	bool out_mem = !jive_resource_class_isinstance(out_class, &jive::register_resource);
 
 	if (in_mem) {
 		jive::output * base;
