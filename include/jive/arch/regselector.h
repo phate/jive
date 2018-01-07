@@ -102,6 +102,15 @@ public:
 	register_selector &
 	operator=(register_selector &&) = delete;
 
+	virtual jive_negotiator_option *
+	create_option() const override;
+
+	virtual bool
+	store_default_option(jive_negotiator_option * dst, const jive::gate * gate) const override;
+
+	virtual void
+	annotate_node_proper(jive::node * node) override;
+
 	const jive_reg_classifier * classifier;
 };
 

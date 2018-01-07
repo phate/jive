@@ -412,24 +412,6 @@ typedef jive::detail::intrusive_hash<
 jive_negotiator_constraint *
 jive_negotiator_identity_constraint_create(jive::negotiator * self);
 
-struct jive_negotiator_class {
-	/* create empty option (probably invalid) */
-	jive_negotiator_option * (*option_create)(const jive::negotiator * self);
-	
-	/* store suitable default options for this type/resource class pair */
-	bool (*option_gate_default)(const jive::negotiator * self, jive_negotiator_option * dst,
-		const jive::gate * gate);
-	
-	/* annotate non-gate ports of node */
-	void (*annotate_node_proper)(jive::negotiator * self, jive::node * node);
-	
-	/* annotate ports of node */
-	void (*annotate_node)(jive::negotiator * self, jive::node * node);
-	
-	/* process region */
-	void (*process_region)(jive::negotiator * self, struct jive::region * region);
-};
-
 typedef jive::detail::intrusive_list<
 	jive_negotiator_port,
 	jive_negotiator_port::specialized_port_accessor
@@ -462,9 +444,7 @@ public:
 	virtual
 	~negotiator();
 
-	negotiator(
-		jive::graph * graph,
-		const jive_negotiator_class * class_);
+	negotiator(jive::graph * graph);
 
 	negotiator(const negotiator &) = delete;
 
@@ -476,8 +456,25 @@ public:
 	negotiator &
 	operator=(negotiator &&) = delete;
 
-	const jive_negotiator_class * class_;
-	
+	/* create empty option (probably invalid) */
+	virtual jive_negotiator_option *
+	create_option() const;
+
+	/* store suitable default options for this type/resource class pair */
+	virtual bool
+	store_default_option(jive_negotiator_option * dst, const jive::gate * gate) const;
+
+	/* annotate non-gate ports of node */
+	virtual void
+	annotate_node_proper(jive::node * node) = 0;
+
+	/* annotate ports of node */
+	virtual void
+	annotate_node(jive::node * node);
+
+	virtual void
+	process_region(jive::region * region);
+
 	jive::graph * graph;
 	jive_negotiator_input_hash input_map;
 	jive_negotiator_output_hash output_map;
