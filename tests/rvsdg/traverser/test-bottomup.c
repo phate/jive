@@ -94,4 +94,4 @@ test_main()
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("rvsdg/traverser/test-bottomup", test_main);
+JIVE_UNIT_TEST_REGISTER("rvsdg/traverser/test-bottomup", test_main)

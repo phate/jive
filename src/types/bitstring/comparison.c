@@ -56,16 +56,16 @@ NAME ## _op::create(size_t nbits) const \
 	return std::unique_ptr<bits::compare_op>(new NAME ## _op(nbits)); \
 } \
 
-DEFINE_BITCOMPARISON_OPERATION(eq, jive_binary_operation_commutative, BITEQ);
-DEFINE_BITCOMPARISON_OPERATION(ne, jive_binary_operation_commutative, BITNE);
-DEFINE_BITCOMPARISON_OPERATION(sge, jive_binary_operation_none, BITSGE);
-DEFINE_BITCOMPARISON_OPERATION(sgt, jive_binary_operation_none, BITSGT);
-DEFINE_BITCOMPARISON_OPERATION(sle, jive_binary_operation_none, BITSLE);
-DEFINE_BITCOMPARISON_OPERATION(slt, jive_binary_operation_none, BITSLT);
-DEFINE_BITCOMPARISON_OPERATION(uge, jive_binary_operation_none, BITUGE);
-DEFINE_BITCOMPARISON_OPERATION(ugt, jive_binary_operation_none, BITUGT);
-DEFINE_BITCOMPARISON_OPERATION(ule, jive_binary_operation_none, BITULE);
-DEFINE_BITCOMPARISON_OPERATION(ult, jive_binary_operation_none, BITULT);
+DEFINE_BITCOMPARISON_OPERATION(eq, jive_binary_operation_commutative, BITEQ)
+DEFINE_BITCOMPARISON_OPERATION(ne, jive_binary_operation_commutative, BITNE)
+DEFINE_BITCOMPARISON_OPERATION(sge, jive_binary_operation_none, BITSGE)
+DEFINE_BITCOMPARISON_OPERATION(sgt, jive_binary_operation_none, BITSGT)
+DEFINE_BITCOMPARISON_OPERATION(sle, jive_binary_operation_none, BITSLE)
+DEFINE_BITCOMPARISON_OPERATION(slt, jive_binary_operation_none, BITSLT)
+DEFINE_BITCOMPARISON_OPERATION(uge, jive_binary_operation_none, BITUGE)
+DEFINE_BITCOMPARISON_OPERATION(ugt, jive_binary_operation_none, BITUGT)
+DEFINE_BITCOMPARISON_OPERATION(ule, jive_binary_operation_none, BITULE)
+DEFINE_BITCOMPARISON_OPERATION(ult, jive_binary_operation_none, BITULT)
 
 }
 }

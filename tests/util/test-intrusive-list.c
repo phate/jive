@@ -135,4 +135,4 @@ static int test_main(void)
 
 }
 
-JIVE_UNIT_TEST_REGISTER("util/test-intrusive-list", test_main);
+JIVE_UNIT_TEST_REGISTER("util/test-intrusive-list", test_main)

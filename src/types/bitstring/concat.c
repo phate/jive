@@ -46,14 +46,14 @@ concat_reduce_arg_pair(jive::output * arg1, jive::output * arg2)
 	auto arg2_constant = dynamic_cast<const constant_op*>(&arg2->node()->operation());
 	if (arg1_constant && arg2_constant) {
 		size_t nbits = arg1_constant->value().nbits() + arg2_constant->value().nbits();
-		char bits[nbits];
-		memcpy(bits, &arg1_constant->value()[0], arg1_constant->value().nbits());
+		std::vector<char> bits(nbits);
+		memcpy(&bits[0], &arg1_constant->value()[0], arg1_constant->value().nbits());
 		memcpy(
-			bits + arg1_constant->value().nbits(),
+			&bits[0] + arg1_constant->value().nbits(),
 			&arg2_constant->value()[0],
 			arg2_constant->value().nbits());
 
-		std::string s(bits, nbits);
+		std::string s(&bits[0], nbits);
 		return create_bitconstant(arg1->node()->region(), s.c_str());
 	}
 
@@ -319,14 +319,14 @@ concat_op::reduce_operand_pair(
 		auto arg2_constant = static_cast<const constant_op &>(arg2->node()->operation());
 
 		size_t nbits = arg1_constant.value().nbits() + arg2_constant.value().nbits();
-		char bits[nbits];
-		memcpy(bits, &arg1_constant.value()[0], arg1_constant.value().nbits());
+		std::vector<char> bits(nbits);
+		memcpy(&bits[0], &arg1_constant.value()[0], arg1_constant.value().nbits());
 		memcpy(
-			bits + arg1_constant.value().nbits(),
+			&bits[0] + arg1_constant.value().nbits(),
 			&arg2_constant.value()[0],
 			arg2_constant.value().nbits());
 
-		return create_bitconstant(arg1->region(), bits);
+		return create_bitconstant(arg1->region(), &bits[0]);
 	}
 
 	if (path == jive_binop_reduction_merge) {

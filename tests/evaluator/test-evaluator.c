@@ -308,4 +308,4 @@ test_evaluator()
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("evaluator/test-evaluator", test_evaluator);
+JIVE_UNIT_TEST_REGISTER("evaluator/test-evaluator", test_evaluator)

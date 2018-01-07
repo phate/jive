@@ -44,7 +44,8 @@ static int types_bitstring_arithmetic_test_bitand(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitand", types_bitstring_arithmetic_test_bitand);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitand",
+	types_bitstring_arithmetic_test_bitand)
 
 static int types_bitstring_arithmetic_test_bitashr(void)
 {
@@ -82,7 +83,8 @@ static int types_bitstring_arithmetic_test_bitashr(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitashr", types_bitstring_arithmetic_test_bitashr);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitashr",
+	types_bitstring_arithmetic_test_bitashr)
 
 static int types_bitstring_arithmetic_test_bitdifference(void)
 {
@@ -104,7 +106,8 @@ static int types_bitstring_arithmetic_test_bitdifference(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitdifference", types_bitstring_arithmetic_test_bitdifference);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitdifference",
+	types_bitstring_arithmetic_test_bitdifference)
 
 static int types_bitstring_arithmetic_test_bitnegate(void)
 {
@@ -131,7 +134,8 @@ static int types_bitstring_arithmetic_test_bitnegate(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitnegate", types_bitstring_arithmetic_test_bitnegate);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitnegate",
+	types_bitstring_arithmetic_test_bitnegate)
 
 static int types_bitstring_arithmetic_test_bitnot(void)
 {
@@ -158,7 +162,8 @@ static int types_bitstring_arithmetic_test_bitnot(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitnot", types_bitstring_arithmetic_test_bitnot);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitnot",
+	types_bitstring_arithmetic_test_bitnot)
 
 static int types_bitstring_arithmetic_test_bitor(void)
 {
@@ -185,7 +190,8 @@ static int types_bitstring_arithmetic_test_bitor(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitor", types_bitstring_arithmetic_test_bitor);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitor",
+	types_bitstring_arithmetic_test_bitor)
 
 static int types_bitstring_arithmetic_test_bitproduct(void)
 {
@@ -213,7 +219,8 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitproduct", types_bitstring_arithmetic_test_bitproduct);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitproduct",
+	types_bitstring_arithmetic_test_bitproduct)
 
 static int types_bitstring_arithmetic_test_bitshiproduct(void)
 {
@@ -235,7 +242,8 @@ static int types_bitstring_arithmetic_test_bitshiproduct(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitshiproduct", types_bitstring_arithmetic_test_bitshiproduct);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitshiproduct",
+	types_bitstring_arithmetic_test_bitshiproduct)
 
 static int types_bitstring_arithmetic_test_bitshl(void)
 {
@@ -266,7 +274,8 @@ static int types_bitstring_arithmetic_test_bitshl(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitshl", types_bitstring_arithmetic_test_bitshl);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitshl",
+	types_bitstring_arithmetic_test_bitshl)
 
 static int types_bitstring_arithmetic_test_bitshr(void)
 {
@@ -297,7 +306,8 @@ static int types_bitstring_arithmetic_test_bitshr(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitshr", types_bitstring_arithmetic_test_bitshr);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitshr",
+	types_bitstring_arithmetic_test_bitshr)
 
 static int types_bitstring_arithmetic_test_bitsmod(void)
 {
@@ -325,7 +335,8 @@ static int types_bitstring_arithmetic_test_bitsmod(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitsmod", types_bitstring_arithmetic_test_bitsmod);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitsmod",
+	types_bitstring_arithmetic_test_bitsmod)
 
 static int types_bitstring_arithmetic_test_bitsquotient(void)
 {
@@ -353,7 +364,8 @@ static int types_bitstring_arithmetic_test_bitsquotient(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitsquotient", types_bitstring_arithmetic_test_bitsquotient);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitsquotient",
+	types_bitstring_arithmetic_test_bitsquotient)
 
 static int types_bitstring_arithmetic_test_bitsum(void)
 {
@@ -381,7 +393,8 @@ static int types_bitstring_arithmetic_test_bitsum(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitsum", types_bitstring_arithmetic_test_bitsum);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitsum",
+	types_bitstring_arithmetic_test_bitsum)
 
 static int types_bitstring_arithmetic_test_bituhiproduct(void)
 {
@@ -403,7 +416,8 @@ static int types_bitstring_arithmetic_test_bituhiproduct(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bituhiproduct", types_bitstring_arithmetic_test_bituhiproduct);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bituhiproduct",
+	types_bitstring_arithmetic_test_bituhiproduct)
 
 static int types_bitstring_arithmetic_test_bitumod(void)
 {
@@ -431,7 +445,8 @@ static int types_bitstring_arithmetic_test_bitumod(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitumod", types_bitstring_arithmetic_test_bitumod);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitumod",
+	types_bitstring_arithmetic_test_bitumod)
 
 static int types_bitstring_arithmetic_test_bituquotient(void)
 {
@@ -459,7 +474,8 @@ static int types_bitstring_arithmetic_test_bituquotient(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bituquotient", types_bitstring_arithmetic_test_bituquotient);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bituquotient",
+	types_bitstring_arithmetic_test_bituquotient)
 
 static int types_bitstring_arithmetic_test_bitxor(void)
 {
@@ -486,7 +502,8 @@ static int types_bitstring_arithmetic_test_bitxor(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitxor", types_bitstring_arithmetic_test_bitxor);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitxor",
+	types_bitstring_arithmetic_test_bitxor)
 
 static inline void
 expect_static_true(jive::output * port)
@@ -533,7 +550,8 @@ static int types_bitstring_comparison_test_bitequal(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitequal", types_bitstring_comparison_test_bitequal);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitequal",
+	types_bitstring_comparison_test_bitequal)
 
 static int types_bitstring_comparison_test_bitnotequal(void)
 {
@@ -566,7 +584,8 @@ static int types_bitstring_comparison_test_bitnotequal(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitnotequal", types_bitstring_comparison_test_bitnotequal);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitnotequal",
+	types_bitstring_comparison_test_bitnotequal)
 
 static int types_bitstring_comparison_test_bitsgreater(void)
 {
@@ -603,7 +622,8 @@ static int types_bitstring_comparison_test_bitsgreater(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitsgreater", types_bitstring_comparison_test_bitsgreater);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitsgreater",
+	types_bitstring_comparison_test_bitsgreater)
 
 static int types_bitstring_comparison_test_bitsgreatereq(void)
 {
@@ -643,7 +663,8 @@ static int types_bitstring_comparison_test_bitsgreatereq(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitsgreatereq", types_bitstring_comparison_test_bitsgreatereq);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitsgreatereq",
+	types_bitstring_comparison_test_bitsgreatereq)
 
 static int types_bitstring_comparison_test_bitsless(void)
 {
@@ -680,7 +701,8 @@ static int types_bitstring_comparison_test_bitsless(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitsless", types_bitstring_comparison_test_bitsless);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitsless",
+	types_bitstring_comparison_test_bitsless)
 
 static int types_bitstring_comparison_test_bitslesseq(void)
 {
@@ -720,7 +742,8 @@ static int types_bitstring_comparison_test_bitslesseq(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitslesseq", types_bitstring_comparison_test_bitslesseq);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitslesseq",
+	types_bitstring_comparison_test_bitslesseq)
 
 static int types_bitstring_comparison_test_bitugreater(void)
 {
@@ -757,7 +780,8 @@ static int types_bitstring_comparison_test_bitugreater(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitugreater", types_bitstring_comparison_test_bitugreater);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitugreater",
+	types_bitstring_comparison_test_bitugreater)
 
 static int types_bitstring_comparison_test_bitugreatereq(void)
 {
@@ -797,7 +821,8 @@ static int types_bitstring_comparison_test_bitugreatereq(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitugreatereq", types_bitstring_comparison_test_bitugreatereq);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitugreatereq",
+	types_bitstring_comparison_test_bitugreatereq)
 
 static int types_bitstring_comparison_test_bituless(void)
 {
@@ -834,7 +859,8 @@ static int types_bitstring_comparison_test_bituless(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bituless", types_bitstring_comparison_test_bituless);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bituless",
+	types_bitstring_comparison_test_bituless)
 
 static int types_bitstring_comparison_test_bitulesseq(void)
 {
@@ -874,7 +900,8 @@ static int types_bitstring_comparison_test_bitulesseq(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitulesseq", types_bitstring_comparison_test_bitulesseq);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitulesseq",
+	types_bitstring_comparison_test_bitulesseq)
 
 static int types_bitstring_test_arithmetic(void)
 {
@@ -901,7 +928,7 @@ static int types_bitstring_test_arithmetic(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/test-arithmetic", types_bitstring_test_arithmetic);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/test-arithmetic", types_bitstring_test_arithmetic)
 
 #define ZERO_64 \
 	"00000000" "00000000" "00000000" "00000000" \
@@ -946,7 +973,7 @@ static int types_bitstring_test_constant(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/test-constant", types_bitstring_test_constant);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/test-constant", types_bitstring_test_constant)
 
 static int types_bitstring_test_normalize(void)
 {
@@ -992,7 +1019,7 @@ static int types_bitstring_test_normalize(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/test-normalize", types_bitstring_test_normalize);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/test-normalize", types_bitstring_test_normalize)
 
 static void
 assert_constant(jive::output * bitstr, size_t nbits, const char bits[])
@@ -1055,7 +1082,7 @@ static int types_bitstring_test_reduction(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/test-reduction", types_bitstring_test_reduction);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/test-reduction", types_bitstring_test_reduction)
 
 static int types_bitstring_test_slice_concat(void)
 {
@@ -1159,7 +1186,7 @@ static int types_bitstring_test_slice_concat(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/test-slice-concat", types_bitstring_test_slice_concat);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/test-slice-concat", types_bitstring_test_slice_concat)
 
 static const char * bs[] = {
 	"00000000",
@@ -1437,4 +1464,5 @@ types_bitstring_test_value_representation()
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/test-value-representation", types_bitstring_test_value_representation);
+JIVE_UNIT_TEST_REGISTER("types/bitstring/test-value-representation",
+	types_bitstring_test_value_representation)

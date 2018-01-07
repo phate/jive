@@ -57,7 +57,7 @@ static int test_unnchoose(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/union/test-unnchoose", test_unnchoose);
+JIVE_UNIT_TEST_REGISTER("types/union/test-unnchoose", test_unnchoose)
 
 static int test_unnunify(void)
 {
@@ -93,4 +93,4 @@ static int test_unnunify(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/union/test-unnunify", test_unnunify);
+JIVE_UNIT_TEST_REGISTER("types/union/test-unnunify", test_unnunify)

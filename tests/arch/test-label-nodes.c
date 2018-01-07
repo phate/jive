@@ -80,4 +80,4 @@ static int test_main(void)
 }
 
 
-JIVE_UNIT_TEST_REGISTER("arch/test-label-nodes", test_main);
+JIVE_UNIT_TEST_REGISTER("arch/test-label-nodes", test_main)

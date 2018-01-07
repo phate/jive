@@ -27,7 +27,7 @@ class compare_op;
 class flt_unary_operation;
 class flt_binary_operation;
 class flt_compare_operation;
-};
+}
 
 namespace jive {
 namespace base {

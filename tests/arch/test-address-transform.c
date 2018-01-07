@@ -77,7 +77,7 @@ test_address_transform(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("arch/address-transform/test-address-transform", test_address_transform);
+JIVE_UNIT_TEST_REGISTER("arch/address-transform/test-address-transform", test_address_transform)
 
 static int
 test_address_transform_nodes(void)
@@ -123,7 +123,7 @@ test_address_transform_nodes(void)
 }
 
 JIVE_UNIT_TEST_REGISTER("arch/address-transform/test-address-transform-nodes",
-	test_address_transform_nodes);
+	test_address_transform_nodes)
 
 static int
 test_apply_transform(void)
@@ -152,7 +152,7 @@ test_apply_transform(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("arch/address-transform/test-apply_transform", test_apply_transform);
+JIVE_UNIT_TEST_REGISTER("arch/address-transform/test-apply_transform", test_apply_transform)
 
 static int
 test_containerof_transform(void)
@@ -230,7 +230,7 @@ test_containerof_transform(void)
 }
 
 JIVE_UNIT_TEST_REGISTER("arch/address-transform/test-containerof-transform",
-	test_containerof_transform);
+	test_containerof_transform)
 
 static int
 test_memberof_transform(void)
@@ -304,4 +304,4 @@ test_memberof_transform(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("arch/address-transform/test-memberof-transform", test_memberof_transform);
+JIVE_UNIT_TEST_REGISTER("arch/address-transform/test-memberof-transform", test_memberof_transform)

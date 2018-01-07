@@ -78,18 +78,17 @@ choose_operation::reduce_operand(
 			&arg->node()->output(0)->type())->declaration();
 
 		size_t nstates = arg->node()->ninputs()-1;
-		jive::output * states[nstates];
-		for (size_t n = 0; n < nstates; n++) {
-			states[n] = arg->node()->input(n+1)->origin();
-		}
+		std::vector<jive::output*> states;
+		for (size_t n = 0; n < nstates; n++)
+			states.push_back(arg->node()->input(n+1)->origin());
 	
 		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
 			return jive_load_by_address_create(address, decl->elements[element()],
-				nstates, states);
+				nstates, &states[0]);
 		} else {
 			size_t nbits = static_cast<const jive::bits::type*>(&address->type())->nbits();
 			return jive_load_by_bitstring_create(address, nbits, decl->elements[element()],
-				nstates, states);
+				nstates, &states[0]);
 		}
 	}
 

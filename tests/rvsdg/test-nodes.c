@@ -118,4 +118,4 @@ test_nodes()
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("rvsdg/test-nodes", test_nodes);
+JIVE_UNIT_TEST_REGISTER("rvsdg/test-nodes", test_nodes)

@@ -44,7 +44,7 @@ function_test_build_lambda(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("function/test-build-lambda", function_test_build_lambda);
+JIVE_UNIT_TEST_REGISTER("function/test-build-lambda", function_test_build_lambda)
 
 static int function_test_call(void)
 {
@@ -64,7 +64,7 @@ static int function_test_call(void)
 	return 0 ;
 }
 
-JIVE_UNIT_TEST_REGISTER("function/test-call", function_test_call);
+JIVE_UNIT_TEST_REGISTER("function/test-call", function_test_call)
 
 static int function_test_equals(void)
 {
@@ -83,7 +83,7 @@ static int function_test_equals(void)
 	return 0 ;
 }
 
-JIVE_UNIT_TEST_REGISTER("function/test-equals", function_test_equals);
+JIVE_UNIT_TEST_REGISTER("function/test-equals", function_test_equals)
 
 static int function_test_memory_leak(void)
 {
@@ -94,4 +94,4 @@ static int function_test_memory_leak(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("function/test-memory-leak", function_test_memory_leak);
+JIVE_UNIT_TEST_REGISTER("function/test-memory-leak", function_test_memory_leak)

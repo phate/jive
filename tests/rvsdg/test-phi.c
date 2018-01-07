@@ -22,7 +22,7 @@ static int test_main()
 	jive::graph graph;
 
 	jive::test::valuetype vtype;
-	jive::fct::type f0type((const std::vector<const jive::type*>){}, {});
+	jive::fct::type f0type({&vtype}, {});
 	jive::fct::type f1type({&vtype}, {&vtype});
 
 	jive::phi_builder pb;
@@ -62,4 +62,4 @@ static int test_main()
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("rvsdg/test-phi", test_main);
+JIVE_UNIT_TEST_REGISTER("rvsdg/test-phi", test_main)

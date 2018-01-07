@@ -321,7 +321,7 @@ gamma_node::copy(jive::region * region, jive::substitution_map & smap) const
 	auto gamma = create(smap.lookup(predicate()->origin()), nsubregions());
 
 	/* add entry variables to new gamma */
-	jive::substitution_map rmap[nsubregions()];
+	std::vector<jive::substitution_map> rmap(nsubregions());
 	for (auto oev = begin_entryvar(); oev != end_entryvar(); oev++) {
 		auto nev = gamma->add_entryvar(smap.lookup(oev->origin()));
 		for (size_t n = 0; n < nev->narguments(); n++)

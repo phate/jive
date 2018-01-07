@@ -50,11 +50,11 @@ const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT(\
 	{}, &stackvar_type, SIZE, ALIGNMENT \
 );
 
-MAKE_STACKSLOT_CLASS(1, 1);
-MAKE_STACKSLOT_CLASS(2, 2);
-MAKE_STACKSLOT_CLASS(4, 4);
-MAKE_STACKSLOT_CLASS(8, 8);
-MAKE_STACKSLOT_CLASS(16, 16);
+MAKE_STACKSLOT_CLASS(1, 1)
+MAKE_STACKSLOT_CLASS(2, 2)
+MAKE_STACKSLOT_CLASS(4, 4)
+MAKE_STACKSLOT_CLASS(8, 8)
+MAKE_STACKSLOT_CLASS(16, 16)
 
 static const jive_stackslot_size_class *
 jive_stackslot_size_class_static(size_t size, size_t alignment)

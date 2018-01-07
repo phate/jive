@@ -69,4 +69,4 @@ static int test_main(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("arch/test-subroutine", test_main);
+JIVE_UNIT_TEST_REGISTER("arch/test-subroutine", test_main)

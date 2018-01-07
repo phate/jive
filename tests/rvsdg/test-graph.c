@@ -63,7 +63,7 @@ test_recursive_prune()
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("rvsdg/test-graph_prune", test_recursive_prune);
+JIVE_UNIT_TEST_REGISTER("rvsdg/test-graph_prune", test_recursive_prune)
 
 static int
 test_empty_graph_pruning(void)
@@ -81,7 +81,7 @@ test_empty_graph_pruning(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("rvsdg/test-empty_graph_pruning", test_empty_graph_pruning);
+JIVE_UNIT_TEST_REGISTER("rvsdg/test-empty_graph_pruning", test_empty_graph_pruning)
 
 static int
 test_prune_replace(void)
@@ -109,7 +109,7 @@ test_prune_replace(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("rvsdg/test-prune-replace", test_prune_replace);
+JIVE_UNIT_TEST_REGISTER("rvsdg/test-prune-replace", test_prune_replace)
 
 static int
 test_graph(void)
@@ -130,4 +130,4 @@ test_graph(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("rvsdg/test-graph", test_graph);
+JIVE_UNIT_TEST_REGISTER("rvsdg/test-graph", test_graph)

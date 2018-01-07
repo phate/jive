@@ -3,7 +3,7 @@
 # See COPYING for terms of redistribution.
 
 CPPFLAGS+=-Iinclude
-CFLAGS+=-Wall --std=c++14 -xc++
+CFLAGS+=-Wall -Wpedantic --std=c++14 -xc++
 
 # RVSDG core
 LIBJIVE_SRC = \

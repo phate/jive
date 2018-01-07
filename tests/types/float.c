@@ -236,4 +236,4 @@ types_float_test_fltconstant(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/test-fltconstant", types_float_test_fltconstant);
+JIVE_UNIT_TEST_REGISTER("types/float/test-fltconstant", types_float_test_fltconstant)

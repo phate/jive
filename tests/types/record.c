@@ -52,7 +52,7 @@ static int _test_rcdgroup(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/record/test-rcdgroup", _test_rcdgroup);
+JIVE_UNIT_TEST_REGISTER("types/record/test-rcdgroup", _test_rcdgroup)
 
 static int _test_rcdselect()
 {
@@ -101,4 +101,4 @@ static int _test_rcdselect()
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/record/test-rcdselect", _test_rcdselect);
+JIVE_UNIT_TEST_REGISTER("types/record/test-rcdselect", _test_rcdselect)
