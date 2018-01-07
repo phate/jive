@@ -3,7 +3,7 @@
 # See COPYING for terms of redistribution.
 
 CPPFLAGS+=-Iinclude
-CFLAGS+=-Wall -Wpedantic --std=c++14 -xc++
+CFLAGS+=-Wall -Wpedantic --std=c++14
 
 # RVSDG core
 LIBJIVE_SRC = \
@@ -133,10 +133,10 @@ clean: depclean
 include tests/Makefile.sub
 
 %.la: %.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+	$(CXX) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 %.lo: %.c
-	$(CC) -c -DPIC -fPIC $(CFLAGS) $(CPPFLAGS) -o $@ $<
+	$(CXX) -c -DPIC -fPIC $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 %.a:
 	rm -f $@
@@ -148,12 +148,12 @@ include tests/Makefile.sub
 
 .dep/%.la.d: %.c
 	@mkdir -p $(dir $@)
-	@$(CC) -MM $(CFLAGS) $(CPPFLAGS) -MT $(<:.c=.la) -MP -MF $@ $<
+	@$(CXX) -MM $(CFLAGS) $(CPPFLAGS) -MT $(<:.c=.la) -MP -MF $@ $<
 	@echo MAKEDEP $<
 
 .dep/%.lo.d: %.c
 	@mkdir -p $(dir $@)
-	@$(CC) -MM -DPIC -fPIC $(CFLAGS) $(CPPFLAGS) -MT $(<:.c=.lo) -MP -MF $@ $<
+	@$(CXX) -MM -DPIC -fPIC $(CFLAGS) $(CPPFLAGS) -MT $(<:.c=.lo) -MP -MF $@ $<
 
 depclean:
 	rm -rf .dep
