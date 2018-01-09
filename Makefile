@@ -44,7 +44,6 @@ LIBJIVE_SRC += \
 
 # visualization
 LIBJIVE_SRC += \
-	src/util/buffer.c \
 	src/util/callbacks.c \
 	src/view.c \
 
