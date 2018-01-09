@@ -1359,7 +1359,7 @@ instructionset::jump_instruction() const noexcept
 const jive_reg_classifier *
 instructionset::classifier() const noexcept
 {
-	return jive_i386_reg_classifier::get();
+	return register_classifier::get();
 }
 
 jive::xfer_description

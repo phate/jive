@@ -8,9 +8,13 @@
 
 #include <jive/arch/regselector.h>
 
-class jive_i386_reg_classifier final : public jive_reg_classifier {
+namespace jive {
+namespace i386 {
+
+class register_classifier final : public jive_reg_classifier {
 public:
-	virtual ~jive_i386_reg_classifier() noexcept;
+	virtual
+	~register_classifier() noexcept;
 
 	virtual jive_regselect_mask
 	classify_any() const override;
@@ -45,12 +49,14 @@ public:
 	virtual const jive::register_class * const *
 	classes() const noexcept override;
 
-	static inline const jive_i386_reg_classifier *
+	static inline const register_classifier *
 	get()
 	{
-		static const jive_i386_reg_classifier classifier;
+		static const register_classifier classifier;
 		return &classifier;
 	}
 };
+
+}}
 
 #endif

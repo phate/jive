@@ -17,18 +17,20 @@ typedef enum jive_i386_classify_regcls {
 	jive_i386_classify_sse = 3,
 } jive_i386_classify_regcls;
 
-jive_i386_reg_classifier::~jive_i386_reg_classifier() noexcept
-{
-}
+namespace jive {
+namespace i386 {
+
+register_classifier::~register_classifier() noexcept
+{}
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_any() const
+register_classifier::classify_any() const
 {
 	return (1 << jive_i386_classify_gpr) | (1 << jive_i386_classify_flags);
 }
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_type(
+register_classifier::classify_type(
 	const jive::type * type,
 	const jive::resource_class * rescls) const
 {
@@ -58,57 +60,57 @@ jive_i386_reg_classifier::classify_type(
 }
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_fixed_unary(
+register_classifier::classify_fixed_unary(
 	const jive::bits::unary_op & op) const
 {
 	return (1 << jive_i386_classify_gpr);
 }
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_fixed_binary(
+register_classifier::classify_fixed_binary(
 	const jive::bits::binary_op & op) const
 {
 	return (1 << jive_i386_classify_gpr);
 }
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_fixed_compare(const jive::bits::compare_op & op) const
+register_classifier::classify_fixed_compare(const jive::bits::compare_op & op) const
 {
 	return (1 << jive_i386_classify_gpr);
 }
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_float_unary(const jive::flt::unary_op & op) const
+register_classifier::classify_float_unary(const jive::flt::unary_op & op) const
 {
 	return (1 << jive_i386_classify_sse);
 }
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_float_binary(const jive::flt::binary_op & op) const
+register_classifier::classify_float_binary(const jive::flt::binary_op & op) const
 {
 	return (1 << jive_i386_classify_sse);
 }
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_float_compare(const jive::flt::compare_op & op) const
+register_classifier::classify_float_compare(const jive::flt::compare_op & op) const
 {
 	return (1 << jive_i386_classify_sse);
 }
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_address() const
+register_classifier::classify_address() const
 {
 	return (1 << jive_i386_classify_gpr);
 }
 
 size_t
-jive_i386_reg_classifier::nclasses() const noexcept
+register_classifier::nclasses() const noexcept
 {
 	return 4;
 }
 
 const jive::register_class * const *
-jive_i386_reg_classifier::classes() const noexcept
+register_classifier::classes() const noexcept
 {
 	static const jive::register_class * classes [] =  {
 		[jive_i386_classify_flags] = &jive_i386_regcls_flags,
@@ -119,3 +121,5 @@ jive_i386_reg_classifier::classes() const noexcept
 
 	return classes;
 }
+
+}}
