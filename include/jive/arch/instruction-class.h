@@ -152,10 +152,10 @@ namespace jive {
 
 class section;
 
-class instruction_class {
+class instruction {
 public:
 	inline
-	instruction_class(
+	instruction(
 		const std::string & name,
 		int code,
 		const std::string & mnemonic,
@@ -163,7 +163,7 @@ public:
 		const std::vector<const jive::register_class*> & outputs,
 		size_t nimmediates,
 		jive_instruction_flags flags,
-		const jive::instruction_class * inverse_jump)
+		const jive::instruction * inverse_jump)
 	: code_(code)
 	, name_(name)
 	, nimmediates_(nimmediates)
@@ -208,7 +208,7 @@ public:
 	}
 
 	/** \brief Inverse jump class (only meaningful if flag set accordingly) */
-	inline const jive::instruction_class *
+	inline const jive::instruction *
 	inverse_jump() const noexcept
 	{
 		return inverse_jump_;
@@ -265,7 +265,7 @@ public:
 		const jive_asmgen_imm immediates[],
 		jive_instruction_encoding_flags * flags) const = 0;
 
-	virtual std::unique_ptr<jive::instruction_class>
+	virtual std::unique_ptr<jive::instruction>
 	copy() const = 0;
 
 private:
@@ -274,7 +274,7 @@ private:
 	size_t nimmediates_;
 	std::string mnemonic_;
 	jive_instruction_flags flags_;
-	const jive::instruction_class * inverse_jump_;
+	const jive::instruction * inverse_jump_;
 	std::vector<const jive::register_class*> inputs_;
 	std::vector<const jive::register_class*> outputs_;
 };

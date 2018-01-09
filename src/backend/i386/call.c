@@ -29,7 +29,7 @@ jive_i386_call_node_substitute(
 	std::vector<jive::port> oports;
 	std::vector<jive::output*> operands;
 
-	const jive::instruction_class * icls;
+	const jive::instruction * icls;
 	auto & addrop = node->input(0)->origin()->node()->operation();
 	if (auto op = dynamic_cast<const jive::address::label_to_address_op*>(&addrop)) {
 		icls = &jive::i386::instr_call::instance();

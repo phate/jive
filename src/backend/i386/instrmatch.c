@@ -58,9 +58,10 @@ regvalue_to_immediate(const jive::output * regvalue)
 }
 
 static void
-convert_bitbinary(jive::node * node,
-	const jive::instruction_class * regreg_icls,
-	const jive::instruction_class * regimm_icls)
+convert_bitbinary(
+	jive::node * node,
+	const jive::instruction * regreg_icls,
+	const jive::instruction * regimm_icls)
 {
 	auto arg1 = node->input(0)->origin();
 	auto arg2 = node->input(1)->origin();
@@ -94,7 +95,7 @@ convert_divmod(jive::node * node, bool sign, size_t index)
 	auto arg2 = node->input(1)->origin();
 	
 	jive::output * ext;
-	const jive::instruction_class * icls;
+	const jive::instruction * icls;
 	if (sign) {
 		jive::immediate imm(31);
 		auto i = jive_immediate_create(node->region(), &imm);
@@ -118,8 +119,9 @@ convert_divmod(jive::node * node, bool sign, size_t index)
 }
 
 static void
-convert_complex_bitbinary(jive::node * node,
-	const jive::instruction_class * icls,
+convert_complex_bitbinary(
+	jive::node * node,
+	const jive::instruction * icls,
 	size_t result_index)
 {
 	auto arg1 = node->input(0)->origin();
@@ -260,8 +262,8 @@ match_gpr_bitbinary(jive::node * node)
 static void
 convert_bitcmp(
 	jive::node * node_,
-	const jive::instruction_class * jump_icls,
-	const jive::instruction_class * inv_jump_icls)
+	const jive::instruction * jump_icls,
+	const jive::instruction * inv_jump_icls)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::match_op*>(&node_->operation()));
 
@@ -302,10 +304,7 @@ convert_bitcmp(
 }
 
 static const jive::detail::typeinfo_map<
-	std::pair<
-		const jive::instruction_class *,
-		const jive::instruction_class *
-	>
+	std::pair<const jive::instruction *, const jive::instruction *>
 > bitcompare_map = {
 	{
 		&typeid(jive::bits::eq_op),
@@ -393,9 +392,7 @@ match_gpr_bitcmp(jive::node * node)
 	}
 }
 
-static const jive::detail::typeinfo_map<
-	const jive::instruction_class *
-> bitunary_map = {
+static const jive::detail::typeinfo_map<const jive::instruction *> bitunary_map = {
 	{
 		&typeid(jive::bits::neg_op),
 		&jive::i386::instr_int_neg::instance()

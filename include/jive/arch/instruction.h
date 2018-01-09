@@ -30,7 +30,7 @@ public:
 
 	inline
 	instruction_op(
-		const jive::instruction_class * icls,
+		const jive::instruction * icls,
 		const std::vector<jive::port> & iports,
 		const std::vector<jive::port> & oports)
 	: icls_(icls)
@@ -67,7 +67,7 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const jive::instruction_class *
+	inline const jive::instruction *
 	icls() const noexcept
 	{
 		return icls_;
@@ -77,15 +77,15 @@ public:
 	copy() const override;
 
 private:
+	const jive::instruction * icls_;
 	std::vector<jive::port> results_;
 	std::vector<jive::port> arguments_;
-	const jive::instruction_class * icls_;
 };
 
 static inline jive::node *
 create_instruction(
 	jive::region * region,
-	const jive::instruction_class * icls,
+	const jive::instruction * icls,
 	const std::vector<jive::output*> & operands,
 	const std::vector<jive::port> & iports,
 	const std::vector<jive::port> & oports)
@@ -97,7 +97,7 @@ create_instruction(
 static inline jive::node *
 create_instruction(
 	jive::region * region,
-	const jive::instruction_class * icls,
+	const jive::instruction * icls,
 	const std::vector<jive::output*> & operands)
 {
 	return create_instruction(region, icls, operands, {}, {});

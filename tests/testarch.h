@@ -31,7 +31,7 @@ namespace jive {
 namespace testarch {
 
 #define DECLARE_TESTARCH_INSTRUCTION(NAME) \
-class instr_##NAME : public jive::instruction_class { \
+class instr_##NAME : public jive::instruction { \
 public: \
 	instr_##NAME(); \
 \
@@ -51,7 +51,7 @@ public: \
 		const jive_asmgen_imm immediates[], \
 		jive_instruction_encoding_flags * flags) const override; \
 \
-	virtual std::unique_ptr<jive::instruction_class> \
+	virtual std::unique_ptr<jive::instruction> \
 	copy() const override; \
 \
 	static const instr_##NAME & \

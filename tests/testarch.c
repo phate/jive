@@ -77,7 +77,7 @@ namespace testarch {
 const instr_##NAME instr_##NAME::instance_; \
  \
 instr_##NAME::instr_##NAME() \
-	: instruction_class(#NAME, 0, #NAME, \
+	: instruction(#NAME, 0, #NAME, \
 		INPUTS, OUTPUTS, NIMMEDIATES, \
 		FLAGS, INVERSE_JUMP) \
 	{} \
@@ -104,7 +104,7 @@ instr_##NAME::write_asm( \
 	JIVE_DEBUG_ASSERT(0); \
 } \
  \
-std::unique_ptr<jive::instruction_class> \
+std::unique_ptr<jive::instruction> \
 instr_##NAME::copy() const \
 { \
 	return std::make_unique<instr_##NAME>(); \
@@ -291,7 +291,7 @@ private:
 	{}
 
 public:
-	virtual const jive::instruction_class *
+	virtual const jive::instruction *
 	jump_instruction() const noexcept override
 	{
 		return &jive::testarch::instr_jump::instance();

@@ -11,7 +11,7 @@
 
 namespace jive {
 	class input;
-	class instruction_class;
+	class instruction;
 	class node;
 	class output;
 	class region;
@@ -67,7 +67,7 @@ public:
 	instructionset()
 	{}
 
-	virtual const instruction_class *
+	virtual const instruction *
 	jump_instruction() const noexcept = 0;
 
 	virtual const jive_reg_classifier *
