@@ -16,7 +16,6 @@
 #include <jive/rvsdg/node.h>
 #include <jive/types/bitstring/type.h>
 
-struct jive_buffer;
 struct jive_compilate;
 struct jive_label;
 struct jive_label_symbol_mapper;
@@ -150,6 +149,7 @@ operator&(jive_instruction_encoding_flags a, jive_instruction_encoding_flags b)
 
 namespace jive {
 
+class buffer;
 class section;
 
 class instruction {
@@ -259,7 +259,7 @@ public:
 	*/
 	virtual void
 	write_asm(
-		struct jive_buffer * target,
+		jive::buffer * target,
 		const jive::registers * inputs[],
 		const jive::registers * outputs[],
 		const jive_asmgen_imm immediates[],

@@ -95,7 +95,7 @@ instr_##NAME::encode( \
  \
 void \
 instr_##NAME::write_asm( \
-	struct jive_buffer * target, \
+	jive::buffer * target, \
 	const jive::registers * inputs[], \
 	const jive::registers * outputs[], \
 	const jive_asmgen_imm immediates[], \
