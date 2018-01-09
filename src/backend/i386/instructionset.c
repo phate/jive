@@ -30,22 +30,22 @@ putimm(jive::buffer * target, const jive_asmgen_imm * imm)
 {
 	bool empty = true;
 	if (imm->value) {
-		target->append(jive::detail::strfmt(imm->value).c_str());
+		target->push_back(jive::detail::strfmt(imm->value));
 		empty = false;
 	}
 	if (imm->add_symbol) {
 		if (!empty)
-			target->append("+");
-		target->append(imm->add_symbol);
+			target->push_back("+");
+		target->push_back(imm->add_symbol);
 		empty = false;
 	}
 	if (imm->sub_symbol) {
-		target->append("-");
-		target->append(imm->sub_symbol);
+		target->push_back("-");
+		target->push_back(imm->sub_symbol);
 		empty = false;
 	}
 	if (empty) {
-		target->append("0");
+		target->push_back("0");
 	}
 }
 
@@ -162,9 +162,9 @@ putdisp(
 	const jive::registers * reg)
 {
 	putimm(target, disp);
-	target->append("(%");
-	target->append(reg->name().c_str());
-	target->append(")");
+	target->push_back("(%");
+	target->push_back(reg->name());
+	target->push_back(")");
 }
 
 static void
@@ -188,7 +188,7 @@ jive_i386_asm_simple(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
+	target->push_back(icls->mnemonic());
 }
 
 static void
@@ -214,11 +214,11 @@ jive_i386_asm_int_load_imm(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t$");
+	target->push_back(icls->mnemonic());
+	target->push_back("\t$");
 	putimm(target, &immediates[0]);
-	target->append(", %");
-	target->append(outputs[0]->name().c_str());
+	target->push_back(", %");
+	target->push_back(outputs[0]->name());
 }
 
 static inline void
@@ -293,11 +293,11 @@ jive_i386_asm_load_disp(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t");
+	target->push_back(icls->mnemonic());
+	target->push_back("\t");
 	putdisp(target, &immediates[0], inputs[0]);
-	target->append(", %");
-	target->append(outputs[0]->name().c_str());
+	target->push_back(", %");
+	target->push_back(outputs[0]->name());
 }
 
 static void
@@ -309,11 +309,11 @@ jive_i386_asm_load_abs(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t");
+	target->push_back(icls->mnemonic());
+	target->push_back("\t");
 	putimm(target, &immediates[0]);
-	target->append(", %");
-	target->append(outputs[0]->name().c_str());
+	target->push_back(", %");
+	target->push_back(outputs[0]->name());
 }
 
 static void
@@ -325,10 +325,10 @@ jive_i386_asm_store(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t%");
-	target->append(inputs[1]->name().c_str());
-	target->append(", ");
+	target->push_back(icls->mnemonic());
+	target->push_back("\t%");
+	target->push_back(inputs[1]->name());
+	target->push_back(", ");
 	putdisp(target, &immediates[0], inputs[0]);
 }
 
@@ -359,11 +359,11 @@ jive_i386_asm_regreg(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t%");
-	target->append(inputs[1]->name().c_str());
-	target->append(", %");
-	target->append(inputs[0]->name().c_str());
+	target->push_back(icls->mnemonic());
+	target->push_back("\t%");
+	target->push_back(inputs[1]->name());
+	target->push_back(", %");
+	target->push_back(inputs[0]->name());
 }
 
 static void
@@ -404,12 +404,12 @@ jive_i386_asm_imul(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t%");
-	target->append(inputs[1]->name().c_str());
+	target->push_back(icls->mnemonic());
+	target->push_back("\t%");
+	target->push_back(inputs[1]->name());
 	
-	target->append(", %");
-	target->append(inputs[0]->name().c_str());
+	target->push_back(", %");
+	target->push_back(inputs[0]->name());
 }
 
 static void
@@ -458,9 +458,9 @@ jive_i386_asm_mul(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t%");
-	target->append(inputs[1]->name().c_str());
+	target->push_back(icls->mnemonic());
+	target->push_back("\t%");
+	target->push_back(inputs[1]->name());
 }
 
 static void
@@ -490,9 +490,9 @@ jive_i386_asm_div_reg(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t%");
-	target->append(inputs[2]->name().c_str());
+	target->push_back(icls->mnemonic());
+	target->push_back("\t%");
+	target->push_back(inputs[2]->name());
 }
 
 static void
@@ -546,9 +546,9 @@ jive_i386_asm_shift_regreg(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t%cl, %");
-	target->append(inputs[0]->name().c_str());
+	target->push_back(icls->mnemonic());
+	target->push_back("\t%cl, %");
+	target->push_back(inputs[0]->name());
 }
 
 static void
@@ -622,11 +622,11 @@ jive_i386_asm_regimm(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t$");
+	target->push_back(icls->mnemonic());
+	target->push_back("\t$");
 	putimm(target, &immediates[0]);
-	target->append(", %");
-	target->append(inputs[0]->name().c_str());
+	target->push_back(", %");
+	target->push_back(inputs[0]->name());
 }
 
 static void
@@ -665,13 +665,13 @@ jive_i386_asm_mul_regimm(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t$");
+	target->push_back(icls->mnemonic());
+	target->push_back("\t$");
 	putimm(target, &immediates[0]);
-	target->append(", %");
-	target->append(inputs[0]->name().c_str());
-	target->append(", %");
-	target->append(outputs[0]->name().c_str());
+	target->push_back(", %");
+	target->push_back(inputs[0]->name());
+	target->push_back(", %");
+	target->push_back(outputs[0]->name());
 }
 
 static void
@@ -700,9 +700,9 @@ jive_i386_asm_unaryreg(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t%");
-	target->append(inputs[0]->name().c_str());
+	target->push_back(icls->mnemonic());
+	target->push_back("\t%");
+	target->push_back(inputs[0]->name());
 }
 
 static void
@@ -744,11 +744,11 @@ jive_i386_asm_regmove(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t%");
-	target->append(inputs[0]->name().c_str());
-	target->append(", %");
-	target->append(outputs[0]->name().c_str());
+	target->push_back(icls->mnemonic());
+	target->push_back("\t%");
+	target->push_back(inputs[0]->name());
+	target->push_back(", %");
+	target->push_back(outputs[0]->name());
 }
 
 static void
@@ -773,8 +773,8 @@ jive_i386_asm_call(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t");
+	target->push_back(icls->mnemonic());
+	target->push_back("\t");
 	putimm(target, &immediates[0]);
 }
 
@@ -802,9 +802,9 @@ jive_i386_asm_call_reg(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t*%");
-	target->append(inputs[0]->name().c_str());
+	target->push_back(icls->mnemonic());
+	target->push_back("\t*%");
+	target->push_back(inputs[0]->name());
 }
 
 static void
@@ -816,8 +816,8 @@ jive_i386_asm_jump(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t");
+	target->push_back(icls->mnemonic());
+	target->push_back("\t");
 	putimm(target, &immediates[0]);
 }
 
@@ -946,8 +946,8 @@ jive_i386_asm_fp(
 	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	target->append(icls->mnemonic().c_str());
-	target->append("\t");
+	target->push_back(icls->mnemonic());
+	target->push_back("\t");
 	putdisp(target, &immediates[0], inputs[0]);
 }
 

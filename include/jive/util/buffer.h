@@ -20,20 +20,70 @@
 
 namespace jive {
 
-class buffer
-{
+class buffer final {
 public:
-	jive::buffer & append(const void * data, size_t nbytes);
+	inline
+	~buffer()
+	{}
 
-	inline jive::buffer & append(const char * str) { append(str, strlen(str)); return *this; }
+	inline
+	buffer()
+	{}
 
-	inline jive::buffer & append(char byte) { data_.push_back(byte); return *this; }
+	buffer(const buffer &) = delete;
 
-	inline jive::buffer & append(uint8_t byte) { data_.push_back(byte); return *this; }
+	buffer(buffer &&) = delete;
 
-	size_t size() const noexcept { return data_.size(); }
+	buffer &
+	operator=(const buffer &) = delete;
 
-	const unsigned char * c_str() { append('\0'); return &data_[0]; }
+	buffer &
+	operator=(buffer &&) = delete;
+
+	inline void
+	push_back(const void * data, size_t nbytes)
+	{
+		auto d = static_cast<const uint8_t*>(data);
+		for (size_t n = 0; n < nbytes; n++)
+			data_.push_back(d[n]);
+	}
+
+	inline void
+	push_back(const std::string & s)
+	{
+		push_back(s.c_str(), s.size());
+	}
+
+	inline void
+	push_back(uint8_t byte)
+	{
+		data_.push_back(byte);
+	}
+
+	inline size_t
+	size() const noexcept
+	{
+		return data_.size();
+	}
+
+	inline const uint8_t *
+	data()
+	{
+		return &data_[0];
+	}
+
+	inline const char *
+	c_str()
+	{
+		push_back('\0');
+		return (const char *)(&data_[0]);
+	}
+
+	inline void
+	clear()
+	{
+		data_.clear();
+	}
 
 private:
 	std::vector<uint8_t> data_;
