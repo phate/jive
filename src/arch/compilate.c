@@ -34,7 +34,7 @@ get_tmpfd(size_t size)
 static bool
 resolve_relocation_target(
 	jive_symref target,
-	const jive_compilate_map * map,
+	const jive::compilate_map * map,
 	const jive_linker_symbol_resolver * sym_resolver,
 	const void ** resolved)
 {
@@ -69,7 +69,7 @@ static bool
 section_process_relocations(
 	void * base_writable,
 	jive_offset base,
-	const jive_compilate_map * map,
+	const jive::compilate_map * map,
 	const jive::section * section,
 	const jive_linker_symbol_resolver * sym_resolver,
 	jive_process_relocation_function relocate)
@@ -143,7 +143,7 @@ compilate::section(jive_stdsectionid sectionid)
 	return sections_.back().get();
 }
 
-jive_compilate_map *
+std::unique_ptr<jive::compilate_map>
 compilate::load(
 	const jive_linker_symbol_resolver * sym_resolver,
 	jive_process_relocation_function relocate)
@@ -156,7 +156,7 @@ compilate::load(
 	if (fd == -1)
 		return NULL;
 	
-	jive_compilate_map * map = new jive_compilate_map;
+	std::unique_ptr<compilate_map> map(new compilate_map());
 	if (!map) {
 		close(fd);
 		return NULL;
@@ -165,7 +165,6 @@ compilate::load(
 	void * writable = mmap(0, total_size, PROT_WRITE, MAP_SHARED, fd, 0);
 	if (!writable) {
 		close(fd);
-		jive_compilate_map_destroy(map);
 		return 0;
 	}
 	
@@ -208,7 +207,7 @@ compilate::load(
 		
 		success = success && section_process_relocations(base,
 			(jive_offset) (uintptr_t) map->sections[n].base,
-			map, section.get(), sym_resolver, relocate);
+			map.get(), section.get(), sym_resolver, relocate);
 		
 		switch (section->id()) {
 			case jive_stdsectionid_code: {
@@ -238,29 +237,20 @@ compilate::load(
 		++n;
 	}
 	
-	if (!success) {
-		jive_compilate_map_unmap(map);
-		jive_compilate_map_destroy(map);
-		return NULL;
-	}
+	if (!success)
+		return nullptr;
 	
 	return map;
 }
 
-}	//jive namespace
+/* compilate map */
 
-void
-jive_compilate_map_destroy(jive_compilate_map * self)
+compilate_map::~compilate_map()
 {
-	delete self;
-}
-
-void
-jive_compilate_map_unmap(const jive_compilate_map * self)
-{
-	size_t n;
-	for (n = 0; n < self->sections.size(); ++n) {
-		void * ptr = (void *) (intptr_t) self->sections[n].base;
-		munmap(ptr, self->sections[n].size);
+	for (size_t n = 0; n < sections.size(); n++) {
+		void * ptr = (void *) (intptr_t) sections[n].base;
+		munmap(ptr, sections[n].size);
 	}
 }
+
+}	//jive namespace

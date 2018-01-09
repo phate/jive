@@ -48,16 +48,12 @@ static int test_main()
 	
 	auto map = compilate.load(nullptr, process_relocation);
 	
-	uint64_t * data64 = (uint64_t *) map->sections[0].base;
-	const uint64_t * rodata64 = (const uint64_t *) map->sections[1].base;
+	uint64_t * data64 = (uint64_t *) map->section(jive_stdsectionid_data);
+	const uint64_t * rodata64 = (const uint64_t *) map->section(jive_stdsectionid_rodata);
 	
 	assert(*data64 == (uintptr_t) rodata64);
 	assert(*rodata64 == (uint64_t)((char *) data64 - (char *) rodata64));
 	
-	jive_compilate_map_unmap(map);
-	
-	jive_compilate_map_destroy(map);
-
 	return 0;
 }
 

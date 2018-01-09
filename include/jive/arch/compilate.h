@@ -16,7 +16,6 @@
 
 struct jive_linker_symbol_resolver;
 
-typedef struct jive_compilate_map jive_compilate_map;
 typedef struct jive_relocation_type jive_relocation_type;
 
 /**
@@ -183,6 +182,8 @@ private:
 
 /* compilate */
 
+class compilate_map;
+
 class compilate final {
 public:
 	~compilate();
@@ -230,7 +231,7 @@ public:
 		address space. Returns a structure describing the mapping of the
 		sections to the address space.
 	*/
-	jive_compilate_map *
+	std::unique_ptr<jive::compilate_map>
 	load(
 		const struct jive_linker_symbol_resolver * sym_resolver,
 		jive_process_relocation_function relocate);
@@ -259,51 +260,41 @@ public:
 };
 
 /** \brief Represent a compilate loaded into process' address space */
-struct jive_compilate_map {
+
+namespace jive {
+
+class compilate_map final {
+public:
+	~compilate_map();
+
+	inline
+	compilate_map()
+	{}
+
+	compilate_map(const compilate_map &) = delete;
+
+	compilate_map(compilate_map &&) = delete;
+
+	compilate_map &
+	operator=(const compilate_map &) = delete;
+
+	compilate_map &
+	operator=(compilate_map &&) = delete;
+
+	inline void *
+	section(jive_stdsectionid id)
+	{
+		for (const auto & cs : sections) {
+			if (cs.section->id() == id)
+				return cs.base;
+		}
+
+		return nullptr;
+	}
+
 	std::vector<jive_compilate_section> sections;
 };
 
-
-/**
-	\brief Destroy a compilate map
-	\param self The compilate map to be destroyed
-	
-	Destroys a compilate map, freeing all allocated memory used to
-	represent the map itself. The memory regions described by this
-	map are *not* affected, see \ref jive_compilate_map_unmap
-*/
-void
-jive_compilate_map_destroy(jive_compilate_map * self);
-
-/**
-	\brief Lookup a section base in a mapped compilate
-	\param self The compilate map describing the loaded compilate
-	\param id The standard section id of the requested section
-	
-	Lookup the address where the start of a specific section has been
-	mapped into the process' address space. Returns NULL if no such
-	section has been mapped.
-*/
-static inline void *
-jive_compilate_map_get_stdsection(const jive_compilate_map * self, jive_stdsectionid id)
-{
-	size_t n;
-	for (n = 0; n < self->sections.size(); ++n) {
-		if (self->sections[n].section->id() == id)
-			return self->sections[n].base;
-	}
-	return NULL;
 }
-
-/**
-	\brief Unmap a mapping of a compilate
-	\param self Mapping to be removed
-	
-	Unmaps the mapping described by a compilate map. The data structure
-	representing the mapping itself will not be freed, see
-	\ref jive_compilate_map_destroy
-*/
-void
-jive_compilate_map_unmap(const jive_compilate_map * self);
 
 #endif
