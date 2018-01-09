@@ -178,7 +178,7 @@ compilate::load(
 			jive_section_size_roundup(section.get())));
 		size_t n = map->sections.size()-1;
 		
-		memcpy(addr, &section->buffer()->data[0], section->size());
+		memcpy(addr, section->data(), section->size());
 		
 		/* If this is a code section, create another mapping, this time
 		executable. We cannot generally assume that we can later change

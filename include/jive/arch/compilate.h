@@ -132,34 +132,35 @@ public:
 		return id_;
 	}
 
-	inline jive_buffer *
-	buffer()
+
+	inline const uint8_t *
+	data()
 	{
-		return &contents_;
+		return data_.data();
 	}
 
 	inline size_t
 	size() const noexcept
 	{
-		return contents_.data.size();
+		return data_.size();
 	}
 
 	inline void
 	put(const void * data, size_t size)
 	{
-		jive_buffer_put(&contents_, data, size);
+		data_.push_back(data, size);
 	}
 
 	inline void
 	putbyte(uint8_t byte)
 	{
-		jive_buffer_putbyte(&contents_, byte);
+		data_.push_back(byte);
 	}
 
 	inline void
 	clear()
 	{
-		jive_buffer_resize(&contents_, 0);
+		data_.clear();
 		for (const auto & relocation : relocations)
 			delete relocation;
 		relocations.clear();
@@ -176,7 +177,7 @@ public:
 	std::unordered_set<relocation_entry*> relocations;
 
 private:
-	jive_buffer contents_;
+	jive::buffer data_;
 	jive_stdsectionid id_;
 };
 
@@ -214,13 +215,6 @@ public:
 
 	jive::section *
 	section(jive_stdsectionid sectionid);
-
-	inline jive_buffer *
-	buffer(jive_stdsectionid id)
-	{
-		auto s = section(id);
-		return s ? s->buffer() : nullptr;
-	}
 
 	/**
 		\brief Load a compilate into process' address space
