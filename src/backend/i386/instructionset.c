@@ -968,6 +968,20 @@ jive_i386_encode_fp(
 	jive_i386_r2i(r1, r2, &immediates[0], 1, flags, target);
 }
 
+static void
+get_slot_memory_reference(const jive::resource_class * rescls,
+	jive::immediate * displacement, jive::output ** base,
+	jive::output * sp, jive::output * fp)
+{
+	if (rescls->is_resource(&callslot_resource)) {
+		*displacement = jive::immediate(0, jive::spoffset_label::get());
+		*base = sp;
+	} else {
+		*displacement = jive::immediate(0, jive::fpoffset_label::get());
+		*base = fp;
+	}
+}
+
 namespace jive {
 namespace i386 {
 
@@ -1331,41 +1345,25 @@ DEFINE_I386_INSTRUCTION(
 	jive_instruction_flags_none, nullptr,
 	jive_i386_encode_regmove_sse, jive_i386_asm_regmove)
 
-}}
-
-static void
-get_slot_memory_reference(const jive::resource_class * rescls,
-	jive::immediate * displacement, jive::output ** base,
-	jive::output * sp, jive::output * fp)
-{
-	if (rescls->is_resource(&callslot_resource)) {
-		*displacement = jive::immediate(0, jive::spoffset_label::get());
-		*base = sp;
-	} else {
-		*displacement = jive::immediate(0, jive::fpoffset_label::get());
-		*base = fp;
-	}
-}
-
 /* instructionset */
 
-jive_i386_instructionset::~jive_i386_instructionset()
+instructionset::~instructionset()
 {}
 
 const jive::instruction *
-jive_i386_instructionset::jump_instruction() const noexcept
+instructionset::jump_instruction() const noexcept
 {
 	return &jive::i386::instr_jump::instance();
 }
 
 const jive_reg_classifier *
-jive_i386_instructionset::classifier() const noexcept
+instructionset::classifier() const noexcept
 {
 	return jive_i386_reg_classifier::get();
 }
 
 jive::xfer_description
-jive_i386_instructionset::create_xfer(
+instructionset::create_xfer(
 	jive::region * region,
 	jive::output * origin,
 	const jive::resource_class * in_class,
@@ -1400,3 +1398,5 @@ jive_i386_instructionset::create_xfer(
 		{origin});
 	return jive::xfer_description(node->input(0), node, node->output(0));
 }
+
+}}

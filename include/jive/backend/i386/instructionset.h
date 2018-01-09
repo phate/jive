@@ -112,15 +112,13 @@ DECLARE_I386_INSTRUCTION(float_div);
 DECLARE_I386_INSTRUCTION(float_cmp);
 DECLARE_I386_INSTRUCTION(float_transfer);
 
-}}
-
-class jive_i386_instructionset final : public jive::instructionset {
+class instructionset final : public jive::instructionset {
 public:
 	virtual
-	~jive_i386_instructionset();
+	~instructionset();
 
 	inline constexpr
-	jive_i386_instructionset()
+	instructionset()
 	{}
 
 	virtual const jive::instruction *
@@ -136,12 +134,14 @@ public:
 		const jive::resource_class * in_class,
 		const jive::resource_class * out_class) override;
 
-	static inline jive_i386_instructionset *
+	static inline instructionset *
 	get()
 	{
-		static jive_i386_instructionset instructionset;
-		return &instructionset;
+		static instructionset iset;
+		return &iset;
 	}
 };
+
+}}
 
 #endif

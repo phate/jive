@@ -126,7 +126,7 @@ public:
 	virtual const jive::instructionset *
 	instructionset() const noexcept override
 	{
-		return jive_i386_instructionset::get();
+		return jive::i386::instructionset::get();
 	}
 
 	static inline const jive_i386_subroutine_abi *
