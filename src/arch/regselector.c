@@ -21,8 +21,13 @@
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/float/flttype.h>
 
-jive_reg_classifier::~jive_reg_classifier() noexcept
-{
+/* register classifier */
+
+namespace jive {
+
+register_classifier::~register_classifier() noexcept
+{}
+
 }
 
 class jive_regselector_option final : public jive_negotiator_option {
@@ -374,7 +379,7 @@ register_selector::~register_selector()
 
 register_selector::register_selector(
 	jive::graph * graph,
-	const jive_reg_classifier * _classifier)
+	const jive::register_classifier * _classifier)
 : negotiator(graph)
 , classifier(_classifier)
 {}

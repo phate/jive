@@ -1356,7 +1356,7 @@ instructionset::jump_instruction() const noexcept
 	return &jive::i386::instr_jump::instance();
 }
 
-const jive_reg_classifier *
+const jive::register_classifier *
 instructionset::classifier() const noexcept
 {
 	return register_classifier::get();

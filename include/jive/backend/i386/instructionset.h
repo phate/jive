@@ -124,7 +124,7 @@ public:
 	virtual const jive::instruction *
 	jump_instruction() const noexcept override;
 
-	virtual const jive_reg_classifier *
+	virtual const jive::register_classifier *
 	classifier() const noexcept override;
 
 	virtual jive::xfer_description

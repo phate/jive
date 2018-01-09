@@ -11,7 +11,7 @@
 namespace jive {
 namespace i386 {
 
-class register_classifier final : public jive_reg_classifier {
+class register_classifier final : public jive::register_classifier {
 public:
 	virtual
 	~register_classifier() noexcept;

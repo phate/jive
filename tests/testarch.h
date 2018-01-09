@@ -88,7 +88,7 @@ jive_testarch_subroutine_begin(jive::graph * graph,
 	size_t nparameters, const jive_argument_type parameter_types[],
 	size_t nreturns, const jive_argument_type return_types[]);
 
-class jive_testarch_reg_classifier final : public jive_reg_classifier {
+class jive_testarch_reg_classifier final : public jive::register_classifier {
 public:
 	virtual ~jive_testarch_reg_classifier() noexcept;
 

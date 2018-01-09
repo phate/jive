@@ -41,11 +41,11 @@ class resource_class;
 typedef int jive_regselect_index;
 typedef uint32_t jive_regselect_mask;
 
-typedef struct jive_reg_classifier jive_reg_classifier;
+namespace jive {
 
-class jive_reg_classifier {
+class register_classifier {
 public:
-	virtual ~jive_reg_classifier() noexcept;
+	virtual ~register_classifier() noexcept;
 
 	virtual jive_regselect_mask
 	classify_any() const = 0;
@@ -81,8 +81,6 @@ public:
 	classes() const noexcept = 0;
 };
 
-namespace jive {
-
 class register_selector : public negotiator {
 public:
 	virtual
@@ -90,7 +88,7 @@ public:
 
 	register_selector(
 		jive::graph * graph,
-		const jive_reg_classifier * _classifier);
+		const register_classifier * _classifier);
 
 	register_selector(const register_selector &) = delete;
 
@@ -111,7 +109,7 @@ public:
 	virtual void
 	annotate_node_proper(jive::node * node) override;
 
-	const jive_reg_classifier * classifier;
+	const register_classifier * classifier;
 };
 
 }

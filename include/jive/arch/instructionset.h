@@ -18,9 +18,9 @@ namespace jive {
 	class resource_class;
 }
 
-class jive_reg_classifier;
-
 namespace jive {
+
+class register_classifier;
 
 class xfer_description {
 public:
@@ -70,7 +70,7 @@ public:
 	virtual const instruction *
 	jump_instruction() const noexcept = 0;
 
-	virtual const jive_reg_classifier *
+	virtual const register_classifier *
 	classifier() const noexcept = 0;
 
 	virtual xfer_description

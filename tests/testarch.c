@@ -297,7 +297,7 @@ public:
 		return &jive::testarch::instr_jump::instance();
 	}
 
-	virtual const jive_reg_classifier *
+	virtual const jive::register_classifier *
 	classifier() const noexcept override
 	{
 		return jive_testarch_reg_classifier::get();
