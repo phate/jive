@@ -46,7 +46,7 @@ public:
 	virtual size_t
 	nclasses() const noexcept override;
 
-	virtual const jive::register_class * const *
+	virtual const std::vector<const jive::register_class*> &
 	classes() const noexcept override;
 
 	static inline const register_classifier *

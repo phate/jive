@@ -77,7 +77,7 @@ public:
 	virtual size_t
 	nclasses() const noexcept = 0;
 
-	virtual const jive::register_class * const *
+	virtual const std::vector<const jive::register_class*> &
 	classes() const noexcept = 0;
 };
 

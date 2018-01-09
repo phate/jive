@@ -194,6 +194,12 @@ typedef enum jive_testarch_classify_regcls {
 	jive_testarch_classify_cc = 1
 } jive_testarch_classify_regcls;
 
+static const std::vector<const jive::register_class*>
+regclasses ({
+		&jive_testarch_regcls_gpr
+	, &jive_testarch_regcls_cc
+});
+
 jive_testarch_reg_classifier::~jive_testarch_reg_classifier() noexcept
 {
 }
@@ -264,17 +270,13 @@ jive_testarch_reg_classifier::classify_address() const
 size_t
 jive_testarch_reg_classifier::nclasses() const noexcept
 {
-	return 2;
+	return regclasses.size();
 }
 
-const jive::register_class * const *
+const std::vector<const jive::register_class*> &
 jive_testarch_reg_classifier::classes() const noexcept
 {
-	static const jive::register_class * classes [] = {
-		[jive_testarch_classify_gpr] = &jive_testarch_regcls_gpr,
-		[jive_testarch_classify_cc] = &jive_testarch_regcls_cc,
-	};
-	return classes;
+	return regclasses;
 }
 
 /* instructionset */

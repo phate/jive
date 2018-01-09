@@ -20,6 +20,14 @@ typedef enum jive_i386_classify_regcls {
 namespace jive {
 namespace i386 {
 
+static const std::vector<const jive::register_class*>
+regclasses({
+		&jive_i386_regcls_flags
+	, &jive_i386_regcls_gpr
+	, &jive_i386_regcls_fp
+	, &jive_i386_regcls_sse
+});
+
 register_classifier::~register_classifier() noexcept
 {}
 
@@ -106,20 +114,13 @@ register_classifier::classify_address() const
 size_t
 register_classifier::nclasses() const noexcept
 {
-	return 4;
+	return regclasses.size();
 }
 
-const jive::register_class * const *
+const std::vector<const jive::register_class*> &
 register_classifier::classes() const noexcept
 {
-	static const jive::register_class * classes [] =  {
-		[jive_i386_classify_flags] = &jive_i386_regcls_flags,
-		[jive_i386_classify_gpr] = &jive_i386_regcls_gpr,
-		[jive_i386_classify_fp] = &jive_i386_regcls_fp,
-		[jive_i386_classify_sse] = &jive_i386_regcls_sse,
-	};
-
-	return classes;
+	return regclasses;
 }
 
 }}
