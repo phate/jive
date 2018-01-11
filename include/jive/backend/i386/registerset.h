@@ -12,6 +12,13 @@
 namespace jive {
 namespace i386 {
 
+/* registers */
+
+extern const jive::registers cc;
+extern const jive::registers st0;
+extern const jive::registers eax, ebx, ecx, edx, edi, esi, ebp, esp;
+extern const jive::registers xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7;
+
 /* register classes */
 
 extern const jive::register_class regcls_gpr;
@@ -45,29 +52,6 @@ extern const jive::register_class regcls_sse_xmm4;
 extern const jive::register_class regcls_sse_xmm5;
 extern const jive::register_class regcls_sse_xmm6;
 extern const jive::register_class regcls_sse_xmm7;
-
-/* registers */
-
-extern const jive::registers reg_cc;
-extern const jive::registers reg_eax;
-extern const jive::registers reg_ecx;
-extern const jive::registers reg_edx;
-extern const jive::registers reg_ebx;
-extern const jive::registers reg_esi;
-extern const jive::registers reg_edi;
-extern const jive::registers reg_ebp;
-extern const jive::registers reg_esp;
-
-extern const jive::registers reg_st0;
-
-extern const jive::registers reg_xmm0;
-extern const jive::registers reg_xmm1;
-extern const jive::registers reg_xmm2;
-extern const jive::registers reg_xmm3;
-extern const jive::registers reg_xmm4;
-extern const jive::registers reg_xmm5;
-extern const jive::registers reg_xmm6;
-extern const jive::registers reg_xmm7;
 
 }}
 
