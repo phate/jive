@@ -37,6 +37,12 @@ swap(jive::output ** arg1, jive::output ** arg2)
 	*arg2 = tmp;
 }
 
+static inline bool
+is_commutative(const jive::instruction * i)
+{
+	return static_cast<int>(i->flags() & jive::instruction::flags::commutative);
+}
+
 static jive::immediate
 regvalue_to_immediate(const jive::output * regvalue)
 {
@@ -66,9 +72,8 @@ convert_bitbinary(
 	auto arg1 = node->input(0)->origin();
 	auto arg2 = node->input(1)->origin();
 	
-	bool commutative = (regreg_icls->flags() & jive_instruction_commutative) != 0;
 	bool second_is_immediate = false;
-	if (commutative && is_gpr_immediate(arg1)) {
+	if (is_commutative(regreg_icls) && is_gpr_immediate(arg1)) {
 		swap(&arg1, &arg2);
 		second_is_immediate = true;
 	} else if (is_gpr_immediate(arg2)) {

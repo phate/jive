@@ -112,78 +112,68 @@ instr_##NAME::copy() const \
 
 #define COMMA ,
 
-DEFINE_TESTARCH_INSTRUCTION(nop, {}, {}, 0, jive_instruction_flags_none, nullptr)
+DEFINE_TESTARCH_INSTRUCTION(nop, {}, {}, 0, jive::instruction::flags::none, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
-	load_disp,
-	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_gpr}, 1,
-	jive_instruction_flags_none, nullptr)
+	load_disp, {&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_gpr}, 1,
+	jive::instruction::flags::none, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
-	store_disp,
-	{&jive_testarch_regcls_gpr COMMA &jive_testarch_regcls_gpr}, {}, 1,
-	jive_instruction_flags_none, nullptr)
+	store_disp, {&jive_testarch_regcls_gpr COMMA &jive_testarch_regcls_gpr}, {}, 1,
+	jive::instruction::flags::none, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
-	spill_gpr,
-	{&jive_testarch_regcls_gpr}, {}, 0,
-	jive_instruction_flags_none, nullptr)
+	spill_gpr, {&jive_testarch_regcls_gpr}, {}, 0,
+	jive::instruction::flags::none, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
-	restore_gpr,
-	{}, {&jive_testarch_regcls_gpr}, 0,
-	jive_instruction_flags_none, nullptr)
+	restore_gpr, {}, {&jive_testarch_regcls_gpr}, 0,
+	jive::instruction::flags::none, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
-	move_gpr,
-	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_gpr}, 0,
-	jive_instruction_flags_none, nullptr)
+	move_gpr, {&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_gpr}, 0,
+	jive::instruction::flags::none, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
-	setr0,
-	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r0}, 0,
-	jive_instruction_flags_none, nullptr)
+	setr0, {&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r0}, 0,
+	jive::instruction::flags::none, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
-	setr1,
-	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r1}, 0,
-	jive_instruction_flags_none, nullptr)
+	setr1, {&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r1}, 0,
+	jive::instruction::flags::none, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
-	setr2,
-	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r2}, 0,
-	jive_instruction_flags_none, nullptr)
+	setr2, {&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r2}, 0,
+	jive::instruction::flags::none, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
-	setr3,
-	{&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r3}, 0,
-	jive_instruction_flags_none, nullptr)
+	setr3, {&jive_testarch_regcls_gpr}, {&jive_testarch_regcls_r3}, 0,
+	jive::instruction::flags::none, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
 	add_gpr,
 	{&jive_testarch_regcls_gpr COMMA &jive_testarch_regcls_gpr}, {&jive_testarch_regcls_gpr}, 0,
-	jive_instruction_write_input | jive_instruction_commutative, nullptr)
+	jive::instruction::flags::write_input | jive::instruction::flags::commutative, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
 	sub_gpr,
 	{&jive_testarch_regcls_gpr COMMA &jive_testarch_regcls_gpr}, {&jive_testarch_regcls_gpr}, 0,
-	jive_instruction_write_input, nullptr)
+	jive::instruction::flags::write_input, nullptr)
 
-DEFINE_TESTARCH_INSTRUCTION(jump, {}, {}, 0, jive_instruction_flags_none, nullptr)
+DEFINE_TESTARCH_INSTRUCTION(jump, {}, {}, 0, jive::instruction::flags::none, nullptr)
 
 DEFINE_TESTARCH_INSTRUCTION(
-	jumpz,
-	{&jive_testarch_regcls_gpr}, {}, 0,
-	jive_instruction_jump | jive_instruction_jump_conditional_invertible,
+	jumpz, {&jive_testarch_regcls_gpr}, {}, 0,
+	jive::instruction::flags::jump | jive::instruction::flags::jump_conditional_invertible,
 	&instr_jumpnz::instance())
 
 DEFINE_TESTARCH_INSTRUCTION(
 	jumpnz,
 	{&jive_testarch_regcls_gpr}, {}, 0,
-	jive_instruction_jump | jive_instruction_jump_conditional_invertible,
+	jive::instruction::flags::jump | jive::instruction::flags::jump_conditional_invertible,
 	&instr_jumpz::instance())
 
-DEFINE_TESTARCH_INSTRUCTION(ret, {}, {}, 0, jive_instruction_flags_none, nullptr)
+DEFINE_TESTARCH_INSTRUCTION(ret, {}, {}, 0, jive::instruction::flags::none, nullptr)
 
 }}
 

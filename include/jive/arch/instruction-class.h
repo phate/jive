@@ -82,34 +82,6 @@ struct jive_asmgen_imm {
 
 /* instruction representation */
 
-enum jive_instruction_flags {
-	jive_instruction_flags_none = 0,
-	/* instruction reuses first input register as output */
-	jive_instruction_write_input = 1,
-	/* first two input operands are commutative */
-	jive_instruction_commutative = (1<<8),
-	/* instruction is an (unconditional) jump */
-	jive_instruction_jump = (1<<12),
-	/* instruction is a relative jump */
-	jive_instruction_jump_relative = (1<<13),
-	/* instruction is a conditional jump and there is a matching "inverse" instruction */
-	jive_instruction_jump_conditional_invertible = (1<<14)
-};
-
-static inline constexpr jive_instruction_flags
-operator|(jive_instruction_flags a, jive_instruction_flags b)
-{
-	return static_cast<jive_instruction_flags>(
-		static_cast<int>(a) | static_cast<int>(b));
-}
-
-static inline constexpr jive_instruction_flags
-operator&(jive_instruction_flags a, jive_instruction_flags b)
-{
-	return static_cast<jive_instruction_flags>(
-		static_cast<int>(a) & static_cast<int>(b));
-}
-
 enum jive_instruction_encoding_flags {
 	jive_instruction_encoding_flags_none = 0,
 	/* instruction is a conditional branch, and its decision logic
@@ -154,6 +126,20 @@ class section;
 
 class instruction {
 public:
+	enum class flags {
+		none = 0,
+		/* instruction reuses first input register as output */
+		write_input = 1,
+		/* first two input operands are commutative */
+		commutative = (1<<8),
+		/* instruction is an (unconditional) jump */
+		jump = (1<<12),
+		/* instruction is a relative jump */
+		jump_relative = (1<<13),
+		/* instruction is a conditional jump and there is a matching "inverse" instruction */
+		jump_conditional_invertible = (1<<14)
+	};
+
 	inline
 	instruction(
 		const std::string & name,
@@ -162,7 +148,7 @@ public:
 		const std::vector<const jive::register_class*> & inputs,
 		const std::vector<const jive::register_class*> & outputs,
 		size_t nimmediates,
-		jive_instruction_flags flags,
+		enum instruction::flags flags,
 		const jive::instruction * inverse_jump)
 	: code_(code)
 	, name_(name)
@@ -195,7 +181,7 @@ public:
 		return mnemonic_;
 	}
 
-	inline jive_instruction_flags
+	inline instruction::flags
 	flags() const noexcept
 	{
 		return flags_;
@@ -273,11 +259,23 @@ private:
 	std::string name_;
 	size_t nimmediates_;
 	std::string mnemonic_;
-	jive_instruction_flags flags_;
+	enum instruction::flags flags_;
 	const jive::instruction * inverse_jump_;
 	std::vector<const jive::register_class*> inputs_;
 	std::vector<const jive::register_class*> outputs_;
 };
+
+static inline constexpr enum instruction::flags
+operator|(enum instruction::flags a, enum instruction::flags b)
+{
+	return static_cast<enum instruction::flags>(static_cast<int>(a) | static_cast<int>(b));
+}
+
+static inline constexpr enum instruction::flags
+operator&(enum instruction::flags a, enum instruction::flags b)
+{
+	return static_cast<enum instruction::flags>(static_cast<int>(a) & static_cast<int>(b));
+}
 
 }
 

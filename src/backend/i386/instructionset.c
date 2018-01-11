@@ -1029,104 +1029,92 @@ instr_##NAME::copy() const \
 
 DEFINE_I386_INSTRUCTION(
 	ret, 0xC3, "ret", {}, {}, 0,
-	jive_instruction_jump, nullptr,
-	jive_i386_encode_simple, jive_i386_asm_simple)
+	instruction::flags::jump, nullptr, jive_i386_encode_simple, jive_i386_asm_simple)
 
 /* integer load, store, and move instructions */
 DEFINE_I386_INSTRUCTION(
 	int_load_imm, 0x8B, "movl", {}, {&gpr_regcls}, 1,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_int_load_imm, jive_i386_asm_int_load_imm)
+	instruction::flags::none, nullptr, jive_i386_encode_int_load_imm, jive_i386_asm_int_load_imm)
 DEFINE_I386_INSTRUCTION(
 	int_load32_disp, 0x8B, "movl", {&gpr_regcls}, {&gpr_regcls}, 1,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_loadstore32_disp, jive_i386_asm_load_disp)
+	instruction::flags::none, nullptr, jive_i386_encode_loadstore32_disp, jive_i386_asm_load_disp)
 DEFINE_I386_INSTRUCTION(
 	int_store32_disp, 0x89, "movl", {&gpr_regcls COMMA &gpr_regcls}, {}, 1,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_loadstore32_disp, jive_i386_asm_store)
+	instruction::flags::none, nullptr, jive_i386_encode_loadstore32_disp, jive_i386_asm_store)
 DEFINE_I386_INSTRUCTION(
 	int_transfer, 0x89, "movl", {&gpr_regcls}, {&gpr_regcls}, 0,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_regmove, jive_i386_asm_regmove)
+	instruction::flags::none, nullptr, jive_i386_encode_regmove, jive_i386_asm_regmove)
 
 /* integer arithmetic register register instructions */
 DEFINE_I386_INSTRUCTION(
 	int_add, 0x01, "addl",
 	{&gpr_regcls COMMA &gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	instruction::flags::write_input | instruction::flags::commutative, nullptr,
 	jive_i386_encode_regreg, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	int_sub, 0x29, "subl",
 	{&gpr_regcls COMMA &gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_write_input, nullptr,
-	jive_i386_encode_regreg, jive_i386_asm_regreg)
+	instruction::flags::write_input, nullptr, jive_i386_encode_regreg, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	int_and, 0x21, "andl",
 	{&gpr_regcls COMMA &gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	instruction::flags::write_input | instruction::flags::commutative, nullptr,
 	jive_i386_encode_regreg, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	int_or, 0x09, "orl",
 	{&gpr_regcls COMMA &gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	instruction::flags::write_input | instruction::flags::commutative, nullptr,
 	jive_i386_encode_regreg, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	int_xor, 0x31, "xorl",
 	{&gpr_regcls COMMA &gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	instruction::flags::write_input | instruction::flags::commutative, nullptr,
 	jive_i386_encode_regreg, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	int_mul, 0xC0AF0F, "imull",
 	{&gpr_regcls COMMA &gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	instruction::flags::write_input | instruction::flags::commutative, nullptr,
 	jive_i386_encode_mul_regreg, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	int_mul_expand_signed, 0xF7, "imull",
 	{&eax_regcls COMMA &gpr_regcls}, {&edx_regcls COMMA &eax_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_commutative, nullptr,
-	jive_i386_encode_imull, jive_i386_asm_imul)
+	instruction::flags::commutative, nullptr, jive_i386_encode_imull, jive_i386_asm_imul)
 DEFINE_I386_INSTRUCTION(
 	int_mul_expand_unsigned, 0xF7, "mull",
 	{&eax_regcls COMMA &gpr_regcls}, {&edx_regcls COMMA &eax_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_commutative, nullptr,
-	jive_i386_encode_mull, jive_i386_asm_mul)
+	instruction::flags::commutative, nullptr, jive_i386_encode_mull, jive_i386_asm_mul)
 DEFINE_I386_INSTRUCTION(
 	int_sdiv, 0xF8, "idivl",
 	{&edx_regcls COMMA &eax_regcls COMMA &gpr_regcls},
 	{&edx_regcls COMMA &eax_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_div_reg, jive_i386_asm_div_reg)
+	instruction::flags::none, nullptr, jive_i386_encode_div_reg, jive_i386_asm_div_reg)
 DEFINE_I386_INSTRUCTION(
 	int_udiv, 0xF0, "divl",
 	{&edx_regcls COMMA &eax_regcls COMMA &gpr_regcls},
 	{&edx_regcls COMMA &eax_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_div_reg, jive_i386_asm_div_reg)
+	instruction::flags::none, nullptr, jive_i386_encode_div_reg, jive_i386_asm_div_reg)
 DEFINE_I386_INSTRUCTION(
 	int_neg, 0xD8, "negl",
 	{&gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_write_input, nullptr,
-	jive_i386_encode_unaryreg, jive_i386_asm_unaryreg)
+	instruction::flags::write_input, nullptr, jive_i386_encode_unaryreg, jive_i386_asm_unaryreg)
 DEFINE_I386_INSTRUCTION(
 	int_not, 0xD0, "notl",
 	{&gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_write_input, nullptr,
-	jive_i386_encode_unaryreg, jive_i386_asm_unaryreg)
+	instruction::flags::write_input, nullptr, jive_i386_encode_unaryreg, jive_i386_asm_unaryreg)
 DEFINE_I386_INSTRUCTION(
 	int_shr, 0xE8, "shrl",
 	{&gpr_regcls COMMA &ecx_regcls}, {&gpr_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_write_input, nullptr,
+	instruction::flags::write_input, nullptr,
 	jive_i386_encode_shift_regreg, jive_i386_asm_shift_regreg)
 DEFINE_I386_INSTRUCTION(
 	int_shl, 0xE0, "shll",
 	{&gpr_regcls COMMA &ecx_regcls}, {&gpr_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_write_input, nullptr,
+	instruction::flags::write_input, nullptr,
 	jive_i386_encode_shift_regreg, jive_i386_asm_shift_regreg)
 DEFINE_I386_INSTRUCTION(
 	int_ashr, 0xF8, "sarl",
 	{&gpr_regcls COMMA &ecx_regcls}, {&gpr_regcls COMMA &cc_regcls}, 0,
-	jive_instruction_write_input, nullptr,
+	instruction::flags::write_input, nullptr,
 	jive_i386_encode_shift_regreg, jive_i386_asm_shift_regreg)
 
 /* integer arithmetic register immediate instructions */
@@ -1137,173 +1125,153 @@ DEFINE_I386_INSTRUCTION(
 DEFINE_I386_INSTRUCTION(
 	int_add_immediate, 0xC0 | (0x05 << 8), "addl",
 	{&gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 1,
-	jive_instruction_write_input, nullptr,
-	jive_i386_encode_regimm, jive_i386_asm_regimm)
+	instruction::flags::write_input, nullptr, jive_i386_encode_regimm, jive_i386_asm_regimm)
 DEFINE_I386_INSTRUCTION(
 	int_sub_immediate, 0xE8 | (0x2D << 8), "subl",
 	{&gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 1,
-	jive_instruction_write_input, nullptr,
-	jive_i386_encode_regimm, jive_i386_asm_regimm)
+	instruction::flags::write_input, nullptr, jive_i386_encode_regimm, jive_i386_asm_regimm)
 DEFINE_I386_INSTRUCTION(
 	int_and_immediate, 0xE0 | (0x25 << 8), "andl",
 	{&gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 1,
-	jive_instruction_write_input, nullptr,
-	jive_i386_encode_regimm, jive_i386_asm_regimm)
+	instruction::flags::write_input, nullptr, jive_i386_encode_regimm, jive_i386_asm_regimm)
 DEFINE_I386_INSTRUCTION(
 	int_or_immediate, 0xC8 | (0x0D << 8), "orl",
 	{&gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 1,
-	jive_instruction_write_input, nullptr,
-	jive_i386_encode_regimm, jive_i386_asm_regimm)
+	instruction::flags::write_input, nullptr, jive_i386_encode_regimm, jive_i386_asm_regimm)
 DEFINE_I386_INSTRUCTION(
 	int_xor_immediate, 0xF0 | (0x35 << 8), "xorl",
 	{&gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 1,
-	jive_instruction_write_input, nullptr,
-	jive_i386_encode_regimm, jive_i386_asm_regimm)
+	instruction::flags::write_input, nullptr, jive_i386_encode_regimm, jive_i386_asm_regimm)
 DEFINE_I386_INSTRUCTION(
 	/* FIXME: code is the same as for int_add_immediate, flags is none */
 	int_mul_immediate, 0xC0 | (0x05 << 8), "imull",
 	{&gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 1,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_mul_regimm, jive_i386_asm_mul_regimm)
+	instruction::flags::none, nullptr, jive_i386_encode_mul_regimm, jive_i386_asm_mul_regimm)
 DEFINE_I386_INSTRUCTION(
 	int_shr_immediate, 0xE8, "shrl",
 	{&gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 1,
-	jive_instruction_write_input, nullptr,
-	jive_i386_encode_shift_regimm, jive_i386_asm_regimm)
+	instruction::flags::write_input, nullptr, jive_i386_encode_shift_regimm, jive_i386_asm_regimm)
 DEFINE_I386_INSTRUCTION(
 	int_shl_immediate, 0xE0, "shll",
 	{&gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 1,
-	jive_instruction_write_input, nullptr,
-	jive_i386_encode_shift_regimm, jive_i386_asm_regimm)
+	instruction::flags::write_input, nullptr, jive_i386_encode_shift_regimm, jive_i386_asm_regimm)
 DEFINE_I386_INSTRUCTION(
 	int_ashr_immediate, 0xF8, "sarl",
 	{&gpr_regcls}, {&gpr_regcls COMMA &cc_regcls}, 1,
-	jive_instruction_write_input, nullptr,
-	jive_i386_encode_shift_regimm, jive_i386_asm_regimm)
+	instruction::flags::write_input, nullptr, jive_i386_encode_shift_regimm, jive_i386_asm_regimm)
 
 /* call instructions */
 DEFINE_I386_INSTRUCTION(
 	call, 0xE8, "call", {}, {}, 1,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_call, jive_i386_asm_call)
+	instruction::flags::none, nullptr, jive_i386_encode_call, jive_i386_asm_call)
 DEFINE_I386_INSTRUCTION(
 	call_reg, 0xFF, "call_reg", {&gpr_regcls}, {}, 0,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_call_reg, jive_i386_asm_call_reg)
+	instruction::flags::none, nullptr, jive_i386_encode_call_reg, jive_i386_asm_call_reg)
 
 /* integer compare instructions */
 DEFINE_I386_INSTRUCTION(
 	int_cmp, 0x3b, "cmpl",
 	{&gpr_regcls COMMA &gpr_regcls}, {&cc_regcls}, 0,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_cmp_regreg, jive_i386_asm_regreg)
+	instruction::flags::none, nullptr, jive_i386_encode_cmp_regreg, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	int_cmp_immediate, 0xF8 | (0x3D << 8), "cmpl",
 	{&gpr_regcls}, {&cc_regcls}, 1,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_regimm_readonly, jive_i386_asm_regimm)
+	instruction::flags::none, nullptr, jive_i386_encode_regimm_readonly, jive_i386_asm_regimm)
 
 /* jump instructions */
 DEFINE_I386_INSTRUCTION(
 	int_jump_sless, 0xC, "jl", {&cc_regcls}, {}, 1,
-	jive_instruction_jump | jive_instruction_jump_relative
-	| jive_instruction_jump_conditional_invertible, &instr_int_jump_sgreatereq::instance(),
+	instruction::flags::jump |	instruction::flags::jump_relative
+	| instruction::flags::jump_conditional_invertible, &instr_int_jump_sgreatereq::instance(),
 	jive_i386_encode_jump_conditional, jive_i386_asm_jump)
 DEFINE_I386_INSTRUCTION(
 	int_jump_uless, 0x2, "jb", {&cc_regcls}, {}, 1,
-	jive_instruction_jump | jive_instruction_jump_relative
-	| jive_instruction_jump_conditional_invertible, &instr_int_jump_ugreatereq::instance(),
+	instruction::flags::jump | instruction::flags::jump_relative
+	| instruction::flags::jump_conditional_invertible, &instr_int_jump_ugreatereq::instance(),
 	jive_i386_encode_jump_conditional, jive_i386_asm_jump)
 DEFINE_I386_INSTRUCTION(
 	int_jump_slesseq, 0xE, "jle", {&cc_regcls}, {}, 1,
-	jive_instruction_jump | jive_instruction_jump_relative
-	| jive_instruction_jump_conditional_invertible, &instr_int_jump_sgreater::instance(),
+	instruction::flags::jump | instruction::flags::jump_relative
+	| instruction::flags::jump_conditional_invertible, &instr_int_jump_sgreater::instance(),
 	jive_i386_encode_jump_conditional, jive_i386_asm_jump)
 DEFINE_I386_INSTRUCTION(
 	int_jump_ulesseq, 0x6, "jbe", {&cc_regcls}, {}, 1,
-	jive_instruction_jump | jive_instruction_jump_relative
-	| jive_instruction_jump_conditional_invertible, &instr_int_jump_ugreater::instance(),
+	instruction::flags::jump | instruction::flags::jump_relative
+	| instruction::flags::jump_conditional_invertible, &instr_int_jump_ugreater::instance(),
 	jive_i386_encode_jump_conditional, jive_i386_asm_jump)
 DEFINE_I386_INSTRUCTION(
 	int_jump_equal, 0x4, "je", {&cc_regcls}, {}, 1,
-	jive_instruction_jump | jive_instruction_jump_relative
-	| jive_instruction_jump_conditional_invertible, &instr_int_jump_notequal::instance(),
+	instruction::flags::jump | instruction::flags::jump_relative
+	| instruction::flags::jump_conditional_invertible, &instr_int_jump_notequal::instance(),
 	jive_i386_encode_jump_conditional, jive_i386_asm_jump)
 DEFINE_I386_INSTRUCTION(
 	int_jump_notequal, 0x5, "jne", {&cc_regcls}, {}, 1,
-	jive_instruction_jump | jive_instruction_jump_relative
-	| jive_instruction_jump_conditional_invertible, &instr_int_jump_equal::instance(),
+	instruction::flags::jump | instruction::flags::jump_relative
+	| instruction::flags::jump_conditional_invertible, &instr_int_jump_equal::instance(),
 	jive_i386_encode_jump_conditional, jive_i386_asm_jump)
 DEFINE_I386_INSTRUCTION(
 	int_jump_sgreater, 0xF, "jg", {&cc_regcls}, {}, 1,
-	jive_instruction_jump | jive_instruction_jump_relative
-	| jive_instruction_jump_conditional_invertible, &instr_int_jump_slesseq::instance(),
+	instruction::flags::jump | instruction::flags::jump_relative
+	| instruction::flags::jump_conditional_invertible, &instr_int_jump_slesseq::instance(),
 	jive_i386_encode_jump_conditional, jive_i386_asm_jump)
 DEFINE_I386_INSTRUCTION(
 	int_jump_ugreater, 0x7, "ja", {&cc_regcls}, {}, 1,
-	jive_instruction_jump | jive_instruction_jump_relative
-	| jive_instruction_jump_conditional_invertible, &instr_int_jump_ulesseq::instance(),
+	instruction::flags::jump | instruction::flags::jump_relative
+	| instruction::flags::jump_conditional_invertible, &instr_int_jump_ulesseq::instance(),
 	jive_i386_encode_jump_conditional, jive_i386_asm_jump)
 DEFINE_I386_INSTRUCTION(
 	int_jump_sgreatereq, 0xD, "jge", {&cc_regcls}, {}, 1,
-	jive_instruction_jump | jive_instruction_jump_relative
-	| jive_instruction_jump_conditional_invertible, &instr_int_jump_sless::instance(),
+	instruction::flags::jump | instruction::flags::jump_relative
+	| instruction::flags::jump_conditional_invertible, &instr_int_jump_sless::instance(),
 	jive_i386_encode_jump_conditional, jive_i386_asm_jump)
 DEFINE_I386_INSTRUCTION(
 	int_jump_ugreatereq, 0x3, "jae", {&cc_regcls}, {}, 1,
-	jive_instruction_jump | jive_instruction_jump_relative
-	| jive_instruction_jump_conditional_invertible, &instr_int_jump_uless::instance(),
+	instruction::flags::jump | instruction::flags::jump_relative
+	| instruction::flags::jump_conditional_invertible, &instr_int_jump_uless::instance(),
 	jive_i386_encode_jump_conditional, jive_i386_asm_jump)
 DEFINE_I386_INSTRUCTION(
 	jump, 0xEB, "jmp", {}, {}, 1,
-	jive_instruction_jump_relative, nullptr,
-	jive_i386_encode_jump, jive_i386_asm_jump)
+	instruction::flags::jump_relative, nullptr, jive_i386_encode_jump, jive_i386_asm_jump)
 
 /* floating-point instructions */
 DEFINE_I386_INSTRUCTION(
 	fp_load_disp, 0x0, "flds", {&gpr_regcls}, {&fp_regcls}, 1,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_fp, jive_i386_asm_fp)
+	instruction::flags::none, nullptr, jive_i386_encode_fp, jive_i386_asm_fp)
 DEFINE_I386_INSTRUCTION(
 	sse_load32_disp, 0x10, "movss", {&gpr_regcls}, {&xmm_regcls}, 1,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_loadstoresse_disp, jive_i386_asm_load_disp)
+	instruction::flags::none, nullptr, jive_i386_encode_loadstoresse_disp, jive_i386_asm_load_disp)
 DEFINE_I386_INSTRUCTION(
 	sse_load_abs, 0x10, "movss", {}, {&xmm_regcls}, 1,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_sseload_abs, jive_i386_asm_load_abs)
+	instruction::flags::none, nullptr, jive_i386_encode_sseload_abs, jive_i386_asm_load_abs)
 DEFINE_I386_INSTRUCTION(
 	sse_store32_disp, 0x11, "movss", {&gpr_regcls COMMA &xmm_regcls}, {}, 1,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_loadstoresse_disp, jive_i386_asm_store)
+	instruction::flags::none, nullptr, jive_i386_encode_loadstoresse_disp, jive_i386_asm_store)
 DEFINE_I386_INSTRUCTION(
 	sse_xor, 0x57, "xorps", {&xmm_regcls COMMA &xmm_regcls}, {&xmm_regcls}, 0,
-	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	instruction::flags::write_input | instruction::flags::commutative, nullptr,
 	jive_i386_encode_regreg_sse, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	float_add, 0x58, "addss", {&xmm_regcls COMMA &xmm_regcls}, {&xmm_regcls}, 0,
-	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	instruction::flags::write_input | instruction::flags::commutative, nullptr,
 	jive_i386_encode_regreg_sse_prefixed, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	float_sub, 0x5C, "subss", {&xmm_regcls COMMA &xmm_regcls}, {&xmm_regcls}, 0,
-	jive_instruction_write_input, nullptr,
+	instruction::flags::write_input, nullptr,
 	jive_i386_encode_regreg_sse_prefixed, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	float_mul, 0x59, "mulss", {&xmm_regcls COMMA &xmm_regcls}, {&xmm_regcls}, 0,
-	jive_instruction_write_input | jive_instruction_commutative, nullptr,
+	instruction::flags::write_input | instruction::flags::commutative, nullptr,
 	jive_i386_encode_regreg_sse_prefixed, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	float_div, 0x5E, "divss", {&xmm_regcls COMMA &xmm_regcls}, {&xmm_regcls}, 0,
-	jive_instruction_write_input, nullptr,
+	instruction::flags::write_input, nullptr,
 	jive_i386_encode_regreg_sse_prefixed, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	float_cmp, 0x2E, "ucomiss", {&xmm_regcls COMMA &xmm_regcls}, {&cc_regcls}, 0,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_cmp_regreg_sse, jive_i386_asm_regreg)
+	instruction::flags::none, nullptr, jive_i386_encode_cmp_regreg_sse, jive_i386_asm_regreg)
 DEFINE_I386_INSTRUCTION(
 	float_transfer, 0x10, "movss", {&xmm_regcls}, {&xmm_regcls}, 0,
-	jive_instruction_flags_none, nullptr,
-	jive_i386_encode_regmove_sse, jive_i386_asm_regmove)
+	instruction::flags::none, nullptr, jive_i386_encode_regmove_sse, jive_i386_asm_regmove)
 
 /* instructionset */
 
