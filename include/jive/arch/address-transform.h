@@ -95,27 +95,23 @@ is_addr2bit_node(const jive::node * node) noexcept
 	return is_opnode<addr2bit_op>(node);
 }
 
-class bitstring_to_address_operation final : public jive::unary_op {
+/* bit2addr operator */
+
+class bit2addr_op final : public jive::unary_op {
 public:
-	virtual ~bitstring_to_address_operation() noexcept;
+	virtual
+	~bit2addr_op() noexcept;
 
-	bitstring_to_address_operation(
+private:
+	bit2addr_op(
 		size_t nbits,
-		std::unique_ptr<jive::type> original_type);
+		const jive::type & type);
 
-	inline
-	bitstring_to_address_operation(
-		size_t nbits,
-		const jive::type & original_type)
-	: bitstring_to_address_operation(nbits, original_type.copy())
-	{}
+	bit2addr_op(bit2addr_op &&) = default;
 
-	bitstring_to_address_operation(
-		bitstring_to_address_operation && other) noexcept = default;
+	bit2addr_op(const bit2addr_op &) = default;
 
-	bitstring_to_address_operation(
-		const bitstring_to_address_operation & other) = default;
-
+public:
 	virtual bool
 	operator==(const operation & other) const noexcept override;
 
@@ -152,21 +148,34 @@ public:
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	static inline jive::output *
+	create(jive::output * operand, size_t nbits, const jive::type & type)
+	{
+		bit2addr_op op(nbits, type);
+		return jive::create_normalized(operand->region(), op, {operand})[0];
+	}
+
 private:
 	size_t nbits_;
 	jive::port result_;
 	jive::port argument_;
 };
 
+static inline bool
+is_bit2addr_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const bit2addr_op*>(&op) != nullptr;
+}
+
+static inline bool
+is_bit2addr_node(const jive::node * node) noexcept
+{
+	return is_opnode<bit2addr_op>(node);
+}
+
 class memlayout_mapper;
 
 }
-
-/* bitstring_to_address node */
-
-jive::output *
-jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
-	const jive::type * original_type);
 
 /* reductions */
 

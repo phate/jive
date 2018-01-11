@@ -77,7 +77,7 @@ select_operation::reduce_operand(
 		size_t nbits = 0;
 		if (dynamic_cast<const jive::bits::type*>(&address->type())) {
 			nbits = static_cast<const jive::bits::type*>(&address->type())->nbits();
-			address = jive_bitstring_to_address_create(address, nbits, &address->type());
+			address = bit2addr_op::create(address, nbits, address->type());
 		}
 		
 		std::shared_ptr<const jive::rcd::declaration> decl;

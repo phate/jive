@@ -35,8 +35,8 @@ test_address_transform(void)
 	jive::bits::type bits64(64);
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits64, bits64, mem});
 
-	auto address0 = jive_bitstring_to_address_create(top->output(0), 64, &addr);
-	auto address1 = jive_bitstring_to_address_create(top->output(1), 64, &addr);
+	auto address0 = bit2addr_op::create(top->output(0), 64, addr);
+	auto address1 = bit2addr_op::create(top->output(1), 64, addr);
 
 	std::shared_ptr<const jive::rcd::declaration> decl(new jive::rcd::declaration({&addr, &addr}));
 
@@ -96,9 +96,9 @@ test_address_transform_nodes(void)
 	auto i2 = graph.add_import(bits64, "i2");
 
 	auto b0 = addr2bit_op::create(i0, 32, i0->type());
-	auto a0 = jive_bitstring_to_address_create(b0, 32, &addrtype);
+	auto a0 = bit2addr_op::create(b0, 32, addrtype);
 
-	auto a1 = jive_bitstring_to_address_create(i1, 32, &addrtype);
+	auto a1 = bit2addr_op::create(i1, 32, addrtype);
 	auto b1 = addr2bit_op::create(a1, 32, addrtype);
 
 	auto x0 = graph.add_export(a0, "x0");
@@ -107,15 +107,15 @@ test_address_transform_nodes(void)
 	assert(x0->origin() == i0);
 	assert(x1->origin() == i1);
 
-	auto b2 = jive_bitstring_to_address_create(i1, 32, &addrtype);
-	auto b3 = jive_bitstring_to_address_create(i1, 32, &addrtype);
+	auto b2 = bit2addr_op::create(i1, 32, addrtype);
+	auto b3 = bit2addr_op::create(i1, 32, addrtype);
 	auto a2 = addr2bit_op::create(i0, 32, i0->type());
 	auto a3 = addr2bit_op::create(i0, 32, i0->type());
 
 	assert(a2->node()->operation() == a3->node()->operation());
 	assert(b2->node()->operation() == b3->node()->operation());
 
-	auto b4 = jive_bitstring_to_address_create(i2, 64, &addrtype);
+	auto b4 = bit2addr_op::create(i2, 64, addrtype);
 	auto a4 = addr2bit_op::create(i0, 64, addrtype);
 
 	assert(a2->node()->operation() != a4->node()->operation());
@@ -150,8 +150,7 @@ test_apply_transform(void)
 
 	jive::view(graph.root(), stdout);
 
-	assert(bottom->input(0)->origin()->node()->operation()
-		== jive::bitstring_to_address_operation(32, addrtype));
+	assert(is_bit2addr_node(bottom->input(0)->origin()->node()));
 
 	return 0;
 }
@@ -175,10 +174,10 @@ test_containerof_transform(void)
 	auto top = jive::test::simple_node_create(graph.root(), {}, {},
 		std::vector<jive::port>(4, bits32));
 
-	auto address0 = jive_bitstring_to_address_create(top->output(0), 32, &addrtype);
-	auto address1 = jive_bitstring_to_address_create(top->output(1), 32, &addrtype);
-	auto address2 = jive_bitstring_to_address_create(top->output(2), 32, &addrtype);
-	auto address3 = jive_bitstring_to_address_create(top->output(3), 32, &addrtype);
+	auto address0 = bit2addr_op::create(top->output(0), 32, addrtype);
+	auto address1 = bit2addr_op::create(top->output(1), 32, addrtype);
+	auto address2 = bit2addr_op::create(top->output(2), 32, addrtype);
+	auto address3 = bit2addr_op::create(top->output(3), 32, addrtype);
 
 	auto container0 = jive_containerof(address0, decl, 0);
 	auto container1 = jive_containerof(address1, decl, 1);
@@ -254,7 +253,7 @@ test_memberof_transform(void)
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits32});
 
-	auto address = jive_bitstring_to_address_create(top->output(0), 32, &addrtype);
+	auto address = bit2addr_op::create(top->output(0), 32, addrtype);
 
 	auto member0 = jive_memberof(address, decl, 0);
 	auto member1 = jive_memberof(address, decl, 1);
