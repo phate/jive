@@ -17,42 +17,41 @@ static constexpr jive_unop_reduction_path_t jive_select_reduction_load = 128;
 namespace jive {
 namespace rcd {
 
-select_operation::~select_operation() noexcept
+select_op::~select_op() noexcept
 {}
 
 bool
-select_operation::operator==(const operation & other) const noexcept
+select_op::operator==(const operation & other) const noexcept
 {
-	auto op = dynamic_cast<const select_operation*>(&other);
+	auto op = dynamic_cast<const select_op*>(&other);
 	return op
-	    && op->element_ == element_
+	    && op->index_ == index_
 	    && op->result_ == result_
 	    && op->argument_ == argument_;
 }
 
 std::string
-select_operation::debug_string() const
+select_op::debug_string() const
 {
-	return detail::strfmt("SELECT(", element(), ")");
+	return detail::strfmt("SELECT(", index(), ")");
 }
 
 const jive::port &
-select_operation::argument(size_t index) const noexcept
+select_op::argument(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < narguments());
 	return argument_;
 }
 
 const jive::port &
-select_operation::result(size_t index) const noexcept
+select_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
 	return result_;
 }
 
 jive_unop_reduction_path_t
-select_operation::can_reduce_operand(
-	const jive::output * arg) const noexcept
+select_op::can_reduce_operand(const jive::output * arg) const noexcept
 {
 	if (arg->node() && dynamic_cast<const group_op *>(&arg->node()->operation()))
 		return jive_unop_reduction_inverse;
@@ -64,20 +63,20 @@ select_operation::can_reduce_operand(
 }
 
 jive::output *
-select_operation::reduce_operand(
+select_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_inverse)
-		return arg->node()->input(element())->origin();
+		return arg->node()->input(index())->origin();
 
 	if (path == jive_select_reduction_load) {
 		auto address = arg->node()->input(0)->origin();
 
 		size_t nbits = 0;
-		if (dynamic_cast<const jive::bits::type*>(&address->type())) {
-			nbits = static_cast<const jive::bits::type*>(&address->type())->nbits();
-			address = bit2addr_op::create(address, nbits, address->type());
+		if (auto bt = dynamic_cast<const jive::bits::type*>(&address->type())) {
+			nbits = bt->nbits();
+			address = bit2addr_op::create(address, bt->nbits(), address->type());
 		}
 		
 		std::shared_ptr<const jive::rcd::declaration> decl;
@@ -88,12 +87,12 @@ select_operation::reduce_operand(
 		for (size_t n = 0; n < nstates; n++)
 			states.push_back(arg->node()->input(n+1)->origin());
 
-		auto element_address = jive_memberof(address, decl, element());
+		auto element_address = jive_memberof(address, decl, index());
 		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
-			return jive_load_by_address_create(element_address, &decl->element(element()),
+			return jive_load_by_address_create(element_address, &decl->element(index()),
 				nstates, &states[0]);
 		} else {
-			return jive_load_by_bitstring_create(element_address, nbits, &decl->element(element()),
+			return jive_load_by_bitstring_create(element_address, nbits, &decl->element(index()),
 				nstates, &states[0]);
 		}
 	}
@@ -102,21 +101,9 @@ select_operation::reduce_operand(
 }
 
 std::unique_ptr<jive::operation>
-select_operation::copy() const
+select_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new select_operation(*this));
+	return std::unique_ptr<jive::operation>(new select_op(*this));
 }
 
-}
-}
-
-
-jive::output *
-jive_select_create(size_t member, jive::output * argument)
-{
-	const jive::rcd::type & rcd_type =
-		dynamic_cast<const jive::rcd::type &>(argument->type());
-	jive::rcd::select_operation op(rcd_type, member);
-	return jive::create_normalized(argument->region(), op, {argument})[0];
-}
-
+}}

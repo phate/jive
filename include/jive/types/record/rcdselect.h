@@ -7,29 +7,26 @@
 #ifndef JIVE_TYPES_RECORD_RCDSELECT_H
 #define JIVE_TYPES_RECORD_RCDSELECT_H
 
+#include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/unary.h>
 
 namespace jive {
 namespace rcd {
 
-class select_operation final : public jive::unary_op {
+class select_op final : public jive::unary_op {
 public:
 	virtual
-	~select_operation() noexcept;
+	~select_op() noexcept;
 
+private:
 	inline
-	select_operation(const jive::rcd::type & type, size_t element) noexcept
-	: element_(element)
-	, result_(type.declaration()->element(element))
+	select_op(const jive::rcd::type & type, size_t index) noexcept
+	: index_(index)
+	, result_(type.declaration()->element(index))
 	, argument_(type)
 	{}
 
-	inline
-	select_operation(const select_operation & other) = default;
-
-	inline
-	select_operation(select_operation && other) = default;
-
+public:
 	virtual bool
 	operator==(const operation & other) const noexcept override;
 
@@ -52,21 +49,42 @@ public:
 		jive::output * arg) const override;
 
 	inline size_t
-	element() const noexcept { return element_; }
+	index() const noexcept
+	{
+		return index_;
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	static inline jive::output *
+	create(jive::output * operand, size_t index)
+	{
+		auto rt = dynamic_cast<const jive::rcd::type*>(&operand->type());
+		if (!rt) throw type_error("rcd", operand->type().debug_string());
+
+		select_op op(*rt, index);
+		return jive::create_normalized(operand->region(), op, {operand})[0];
+	}
+
 private:
-	size_t element_;
+	size_t index_;
 	jive::port result_;
 	jive::port argument_;
 };
 
-}
+static inline bool
+is_select_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const select_op*>(&op) != nullptr;
 }
 
-jive::output *
-jive_select_create(size_t element, jive::output * argument);
+static inline bool
+is_select_node(const jive::node * node) noexcept
+{
+	return is_opnode<select_op>(node);
+}
+
+}}
 
 #endif

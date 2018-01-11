@@ -78,10 +78,10 @@ static int _test_rcdselect()
 	auto g0 = jive_group_create(decl, 3, &args[0]);
 	auto load = jive_load_by_address_create(a5, &rcdtype, 0, NULL);
 
-	auto s0 = jive_select_create(1, a4);
-	auto s1 = jive_select_create(1, g0);
-	auto s2 = jive_select_create(2, a4);
-	auto s3 = jive_select_create(0, load);
+	auto s0 = rcd::select_op::create(a4, 1);
+	auto s1 = rcd::select_op::create(g0, 1);
+	auto s2 = rcd::select_op::create(a4, 2);
+	auto s3 = rcd::select_op::create(load, 0);
 
 	graph.add_export(s0, "");
 	graph.add_export(s1, "");
@@ -93,9 +93,9 @@ static int _test_rcdselect()
 
 	jive::view(graph.root(), stderr);
 
-	assert(dynamic_cast<const rcd::select_operation*>(&s0->node()->operation()));
+	assert(rcd::is_select_node(s0->node()));
 	assert(s1 == a2);
-	assert(dynamic_cast<const rcd::select_operation*>(&s2->node()->operation()));
+	assert(rcd::is_select_node(s2->node()));
 	assert(!dynamic_cast<const load_op*>(&s3->node()->input(0)->origin()->node()->operation()));
 
 	return 0;
