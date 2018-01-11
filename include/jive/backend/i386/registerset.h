@@ -21,37 +21,37 @@ extern const jive::registers xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7;
 
 /* register classes */
 
-extern const jive::register_class regcls_gpr;
-extern const jive::register_class regcls_fp;
-extern const jive::register_class regcls_mmx;
-extern const jive::register_class regcls_sse;
-extern const jive::register_class regcls_flags;
+extern const jive::register_class gpr_regcls;
+extern const jive::register_class fp_regcls;
+extern const jive::register_class mmx_regcls;
+extern const jive::register_class xmm_regcls;
+extern const jive::register_class cc_regcls;
 
 /* gpr sub classes */
 /* registers that are byte-addressible */
-extern const jive::register_class regcls_gpr_byte;
+extern const jive::register_class gprbyte_regcls;
 
-extern const jive::register_class regcls_gpr_eax;
-extern const jive::register_class regcls_gpr_ebx;
-extern const jive::register_class regcls_gpr_ecx;
-extern const jive::register_class regcls_gpr_edx;
-extern const jive::register_class regcls_gpr_esi;
-extern const jive::register_class regcls_gpr_edi;
-extern const jive::register_class regcls_gpr_esp;
-extern const jive::register_class regcls_gpr_ebp;
+extern const jive::register_class eax_regcls;
+extern const jive::register_class ebx_regcls;
+extern const jive::register_class ecx_regcls;
+extern const jive::register_class edx_regcls;
+extern const jive::register_class esi_regcls;
+extern const jive::register_class edi_regcls;
+extern const jive::register_class esp_regcls;
+extern const jive::register_class ebp_regcls;
 
 /* fp sub classes */
-extern const jive::register_class regcls_fp_st0;
+extern const jive::register_class st0_regcls;
 
 /* sse sub classes */
-extern const jive::register_class regcls_sse_xmm0;
-extern const jive::register_class regcls_sse_xmm1;
-extern const jive::register_class regcls_sse_xmm2;
-extern const jive::register_class regcls_sse_xmm3;
-extern const jive::register_class regcls_sse_xmm4;
-extern const jive::register_class regcls_sse_xmm5;
-extern const jive::register_class regcls_sse_xmm6;
-extern const jive::register_class regcls_sse_xmm7;
+extern const jive::register_class xmm0_regcls;
+extern const jive::register_class xmm1_regcls;
+extern const jive::register_class xmm2_regcls;
+extern const jive::register_class xmm3_regcls;
+extern const jive::register_class xmm4_regcls;
+extern const jive::register_class xmm5_regcls;
+extern const jive::register_class xmm6_regcls;
+extern const jive::register_class xmm7_regcls;
 
 }}
 

@@ -52,7 +52,7 @@ jive_i386_call_node_substitute(
 
 		if (value_cls == &jive_root_resource_class) {
 			/* FIXME: assumes  int32 */
-			value_cls = &jive::i386::regcls_gpr;
+			value_cls = &jive::i386::gpr_regcls;
 		}
 		
 		auto slot_cls = jive_callslot_class_get(4, 4, offset);
@@ -63,10 +63,10 @@ jive_i386_call_node_substitute(
 		operands.push_back(split->output(0));
 	}
 
-	oports.push_back(&jive::i386::regcls_gpr_eax);
-	oports.push_back(&jive::i386::regcls_gpr_edx);
-	oports.push_back(&jive::i386::regcls_gpr_ecx);
-	oports.push_back(&jive::i386::regcls_flags);
+	oports.push_back(&jive::i386::eax_regcls);
+	oports.push_back(&jive::i386::edx_regcls);
+	oports.push_back(&jive::i386::ecx_regcls);
+	oports.push_back(&jive::i386::cc_regcls);
 	for (size_t n = op.nresults(); n < node->noutputs(); n++)
 		oports.push_back(node->output(n)->port());
 

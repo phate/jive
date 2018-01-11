@@ -519,7 +519,7 @@ match_single(jive::node * node, const jive::register_selector * regselector)
 	if (dynamic_cast<const jive::bits::binary_op *>(&node->operation())) {
 		auto regcls = jive_regselector_map_output(regselector,
 			dynamic_cast<jive::simple_output*>(node->output(0)));
-		if (regcls == &jive::i386::regcls_gpr) {
+		if (regcls == &jive::i386::gpr_regcls) {
 			match_gpr_bitbinary(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
@@ -527,7 +527,7 @@ match_single(jive::node * node, const jive::register_selector * regselector)
 	} else if (dynamic_cast<const jive::bits::unary_op *>(&node->operation())) {
 		auto regcls = jive_regselector_map_output(regselector,
 			dynamic_cast<jive::simple_output*>(node->output(0)));
-		if (regcls == &jive::i386::regcls_gpr) {
+		if (regcls == &jive::i386::gpr_regcls) {
 			match_gpr_bitunary(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
@@ -537,7 +537,7 @@ match_single(jive::node * node, const jive::register_selector * regselector)
 		& node->input(0)->origin()->node()->operation())) {
 		auto cmp_input = dynamic_cast<jive::simple_input*>(node->input(0)->origin()->node()->input(0));
 		auto regcls = jive_regselector_map_input(regselector, cmp_input);
-		if (true || (regcls == &jive::i386::regcls_gpr)) {
+		if (true || (regcls == &jive::i386::gpr_regcls)) {
 			match_gpr_bitcmp(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
@@ -545,7 +545,7 @@ match_single(jive::node * node, const jive::register_selector * regselector)
 	} else if (dynamic_cast<const jive::regvalue_op *>(&node->operation())) {
 		auto regcls = jive_regselector_map_output(regselector,
 			dynamic_cast<jive::simple_output*>(node->output(0)));
-		if (regcls == &jive::i386::regcls_gpr) {
+		if (regcls == &jive::i386::gpr_regcls) {
 			match_gpr_immediate(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
@@ -553,7 +553,7 @@ match_single(jive::node * node, const jive::register_selector * regselector)
 	} else if (dynamic_cast<const jive::load_op *>(&node->operation())) {
 		auto regcls = jive_regselector_map_output(regselector,
 			dynamic_cast<jive::simple_output*>(node->output(0)));
-		if (regcls == &jive::i386::regcls_gpr) {
+		if (regcls == &jive::i386::gpr_regcls) {
 			match_gpr_load(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
@@ -561,7 +561,7 @@ match_single(jive::node * node, const jive::register_selector * regselector)
 	} else if (dynamic_cast<const jive::store_op *>(&node->operation())) {
 		auto regcls = jive_regselector_map_input(regselector,
 			dynamic_cast<jive::simple_input*>(node->input(1)));
-		if (regcls == &jive::i386::regcls_gpr) {
+		if (regcls == &jive::i386::gpr_regcls) {
 			match_gpr_store(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);

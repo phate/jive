@@ -14,134 +14,134 @@
 namespace jive {
 namespace i386 {
 
-const jive::registers cc("cc", &regcls_flags, 0);
-const jive::registers eax("eax", &regcls_gpr_eax, 0);
-const jive::registers ecx("ecx", &regcls_gpr_ecx, 1);
-const jive::registers edx("edx", &regcls_gpr_edx, 2);
-const jive::registers ebx("ebx", &regcls_gpr_ebx, 3);
-const jive::registers esi("esi", &regcls_gpr_esi, 6);
-const jive::registers edi("edi", &regcls_gpr_edi, 7);
-const jive::registers ebp("ebp", &regcls_gpr_ebp, 5);
-const jive::registers esp("esp", &regcls_gpr_esp, 4);
+const jive::registers cc("cc", &cc_regcls, 0);
+const jive::registers eax("eax", &eax_regcls, 0);
+const jive::registers ecx("ecx", &ecx_regcls, 1);
+const jive::registers edx("edx", &edx_regcls, 2);
+const jive::registers ebx("ebx", &ebx_regcls, 3);
+const jive::registers esi("esi", &esi_regcls, 6);
+const jive::registers edi("edi", &edi_regcls, 7);
+const jive::registers ebp("ebp", &ebp_regcls, 5);
+const jive::registers esp("esp", &esp_regcls, 4);
 
-const jive::registers st0("st0", &regcls_fp_st0, 0);
+const jive::registers st0("st0", &st0_regcls, 0);
 
-const jive::registers xmm0("xmm0", &regcls_sse_xmm0, 0);
-const jive::registers xmm1("xmm1", &regcls_sse_xmm1, 1);
-const jive::registers xmm2("xmm2", &regcls_sse_xmm2, 2);
-const jive::registers xmm3("xmm3", &regcls_sse_xmm3, 3);
-const jive::registers xmm4("xmm4", &regcls_sse_xmm4, 4);
-const jive::registers xmm5("xmm5", &regcls_sse_xmm5, 5);
-const jive::registers xmm6("xmm6", &regcls_sse_xmm6, 6);
-const jive::registers xmm7("xmm7", &regcls_sse_xmm7, 7);
+const jive::registers xmm0("xmm0", &xmm0_regcls, 0);
+const jive::registers xmm1("xmm1", &xmm1_regcls, 1);
+const jive::registers xmm2("xmm2", &xmm2_regcls, 2);
+const jive::registers xmm3("xmm3", &xmm3_regcls, 3);
+const jive::registers xmm4("xmm4", &xmm4_regcls, 4);
+const jive::registers xmm5("xmm5", &xmm5_regcls, 5);
+const jive::registers xmm6("xmm6", &xmm6_regcls, 6);
+const jive::registers xmm7("xmm7", &xmm7_regcls, 7);
 
-#define CLS(x) &regcls_##x
+#define CLS(x) &x##_regcls
 #define STACK4 &jive_stackslot_class_4_4
 
 static const jive::bits::type bits16(16);
 static const jive::bits::type bits32(32);
 static const jive::flt::type flt;
 
-const jive::register_class regcls_flags(
-	"flags", {&cc}, &jive_root_register_class, jive_resource_class_priority_reg_high,
-	{{CLS(gpr_eax), {CLS(flags), CLS(gpr_eax)}}, {STACK4, {CLS(flags), CLS(gpr_eax), STACK4}}},
+const jive::register_class cc_regcls(
+	"cc", {&cc}, &jive_root_register_class, jive_resource_class_priority_reg_high,
+	{{CLS(eax), {CLS(cc), CLS(eax)}}, {STACK4, {CLS(cc), CLS(eax), STACK4}}},
 	&bits16, 16, 0, 0);
 
-const jive::register_class regcls_gpr(
+const jive::register_class gpr_regcls(
 	"gpr", {&eax, &ecx, &ebx, &edx, &esi, &edi, &ebp, &esp},
 	&jive_root_register_class, jive_resource_class_priority_reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 32, 8|16|32);
 
-const jive::register_class regcls_gpr_byte(
-	"gpr_byte_addressible", {&eax, &ecx, &ebx, &edx},
-	&regcls_gpr, jive_resource_class_priority_reg_low,
+const jive::register_class gprbyte_regcls(
+	"gprbyte", {&eax, &ecx, &ebx, &edx},
+	&gpr_regcls, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
-const jive::register_class regcls_gpr_eax(
-	"gpr_eax", {&eax}, &regcls_gpr_byte, jive_resource_class_priority_reg_low,
+const jive::register_class eax_regcls(
+	"eax", {&eax}, &gprbyte_regcls, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
-const jive::register_class regcls_gpr_ecx(
-	"gpr_ecx", {&ecx}, &regcls_gpr_byte, jive_resource_class_priority_reg_low,
+const jive::register_class ecx_regcls(
+	"ecx", {&ecx}, &gprbyte_regcls, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
-const jive::register_class regcls_gpr_ebx(
-	"gpr_ebx", {&ebx}, &regcls_gpr_byte, jive_resource_class_priority_reg_low,
+const jive::register_class ebx_regcls(
+	"ebx", {&ebx}, &gprbyte_regcls, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
-const jive::register_class regcls_gpr_edx(
-	"gpr_edx", {&edx}, &regcls_gpr_byte, jive_resource_class_priority_reg_low,
+const jive::register_class edx_regcls(
+	"edx", {&edx}, &gprbyte_regcls, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
-const jive::register_class regcls_gpr_esi(
-	"gpr_esi", {&esi}, &regcls_gpr, jive_resource_class_priority_reg_low,
+const jive::register_class esi_regcls(
+	"esi", {&esi}, &gpr_regcls, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
-const jive::register_class regcls_gpr_edi(
-	"gpr_edi", {&edi}, &regcls_gpr, jive_resource_class_priority_reg_low,
+const jive::register_class edi_regcls(
+	"edi", {&edi}, &gpr_regcls, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
-const jive::register_class regcls_gpr_esp(
-	"gpr_esp", {&esp}, &regcls_gpr, jive_resource_class_priority_reg_low,
+const jive::register_class esp_regcls(
+	"esp", {&esp}, &gpr_regcls, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
-const jive::register_class regcls_gpr_ebp(
-	"gpr_ebp", {&ebp}, &regcls_gpr, jive_resource_class_priority_reg_low,
+const jive::register_class ebp_regcls(
+	"ebp", {&ebp}, &gpr_regcls, jive_resource_class_priority_reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
-const jive::register_class regcls_fp(
+const jive::register_class fp_regcls(
 	"fp", {&st0}, &jive_root_register_class, jive_resource_class_priority_reg_low,
 	{{STACK4, {CLS(fp), STACK4}}}, &flt, 80, 80, 80);
 
-const jive::register_class regcls_fp_st0(
-	"fp_st0", {&st0}, &regcls_fp, jive_resource_class_priority_reg_low,
+const jive::register_class st0_regcls(
+	"st0", {&st0}, &fp_regcls, jive_resource_class_priority_reg_low,
 	{{CLS(fp), {CLS(fp), CLS(fp)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&flt, 80, 80, 80);
 
-const jive::register_class regcls_sse(
-	"sse", {&xmm0, &xmm1, &xmm2, &xmm3, &xmm4, &xmm5, &xmm6, &xmm7},
+const jive::register_class xmm_regcls(
+	"xmm", {&xmm0, &xmm1, &xmm2, &xmm3, &xmm4, &xmm5, &xmm6, &xmm7},
 	&jive_root_register_class, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
-const jive::register_class regcls_sse_xmm0(
-	"sse_xmm0", {&xmm0}, &regcls_sse, jive_resource_class_priority_reg_low,
+const jive::register_class xmm0_regcls(
+	"xmm0", {&xmm0}, &xmm_regcls, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
-const jive::register_class regcls_sse_xmm1(
-	"sse_xmm1", {&xmm1}, &regcls_sse, jive_resource_class_priority_reg_low,
+const jive::register_class xmm1_regcls(
+	"xmm1", {&xmm1}, &xmm_regcls, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
-const jive::register_class regcls_sse_xmm2(
-	"sse_xmm2", {&xmm2}, &regcls_sse, jive_resource_class_priority_reg_low,
+const jive::register_class xmm2_regcls(
+	"xmm2", {&xmm2}, &xmm_regcls, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
-const jive::register_class regcls_sse_xmm3(
-	"sse_xmm3", {&xmm3}, &regcls_sse, jive_resource_class_priority_reg_low,
+const jive::register_class xmm3_regcls(
+	"xmm3", {&xmm3}, &xmm_regcls, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
-const jive::register_class regcls_sse_xmm4(
-	"sse_xmm4", {&xmm4}, &regcls_sse, jive_resource_class_priority_reg_low,
+const jive::register_class xmm4_regcls(
+	"xmm4", {&xmm4}, &xmm_regcls, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
-const jive::register_class regcls_sse_xmm5(
-	"sse_xmm5", {&xmm5}, &regcls_sse, jive_resource_class_priority_reg_low,
+const jive::register_class xmm5_regcls(
+	"xmm5", {&xmm5}, &xmm_regcls, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
-const jive::register_class regcls_sse_xmm6(
-	"sse_xmm6", {&xmm6}, &regcls_sse, jive_resource_class_priority_reg_low,
+const jive::register_class xmm6_regcls(
+	"xmm6", {&xmm6}, &xmm_regcls, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
-const jive::register_class regcls_sse_xmm7(
-	"sse_xmm7", {&xmm7}, &regcls_sse, jive_resource_class_priority_reg_low,
+const jive::register_class xmm7_regcls(
+	"xmm7", {&xmm7}, &xmm_regcls, jive_resource_class_priority_reg_low,
 	{}, &flt, 32, 128, 128);
 
 }}
