@@ -73,15 +73,6 @@ convert_address_to_bitstring_type(
 }
 
 jive::output *
-jive_address_to_bitstring_create(jive::output * address, size_t nbits,
-	const jive::type * original_type)
-{
-	jive::address_to_bitstring_operation op(
-		nbits, std::unique_ptr<jive::type>(original_type->copy()));
-	return jive::create_normalized(address->region(), op, {address})[0];
-}
-
-jive::output *
 jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
 	const jive::type * original_type)
 {
@@ -106,7 +97,7 @@ jive_load_node_address_transform(
 
 	auto address = node->input(0)->origin();
 	if (input_is_address)
-		address = jive_address_to_bitstring_create(address, nbits, &address->type());
+		address = jive::addr2bit_op::create(address, nbits, address->type());
 
 	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::type*>(&address->type())->nbits() == nbits);
 
@@ -142,7 +133,7 @@ jive_store_node_address_transform(
 
 	auto address = node->input(0)->origin();
 	if (input0_is_address)
-		address = jive_address_to_bitstring_create(address, nbits, &address->type());
+		address = jive::addr2bit_op::create(address, nbits, address->type());
 
 	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::type*>(&address->type())->nbits() == nbits);
 
@@ -151,7 +142,7 @@ jive_store_node_address_transform(
 	auto value = node->input(1)->origin();
 	if (input1_is_address){
 		datatype = &bits;
-		value = jive_address_to_bitstring_create(node->input(1)->origin(), nbits, &value->type());
+		value = jive::addr2bit_op::create(node->input(1)->origin(), nbits, value->type());
 	}
 
 	std::vector<jive::output*> states;
@@ -187,8 +178,8 @@ jive_call_node_address_transform(
 	std::vector<jive::output*> operands(node->ninputs());
 	for (size_t i = 0; i < node->ninputs(); i++){
 		if(dynamic_cast<const jive::addrtype*>(&node->input(i)->type())){
-			operands[i] = jive_address_to_bitstring_create(node->input(i)->origin(), nbits,
-				&node->input(i)->origin()->type());
+			operands[i] = jive::addr2bit_op::create(node->input(i)->origin(), nbits,
+				node->input(i)->origin()->type());
 			transform = true;
 		} else {
 			operands[i] = node->input(i)->origin();
@@ -235,8 +226,8 @@ jive_memberof_node_address_transform(
 	size_t nbits = mapper->map_address().size() * 8;
 
 	auto offset = create_bitconstant(node->region(), nbits, elem_offset);
-	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
-		&node->input(0)->origin()->type());
+	auto address = jive::addr2bit_op::create(node->input(0)->origin(), nbits,
+		node->input(0)->origin()->type());
 	auto sum = jive::bits::create_add(nbits, address, offset);
 	auto off_address = jive_bitstring_to_address_create(sum, nbits, &node->output(0)->type());
 
@@ -257,8 +248,8 @@ jive_containerof_node_address_transform(
 	size_t nbits = mapper->map_address().size() * 8;
 
 	auto offset = create_bitconstant(node->region(), nbits, elem_offset);
-	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
-		&node->input(0)->origin()->type());
+	auto address = jive::addr2bit_op::create(node->input(0)->origin(), nbits,
+		node->input(0)->origin()->type());
 	auto sum = jive::bits::create_sub(nbits, address, offset);
 	auto off_address = jive_bitstring_to_address_create(sum, nbits, &node->output(0)->type());
 
@@ -275,8 +266,8 @@ jive_arraysubscript_node_address_transform(
 	size_t nbits = mapper->map_address().size() * 8;
 
 	auto index = node->input(1)->origin();
-	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
-		&node->input(0)->origin()->type());
+	auto address = jive::addr2bit_op::create(node->input(0)->origin(), nbits,
+		node->input(0)->origin()->type());
 	auto elem_size = create_bitconstant(node->region(), nbits, elem_type_size);
 	auto offset = jive::bits::create_mul(nbits, elem_size, index);
 	auto sum = jive::bits::create_add(nbits, address, offset);
@@ -294,10 +285,10 @@ jive_arrayindex_node_address_transform(
 	size_t elem_type_size = mapper->map_value_type(op.element_type()).size();
 	size_t nbits = mapper->map_address().size() * 8;
 
-	auto address1 = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
-		&node->input(0)->origin()->type());
-	auto address2 = jive_address_to_bitstring_create(node->input(1)->origin(), nbits,
-		&node->input(1)->origin()->type());
+	auto address1 = jive::addr2bit_op::create(node->input(0)->origin(), nbits,
+		node->input(0)->origin()->type());
+	auto address2 = jive::addr2bit_op::create(node->input(1)->origin(), nbits,
+		node->input(1)->origin()->type());
 	auto elem_size = create_bitconstant(node->region(), nbits, elem_type_size);
 	auto diff = jive::bits::create_sub(nbits, address1, address2);
 	auto div = jive::bits::create_sdiv(nbits, diff, elem_size);
@@ -310,17 +301,16 @@ jive_apply_node_address_transform(const jive::node * node, size_t nbits)
 {
 	auto fct = dynamic_cast<jive::simple_input*>(node->input(0));
 
-	auto fcttype = &fct->type();
-	if (!type_contains_address(fcttype))
+	auto & fcttype = fct->type();
+	if (!type_contains_address(&fcttype))
 		return;
 
 	std::vector<jive::output*> arguments;
 	for (size_t n = 1; n < node->ninputs(); n++) {
 		auto argument = node->input(n);
-		arguments.push_back(jive_address_to_bitstring_create(
-			argument->origin(), nbits, &argument->type()));
+		arguments.push_back(jive::addr2bit_op::create(argument->origin(), nbits, argument->type()));
 	}
-	auto function = jive_address_to_bitstring_create(fct->origin(), nbits, fcttype);
+	auto function = jive::addr2bit_op::create(fct->origin(), nbits, fcttype);
 
 	auto results = jive::fct::create_apply(function, arguments);
 
@@ -367,21 +357,19 @@ jive_node_address_transform(jive::node * node, jive::memlayout_mapper * mapper)
 
 namespace jive {
 
-address_to_bitstring_operation::~address_to_bitstring_operation() noexcept
-{
-}
+addr2bit_op::~addr2bit_op() noexcept
+{}
 
-address_to_bitstring_operation::address_to_bitstring_operation(
+addr2bit_op::addr2bit_op(
 	size_t nbits,
-	std::unique_ptr<jive::type> original_type)
+	const jive::type & type)
 : nbits_(nbits)
-, result_(*convert_address_to_bitstring_type(*original_type, nbits))
-, argument_(*original_type)
+, result_(*convert_address_to_bitstring_type(type, nbits))
+, argument_(type)
 {}
 
 jive_unop_reduction_path_t
-address_to_bitstring_operation::can_reduce_operand(
-	const jive::output * arg) const noexcept
+addr2bit_op::can_reduce_operand(const jive::output * arg) const noexcept
 {
 	if (!type_contains_address(&arg->type()))
 		return jive_unop_reduction_idempotent;
@@ -404,7 +392,7 @@ address_to_bitstring_operation::can_reduce_operand(
 }
 
 jive::output *
-address_to_bitstring_operation::reduce_operand(
+addr2bit_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
@@ -418,38 +406,38 @@ address_to_bitstring_operation::reduce_operand(
 }
 
 const jive::port &
-address_to_bitstring_operation::argument(size_t index) const noexcept
+addr2bit_op::argument(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < narguments());
 	return argument_;
 }
 
 const jive::port &
-address_to_bitstring_operation::result(size_t index) const noexcept
+addr2bit_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
 	return result_;
 }
 
 bool
-address_to_bitstring_operation::operator==(const operation & other) const noexcept
+addr2bit_op::operator==(const operation & other) const noexcept
 {
-	auto op = dynamic_cast<const address_to_bitstring_operation *>(&other);
+	auto op = dynamic_cast<const addr2bit_op*>(&other);
 	return op
 	    && nbits() == op->nbits()
 	    && result_ == op->result_
 	    && argument_ == op->argument_;
 }
 std::string
-address_to_bitstring_operation::debug_string() const
+addr2bit_op::debug_string() const
 {
-	return "ADDRESS_TO_BITSTRING";
+	return "ADDR2BIT";
 }
 
 std::unique_ptr<jive::operation>
-address_to_bitstring_operation::copy() const
+addr2bit_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new address_to_bitstring_operation(*this));
+	return std::unique_ptr<jive::operation>(new addr2bit_op(*this));
 }
 
 bitstring_to_address_operation::~bitstring_to_address_operation() noexcept
@@ -474,8 +462,7 @@ bitstring_to_address_operation::can_reduce_operand(
 	if (!arg->node())
 		return jive_unop_reduction_none;
 
-	auto op = dynamic_cast<const address_to_bitstring_operation *>(&arg->node()->operation());
-	if (op) {
+	if (auto op = dynamic_cast<const addr2bit_op*>(&arg->node()->operation())) {
 		if (op->nbits() != nbits())
 			return jive_unop_reduction_none;
 
