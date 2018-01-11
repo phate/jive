@@ -21,12 +21,7 @@ namespace jive {
 namespace i386 {
 
 static const std::vector<const jive::register_class*>
-regclasses({
-		&jive_i386_regcls_flags
-	, &jive_i386_regcls_gpr
-	, &jive_i386_regcls_fp
-	, &jive_i386_regcls_sse
-});
+regclasses({&regcls_flags, &regcls_gpr, &regcls_fp, &regcls_sse});
 
 register_classifier::~register_classifier() noexcept
 {}
@@ -44,12 +39,12 @@ register_classifier::classify_type(
 {
 	rescls = jive::relax(rescls);
 
-	if (rescls == &jive_i386_regcls_gpr)
+	if (rescls == &regcls_gpr)
 		return (1 << jive_i386_classify_gpr);
-	else if (rescls == &jive_i386_regcls_flags)
+	else if (rescls == &regcls_flags)
 		return (1 << jive_i386_classify_flags);
 
-	const jive::bits::type * btype = dynamic_cast<const jive::bits::type*>(type);
+	auto btype = dynamic_cast<const jive::bits::type*>(type);
 	if (btype != nullptr) {
 		if (btype->nbits() == 32)
 			return (1 << jive_i386_classify_gpr);

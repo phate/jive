@@ -153,7 +153,7 @@ public:
 	{
 		auto o = subroutine.builder_state->arguments[index].output;
 		auto node = jive_splitnode_create(subroutine.region, o, o->port().gate()->rescls(),
-			&jive_i386_regcls_gpr);
+			&jive::i386::regcls_gpr);
 		return node->output(0);
 	}
 
@@ -196,7 +196,7 @@ jive_i386_subroutine_begin(jive::graph * graph,
 		const jive::resource_class * cls;
 		auto resname = jive::detail::strfmt("ret", n+1);
 		switch (n) {
-			case 0: cls = &jive_i386_regcls_gpr_eax; break;
+			case 0: cls = &jive::i386::regcls_gpr_eax; break;
 			default: cls = jive_fixed_stackslot_class_get(4, 4, n * 4);
 		}
 		sig.results.emplace_back(jive::subroutine_machine_signature::result{resname, cls});
@@ -206,11 +206,11 @@ jive_i386_subroutine_begin(jive::graph * graph,
 
 	typedef jive::subroutine_machine_signature::passthrough pt;
 	sig.passthroughs.emplace_back(pt{"mem", nullptr, false});
-	sig.passthroughs.emplace_back(pt{"saved_esp", &jive_i386_regcls_gpr_esp, false});
-	sig.passthroughs.emplace_back(pt{"saved_ebx", &jive_i386_regcls_gpr_ebx, true});
-	sig.passthroughs.emplace_back(pt{"saved_ebp", &jive_i386_regcls_gpr_ebp, true});
-	sig.passthroughs.emplace_back(pt{"saved_esi", &jive_i386_regcls_gpr_esi, true});
-	sig.passthroughs.emplace_back(pt{"saved_edi", &jive_i386_regcls_gpr_edi, true});
+	sig.passthroughs.emplace_back(pt{"saved_esp", &jive::i386::regcls_gpr_esp, false});
+	sig.passthroughs.emplace_back(pt{"saved_ebx", &jive::i386::regcls_gpr_ebx, true});
+	sig.passthroughs.emplace_back(pt{"saved_ebp", &jive::i386::regcls_gpr_ebp, true});
+	sig.passthroughs.emplace_back(pt{"saved_esi", &jive::i386::regcls_gpr_esi, true});
+	sig.passthroughs.emplace_back(pt{"saved_edi", &jive::i386::regcls_gpr_edi, true});
 	sig.passthroughs.emplace_back(pt{"return_addr", stackslot_cls, false});
 	
 	sig.stack_frame_upper_bound = 4 * (nparameters + 1);
