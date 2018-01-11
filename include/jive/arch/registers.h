@@ -26,7 +26,7 @@ public:
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> & resources,
 		const jive::resource_class * parent,
-		jive_resource_class_priority priority,
+		enum jive::resource_class::priority priority,
 		const std::vector<jive::resource_class_demotion> & demotions,
 		const jive::type * type,
 		size_t nbits,

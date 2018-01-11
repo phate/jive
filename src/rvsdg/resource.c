@@ -31,5 +31,5 @@ const resource_type root_resource(true, "root", nullptr);
 
 const jive::resource_class jive_root_resource_class(
 	&jive::root_resource, "root", {}, nullptr,
-	jive_resource_class_priority_lowest,
+	jive::resource_class::priority::lowest,
 	{}, nullptr);

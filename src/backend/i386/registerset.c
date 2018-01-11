@@ -43,105 +43,96 @@ static const jive::bits::type bits32(32);
 static const jive::flt::type flt;
 
 const jive::register_class cc_regcls(
-	"cc", {&cc}, &jive_root_register_class, jive_resource_class_priority_reg_high,
+	"cc", {&cc}, &jive_root_register_class, resource_class::priority::reg_high,
 	{{CLS(eax), {CLS(cc), CLS(eax)}}, {STACK4, {CLS(cc), CLS(eax), STACK4}}},
 	&bits16, 16, 0, 0);
 
 const jive::register_class gpr_regcls(
 	"gpr", {&eax, &ecx, &ebx, &edx, &esi, &edi, &ebp, &esp},
-	&jive_root_register_class, jive_resource_class_priority_reg_low,
+	&jive_root_register_class, resource_class::priority::reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 32, 8|16|32);
 
 const jive::register_class gprbyte_regcls(
 	"gprbyte", {&eax, &ecx, &ebx, &edx},
-	&gpr_regcls, jive_resource_class_priority_reg_low,
+	&gpr_regcls, resource_class::priority::reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class eax_regcls(
-	"eax", {&eax}, &gprbyte_regcls, jive_resource_class_priority_reg_low,
+	"eax", {&eax}, &gprbyte_regcls, resource_class::priority::reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class ecx_regcls(
-	"ecx", {&ecx}, &gprbyte_regcls, jive_resource_class_priority_reg_low,
+	"ecx", {&ecx}, &gprbyte_regcls, resource_class::priority::reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class ebx_regcls(
-	"ebx", {&ebx}, &gprbyte_regcls, jive_resource_class_priority_reg_low,
+	"ebx", {&ebx}, &gprbyte_regcls, resource_class::priority::reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class edx_regcls(
-	"edx", {&edx}, &gprbyte_regcls, jive_resource_class_priority_reg_low,
+	"edx", {&edx}, &gprbyte_regcls, resource_class::priority::reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class esi_regcls(
-	"esi", {&esi}, &gpr_regcls, jive_resource_class_priority_reg_low,
+	"esi", {&esi}, &gpr_regcls, resource_class::priority::reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class edi_regcls(
-	"edi", {&edi}, &gpr_regcls, jive_resource_class_priority_reg_low,
+	"edi", {&edi}, &gpr_regcls, resource_class::priority::reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class esp_regcls(
-	"esp", {&esp}, &gpr_regcls, jive_resource_class_priority_reg_low,
+	"esp", {&esp}, &gpr_regcls, resource_class::priority::reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class ebp_regcls(
-	"ebp", {&ebp}, &gpr_regcls, jive_resource_class_priority_reg_low,
+	"ebp", {&ebp}, &gpr_regcls, resource_class::priority::reg_low,
 	{{CLS(gpr), {CLS(gpr), CLS(gpr)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&bits32, 32, 32, 8|16|32);
 
 const jive::register_class fp_regcls(
-	"fp", {&st0}, &jive_root_register_class, jive_resource_class_priority_reg_low,
+	"fp", {&st0}, &jive_root_register_class, resource_class::priority::reg_low,
 	{{STACK4, {CLS(fp), STACK4}}}, &flt, 80, 80, 80);
 
 const jive::register_class st0_regcls(
-	"st0", {&st0}, &fp_regcls, jive_resource_class_priority_reg_low,
+	"st0", {&st0}, &fp_regcls, resource_class::priority::reg_low,
 	{{CLS(fp), {CLS(fp), CLS(fp)}}, {STACK4, {CLS(gpr), STACK4}}},
 	&flt, 80, 80, 80);
 
 const jive::register_class xmm_regcls(
 	"xmm", {&xmm0, &xmm1, &xmm2, &xmm3, &xmm4, &xmm5, &xmm6, &xmm7},
-	&jive_root_register_class, jive_resource_class_priority_reg_low,
-	{}, &flt, 32, 128, 128);
+	&jive_root_register_class, resource_class::priority::reg_low, {}, &flt, 32, 128, 128);
 
 const jive::register_class xmm0_regcls(
-	"xmm0", {&xmm0}, &xmm_regcls, jive_resource_class_priority_reg_low,
-	{}, &flt, 32, 128, 128);
+	"xmm0", {&xmm0}, &xmm_regcls, resource_class::priority::reg_low, {}, &flt, 32, 128, 128);
 
 const jive::register_class xmm1_regcls(
-	"xmm1", {&xmm1}, &xmm_regcls, jive_resource_class_priority_reg_low,
-	{}, &flt, 32, 128, 128);
+	"xmm1", {&xmm1}, &xmm_regcls, resource_class::priority::reg_low, {}, &flt, 32, 128, 128);
 
 const jive::register_class xmm2_regcls(
-	"xmm2", {&xmm2}, &xmm_regcls, jive_resource_class_priority_reg_low,
-	{}, &flt, 32, 128, 128);
+	"xmm2", {&xmm2}, &xmm_regcls, resource_class::priority::reg_low, {}, &flt, 32, 128, 128);
 
 const jive::register_class xmm3_regcls(
-	"xmm3", {&xmm3}, &xmm_regcls, jive_resource_class_priority_reg_low,
-	{}, &flt, 32, 128, 128);
+	"xmm3", {&xmm3}, &xmm_regcls, resource_class::priority::reg_low, {}, &flt, 32, 128, 128);
 
 const jive::register_class xmm4_regcls(
-	"xmm4", {&xmm4}, &xmm_regcls, jive_resource_class_priority_reg_low,
-	{}, &flt, 32, 128, 128);
+	"xmm4", {&xmm4}, &xmm_regcls, resource_class::priority::reg_low, {}, &flt, 32, 128, 128);
 
 const jive::register_class xmm5_regcls(
-	"xmm5", {&xmm5}, &xmm_regcls, jive_resource_class_priority_reg_low,
-	{}, &flt, 32, 128, 128);
+	"xmm5", {&xmm5}, &xmm_regcls, resource_class::priority::reg_low, {}, &flt, 32, 128, 128);
 
 const jive::register_class xmm6_regcls(
-	"xmm6", {&xmm6}, &xmm_regcls, jive_resource_class_priority_reg_low,
-	{}, &flt, 32, 128, 128);
+	"xmm6", {&xmm6}, &xmm_regcls, resource_class::priority::reg_low, {}, &flt, 32, 128, 128);
 
 const jive::register_class xmm7_regcls(
-	"xmm7", {&xmm7}, &xmm_regcls, jive_resource_class_priority_reg_low,
-	{}, &flt, 32, 128, 128);
+	"xmm7", {&xmm7}, &xmm_regcls, resource_class::priority::reg_low, {}, &flt, 32, 128, 128);
 
 }}

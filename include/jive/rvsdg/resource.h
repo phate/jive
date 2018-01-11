@@ -17,17 +17,6 @@
 #include <unordered_set>
 #include <vector>
 
-typedef enum {
-	jive_resource_class_priority_invalid = 0,
-	jive_resource_class_priority_control = 1,
-	jive_resource_class_priority_reg_implicit = 2,
-	jive_resource_class_priority_mem_unique = 3,
-	jive_resource_class_priority_reg_high = 4,
-	jive_resource_class_priority_reg_low = 5,
-	jive_resource_class_priority_mem_generic = 6,
-	jive_resource_class_priority_lowest = 7
-} jive_resource_class_priority;
-
 namespace jive {
 
 class gate;
@@ -109,6 +98,17 @@ private:
 
 class resource_class {
 public:
+	enum class priority {
+		  invalid = 0
+		, control = 1
+		, reg_implicit = 2
+		, mem_unique = 3
+		, reg_high = 4
+		, reg_low = 5
+		, mem_generic = 6
+		, lowest = 7
+	};
+
 	virtual
 	~resource_class();
 
@@ -118,7 +118,7 @@ public:
 		const std::string & name,
 		const std::unordered_set<const jive::resource*> resources,
 		const jive::resource_class * parent,
-		jive_resource_class_priority pr,
+		priority pr,
 		const std::vector<resource_class_demotion> & demotions,
 		const jive::type * type)
 	: priority(pr)
@@ -194,7 +194,7 @@ public:
 	}
 
 	/** \brief Priority for register allocator */
-	jive_resource_class_priority priority;
+	resource_class::priority priority;
 	
 private:
 	const jive::resource_type * restype_;

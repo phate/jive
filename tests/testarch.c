@@ -30,43 +30,43 @@ static const jive::bits::type bits32(32);
 
 const jive::register_class jive_testarch_regcls_r0(
 	"r0", {&jive_testarch_reg_r0},
-	&jive_testarch_regcls_evenreg, jive_resource_class_priority_reg_low,
+	&jive_testarch_regcls_evenreg, jive::resource_class::priority::reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
 const jive::register_class jive_testarch_regcls_r1(
 	"r1", {&jive_testarch_reg_r1},
-	&jive_testarch_regcls_oddreg, jive_resource_class_priority_reg_low,
+	&jive_testarch_regcls_oddreg, jive::resource_class::priority::reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
 const jive::register_class jive_testarch_regcls_r2(
 	"r2", {&jive_testarch_reg_r2},
-	&jive_testarch_regcls_evenreg, jive_resource_class_priority_reg_low,
+	&jive_testarch_regcls_evenreg, jive::resource_class::priority::reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
 const jive::register_class jive_testarch_regcls_r3(
 	"r3", {&jive_testarch_reg_r3},
-	&jive_testarch_regcls_oddreg, jive_resource_class_priority_reg_low,
+	&jive_testarch_regcls_oddreg, jive::resource_class::priority::reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
 const jive::register_class jive_testarch_regcls_evenreg(
 	"even", {&jive_testarch_reg_r0, &jive_testarch_reg_r2},
-	&jive_testarch_regcls_gpr, jive_resource_class_priority_reg_low,
+	&jive_testarch_regcls_gpr, jive::resource_class::priority::reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
 const jive::register_class jive_testarch_regcls_oddreg(
 	"odd", {&jive_testarch_reg_r1, &jive_testarch_reg_r3},
-	&jive_testarch_regcls_gpr, jive_resource_class_priority_reg_low,
+	&jive_testarch_regcls_gpr, jive::resource_class::priority::reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
 const jive::register_class jive_testarch_regcls_gpr(
 	"gpr",
 	{&jive_testarch_reg_r0, &jive_testarch_reg_r1, &jive_testarch_reg_r2, &jive_testarch_reg_r3},
-	&jive_root_register_class, jive_resource_class_priority_reg_low,
+	&jive_root_register_class, jive::resource_class::priority::reg_low,
 	{{STACK4, {CLS(gpr), STACK4}}}, &bits32, 32, 0, 0);
 
 const jive::register_class jive_testarch_regcls_cc(
 	"cc", {&jive_testarch_reg_cc},
-	&jive_root_register_class, jive_resource_class_priority_reg_high,
+	&jive_root_register_class, jive::resource_class::priority::reg_high,
 	{{CLS(gpr), {CLS(cc), CLS(gpr)}}, {STACK4, {CLS(cc), CLS(gpr), STACK4}}},
 	&bits16, 32, 0, 0);
 

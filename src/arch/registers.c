@@ -22,5 +22,5 @@ register_class::~register_class()
 
 const jive::resource_class jive_root_register_class(
 	&jive::root_resource, "register", {},
-	&jive_root_resource_class, jive_resource_class_priority_lowest,
+	&jive_root_resource_class, jive::resource_class::priority::lowest,
 	{}, nullptr);
