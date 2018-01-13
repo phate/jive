@@ -18,17 +18,17 @@ namespace jive {
 
 class resource_class;
 
-class split_operation final : public jive::unary_op {
+class split_op final : public jive::unary_op {
 public:
 	virtual
-	~split_operation() noexcept;
+	~split_op() noexcept;
 
 	inline
-	split_operation(
-		const resource_class * in_class,
-		const resource_class * out_class) noexcept
-	: result_(out_class)
-	, argument_(in_class)
+	split_op(
+		const resource_class * srcrescls,
+		const resource_class * dstrescls) noexcept
+	: result_(dstrescls)
+	, argument_(srcrescls)
 	{}
 
 	virtual bool
@@ -53,13 +53,13 @@ public:
 		jive::output * arg) const override;
 
 	inline const resource_class *
-	in_class() const noexcept
+	srcrescls() const noexcept
 	{
 		return argument_.rescls();
 	}
 
 	inline const resource_class *
-	out_class() const noexcept
+	dstrescls() const noexcept
 	{
 		return result_.rescls();
 	}
@@ -67,18 +67,43 @@ public:
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	static inline jive::unary_normal_form *
+	normal_form(jive::graph * graph)
+	{
+		return static_cast<jive::unary_normal_form*>(graph->node_normal_form(typeid(split_op)));
+	}
+
+	static inline jive::output *
+	create(
+		jive::output * operand,
+		const resource_class * srcrescls,
+		const resource_class * dstrescls)
+	{
+		auto nf = normal_form(operand->region()->graph());
+		if (nf->get_mutable())
+			operand->region()->graph()->mark_denormalized();
+
+		split_op op(srcrescls, dstrescls);
+		return create_normalized(operand->region(), op, {operand})[0];
+	}
+
 private:
 	jive::port result_;
 	jive::port argument_;
 };
 
+static inline bool
+is_split_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const jive::split_op*>(&op) != nullptr;
 }
 
-jive::node *
-jive_splitnode_create(
-	jive::region * region,
-	jive::output * in_origin,
-	const jive::resource_class * in_class,
-	const jive::resource_class * out_class);
+static inline bool
+is_split_node(const jive::node * node) noexcept
+{
+	return is_opnode<split_op>(node);
+}
+
+}
 
 #endif

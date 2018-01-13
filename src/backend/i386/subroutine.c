@@ -152,9 +152,7 @@ public:
 		size_t index) override
 	{
 		auto o = subroutine.builder_state->arguments[index].output;
-		auto node = jive_splitnode_create(subroutine.region, o, o->port().gate()->rescls(),
-			&jive::i386::gpr_regcls);
-		return node->output(0);
+		return jive::split_op::create(o, o->port().gate()->rescls(), &jive::i386::gpr_regcls);
 	}
 
 	virtual void

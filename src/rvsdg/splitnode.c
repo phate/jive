@@ -14,70 +14,54 @@
 
 namespace jive {
 
-split_operation::~split_operation() noexcept
-{
-}
+split_op::~split_op() noexcept
+{}
 
 bool
-split_operation::operator==(const operation & gen_other) const noexcept
+split_op::operator==(const operation & other) const noexcept
 {
 	/* treat this operation a bit specially: state that any two
 	 * splits are not the same to unconditionally make them exempt
-	 * from CSE */
-	return false;
+	 * from CSE
+	*/
+	return this == &other;
 }
 std::string
-split_operation::debug_string() const
+split_op::debug_string() const
 {
 	return "SPLIT";
 }
 
 const jive::port &
-split_operation::argument(size_t index) const noexcept
+split_op::argument(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < narguments());
 	return argument_;
 }
 
 const jive::port &
-split_operation::result(size_t index) const noexcept
+split_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
 	return result_;
 }
 
 jive_unop_reduction_path_t
-split_operation::can_reduce_operand(const jive::output * arg) const noexcept
+split_op::can_reduce_operand(const jive::output * arg) const noexcept
 {
 	return jive_unop_reduction_none;
 }
 
 jive::output *
-split_operation::reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) const
+split_op::reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) const
 {
 	return nullptr;
 }
 
 std::unique_ptr<jive::operation>
-split_operation::copy() const
+split_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new split_operation(*this));
+	return std::unique_ptr<jive::operation>(new split_op(*this));
 }
 
-}
-
-jive::node *
-jive_splitnode_create(
-	jive::region * region,
-	jive::output * in_origin,
-	const jive::resource_class * in_class,
-	const jive::resource_class * out_class)
-{
-	jive::split_operation op(in_class, out_class);
-	
-	auto nf = region->graph()->node_normal_form(typeid(jive::split_operation));
-	if (nf->get_mutable())
-		region->graph()->mark_denormalized();
-
-	return region->add_simple_node(op, {in_origin});
 }

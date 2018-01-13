@@ -58,9 +58,8 @@ jive_i386_call_node_substitute(
 		auto slot_cls = jive_callslot_class_get(4, 4, offset);
 		offset += 4;
 		
-		auto split = jive_splitnode_create(node->region(), value, value_cls, slot_cls);
 		iports.push_back(slot_cls);
-		operands.push_back(split->output(0));
+		operands.push_back(jive::split_op::create(value, value_cls, slot_cls));
 	}
 
 	oports.push_back(&jive::i386::eax_regcls);

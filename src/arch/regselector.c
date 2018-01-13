@@ -185,7 +185,7 @@ register_selector::annotate_node_proper(jive::node * node)
 		option.mask = classifier->classify_type(type, rescls);
 		input = dynamic_cast<jive::simple_input*>(node->input(1));
 		jive_negotiator_annotate_identity(this, 1, &input, 0, NULL, &option);
-	} else if (dynamic_cast<const jive::split_operation *>(gen_op)) {
+	} else if (is_split_op(*gen_op)) {
 		auto input = dynamic_cast<jive::simple_input*>(node->input(0));
 		auto output = dynamic_cast<jive::simple_output*>(node->output(0));
 		

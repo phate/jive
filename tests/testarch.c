@@ -351,12 +351,9 @@ public:
 		size_t index) override
 	{
 		auto o = subroutine.builder_state->arguments[index].output;
-	
-		if (index >= 2) {
-			auto node = jive_splitnode_create(subroutine.region, o, o->port().gate()->rescls(),
-				&jive_testarch_regcls_gpr);
-			o = node->output(0);
-		}
+		if (index >= 2)
+			o = jive::split_op::create(o, o->port().gate()->rescls(), &jive_testarch_regcls_gpr);
+
 		return o;
 	}
 
