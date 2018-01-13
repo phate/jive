@@ -7,29 +7,28 @@
 #ifndef JIVE_TYPES_UNION_UNNCHOOSE_H
 #define JIVE_TYPES_UNION_UNNCHOOSE_H
 
+#include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/unary.h>
 #include <jive/types/union/unntype.h>
 
 namespace jive {
 namespace unn {
 
-class choose_operation final : public jive::unary_op {
+/* choose operator */
+
+class choose_op final : public jive::unary_op {
 public:
 	virtual
-	~choose_operation() noexcept;
+	~choose_op() noexcept;
 
 	inline
-	choose_operation(const jive::unn::type & type, size_t element) noexcept
-	: element_(element)
-	, result_(*type.declaration()->elements[element])
+	choose_op(
+		const jive::unn::type & type,
+		size_t option) noexcept
+	: option_(option)
+	, result_(*type.declaration()->elements[option])
 	, argument_(type)
 	{}
-
-	inline
-	choose_operation(const choose_operation & other) = default;
-
-	inline
-	choose_operation(choose_operation && other) = default;
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -53,24 +52,48 @@ public:
 		jive::output * arg) const override;
 
 	inline size_t
-	element() const noexcept
+	option() const noexcept
 	{
-		return element_;
+		return option_;
 	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	static inline jive::unary_normal_form *
+	normal_form(jive::graph * graph)
+	{
+		return static_cast<jive::unary_normal_form*>(graph->node_normal_form(typeid(choose_op)));
+	}
+
+	static inline jive::output *
+	create(jive::output * operand, size_t option)
+	{
+		auto ut = dynamic_cast<const jive::unn::type*>(&operand->type());
+		if (!ut) throw jive::type_error("unn", operand->type().debug_string());
+
+		choose_op op(*ut, option);
+		return jive::create_normalized(operand->region(), op, {operand})[0];
+	}
+
 private:
-	size_t element_;
+	size_t option_;
 	jive::port result_;
 	jive::port argument_;
 };
 
-}
+static inline bool
+is_choose_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const choose_op*>(&op) != nullptr;
 }
 
-jive::output *
-jive_choose_create(size_t element, jive::output * operand);
+static inline bool
+is_choose_node(const jive::node * node) noexcept
+{
+	return is_opnode<choose_op>(node);
+}
+
+}}
 
 #endif

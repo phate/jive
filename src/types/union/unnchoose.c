@@ -17,40 +17,41 @@ static constexpr jive_unop_reduction_path_t jive_choose_reduction_load = 128;
 namespace jive {
 namespace unn {
 
-choose_operation::~choose_operation() noexcept
+choose_op::~choose_op() noexcept
 {}
 
 bool
-choose_operation::operator==(const operation & other) const noexcept
+choose_op::operator==(const operation & other) const noexcept
 {
-	auto op = dynamic_cast<const choose_operation*>(&other);
+	auto op = dynamic_cast<const choose_op*>(&other);
 	return op
-	    && element_ == op->element_
+	    && option_ == op->option_
 	    && result_ == op->result_
 	    && argument_ == op->argument_;
 }
+
 std::string
-choose_operation::debug_string() const
+choose_op::debug_string() const
 {
-	return detail::strfmt("CHOOSE(", element(), ")");
+	return detail::strfmt("CHOOSE(", option(), ")");
 }
 
 const jive::port &
-choose_operation::argument(size_t index) const noexcept
+choose_op::argument(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < narguments());
 	return argument_;
 }
 
 const jive::port &
-choose_operation::result(size_t index) const noexcept
+choose_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
 	return result_;
 }
 
 jive_unop_reduction_path_t
-choose_operation::can_reduce_operand(
+choose_op::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
 	if (arg->node() && dynamic_cast<const unify_op*>(&arg->node()->operation()))
@@ -63,7 +64,7 @@ choose_operation::can_reduce_operand(
 }
 
 jive::output *
-choose_operation::reduce_operand(
+choose_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
@@ -83,11 +84,11 @@ choose_operation::reduce_operand(
 			states.push_back(arg->node()->input(n+1)->origin());
 	
 		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
-			return jive_load_by_address_create(address, decl->elements[element()],
+			return jive_load_by_address_create(address, decl->elements[option()],
 				nstates, &states[0]);
 		} else {
 			size_t nbits = static_cast<const jive::bits::type*>(&address->type())->nbits();
-			return jive_load_by_bitstring_create(address, nbits, decl->elements[element()],
+			return jive_load_by_bitstring_create(address, nbits, decl->elements[option()],
 				nstates, &states[0]);
 		}
 	}
@@ -96,19 +97,9 @@ choose_operation::reduce_operand(
 }
 
 std::unique_ptr<jive::operation>
-choose_operation::copy() const
+choose_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new choose_operation(*this));
+	return std::unique_ptr<jive::operation>(new choose_op(*this));
 }
 
-}
-}
-
-jive::output *
-jive_choose_create(size_t member, jive::output * argument)
-{
-	const jive::unn::type & unn_type =
-		dynamic_cast<const jive::unn::type &>(argument->type());
-	jive::unn::choose_operation op(unn_type, member);
-	return jive::create_normalized(argument->region(), op, {argument})[0];
-}
+}}
