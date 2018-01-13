@@ -12,8 +12,6 @@
 #include <jive/rvsdg/graph.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/record/rcdgroup.h>
-#include <jive/types/union/unntype.h>
-#include <jive/types/union/unnunify.h>
 
 static std::vector<jive::output*>
 jive_store_node_normalized_create(

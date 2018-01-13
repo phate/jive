@@ -8,7 +8,7 @@
 
 #include <jive/arch/address.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/types/union/unntype.h>
+#include <jive/types/union.h>
 
 namespace jive {
 

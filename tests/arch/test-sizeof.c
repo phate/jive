@@ -15,7 +15,7 @@
 #include <jive/rvsdg/traverser.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/record/rcdtype.h>
-#include <jive/types/union/unntype.h>
+#include <jive/types/union.h>
 #include <jive/view.h>
 
 #include "testnodes.h"

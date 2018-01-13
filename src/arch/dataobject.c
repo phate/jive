@@ -15,8 +15,7 @@
 #include <jive/types/float/flttype.h>
 #include <jive/types/record/rcdgroup.h>
 #include <jive/types/record/rcdtype.h>
-#include <jive/types/union/unntype.h>
-#include <jive/types/union/unnunify.h>
+#include <jive/types/union.h>
 
 namespace jive {
 

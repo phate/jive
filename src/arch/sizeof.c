@@ -11,7 +11,6 @@
 #include <jive/rvsdg/region.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/record/rcdtype.h>
-#include <jive/types/union/unntype.h>
 
 namespace jive {
 
