@@ -29,8 +29,8 @@ static int test_unnchoose(void)
 	static const bits::type bt32(32);
 
 	static const jive::valuetype * decl_elems[] = {&bt8, &bt16, &bt32};
-	static const jive::unn::declaration decl = {3, decl_elems};
-	static jive::unn::type unntype(&decl);
+	static const jive::unndeclaration decl = {3, decl_elems};
+	static jive::unntype unntype(&decl);
 
 	auto i0 = graph.add_import(bt8, "");
 	auto i1 = graph.add_import(unntype, "");
@@ -40,10 +40,10 @@ static int test_unnchoose(void)
 	auto u0 = jive_unify_create(&decl, 0, i0);
 	auto load = jive_load_by_address_create(i3, &unntype, 0, NULL);
 
-	auto c0 = unn::choose_op::create(i1, 1);
-	auto c1 = unn::choose_op::create(u0, 0);
-	auto c2 = unn::choose_op::create(i2, 1);
-	auto c3 = unn::choose_op::create(load, 0);
+	auto c0 = choose_op::create(i1, 1);
+	auto c1 = choose_op::create(u0, 0);
+	auto c2 = choose_op::create(i2, 1);
+	auto c3 = choose_op::create(load, 0);
 
 	graph.add_export(c0, "");
 	auto x1 = graph.add_export(c1, "");
@@ -73,11 +73,11 @@ static int test_unnunify(void)
 	static const jive::bits::type bits32(32);
 
 	static const jive::valuetype * decl_elems[] = {&bits8, &bits16, &bits32};
-	static const jive::unn::declaration decl = {3, decl_elems};
-	static jive::unn::type unntype(&decl);
+	static const jive::unndeclaration decl = {3, decl_elems};
+	static jive::unntype unntype(&decl);
 
-	static const jive::unn::declaration decl_empty = {0, NULL};
-	static jive::unn::type unntype_empty(&decl_empty);
+	static const jive::unndeclaration decl_empty = {0, NULL};
+	static jive::unntype unntype_empty(&decl_empty);
 	
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits8});
 

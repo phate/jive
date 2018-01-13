@@ -50,7 +50,7 @@ memlayout_mapper::map_value_type(const valuetype & type)
 		return map_record(decl);
 	}
 
-	if (auto t = dynamic_cast<const jive::unn::type*>(&type))
+	if (auto t = dynamic_cast<const jive::unntype*>(&type))
 		return map_union(t->declaration());
 
 	throw compiler_error("Type not supported.");

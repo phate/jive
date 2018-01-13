@@ -12,31 +12,30 @@
 static constexpr jive_unop_reduction_path_t jive_choose_reduction_load = 128;
 
 namespace jive {
-namespace unn {
 
 /* union type */
 
-type::~type() noexcept
+unntype::~unntype() noexcept
 {}
 
 std::string
-type::debug_string() const
+unntype::debug_string() const
 {
 	return "unn";
 }
 
 bool
-type::operator==(const jive::type & other) const noexcept
+unntype::operator==(const jive::type & other) const noexcept
 {
-	auto type = dynamic_cast<const jive::unn::type*>(&other);
+	auto type = dynamic_cast<const jive::unntype*>(&other);
 	return type
 	    && declaration() == type->declaration();
 }
 
 std::unique_ptr<jive::type>
-type::copy() const
+unntype::copy() const
 {
-	return std::unique_ptr<jive::type>(new type(*this));
+	return std::unique_ptr<jive::type>(new unntype(*this));
 }
 
 /* choose operator */
@@ -98,9 +97,7 @@ choose_op::reduce_operand(
 
 	if (path == jive_choose_reduction_load) {
 		auto address = arg->node()->input(0)->origin();
-
-		auto decl = static_cast<const jive::unn::type*>(
-			&arg->node()->output(0)->type())->declaration();
+		auto decl = static_cast<const jive::unntype*>(&arg->node()->output(0)->type())->declaration();
 
 		size_t nstates = arg->node()->ninputs()-1;
 		std::vector<jive::output*> states;
@@ -182,23 +179,21 @@ unify_op::copy() const
 	return std::unique_ptr<jive::operation>(new unify_op(*this));
 }
 
-}}
+}
 
 jive::output *
 jive_unify_create(
-	const jive::unn::declaration * decl,
+	const jive::unndeclaration * decl,
 	size_t option,
 	jive::output * const argument)
 {
-	const jive::unn::type  unn_type(decl);
-	jive::unn::unify_op op(unn_type, option);
+	jive::unify_op op(decl, option);
 	return jive::create_normalized(argument->region(), op, {argument})[0];
 }
 
 /* empty unify operation */
 
 namespace jive {
-namespace unn {
 
 empty_unify_op::~empty_unify_op() noexcept
 {}
@@ -229,13 +224,13 @@ empty_unify_op::copy() const
 	return std::unique_ptr<jive::operation>(new empty_unify_op(*this));
 }
 
-}}
+}
 
 jive::output *
 jive_empty_unify_create(
 	jive::region * region,
-	const jive::unn::declaration * decl)
+	const jive::unndeclaration * decl)
 {
-	jive::unn::empty_unify_op op(decl);
+	jive::empty_unify_op op(decl);
 	return jive::create_normalized(region, op, {})[0];
 }

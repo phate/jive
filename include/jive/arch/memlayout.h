@@ -17,9 +17,6 @@ namespace jive {
 namespace rcd {
 	struct declaration;
 }
-namespace unn {
-	struct declaration;
-}
 
 class valuetype;
 
@@ -58,19 +55,19 @@ public:
 	~union_memlayout();
 
 	inline
-	union_memlayout(const struct unn::declaration * decl, size_t size, size_t alignment) noexcept
+	union_memlayout(const struct unndeclaration * decl, size_t size, size_t alignment) noexcept
 		: dataitem_memlayout(size, alignment)
 		, decl_(decl)
 	{}
 
-	inline const unn::declaration *
+	inline const unndeclaration *
 	declaration() const noexcept
 	{
 		return decl_;
 	}
 
 private:
-	const struct unn::declaration * decl_;
+	const struct unndeclaration * decl_;
 };
 
 class record_memlayout_element {
@@ -165,7 +162,7 @@ public:
 	map_record(std::shared_ptr<const rcd::declaration> & decl) = 0;
 
 	virtual const union_memlayout &
-	map_union(const struct unn::declaration * decl) = 0;
+	map_union(const struct unndeclaration * decl) = 0;
 
 	virtual const dataitem_memlayout &
 	map_bitstring(size_t nbits) = 0;

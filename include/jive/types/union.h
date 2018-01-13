@@ -12,28 +12,27 @@
 #include <jive/rvsdg/unary.h>
 
 namespace jive {
-namespace unn {
 
 /* union declaration */
 
-struct declaration {
+struct unndeclaration {
 	size_t nelements;
 	const jive::valuetype ** elements;
 };
 
 /* union type */
 
-class type final : public jive::valuetype {
+class unntype final : public jive::valuetype {
 public:
 	virtual
-	~type() noexcept;
+	~unntype() noexcept;
 
 	inline constexpr
-	type(const jive::unn::declaration * decl) noexcept
+	unntype(const jive::unndeclaration * decl) noexcept
 	: decl_(decl)
 	{}
 
-	inline const jive::unn::declaration *
+	inline const jive::unndeclaration *
 	declaration() const noexcept
 	{
 		return decl_;
@@ -49,7 +48,7 @@ public:
 	copy() const override;
 
 private:
-	const jive::unn::declaration * decl_;
+	const jive::unndeclaration * decl_;
 };
 
 /* unify operator */
@@ -60,7 +59,7 @@ public:
 	~unify_op() noexcept;
 
 	inline
-	unify_op(const jive::unn::type & type, size_t option) noexcept
+	unify_op(const jive::unntype & type, size_t option) noexcept
 	: option_(option)
 	, result_(type)
 	, argument_(*type.declaration()->elements[option])
@@ -96,10 +95,10 @@ public:
 	inline size_t
 	option() const noexcept { return option_; }
 
-	inline const jive::unn::declaration *
+	inline const jive::unndeclaration *
 	declaration() const noexcept
 	{
-		return static_cast<const jive::unn::type*>(&result_.type())->declaration();
+		return static_cast<const jive::unntype*>(&result_.type())->declaration();
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -111,16 +110,15 @@ private:
 	jive::port argument_;
 };
 
-}}
+}
 
 jive::output *
 jive_unify_create(
-	const jive::unn::declaration * decl,
+	const jive::unndeclaration * decl,
 	size_t option,
 	jive::output * const operand);
 
 namespace jive {
-namespace unn {
 
 /* empty unify operator */
 
@@ -130,14 +128,15 @@ public:
 	~empty_unify_op() noexcept;
 
 	inline
-	empty_unify_op(const jive::unn::declaration * declaration) noexcept
-	: port_(jive::unn::type(declaration))
+	empty_unify_op(
+		const jive::unndeclaration * declaration) noexcept
+	: port_(jive::unntype(declaration))
 	{}
 
-	inline const jive::unn::declaration *
+	inline const jive::unndeclaration *
 	declaration() const noexcept
 	{
-		return static_cast<const jive::unn::type*>(&port_.type())->declaration();
+		return static_cast<const jive::unntype*>(&port_.type())->declaration();
 	}
 
 	virtual bool
@@ -156,15 +155,14 @@ private:
 	jive::port port_;
 };
 
-}}
+}
 
 jive::output *
 jive_empty_unify_create(
 	jive::region * region,
-	const jive::unn::declaration * decl);
+	const jive::unndeclaration * decl);
 
 namespace jive {
-namespace unn {
 
 /* choose operator */
 
@@ -175,7 +173,7 @@ public:
 
 	inline
 	choose_op(
-		const jive::unn::type & type,
+		const jive::unntype & type,
 		size_t option) noexcept
 	: option_(option)
 	, result_(*type.declaration()->elements[option])
@@ -209,10 +207,10 @@ public:
 		return option_;
 	}
 
-	inline const jive::unn::declaration *
+	inline const jive::unndeclaration *
 	declaration() const noexcept
 	{
-		return static_cast<const jive::unn::type*>(&result_.type())->declaration();
+		return static_cast<const jive::unntype*>(&result_.type())->declaration();
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -227,7 +225,7 @@ public:
 	static inline jive::output *
 	create(jive::output * operand, size_t option)
 	{
-		auto ut = dynamic_cast<const jive::unn::type*>(&operand->type());
+		auto ut = dynamic_cast<const jive::unntype*>(&operand->type());
 		if (!ut) throw jive::type_error("unn", operand->type().debug_string());
 
 		choose_op op(*ut, option);
@@ -252,6 +250,6 @@ is_choose_node(const jive::node * node) noexcept
 	return is_opnode<choose_op>(node);
 }
 
-}}
+}
 
 #endif

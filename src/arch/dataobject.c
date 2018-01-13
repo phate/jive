@@ -108,11 +108,11 @@ flatten_data_items(
 				items[n + layout.element(k).offset()] = sub_items[n];
 			}
 		}
-	} else if (dynamic_cast<const jive::unn::type*>(type_)) {
-		const jive::unn::type * type = static_cast<const jive::unn::type*>(type_);
-		const jive::union_memlayout & layout = layout_mapper->map_union(type->declaration());
+	} else if (dynamic_cast<const jive::unntype*>(type_)) {
+		auto type = static_cast<const jive::unntype*>(type_);
+		auto & layout = layout_mapper->map_union(type->declaration());
 		
-		if (!dynamic_cast<const jive::unn::unify_op *>(&tmp->node()->operation())) {
+		if (!dynamic_cast<const jive::unify_op*>(&tmp->node()->operation())) {
 			throw jive::compiler_error("Type mismatch: can only serialize simple union compounds");
 		}
 		

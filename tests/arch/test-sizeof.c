@@ -35,9 +35,9 @@ static int test_main(void)
 	jive::rcd::type record_t(r_decl);
 	const jive::valuetype *  tmparray1[] = {&bits4, &bits8, &bits18};
 
-	jive::unn::declaration u_decl = {3, tmparray1};
+	jive::unndeclaration u_decl = {3, tmparray1};
 
-	jive::unn::type union_t(&u_decl);
+	jive::unntype union_t(&u_decl);
 
 	auto s0 = jive_sizeof_create(graph.root(), &bits4);
 	auto s1 = jive_sizeof_create(graph.root(), &bits8);

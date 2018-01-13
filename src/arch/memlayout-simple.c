@@ -42,7 +42,7 @@ memlayout_mapper_simple::map_record(std::shared_ptr<const rcd::declaration> & de
 }
 
 const union_memlayout &
-memlayout_mapper_simple::map_union(const unn::declaration * decl)
+memlayout_mapper_simple::map_union(const unndeclaration * decl)
 {
 	auto i = union_map_.find(decl);
 	if (i != union_map_.end())
