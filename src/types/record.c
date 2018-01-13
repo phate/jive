@@ -12,31 +12,30 @@
 static constexpr jive_unop_reduction_path_t jive_select_reduction_load = 128;
 
 namespace jive {
-namespace rcd {
 
 /* record type */
 
-type::~type() noexcept
+rcdtype::~rcdtype() noexcept
 {}
 
 std::string
-type::debug_string() const
+rcdtype::debug_string() const
 {
 	return "rcd";
 }
 
 bool
-type::operator==(const jive::type & other) const noexcept
+rcdtype::operator==(const jive::type & other) const noexcept
 {
-	auto type = dynamic_cast<const jive::rcd::type*>(&other);
+	auto type = dynamic_cast<const rcdtype*>(&other);
 	return type != nullptr
 	    && declaration() == type->declaration();
 }
 
 std::unique_ptr<jive::type>
-type::copy() const
+rcdtype::copy() const
 {
-	return std::unique_ptr<jive::type>(new type(*this));
+	return std::unique_ptr<jive::type>(new rcdtype(*this));
 }
 
 /* group operator */
@@ -89,28 +88,27 @@ group_op::copy() const
 	return std::unique_ptr<jive::operation>(new group_op(*this));
 }
 
-}}
+}
 
 jive::output *
-jive_group_create(std::shared_ptr<const jive::rcd::declaration> & decl,
+jive_group_create(std::shared_ptr<const jive::rcddeclaration> & decl,
 	size_t narguments, jive::output * const * arguments)
 {
-	jive::rcd::group_op op(decl);
-	jive::region * region = arguments[0]->region();
+	jive::group_op op(decl);
+	auto region = arguments[0]->region();
 	return jive::create_normalized(
 		region, op, std::vector<jive::output*>(arguments, arguments + narguments))[0];
 }
 
 jive::output *
 jive_empty_group_create(jive::graph * graph,
-	std::shared_ptr<const jive::rcd::declaration> & decl)
+	std::shared_ptr<const jive::rcddeclaration> & decl)
 {
-	jive::rcd::group_op op(decl);
+	jive::group_op op(decl);
 	return jive::create_normalized(graph->root(), op, {})[0];
 }
 
 namespace jive {
-namespace rcd {
 
 /* select operator */
 
@@ -176,8 +174,8 @@ select_op::reduce_operand(
 			address = bit2addr_op::create(address, bt->nbits(), address->type());
 		}
 
-		std::shared_ptr<const jive::rcd::declaration> decl;
-		decl = static_cast<const jive::rcd::type*>(&arg->node()->output(0)->type())->declaration();
+		std::shared_ptr<const rcddeclaration> decl;
+		decl = static_cast<const rcdtype*>(&arg->node()->output(0)->type())->declaration();
 
 		size_t nstates = arg->node()->ninputs()-1;
 		std::vector<jive::output*> states;
@@ -203,4 +201,4 @@ select_op::copy() const
 	return std::unique_ptr<jive::operation>(new select_op(*this));
 }
 
-}}
+}

@@ -32,7 +32,7 @@ public:
 
 	inline
 	memberof_op(
-		std::shared_ptr<const jive::rcd::declaration> & decl,
+		const std::shared_ptr<const jive::rcddeclaration> & decl,
 		size_t index)
 		: record_decl_(decl),
 		index_(index)
@@ -59,7 +59,7 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	inline const std::shared_ptr<const jive::rcd::declaration> &
+	inline const std::shared_ptr<const jive::rcddeclaration> &
 	record_decl() const noexcept
 	{
 		return record_decl_;
@@ -72,7 +72,7 @@ public:
 	copy() const override;
 
 private:
-	std::shared_ptr<const jive::rcd::declaration> record_decl_;
+	std::shared_ptr<const jive::rcddeclaration> record_decl_;
 	size_t index_;
 };
 
@@ -82,7 +82,7 @@ public:
 
 	inline
 	containerof_op(
-		std::shared_ptr<const jive::rcd::declaration> & decl,
+		const std::shared_ptr<const jive::rcddeclaration> & decl,
 		size_t index)
 		: record_decl_(decl),
 		index_(index)
@@ -109,7 +109,7 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	inline const std::shared_ptr<const jive::rcd::declaration> &
+	inline const std::shared_ptr<const jive::rcddeclaration> &
 	record_decl() const noexcept
 	{
 		return record_decl_;
@@ -122,7 +122,7 @@ public:
 	copy() const override;
 
 private:
-	std::shared_ptr<const jive::rcd::declaration> record_decl_;
+	std::shared_ptr<const jive::rcddeclaration> record_decl_;
 	size_t index_;
 };
 
@@ -363,7 +363,7 @@ constant(jive::graph * graph, const value_repr & vr);
 jive::output *
 jive_memberof(
 	jive::output * address,
-	std::shared_ptr<const jive::rcd::declaration> & record_decl,
+	std::shared_ptr<const jive::rcddeclaration> & record_decl,
 	size_t index);
 
 /* "containerof" operator: given an address that is the start of a record
@@ -372,7 +372,7 @@ member in memory, compute address of containing record */
 jive::output *
 jive_containerof(
 	jive::output * address,
-	std::shared_ptr<const jive::rcd::declaration> & record_decl,
+	std::shared_ptr<const jive::rcddeclaration> & record_decl,
 	size_t index);
 
 /* "arraysubscript" operator: given an address that points to an element of

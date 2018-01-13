@@ -19,10 +19,12 @@
 
 static int test_main(void)
 {
+	using namespace jive;
+
 	jive::graph graph;
 
 	jive::bits::type bits32(32);
-	std::shared_ptr<const jive::rcd::declaration> rec(new jive::rcd::declaration({&bits32, &bits32}));
+	std::shared_ptr<const rcddeclaration> rec(new rcddeclaration({&bits32, &bits32}));
 
 	jive::addrtype addrtype;
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {addrtype, addrtype});

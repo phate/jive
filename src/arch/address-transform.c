@@ -210,7 +210,7 @@ jive_memberof_node_address_transform(
 	jive::memlayout_mapper * mapper)
 {
 	size_t index = op.index();
-	std::shared_ptr<const jive::rcd::declaration> decl = op.record_decl();
+	std::shared_ptr<const jive::rcddeclaration> decl = op.record_decl();
 
 	JIVE_DEBUG_ASSERT(index < decl->nelements());
 	size_t elem_offset = mapper->map_record(decl).element(index).offset();
@@ -232,7 +232,7 @@ jive_containerof_node_address_transform(
 	jive::memlayout_mapper * mapper)
 {
 	size_t index = op.index();
-	std::shared_ptr<const jive::rcd::declaration> decl = op.record_decl();
+	std::shared_ptr<const jive::rcddeclaration> decl = op.record_decl();
 
 	JIVE_DEBUG_ASSERT(index < decl->nelements());
 	size_t elem_offset = mapper->map_record(decl).element(index).offset();

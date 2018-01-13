@@ -96,7 +96,7 @@ memberof_op::copy() const
 jive::output *
 jive_memberof(
 	jive::output * address,
-	std::shared_ptr<const jive::rcd::declaration> & record_decl,
+	std::shared_ptr<const jive::rcddeclaration> & record_decl,
 	size_t index)
 {
 	jive::address::memberof_op op(record_decl, index);
@@ -182,7 +182,7 @@ containerof_op::copy() const
 jive::output *
 jive_containerof(
 	jive::output * address,
-	std::shared_ptr<const jive::rcd::declaration> & record_decl,
+	std::shared_ptr<const jive::rcddeclaration> & record_decl,
 	size_t index)
 {
 	jive::address::containerof_op op(record_decl, index);

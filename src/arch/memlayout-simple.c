@@ -16,7 +16,7 @@ memlayout_mapper_simple::~memlayout_mapper_simple()
 {}
 
 const record_memlayout &
-memlayout_mapper_simple::map_record(std::shared_ptr<const rcd::declaration> & decl)
+memlayout_mapper_simple::map_record(std::shared_ptr<const rcddeclaration> & decl)
 {
 	auto i = record_map_.find(decl);
 	if (i != record_map_.end())

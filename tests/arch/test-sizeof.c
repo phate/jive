@@ -22,6 +22,8 @@
 
 static int test_main(void)
 {
+	using namespace jive;
+
 	jive::graph graph;
 
 	jive::bits::type bits4(4);
@@ -29,10 +31,9 @@ static int test_main(void)
 	jive::bits::type bits18(18);
 	jive::bits::type bits32(32);
 	jive::addrtype addr;
-	std::shared_ptr<const jive::rcd::declaration> r_decl(
-		new jive::rcd::declaration({&bits4, &bits8, &bits18}));
+	std::shared_ptr<const rcddeclaration> r_decl(new rcddeclaration({&bits4, &bits8, &bits18}));
 
-	jive::rcd::type record_t(r_decl);
+	rcdtype record_t(r_decl);
 	const jive::valuetype *  tmparray1[] = {&bits4, &bits8, &bits18};
 
 	jive::unndeclaration u_decl = {3, tmparray1};

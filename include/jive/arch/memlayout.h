@@ -14,10 +14,7 @@
 
 namespace jive {
 
-namespace rcd {
-	struct declaration;
-}
-
+class rcddeclaration;
 class valuetype;
 
 class dataitem_memlayout {
@@ -101,12 +98,12 @@ public:
 	~record_memlayout();
 
 	record_memlayout(
-	std::shared_ptr<const rcd::declaration> & decl,
+	std::shared_ptr<const rcddeclaration> & decl,
 	const std::vector<record_memlayout_element> & elements,
 	size_t size,
 	size_t alignment) noexcept;
 
-	inline std::shared_ptr<const rcd::declaration>
+	inline std::shared_ptr<const rcddeclaration>
 	declaration() const noexcept
 	{
 		return decl_;
@@ -132,7 +129,7 @@ public:
 	}
 
 private:
-	std::shared_ptr<const rcd::declaration>  decl_;
+	std::shared_ptr<const rcddeclaration>  decl_;
 	std::vector<record_memlayout_element> elements_;
 };
 
@@ -159,7 +156,7 @@ public:
 	}
 
 	virtual const record_memlayout &
-	map_record(std::shared_ptr<const rcd::declaration> & decl) = 0;
+	map_record(std::shared_ptr<const rcddeclaration> & decl) = 0;
 
 	virtual const union_memlayout &
 	map_union(const struct unndeclaration * decl) = 0;

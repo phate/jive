@@ -19,17 +19,19 @@
 
 static int _test_rcdgroup(void)
 {
+	using namespace jive;
+
 	jive::graph graph;
 	
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);
 	static const jive::bits::type bits32(32);
-	static std::shared_ptr<const jive::rcd::declaration> decl(
-		new jive::rcd::declaration({&bits8, &bits16, &bits32}));
-	static jive::rcd::type rcdtype(decl);
+	static std::shared_ptr<const rcddeclaration> decl(
+		new rcddeclaration({&bits8, &bits16, &bits32}));
+	static jive::rcdtype rcdtype(decl);
 
-	auto decl_empty = std::make_shared<const jive::rcd::declaration>();
-	jive::rcd::type rcdtype_empty(decl_empty);
+	auto decl_empty = std::make_shared<const rcddeclaration>();
+	jive::rcdtype rcdtype_empty(decl_empty);
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits8, bits16, bits32});
 	jive::output * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
@@ -64,9 +66,8 @@ static int _test_rcdselect()
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);
-	std::shared_ptr<const jive::rcd::declaration> decl(
-		new jive::rcd::declaration({&bits8, &bits16, &bits32}));
-	jive::rcd::type rcdtype(decl);
+	std::shared_ptr<const rcddeclaration> decl(new rcddeclaration({&bits8, &bits16, &bits32}));
+	jive::rcdtype rcdtype(decl);
 
 	auto a1 = graph.root()->add_argument(nullptr, bits8);
 	auto a2 = graph.root()->add_argument(nullptr, bits16);
@@ -78,10 +79,10 @@ static int _test_rcdselect()
 	auto g0 = jive_group_create(decl, 3, &args[0]);
 	auto load = jive_load_by_address_create(a5, &rcdtype, 0, NULL);
 
-	auto s0 = rcd::select_op::create(a4, 1);
-	auto s1 = rcd::select_op::create(g0, 1);
-	auto s2 = rcd::select_op::create(a4, 2);
-	auto s3 = rcd::select_op::create(load, 0);
+	auto s0 = select_op::create(a4, 1);
+	auto s1 = select_op::create(g0, 1);
+	auto s2 = select_op::create(a4, 2);
+	auto s3 = select_op::create(load, 0);
 
 	graph.add_export(s0, "");
 	graph.add_export(s1, "");
@@ -93,9 +94,9 @@ static int _test_rcdselect()
 
 	jive::view(graph.root(), stderr);
 
-	assert(rcd::is_select_node(s0->node()));
+	assert(is_select_node(s0->node()));
 	assert(s1 == a2);
-	assert(rcd::is_select_node(s2->node()));
+	assert(is_select_node(s2->node()));
 	assert(!dynamic_cast<const load_op*>(&s3->node()->input(0)->origin()->node()->operation()));
 
 	return 0;

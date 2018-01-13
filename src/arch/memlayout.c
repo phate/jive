@@ -22,7 +22,7 @@ record_memlayout::~record_memlayout()
 {}
 
 record_memlayout::record_memlayout(
-	std::shared_ptr<const rcd::declaration> & decl,
+	std::shared_ptr<const rcddeclaration> & decl,
 	const std::vector<record_memlayout_element> & elements,
 	size_t size,
 	size_t alignment) noexcept
@@ -45,8 +45,8 @@ memlayout_mapper::map_value_type(const valuetype & type)
 	if (dynamic_cast<const addrtype*>(&type))
 		return map_address();
 
-	if (auto t = dynamic_cast<const jive::rcd::type*>(&type)) {
-		std::shared_ptr<const rcd::declaration> decl = t->declaration();
+	if (auto t = dynamic_cast<const rcdtype*>(&type)) {
+		std::shared_ptr<const rcddeclaration> decl = t->declaration();
 		return map_record(decl);
 	}
 

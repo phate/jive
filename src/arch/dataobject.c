@@ -80,12 +80,12 @@ flatten_data_items(
 	} else if (dynamic_cast<const jive::flt::type*>(type_)) {
 		items.resize(4, nullptr);
 		items[0] = data;
-	} else if (dynamic_cast<const jive::rcd::type*>(type_)) {
-		const jive::rcd::type * type = static_cast<const jive::rcd::type*>(type_);
-		std::shared_ptr<const jive::rcd::declaration> decl = type->declaration();
+	} else if (dynamic_cast<const jive::rcdtype*>(type_)) {
+		auto type = static_cast<const jive::rcdtype*>(type_);
+		std::shared_ptr<const jive::rcddeclaration> decl = type->declaration();
 		const jive::record_memlayout & layout = layout_mapper->map_record(decl);
 
-		if (!dynamic_cast<const jive::rcd::group_op *>(&tmp->node()->operation())) {
+		if (!dynamic_cast<const jive::group_op *>(&tmp->node()->operation())) {
 			throw jive::compiler_error("Type mismatch: can only serialize simple record compounds");
 		}
 

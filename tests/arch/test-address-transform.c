@@ -38,7 +38,7 @@ test_address_transform(void)
 	auto address0 = bit2addr_op::create(top->output(0), 64, addr);
 	auto address1 = bit2addr_op::create(top->output(1), 64, addr);
 
-	std::shared_ptr<const jive::rcd::declaration> decl(new jive::rcd::declaration({&addr, &addr}));
+	std::shared_ptr<const rcddeclaration> decl(new rcddeclaration({&addr, &addr}));
 
 	auto memberof = jive_memberof(address0, decl, 0);
 	auto containerof = jive_containerof(address1, decl, 1);
@@ -168,8 +168,8 @@ test_containerof_transform(void)
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);
-	std::shared_ptr<const jive::rcd::declaration> decl(
-		new jive::rcd::declaration({&bits8, &bits16, &bits32, &bits32}));
+	std::shared_ptr<const rcddeclaration> decl(
+		new rcddeclaration({&bits8, &bits16, &bits32, &bits32}));
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {},
 		std::vector<jive::port>(4, bits32));
@@ -248,8 +248,8 @@ test_memberof_transform(void)
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);
-	std::shared_ptr<const jive::rcd::declaration> decl(
-		new jive::rcd::declaration({&bits8, &bits16, &bits32, &bits32}));
+	std::shared_ptr<const rcddeclaration> decl(
+		new rcddeclaration({&bits8, &bits16, &bits32, &bits32}));
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits32});
 
