@@ -4,18 +4,115 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/types/record.h>
-
 #include <jive/arch/address-transform.h>
-#include <jive/arch/address.h>
 #include <jive/arch/load.h>
-#include <jive/rvsdg/graph.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/types/record.h>
 
 static constexpr jive_unop_reduction_path_t jive_select_reduction_load = 128;
 
 namespace jive {
 namespace rcd {
+
+/* record type */
+
+type::~type() noexcept
+{}
+
+std::string
+type::debug_string() const
+{
+	return "rcd";
+}
+
+bool
+type::operator==(const jive::type & other) const noexcept
+{
+	auto type = dynamic_cast<const jive::rcd::type*>(&other);
+	return type != nullptr
+	    && declaration() == type->declaration();
+}
+
+std::unique_ptr<jive::type>
+type::copy() const
+{
+	return std::unique_ptr<jive::type>(new type(*this));
+}
+
+/* group operator */
+
+group_op::~group_op() noexcept
+{}
+
+bool
+group_op::operator==(const operation & other) const noexcept
+{
+	auto op = dynamic_cast<const group_op*>(&other);
+	return op && op->result_ == result_ && op->arguments_ == arguments_;
+}
+
+size_t
+group_op::narguments() const noexcept
+{
+	return arguments_.size();
+}
+
+const jive::port &
+group_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return arguments_[index];
+}
+
+size_t
+group_op::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive::port &
+group_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
+}
+
+std::string
+group_op::debug_string() const
+{
+	return "GROUP";
+}
+
+std::unique_ptr<jive::operation>
+group_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new group_op(*this));
+}
+
+}}
+
+jive::output *
+jive_group_create(std::shared_ptr<const jive::rcd::declaration> & decl,
+	size_t narguments, jive::output * const * arguments)
+{
+	jive::rcd::group_op op(decl);
+	jive::region * region = arguments[0]->region();
+	return jive::create_normalized(
+		region, op, std::vector<jive::output*>(arguments, arguments + narguments))[0];
+}
+
+jive::output *
+jive_empty_group_create(jive::graph * graph,
+	std::shared_ptr<const jive::rcd::declaration> & decl)
+{
+	jive::rcd::group_op op(decl);
+	return jive::create_normalized(graph->root(), op, {})[0];
+}
+
+namespace jive {
+namespace rcd {
+
+/* select operator */
 
 select_op::~select_op() noexcept
 {}
@@ -78,7 +175,7 @@ select_op::reduce_operand(
 			nbits = bt->nbits();
 			address = bit2addr_op::create(address, bt->nbits(), address->type());
 		}
-		
+
 		std::shared_ptr<const jive::rcd::declaration> decl;
 		decl = static_cast<const jive::rcd::type*>(&arg->node()->output(0)->type())->declaration();
 

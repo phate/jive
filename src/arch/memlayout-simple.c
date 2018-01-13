@@ -7,7 +7,7 @@
 #include <jive/arch/memlayout-simple.h>
 
 #include <jive/types/bitstring/type.h>
-#include <jive/types/record/rcdtype.h>
+#include <jive/types/record.h>
 #include <jive/types/union.h>
 
 namespace jive {

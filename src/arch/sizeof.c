@@ -10,7 +10,6 @@
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/region.h>
 #include <jive/types/bitstring.h>
-#include <jive/types/record/rcdtype.h>
 
 namespace jive {
 

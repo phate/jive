@@ -68,9 +68,7 @@ LIBJIVE_SRC += \
 
 # records
 LIBJIVE_SRC += \
-	src/types/record/rcdgroup.c \
-	src/types/record/rcdselect.c \
-	src/types/record/rcdtype.c \
+	src/types/record.c \
 
 # unions
 LIBJIVE_SRC += \

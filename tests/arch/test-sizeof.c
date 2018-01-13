@@ -14,7 +14,7 @@
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/traverser.h>
 #include <jive/types/bitstring.h>
-#include <jive/types/record/rcdtype.h>
+#include <jive/types/record.h>
 #include <jive/types/union.h>
 #include <jive/view.h>
 

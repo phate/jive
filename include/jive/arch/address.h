@@ -15,7 +15,7 @@
 #include <jive/rvsdg/nullary.h>
 #include <jive/rvsdg/unary.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/types/record/rcdtype.h>
+#include <jive/types/record.h>
 
 /* "memberof" operator: given an address that is the start of a record
 in memory, compute address of specified member of record */

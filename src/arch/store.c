@@ -11,7 +11,6 @@
 #include <jive/arch/addresstype.h>
 #include <jive/rvsdg/graph.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/types/record/rcdgroup.h>
 
 static std::vector<jive::output*>
 jive_store_node_normalized_create(

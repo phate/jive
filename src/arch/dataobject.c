@@ -13,8 +13,7 @@
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/float/flttype.h>
-#include <jive/types/record/rcdgroup.h>
-#include <jive/types/record/rcdtype.h>
+#include <jive/types/record.h>
 #include <jive/types/union.h>
 
 namespace jive {
