@@ -28,7 +28,7 @@ public:
 	{}
 
 	virtual const record_memlayout &
-	map_record(std::shared_ptr<const rcddeclaration> & decl) override;
+	map_record(const rcddeclaration * dcl) override;
 
 	virtual const union_memlayout &
 	map_union(const struct unndeclaration * decl) override;
@@ -43,7 +43,7 @@ private:
 	dataitem_memlayout address_layout_;
 	std::unordered_map<size_t, dataitem_memlayout> bitstring_map_;
 	std::unordered_map<const jive::unndeclaration*, union_memlayout> union_map_;
-	std::unordered_map<std::shared_ptr<const rcddeclaration>, record_memlayout> record_map_;
+	std::unordered_map<const jive::rcddeclaration*, record_memlayout> record_map_;
 };
 
 }

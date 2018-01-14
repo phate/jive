@@ -22,15 +22,15 @@ record_memlayout::~record_memlayout()
 {}
 
 record_memlayout::record_memlayout(
-	std::shared_ptr<const rcddeclaration> & decl,
+	const rcddeclaration * dcl,
 	const std::vector<record_memlayout_element> & elements,
 	size_t size,
 	size_t alignment) noexcept
 	: dataitem_memlayout(size, alignment)
-	, decl_(decl)
+	, dcl_(dcl)
 	, elements_(elements)
 {
-	JIVE_DEBUG_ASSERT(decl->nelements() == elements.size());
+	JIVE_DEBUG_ASSERT(dcl->nelements() == elements.size());
 }
 
 memlayout_mapper::~memlayout_mapper()
@@ -45,10 +45,8 @@ memlayout_mapper::map_value_type(const valuetype & type)
 	if (dynamic_cast<const addrtype*>(&type))
 		return map_address();
 
-	if (auto t = dynamic_cast<const rcdtype*>(&type)) {
-		std::shared_ptr<const rcddeclaration> decl = t->declaration();
-		return map_record(decl);
-	}
+	if (auto t = dynamic_cast<const rcdtype*>(&type))
+		return map_record(t->declaration());
 
 	if (auto t = dynamic_cast<const jive::unntype*>(&type))
 		return map_union(t->declaration());

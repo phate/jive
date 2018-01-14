@@ -98,15 +98,15 @@ public:
 	~record_memlayout();
 
 	record_memlayout(
-	std::shared_ptr<const rcddeclaration> & decl,
+	const rcddeclaration * dcl,
 	const std::vector<record_memlayout_element> & elements,
 	size_t size,
 	size_t alignment) noexcept;
 
-	inline std::shared_ptr<const rcddeclaration>
+	inline const rcddeclaration *
 	declaration() const noexcept
 	{
-		return decl_;
+		return dcl_;
 	}
 
 	inline size_t
@@ -129,7 +129,7 @@ public:
 	}
 
 private:
-	std::shared_ptr<const rcddeclaration>  decl_;
+	const rcddeclaration * dcl_;
 	std::vector<record_memlayout_element> elements_;
 };
 
@@ -156,7 +156,7 @@ public:
 	}
 
 	virtual const record_memlayout &
-	map_record(std::shared_ptr<const rcddeclaration> & decl) = 0;
+	map_record(const rcddeclaration * dcl) = 0;
 
 	virtual const union_memlayout &
 	map_union(const struct unndeclaration * decl) = 0;

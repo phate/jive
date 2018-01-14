@@ -24,21 +24,21 @@ static int test_main(void)
 	jive::graph graph;
 
 	jive::bits::type bits32(32);
-	std::shared_ptr<const rcddeclaration> rec(new rcddeclaration({&bits32, &bits32}));
+	auto dcl = rcddeclaration::create(&graph, {&bits32, &bits32});
 
 	jive::addrtype addrtype;
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {addrtype, addrtype});
 	
-	auto memb1 = jive_memberof(top->output(0), rec, 0);
-	auto memb2 = jive_memberof(top->output(0), rec, 1);
+	auto memb1 = jive_memberof(top->output(0), dcl, 0);
+	auto memb2 = jive_memberof(top->output(0), dcl, 1);
 	
-	auto cont1 = jive_containerof(memb1, rec, 0);
-	auto cont2 = jive_containerof(memb2, rec, 0);
+	auto cont1 = jive_containerof(memb1, dcl, 0);
+	auto cont2 = jive_containerof(memb2, dcl, 0);
 	
-	auto cont3 = jive_containerof(top->output(1), rec, 0);
+	auto cont3 = jive_containerof(top->output(1), dcl, 0);
 	
-	auto memb3 = jive_memberof(cont3, rec, 0);
-	auto memb4 = jive_memberof(cont3, rec, 1);
+	auto memb3 = jive_memberof(cont3, dcl, 0);
+	auto memb4 = jive_memberof(cont3, dcl, 1);
 	
 	jive::view(graph.root(), stdout);
 	
@@ -67,7 +67,7 @@ static int test_main(void)
 
 	jive::memlayout_mapper_simple mapper(4);
 
-	auto memberof = jive_memberof(cont3, rec, 1);
+	auto memberof = jive_memberof(cont3, dcl, 1);
 	auto arraysub = jive_arraysubscript(top->output(0), &bits32, one);
 
 	auto bottom = jive::test::simple_node_create(graph.root(),

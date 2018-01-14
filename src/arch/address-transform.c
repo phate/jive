@@ -210,10 +210,10 @@ jive_memberof_node_address_transform(
 	jive::memlayout_mapper * mapper)
 {
 	size_t index = op.index();
-	std::shared_ptr<const jive::rcddeclaration> decl = op.record_decl();
+	auto dcl = op.record_decl();
 
-	JIVE_DEBUG_ASSERT(index < decl->nelements());
-	size_t elem_offset = mapper->map_record(decl).element(index).offset();
+	JIVE_DEBUG_ASSERT(index < dcl->nelements());
+	size_t elem_offset = mapper->map_record(dcl).element(index).offset();
 	size_t nbits = mapper->map_address().size() * 8;
 
 	auto offset = create_bitconstant(node->region(), nbits, elem_offset);
@@ -232,10 +232,10 @@ jive_containerof_node_address_transform(
 	jive::memlayout_mapper * mapper)
 {
 	size_t index = op.index();
-	std::shared_ptr<const jive::rcddeclaration> decl = op.record_decl();
+	auto dcl = op.record_decl();
 
-	JIVE_DEBUG_ASSERT(index < decl->nelements());
-	size_t elem_offset = mapper->map_record(decl).element(index).offset();
+	JIVE_DEBUG_ASSERT(index < dcl->nelements());
+	size_t elem_offset = mapper->map_record(dcl).element(index).offset();
 	size_t nbits = mapper->map_address().size() * 8;
 
 	auto offset = create_bitconstant(node->region(), nbits, elem_offset);

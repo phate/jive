@@ -26,18 +26,17 @@ static int _test_rcdgroup(void)
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);
 	static const jive::bits::type bits32(32);
-	static std::shared_ptr<const rcddeclaration> decl(
-		new rcddeclaration({&bits8, &bits16, &bits32}));
-	static jive::rcdtype rcdtype(decl);
+	auto dcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32});
+	jive::rcdtype rcdtype(dcl);
 
-	auto decl_empty = std::make_shared<const rcddeclaration>();
-	jive::rcdtype rcdtype_empty(decl_empty);
+	auto edcl = rcddeclaration::create(&graph);
+	jive::rcdtype rcdtype_empty(edcl);
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits8, bits16, bits32});
 	jive::output * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
 
-	auto g0 = jive_group_create(decl, 3, tmparray1);
-	auto g1 = jive_empty_group_create(&graph, decl_empty);
+	auto g0 = jive_group_create(dcl, 3, tmparray1);
+	auto g1 = jive_empty_group_create(&graph, edcl);
 
 	auto bottom = jive::test::simple_node_create(graph.root(), {rcdtype, rcdtype_empty}, {g0, g1},
 		{bits8});
@@ -66,8 +65,8 @@ static int _test_rcdselect()
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);
-	std::shared_ptr<const rcddeclaration> decl(new rcddeclaration({&bits8, &bits16, &bits32}));
-	jive::rcdtype rcdtype(decl);
+	auto dcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32});
+	jive::rcdtype rcdtype(dcl);
 
 	auto a1 = graph.root()->add_argument(nullptr, bits8);
 	auto a2 = graph.root()->add_argument(nullptr, bits16);
@@ -76,7 +75,7 @@ static int _test_rcdselect()
 	auto a5 = graph.root()->add_argument(nullptr, addrtype);
 
 	std::vector<jive::output*> args({a1, a2, a3});
-	auto g0 = jive_group_create(decl, 3, &args[0]);
+	auto g0 = jive_group_create(dcl, 3, &args[0]);
 	auto load = jive_load_by_address_create(a5, &rcdtype, 0, NULL);
 
 	auto s0 = select_op::create(a4, 1);

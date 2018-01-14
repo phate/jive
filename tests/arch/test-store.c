@@ -29,8 +29,8 @@ static int test_main(void)
 	static const jive::bits::type bits32(32);
 
 	static const jive::valuetype * decl_elems[] = {&bits8, &bits16, &bits32};
-	std::shared_ptr<const rcddeclaration> rcddecl(new rcddeclaration({&bits8, &bits16, &bits32}));
-	static rcdtype rcdtype(rcddecl);
+	auto rcddcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32});
+	rcdtype rcdtype(rcddcl);
 	
 	static const jive::unndeclaration unndecl = {3, decl_elems};
 	static jive::unntype unntype(&unndecl);
@@ -47,7 +47,7 @@ static int test_main(void)
 	auto states0 = jive_store_by_address_create(top->output(0), &bits32, top->output(4), 1, &state);
 
 	jive::output * tmparray1[] = {top->output(2), top->output(3), top->output(4)};
-	auto group = jive_group_create(rcddecl, 3, tmparray1);
+	auto group = jive_group_create(rcddcl, 3, tmparray1);
 	jive::output * tmparray2[] = {top->output(1), top->output(5)};
 	auto states1 = jive_store_by_address_create(top->output(0), &rcdtype, group, 2, tmparray2);
 

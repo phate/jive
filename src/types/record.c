@@ -11,7 +11,51 @@
 
 static constexpr jive_unop_reduction_path_t jive_select_reduction_load = 128;
 
+namespace {
+
+typedef std::unordered_set<std::unique_ptr<jive::rcddeclaration>> declarationset;
+typedef std::unordered_map<const jive::graph*, declarationset> declarationmap;
+
+declarationmap &
+map()
+{
+	static declarationmap map;
+	return map;
+}
+
+void
+register_declaration(
+	const jive::graph * graph,
+	std::unique_ptr<jive::rcddeclaration> dcl)
+{
+	auto & m = map();
+	if (m.find(graph) == m.end())
+		m[graph] = declarationset();
+
+	m[graph].insert(std::move(dcl));
+}
+
+}
+
 namespace jive {
+
+/* record declaration */
+
+void
+unregister_rcddeclarations(const jive::graph * graph)
+{
+	map().erase(graph);
+}
+
+rcddeclaration *
+rcddeclaration::create(const jive::graph * graph)
+{
+	std::unique_ptr<jive::rcddeclaration> dcl(new jive::rcddeclaration());
+	auto ptr = dcl.get();
+
+	register_declaration(graph, std::move(dcl));
+	return ptr;
+}
 
 /* record type */
 
@@ -91,20 +135,23 @@ group_op::copy() const
 }
 
 jive::output *
-jive_group_create(std::shared_ptr<const jive::rcddeclaration> & decl,
-	size_t narguments, jive::output * const * arguments)
+jive_group_create(
+	const jive::rcddeclaration * dcl,
+	size_t narguments,
+	jive::output * const * arguments)
 {
-	jive::group_op op(decl);
+	jive::group_op op(dcl);
 	auto region = arguments[0]->region();
 	return jive::create_normalized(
 		region, op, std::vector<jive::output*>(arguments, arguments + narguments))[0];
 }
 
 jive::output *
-jive_empty_group_create(jive::graph * graph,
-	std::shared_ptr<const jive::rcddeclaration> & decl)
+jive_empty_group_create(
+	jive::graph * graph,
+	const jive::rcddeclaration * dcl)
 {
-	jive::group_op op(decl);
+	jive::group_op op(dcl);
 	return jive::create_normalized(graph->root(), op, {})[0];
 }
 
@@ -174,8 +221,7 @@ select_op::reduce_operand(
 			address = bit2addr_op::create(address, bt->nbits(), address->type());
 		}
 
-		std::shared_ptr<const rcddeclaration> decl;
-		decl = static_cast<const rcdtype*>(&arg->node()->output(0)->type())->declaration();
+		auto decl = static_cast<const rcdtype*>(&arg->node()->output(0)->type())->declaration();
 
 		size_t nstates = arg->node()->ninputs()-1;
 		std::vector<jive::output*> states;

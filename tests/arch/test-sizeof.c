@@ -26,14 +26,14 @@ static int test_main(void)
 
 	jive::graph graph;
 
+	jive::addrtype addr;
 	jive::bits::type bits4(4);
 	jive::bits::type bits8(8);
 	jive::bits::type bits18(18);
 	jive::bits::type bits32(32);
-	jive::addrtype addr;
-	std::shared_ptr<const rcddeclaration> r_decl(new rcddeclaration({&bits4, &bits8, &bits18}));
+	auto dcl = rcddeclaration::create(&graph, {&bits4, &bits8, &bits18});
 
-	rcdtype record_t(r_decl);
+	rcdtype record_t(dcl);
 	const jive::valuetype *  tmparray1[] = {&bits4, &bits8, &bits18};
 
 	jive::unndeclaration u_decl = {3, tmparray1};

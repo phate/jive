@@ -11,8 +11,6 @@
 #include <jive/rvsdg/type.h>
 #include <jive/rvsdg/unary.h>
 
-#include <algorithm>
-
 namespace jive {
 
 /* declaration */
@@ -20,22 +18,20 @@ namespace jive {
 class rcddeclaration final {
 public:
 	inline
-	rcddeclaration()
+	~rcddeclaration()
 	{}
 
+private:
 	inline
-	rcddeclaration(const std::vector<const valuetype*> & types)
-	: types_(types.size())
-	{
-		std::transform(types.begin(), types.end(), types_.begin(),
-			[](const auto & t){ return t->copy(); });
-	}
+	rcddeclaration()
+	{}
 
 	rcddeclaration(const rcddeclaration &) = delete;
 
 	rcddeclaration &
 	operator=(const rcddeclaration &) = delete;
 
+public:
 	inline size_t
 	nelements() const noexcept
 	{
@@ -55,9 +51,27 @@ public:
 		types_.push_back(type.copy());
 	}
 
+	static rcddeclaration *
+	create(const jive::graph * graph);
+
+	static inline rcddeclaration *
+	create(
+		const jive::graph * graph,
+		const std::vector<const valuetype*> & types)
+	{
+		auto dcl = create(graph);
+		for (const auto & type : types)
+			dcl->append(*type);
+
+		return dcl;
+	}
+
 private:
 	std::vector<std::unique_ptr<jive::type>> types_;
 };
+
+void
+unregister_rcddeclarations(const jive::graph * graph);
 
 /* record type */
 
@@ -67,17 +81,18 @@ public:
 	~rcdtype() noexcept;
 
 	inline
-	rcdtype(std::shared_ptr<const rcddeclaration> decl) noexcept
-		: decl_(std::move(decl))
+	rcdtype(const rcddeclaration * dcl) noexcept
+	: dcl_(dcl)
 	{}
 
-	inline const std::shared_ptr<const rcddeclaration> &
+	inline const rcddeclaration *
 	declaration() const noexcept
 	{
-		return decl_;
+		return dcl_;
 	}
 
-	virtual std::string debug_string() const override;
+	virtual
+	std::string debug_string() const override;
 
 	virtual bool
 	operator==(const jive::type & type) const noexcept override;
@@ -86,7 +101,7 @@ public:
 	copy() const override;
 
 private:
-	std::shared_ptr<const rcddeclaration> decl_;
+	const rcddeclaration * dcl_;
 };
 
 /* group operator */
@@ -97,12 +112,11 @@ public:
 	~group_op() noexcept;
 
 	inline
-	group_op(
-		std::shared_ptr<const rcddeclaration> & declaration) noexcept
-	: result_(rcdtype(declaration))
+	group_op(const rcddeclaration * dcl) noexcept
+	: result_(rcdtype(dcl))
 	{
-		for (size_t n = 0; n < declaration->nelements(); n++)
-			arguments_.push_back({declaration->element(n)});
+		for (size_t n = 0; n < dcl->nelements(); n++)
+			arguments_.push_back({dcl->element(n)});
 	}
 
 	virtual bool
@@ -123,7 +137,7 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const std::shared_ptr<const rcddeclaration> &
+	inline const rcddeclaration *
 	declaration() const noexcept
 	{
 		return static_cast<const rcdtype*>(&result_.type())->declaration();
@@ -140,11 +154,15 @@ private:
 }
 
 jive::output *
-jive_group_create(std::shared_ptr<const jive::rcddeclaration> & decl,
-	size_t narguments, jive::output * const * arguments);
+jive_group_create(
+	const jive::rcddeclaration * dcl,
+	size_t narguments,
+	jive::output * const * arguments);
 
 jive::output *
-jive_empty_group_create(jive::graph * graph, std::shared_ptr<const jive::rcddeclaration> & decl);
+jive_empty_group_create(
+	jive::graph * graph,
+	const jive::rcddeclaration * dcl);
 
 /* select operator */
 

@@ -34,7 +34,7 @@ memberof_op::operator==(const operation & other) const noexcept
 std::string
 memberof_op::debug_string() const
 {
-	return detail::strfmt("MEMBEROF", record_decl().get(), index());
+	return detail::strfmt("MEMBEROF", record_decl(), index());
 }
 
 const jive::port &
@@ -96,10 +96,10 @@ memberof_op::copy() const
 jive::output *
 jive_memberof(
 	jive::output * address,
-	std::shared_ptr<const jive::rcddeclaration> & record_decl,
+	const jive::rcddeclaration * dcl,
 	size_t index)
 {
-	jive::address::memberof_op op(record_decl, index);
+	jive::address::memberof_op op(dcl, index);
 	return jive::create_normalized(address->region(), op, {address})[0];
 }
 
@@ -182,10 +182,10 @@ containerof_op::copy() const
 jive::output *
 jive_containerof(
 	jive::output * address,
-	std::shared_ptr<const jive::rcddeclaration> & record_decl,
+	const jive::rcddeclaration * dcl,
 	size_t index)
 {
-	jive::address::containerof_op op(record_decl, index);
+	jive::address::containerof_op op(dcl, index);
 	return jive::create_normalized(address->region(), op, {address})[0];
 }
 

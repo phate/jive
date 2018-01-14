@@ -38,10 +38,10 @@ test_address_transform(void)
 	auto address0 = bit2addr_op::create(top->output(0), 64, addr);
 	auto address1 = bit2addr_op::create(top->output(1), 64, addr);
 
-	std::shared_ptr<const rcddeclaration> decl(new rcddeclaration({&addr, &addr}));
+	auto dcl = rcddeclaration::create(&graph, {&addr, &addr});
 
-	auto memberof = jive_memberof(address0, decl, 0);
-	auto containerof = jive_containerof(address1, decl, 1);
+	auto memberof = jive_memberof(address0, dcl, 0);
+	auto containerof = jive_containerof(address1, dcl, 1);
 
 	jive_linker_symbol write_symbol;
 	jive::external_label write_label("write", &write_symbol);
@@ -168,8 +168,7 @@ test_containerof_transform(void)
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);
-	std::shared_ptr<const rcddeclaration> decl(
-		new rcddeclaration({&bits8, &bits16, &bits32, &bits32}));
+	auto dcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32, &bits32});
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {},
 		std::vector<jive::port>(4, bits32));
@@ -179,10 +178,10 @@ test_containerof_transform(void)
 	auto address2 = bit2addr_op::create(top->output(2), 32, addrtype);
 	auto address3 = bit2addr_op::create(top->output(3), 32, addrtype);
 
-	auto container0 = jive_containerof(address0, decl, 0);
-	auto container1 = jive_containerof(address1, decl, 1);
-	auto container2 = jive_containerof(address2, decl, 2);
-	auto container3 = jive_containerof(address3, decl, 3);
+	auto container0 = jive_containerof(address0, dcl, 0);
+	auto container1 = jive_containerof(address1, dcl, 1);
+	auto container2 = jive_containerof(address2, dcl, 2);
+	auto container3 = jive_containerof(address3, dcl, 3);
 
 	auto offset0 = addr2bit_op::create(container0, 32, container0->type());
 	auto offset1 = addr2bit_op::create(container1, 32, container1->type());
@@ -248,17 +247,16 @@ test_memberof_transform(void)
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);
-	std::shared_ptr<const rcddeclaration> decl(
-		new rcddeclaration({&bits8, &bits16, &bits32, &bits32}));
+	auto dcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32, &bits32});
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits32});
 
 	auto address = bit2addr_op::create(top->output(0), 32, addrtype);
 
-	auto member0 = jive_memberof(address, decl, 0);
-	auto member1 = jive_memberof(address, decl, 1);
-	auto member2 = jive_memberof(address, decl, 2);
-	auto member3 = jive_memberof(address, decl, 3);
+	auto member0 = jive_memberof(address, dcl, 0);
+	auto member1 = jive_memberof(address, dcl, 1);
+	auto member2 = jive_memberof(address, dcl, 2);
+	auto member3 = jive_memberof(address, dcl, 3);
 
 	auto offset0 = addr2bit_op::create(member0, 32, member0->type());
 	auto offset1 = addr2bit_op::create(member1, 32, member1->type());

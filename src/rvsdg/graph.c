@@ -13,6 +13,7 @@
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/substitution.h>
 #include <jive/rvsdg/tracker.h>
+#include <jive/types/record.h>
 
 /* graph */
 
@@ -26,6 +27,8 @@ graph::~graph()
 
 	while (gates.first())
 		delete gates.first();
+
+	unregister_rcddeclarations(this);
 }
 
 graph::graph()

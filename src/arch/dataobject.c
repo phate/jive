@@ -82,8 +82,8 @@ flatten_data_items(
 		items[0] = data;
 	} else if (dynamic_cast<const jive::rcdtype*>(type_)) {
 		auto type = static_cast<const jive::rcdtype*>(type_);
-		std::shared_ptr<const jive::rcddeclaration> decl = type->declaration();
-		const jive::record_memlayout & layout = layout_mapper->map_record(decl);
+		auto dcl = type->declaration();
+		auto & layout = layout_mapper->map_record(dcl);
 
 		if (!dynamic_cast<const jive::group_op *>(&tmp->node()->operation())) {
 			throw jive::compiler_error("Type mismatch: can only serialize simple record compounds");
@@ -94,7 +94,7 @@ flatten_data_items(
 		auto zero_pad = create_bitconstant(graph->root(), "00000000");
 		items.resize(layout.size(), zero_pad);
 
-		for (size_t k = 0; k < decl->nelements(); k++) {
+		for (size_t k = 0; k < dcl->nelements(); k++) {
 			auto sub_items = flatten_data_items(tmp->node()->input(k)->origin(), layout_mapper);
 			
 			if (sub_items.size() + layout.element(k).offset() > items.size()) {

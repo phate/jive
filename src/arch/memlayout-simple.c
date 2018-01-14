@@ -16,16 +16,16 @@ memlayout_mapper_simple::~memlayout_mapper_simple()
 {}
 
 const record_memlayout &
-memlayout_mapper_simple::map_record(std::shared_ptr<const rcddeclaration> & decl)
+memlayout_mapper_simple::map_record(const rcddeclaration * dcl)
 {
-	auto i = record_map_.find(decl);
+	auto i = record_map_.find(dcl);
 	if (i != record_map_.end())
 		return i->second;
 
 	size_t pos = 0, alignment = 1;
 	std::vector<record_memlayout_element> elements;
-	for (size_t n = 0; n < decl->nelements(); n++) {
-		const dataitem_memlayout & ext = map_value_type(decl->element(n));
+	for (size_t n = 0; n < dcl->nelements(); n++) {
+		auto & ext = map_value_type(dcl->element(n));
 		
 		alignment = std::max(alignment, ext.alignment());
 
@@ -37,8 +37,8 @@ memlayout_mapper_simple::map_record(std::shared_ptr<const rcddeclaration> & decl
 	}
 	pos = (pos + alignment - 1) & ~(alignment - 1);
 
-	record_map_.insert(std::make_pair(decl, record_memlayout(decl, elements, pos, alignment)));
-	return record_map_.find(decl)->second;
+	record_map_.insert(std::make_pair(dcl, record_memlayout(dcl, elements, pos, alignment)));
+	return record_map_.find(dcl)->second;
 }
 
 const union_memlayout &
