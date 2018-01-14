@@ -42,22 +42,22 @@ memlayout_mapper_simple::map_record(const rcddeclaration * dcl)
 }
 
 const union_memlayout &
-memlayout_mapper_simple::map_union(const unndeclaration * decl)
+memlayout_mapper_simple::map_union(const unndeclaration * dcl)
 {
-	auto i = union_map_.find(decl);
+	auto i = union_map_.find(dcl);
 	if (i != union_map_.end())
 		return i->second;
 	
 	size_t size = 0, alignment = 1;
-	for (size_t n = 0; n < decl->nelements; n++) {
-		const dataitem_memlayout & ext = map_value_type(*decl->elements[n]);
+	for (size_t n = 0; n < dcl->noptions(); n++) {
+		auto & ext = map_value_type(dcl->option(n));
 		alignment = std::max(alignment, ext.alignment());
 		size = std::max(size, ext.size());
 	}
 	size = (size + alignment - 1) & ~(alignment - 1);
 
-	union_map_.insert(std::make_pair(decl, union_memlayout(decl, size, alignment)));
-	return union_map_.find(decl)->second;
+	union_map_.insert(std::make_pair(dcl, union_memlayout(dcl, size, alignment)));
+	return union_map_.find(dcl)->second;
 }
 
 const dataitem_memlayout &

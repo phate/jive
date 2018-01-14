@@ -31,14 +31,11 @@ static int test_main(void)
 	jive::bits::type bits8(8);
 	jive::bits::type bits18(18);
 	jive::bits::type bits32(32);
-	auto dcl = rcddeclaration::create(&graph, {&bits4, &bits8, &bits18});
+	auto rcddcl = rcddeclaration::create(&graph, {&bits4, &bits8, &bits18});
+	unndeclaration unndcl({&bits4, &bits8, &bits18});
 
-	rcdtype record_t(dcl);
-	const jive::valuetype *  tmparray1[] = {&bits4, &bits8, &bits18};
-
-	jive::unndeclaration u_decl = {3, tmparray1};
-
-	jive::unntype union_t(&u_decl);
+	rcdtype record_t(rcddcl);
+	unntype union_t(&unndcl);
 
 	auto s0 = jive_sizeof_create(graph.root(), &bits4);
 	auto s1 = jive_sizeof_create(graph.root(), &bits8);

@@ -15,9 +15,41 @@ namespace jive {
 
 /* union declaration */
 
-struct unndeclaration {
-	size_t nelements;
-	const jive::valuetype ** elements;
+class unndeclaration final {
+public:
+	inline
+	unndeclaration(const std::vector<const valuetype*> & types)
+	{
+		for (const auto & type : types)
+			append(*type);
+	}
+
+	unndeclaration(const unndeclaration &) = delete;
+
+	unndeclaration &
+	operator=(const unndeclaration &) = delete;
+
+	inline size_t
+	noptions() const noexcept
+	{
+		return types_.size();
+	}
+
+	const valuetype &
+	option(size_t index) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(index < noptions());
+		return *static_cast<const valuetype*>(types_[index].get());
+	}
+
+	void
+	append(const jive::valuetype & type)
+	{
+		types_.push_back(type.copy());
+	}
+
+private:
+	std::vector<std::unique_ptr<jive::type>> types_;
 };
 
 /* union type */
@@ -62,7 +94,7 @@ public:
 	unify_op(const jive::unntype & type, size_t option) noexcept
 	: option_(option)
 	, result_(type)
-	, argument_(*type.declaration()->elements[option])
+	, argument_(type.declaration()->option(option))
 	{}
 
 	inline
@@ -176,7 +208,7 @@ public:
 		const jive::unntype & type,
 		size_t option) noexcept
 	: option_(option)
-	, result_(*type.declaration()->elements[option])
+	, result_(type.declaration()->option(option))
 	, argument_(type)
 	{}
 

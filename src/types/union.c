@@ -97,7 +97,7 @@ choose_op::reduce_operand(
 
 	if (path == jive_choose_reduction_load) {
 		auto address = arg->node()->input(0)->origin();
-		auto decl = static_cast<const jive::unntype*>(&arg->node()->output(0)->type())->declaration();
+		auto dcl = static_cast<const jive::unntype*>(&arg->node()->output(0)->type())->declaration();
 
 		size_t nstates = arg->node()->ninputs()-1;
 		std::vector<jive::output*> states;
@@ -105,11 +105,10 @@ choose_op::reduce_operand(
 			states.push_back(arg->node()->input(n+1)->origin());
 
 		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
-			return jive_load_by_address_create(address, decl->elements[option()],
-				nstates, &states[0]);
+			return jive_load_by_address_create(address, &dcl->option(option()), nstates, &states[0]);
 		} else {
 			size_t nbits = static_cast<const jive::bits::type*>(&address->type())->nbits();
-			return jive_load_by_bitstring_create(address, nbits, decl->elements[option()],
+			return jive_load_by_bitstring_create(address, nbits, &dcl->option(option()),
 				nstates, &states[0]);
 		}
 	}
