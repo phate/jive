@@ -18,17 +18,20 @@ namespace jive {
 class unndeclaration final {
 public:
 	inline
-	unndeclaration(const std::vector<const valuetype*> & types)
-	{
-		for (const auto & type : types)
-			append(*type);
-	}
+	~unndeclaration()
+	{}
+
+private:
+	inline
+	unndeclaration()
+	{}
 
 	unndeclaration(const unndeclaration &) = delete;
 
 	unndeclaration &
 	operator=(const unndeclaration &) = delete;
 
+public:
 	inline size_t
 	noptions() const noexcept
 	{
@@ -48,9 +51,27 @@ public:
 		types_.push_back(type.copy());
 	}
 
+	static unndeclaration *
+	create(const jive::graph * graph);
+
+	static inline unndeclaration *
+	create(
+		const jive::graph * graph,
+		const std::vector<const valuetype*> & types)
+	{
+		auto dcl = create(graph);
+		for (const auto & type : types)
+			dcl->append(*type);
+
+		return dcl;
+	}
+
 private:
 	std::vector<std::unique_ptr<jive::type>> types_;
 };
+
+void
+unregister_unndeclarations(const jive::graph * graph);
 
 /* union type */
 

@@ -28,15 +28,15 @@ static int test_unnchoose(void)
 	static const bits::type bt16(16);
 	static const bits::type bt32(32);
 
-	static const jive::unndeclaration dcl({&bt8, &bt16, &bt32});
-	static jive::unntype unntype(&dcl);
+	auto dcl = unndeclaration::create(&graph, {&bt8, &bt16, &bt32});
+	jive::unntype unntype(dcl);
 
 	auto i0 = graph.add_import(bt8, "");
 	auto i1 = graph.add_import(unntype, "");
 	auto i2 = graph.add_import(unntype, "");
 	auto i3 = graph.add_import(at, "");
 
-	auto u0 = jive_unify_create(&dcl, 0, i0);
+	auto u0 = jive_unify_create(dcl, 0, i0);
 	auto load = jive_load_by_address_create(i3, &unntype, 0, NULL);
 
 	auto c0 = choose_op::create(i1, 1);
@@ -65,22 +65,24 @@ JIVE_UNIT_TEST_REGISTER("types/union/test-unnchoose", test_unnchoose)
 
 static int test_unnunify(void)
 {
+	using namespace jive;
+
 	jive::graph graph;
 	
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);
 	static const jive::bits::type bits32(32);
 
-	static const jive::unndeclaration dcl({&bits8, &bits16, &bits32});
-	static jive::unntype unntype(&dcl);
+	auto dcl = unndeclaration::create(&graph, {&bits8, &bits16, &bits32});
+	jive::unntype unntype(dcl);
 
-	static const jive::unndeclaration eunndcl({});
-	static jive::unntype unntype_empty(&eunndcl);
+	auto edcl = unndeclaration::create(&graph);
+	jive::unntype unntype_empty(edcl);
 	
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits8});
 
-	auto u0 = jive_unify_create(&dcl, 0, top->output(0));
-	auto u1 = jive_empty_unify_create(graph.root(), &eunndcl);
+	auto u0 = jive_unify_create(dcl, 0, top->output(0));
+	auto u1 = jive_empty_unify_create(graph.root(), edcl);
 
 	auto bottom = jive::test::simple_node_create(graph.root(), {unntype, unntype_empty}, {u0, u1},
 		{bits8});

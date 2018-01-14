@@ -11,7 +11,51 @@
 
 static constexpr jive_unop_reduction_path_t jive_choose_reduction_load = 128;
 
+namespace {
+
+typedef std::unordered_set<std::unique_ptr<jive::unndeclaration>> declarationset;
+typedef std::unordered_map<const jive::graph*, declarationset> declarationmap;
+
+declarationmap &
+map()
+{
+	static declarationmap map;
+	return map;
+}
+
+void
+register_declaration(
+	const jive::graph * graph,
+	std::unique_ptr<jive::unndeclaration> dcl)
+{
+	auto & m = map();
+	if (m.find(graph) == m.end())
+		m[graph] = declarationset();
+
+	m[graph].insert(std::move(dcl));
+}
+
+}
+
 namespace jive {
+
+/* union declaration */
+
+void
+unregister_unndeclarations(const jive::graph * graph)
+{
+	map().erase(graph);
+}
+
+unndeclaration *
+unndeclaration::create(const jive::graph * graph)
+{
+	std::unique_ptr<jive::unndeclaration> dcl(new jive::unndeclaration());
+	auto ptr = dcl.get();
+
+	register_declaration(graph, std::move(dcl));
+	return ptr;
+}
 
 /* union type */
 

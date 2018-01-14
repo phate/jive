@@ -29,12 +29,12 @@ static int test_main(void)
 	static const jive::bits::type bits32(32);
 
 	auto rcddcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32});
-	unndeclaration unndcl({&bits8, &bits16, &bits32});
-	unndeclaration eunndcl({});
+	auto unndcl = unndeclaration::create(&graph, {&bits8, &bits16, &bits32});
+	auto eunndcl = unndeclaration::create(&graph);
 
 	jive::rcdtype rcdtype(rcddcl);
-	jive::unntype unntype(&unndcl);
-	jive::unntype eunntype(&eunndcl);
+	jive::unntype unntype(unndcl);
+	jive::unntype eunntype(eunndcl);
 
 	jive::memtype memtype;
 	jive::addrtype addrtype;
@@ -49,14 +49,14 @@ static int test_main(void)
 	jive::output * tmparray2[] = {top->output(1), top->output(5)};
 	auto states1 = jive_store_by_address_create(top->output(0), &rcdtype, group, 2, tmparray2);
 
-	auto unify = jive_unify_create(&unndcl, 2, top->output(4));
+	auto unify = jive_unify_create(unndcl, 2, top->output(4));
 	auto states2 = jive_store_by_address_create(top->output(0), &unntype, unify, 1, &state);
 
 	auto states3 = jive_store_by_address_create(top->output(6), &bits32, top->output(4), 1, &state);
 	auto states4 = jive_store_by_address_create(top->output(0), &bits32, top->output(4), 1,
 		&states3[0]);
 
-	unify = jive_empty_unify_create(graph.root(), &eunndcl);
+	unify = jive_empty_unify_create(graph.root(), eunndcl);
 	auto states5 = jive_store_by_address_create(top->output(0), &eunntype, unify, 1, &state);
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
