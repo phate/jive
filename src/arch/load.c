@@ -12,6 +12,26 @@
 #include <jive/rvsdg/simple-node.h>
 #include <jive/types/bitstring/type.h>
 
+namespace {
+
+jive::node_normal_form *
+jive_load_get_default_normal_form_(
+	const std::type_info & operator_class,
+	jive::node_normal_form * parent,
+	jive::graph * graph)
+{
+	return new jive::load_normal_form(operator_class, parent, graph);
+}
+
+static void  __attribute__((constructor))
+register_node_normal_form(void)
+{
+	jive::node_normal_form::register_factory(
+		typeid(jive::load_op), jive_load_get_default_normal_form_);
+}
+
+}
+
 namespace jive {
 
 /* load normal form */
@@ -39,7 +59,7 @@ is_matching_store_op(const jive::load_op & l_op, const jive::operation & op)
 	if (!s_op)
 		return false;
 
-	return l_op.address_type() == s_op->address_type() && l_op.data_type() == s_op->data_type();
+	return l_op.addresstype() == s_op->address_type() && l_op.valuetype() == s_op->data_type();
 }
 
 static bool is_matching_store_node(
@@ -117,31 +137,10 @@ load_normal_form::set_reducible(bool enable)
 		graph()->mark_denormalized();
 }
 
-}
-
-static jive::output *
-jive_load_node_normalized_create(
-	const jive::node_normal_form * nf,
-	jive::graph * graph,
-	const jive::simple_op & op,
-	jive::output * address,
-	size_t nstates, jive::output * const states[])
-{
-	std::vector<jive::output*> args = {address};
-	for (size_t n = 0; n < nstates; ++n) {
-		args.push_back(states[n]);
-	}
-
-	return jive::create_normalized(address->region(), op, args)[0];
-}
-
-namespace jive {
-
 /* load operator */
 
 load_op::~load_op() noexcept
-{
-}
+{}
 
 bool
 load_op::operator==(const operation & other) const noexcept
@@ -150,13 +149,13 @@ load_op::operator==(const operation & other) const noexcept
 	return op
 	    && op->value_ == value_
 	    && op->address_ == address_
-			&& op->states_ == states_;
+			&& op->nstates_ == nstates_;
 }
 
 size_t
 load_op::narguments() const noexcept
 {
-	return 1 + states_.size();
+	return 1 + nstates_;
 }
 
 const jive::port &
@@ -167,7 +166,9 @@ load_op::argument(size_t index) const noexcept
 	if (index == 0)
 		return address_;
 
-	return states_[index-1];
+	static const jive::memtype mt;
+	static const jive::port p(mt);
+	return p;
 }
 
 size_t
@@ -195,61 +196,14 @@ load_op::copy() const
 	return std::unique_ptr<jive::operation>(new load_op(*this));
 }
 
-}
+/* address load operator */
 
-jive::node_normal_form *
-jive_load_get_default_normal_form_(
-	const std::type_info & operator_class,
-	jive::node_normal_form * parent,
-	jive::graph * graph)
-{
-	jive::node_normal_form * nf = new jive::load_normal_form(
-		operator_class, parent, graph);
+addrload_op::~addrload_op()
+{}
 
-	return nf;
-}
+/* bitstring load operator */
 
-static void  __attribute__((constructor))
-register_node_normal_form(void)
-{
-	jive::node_normal_form::register_factory(
-		typeid(jive::load_op), jive_load_get_default_normal_form_);
-}
+bitload_op::~bitload_op()
+{}
 
-jive::output *
-jive_load_by_address_create(jive::output * address,
-	const jive::valuetype * datatype,
-	size_t nstates, jive::output * const states[])
-{
-	auto graph = address->region()->graph();
-	const auto nf = graph->node_normal_form(typeid(jive::load_op));
-	
-	std::vector<std::unique_ptr<jive::type>> state_types;
-	for (size_t n = 0; n < nstates; ++n) {
-		state_types.emplace_back(
-			dynamic_cast<const jive::statetype &>(states[n]->type()).copy());
-	}
-
-	jive::load_op op(jive::addrtype(), state_types, *datatype);
-
-	return jive_load_node_normalized_create(nf, graph, op, address, nstates, states);
-}
-
-jive::output *
-jive_load_by_bitstring_create(jive::output * address, size_t nbits,
-	const jive::valuetype * datatype,
-	size_t nstates, jive::output * const states[])
-{
-	auto graph = address->region()->graph();
-	const auto nf = graph->node_normal_form(typeid(jive::load_op));
-	
-	std::vector<std::unique_ptr<jive::type>> state_types;
-	for (size_t n = 0; n < nstates; ++n) {
-		state_types.emplace_back(
-			dynamic_cast<const jive::statetype &>(states[n]->type()).copy());
-	}
-
-	jive::load_op op(jive::bits::type(nbits), state_types, *datatype);
-
-	return jive_load_node_normalized_create(nf, graph, op, address, nstates, states);
 }

@@ -19,6 +19,8 @@
 
 static int test_main()
 {
+	using namespace jive;
+
 	jive::graph graph;
 
 	jive::memtype memtype;
@@ -28,11 +30,11 @@ static int test_main()
 		bits32});
 
 	auto state = top->output(2);
-	auto load0 = jive_load_by_address_create(top->output(0), &bits32, 1, &state);
+	auto load0 = addrload_op::create(top->output(0), bits32, {top->output(2)});
 
 	state = top->output(2);
 	auto states = jive_store_by_address_create(top->output(1), &bits32, top->output(3), 1, &state);
-	auto load1 = jive_load_by_address_create(top->output(1), &bits32, 1, &states[0]);
+	auto load1 = addrload_op::create(top->output(1), bits32, {states[0]});
 	assert(load1 == top->output(3));
 
 	auto bottom = jive::test::simple_node_create(graph.root(), {bits32, bits32}, {load0, load1},

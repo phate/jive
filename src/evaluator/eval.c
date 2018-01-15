@@ -161,12 +161,11 @@ compute_bitload_op(
 	const std::vector<std::unique_ptr<const literal>> & operands)
 {
 	JIVE_DEBUG_ASSERT(operands.size() > 1);
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::load_op*>(&operation));
+	JIVE_DEBUG_ASSERT(is_load_op(operation));
 	JIVE_DEBUG_ASSERT(dynamic_cast<const bitliteral*>(operands[0].get()));
 
-	const load_op * op = static_cast<const load_op*>(&operation);
-	const jive::bits::type * vtype = dynamic_cast<const jive::bits::type*>(&op->data_type());
-	JIVE_DEBUG_ASSERT(vtype);
+	auto op = static_cast<const bitload_op*>(&operation);
+	auto vtype = dynamic_cast<const jive::bits::type*>(&op->valuetype());
 
 	const bitliteral * address = static_cast<const bitliteral*>(operands[0].get());
 	JIVE_DEBUG_ASSERT(address->value_repr().nbits() <= 64);

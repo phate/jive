@@ -93,7 +93,7 @@ jive_load_node_address_transform(
 	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::type*>(&address->type())->nbits() == nbits);
 
 	jive::bits::type bits(nbits);
-	auto datatype = &op.data_type();
+	auto datatype = &op.valuetype();
 	if (output_is_address)
 		datatype = &bits;
 
@@ -102,7 +102,7 @@ jive_load_node_address_transform(
 	for (size_t i = 0; i < nstates; i++)
 		states.push_back(node->input(i+1)->origin());
 
-	auto load = jive_load_by_bitstring_create(address, nbits, datatype, nstates, &states[0]);
+	auto load = jive::bitload_op::create(address, nbits, *datatype, states);
 	
 	if (output_is_address)
 		load = jive::bit2addr_op::create(load, nbits, node->output(0)->type());

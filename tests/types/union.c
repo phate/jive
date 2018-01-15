@@ -37,7 +37,7 @@ static int test_unnchoose(void)
 	auto i3 = graph.add_import(at, "");
 
 	auto u0 = jive_unify_create(dcl, 0, i0);
-	auto load = jive_load_by_address_create(i3, &unntype, 0, NULL);
+	auto load = addrload_op::create(i3, unntype, {});
 
 	auto c0 = choose_op::create(i1, 1);
 	auto c1 = choose_op::create(u0, 0);

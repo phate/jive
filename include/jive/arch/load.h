@@ -7,13 +7,13 @@
 #ifndef JIVE_ARCH_LOAD_H
 #define JIVE_ARCH_LOAD_H
 
-#include <algorithm>
-#include <memory>
-
+#include <jive/arch/addresstype.h>
+#include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/node-normal-form.h>
 #include <jive/rvsdg/node.h>
+#include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/simple-normal-form.h>
-#include <jive/util/ptr-collection.h>
+#include <jive/types/bitstring/type.h>
 
 namespace jive {
 
@@ -49,23 +49,21 @@ private:
 
 /* load operator */
 
-class load_op final : public simple_op {
+class load_op : public simple_op {
 public:
 	virtual
 	~load_op() noexcept;
 
-	template<typename Types>
+protected:
 	inline
 	load_op(
-		const jive::valuetype & address_type,
-		const Types & state_types,
-		const jive::valuetype & data_type)
-		: value_(data_type)
-		, address_(address_type)
-	{
-		for (const auto & type : state_types)
-			states_.push_back({std::move(type->copy())});
-	}
+		const jive::valuetype & address,
+		const jive::valuetype & value,
+		size_t nstates)
+	: nstates_(nstates)
+	, value_(value)
+	, address_(address)
+	{}
 
 	inline
 	load_op(const load_op & other) = default;
@@ -73,55 +71,159 @@ public:
 	inline
 	load_op(load_op && other) noexcept = default;
 
+public:
+	inline const jive::valuetype &
+	addresstype() const noexcept
+	{
+		return *static_cast<const jive::valuetype*>(&address_.type());
+	}
+
+	inline const jive::valuetype &
+	valuetype() const noexcept
+	{
+		return *static_cast<const jive::valuetype*>(&value_.type());
+	}
+
 	virtual bool
-	operator==(const operation & other) const noexcept override;
+	operator==(const operation & other) const noexcept override final;
 
 	virtual size_t
-	narguments() const noexcept override;
+	narguments() const noexcept override final;
 
 	virtual const jive::port &
-	argument(size_t index) const noexcept override;
+	argument(size_t index) const noexcept override final;
 
 	virtual size_t
-	nresults() const noexcept override;
+	nresults() const noexcept override final;
 
 	virtual const jive::port &
-	result(size_t index) const noexcept override;
+	result(size_t index) const noexcept override final;
 
 	virtual std::string
-	debug_string() const override;
-
-	inline const jive::valuetype &
-	address_type() const noexcept
-	{
-		return *static_cast<const valuetype*>(&address_.type());
-	}
-
-	inline const jive::valuetype &
-	data_type() const noexcept
-	{
-		return *static_cast<const valuetype*>(&value_.type());
-	}
+	debug_string() const override final;
 
 	virtual std::unique_ptr<jive::operation>
-	copy() const override;
+	copy() const override final;
+
+	static inline jive::load_normal_form *
+	normal_form(jive::graph * graph) noexcept
+	{
+		return static_cast<load_normal_form*>(graph->node_normal_form(typeid(load_op)));
+	}
 
 private:
+	size_t nstates_;
 	jive::port value_;
 	jive::port address_;
-	std::vector<jive::port> states_;
 };
 
+static inline bool
+is_load_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const jive::load_op*>(&op) != nullptr;
 }
 
-jive::output *
-jive_load_by_address_create(jive::output * address,
-	const jive::valuetype * datatype,
-	size_t nstates, jive::output * const states[]);
+static inline bool
+is_load_node(const jive::node * node) noexcept
+{
+	return is_opnode<load_op>(node);
+}
 
-jive::output *
-jive_load_by_bitstring_create(jive::output * address,
-	size_t nbits, const jive::valuetype * datatype,
-	size_t nstates, jive::output * const states[]);
+/* address load operator */
+
+class addrload_op final : public load_op {
+public:
+	virtual
+	~addrload_op();
+
+	inline
+	addrload_op(
+		const jive::addrtype & address,
+		const jive::valuetype & value,
+		size_t nstates)
+	: load_op(address, value, nstates)
+	{}
+
+	inline const jive::addrtype &
+	addresstype() const noexcept
+	{
+		return *static_cast<const addrtype*>(&load_op::addresstype());
+	}
+
+	static inline jive::output *
+	create(
+		jive::output * address,
+		const jive::valuetype & valuetype,
+		const std::vector<jive::output*> & states)
+	{
+		std::vector<jive::output*> operands(1, address);
+		operands.insert(operands.end(), states.begin(), states.end());
+
+		jive::addrload_op op(jive::addrtype(), valuetype, states.size());
+		return jive::create_normalized(address->region(), op, operands)[0];
+	}
+};
+
+static inline bool
+is_addrload_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const jive::addrload_op*>(&op) != nullptr;
+}
+
+static inline bool
+is_addrload_node(const jive::node * node) noexcept
+{
+	return is_opnode<addrload_op>(node);
+}
+
+/* bitstring load operator */
+
+class bitload_op final : public load_op {
+public:
+	virtual
+	~bitload_op();
+
+	inline
+	bitload_op(
+		const jive::bits::type & address,
+		const jive::valuetype & value,
+		size_t nstates)
+	: load_op(address, value, nstates)
+	{}
+
+	inline const jive::bits::type &
+	addresstype() const noexcept
+	{
+		return *static_cast<const bits::type*>(&load_op::addresstype());
+	}
+
+	static inline jive::output *
+	create(
+		jive::output * address,
+		size_t nbits,
+		const jive::valuetype & valuetype,
+		const std::vector<jive::output*> & states)
+	{
+		std::vector<jive::output*> operands(1, address);
+		operands.insert(operands.end(), states.begin(), states.end());
+
+		jive::bitload_op op(jive::bits::type(nbits), valuetype, states.size());
+		return jive::create_normalized(address->region(), op, operands)[0];
+	}
+};
+
+static inline bool
+is_bitload_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const jive::bitload_op*>(&op) != nullptr;
+}
+
+static inline bool
+is_bitload_op(const jive::node * node) noexcept
+{
+	return is_opnode<bitload_op>(node);
+}
+
+}
 
 #endif

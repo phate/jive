@@ -149,11 +149,10 @@ choose_op::reduce_operand(
 			states.push_back(arg->node()->input(n+1)->origin());
 
 		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
-			return jive_load_by_address_create(address, &dcl->option(option()), nstates, &states[0]);
+			return addrload_op::create(address, dcl->option(option()), states);
 		} else {
 			size_t nbits = static_cast<const jive::bits::type*>(&address->type())->nbits();
-			return jive_load_by_bitstring_create(address, nbits, &dcl->option(option()),
-				nstates, &states[0]);
+			return bitload_op::create(address, nbits, dcl->option(option()), states);
 		}
 	}
 

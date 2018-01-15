@@ -239,7 +239,7 @@ test_loadstore(jive::graph * graph)
 	jive::output * state = arguments[0];
 	auto address = arguments[1];
 
-	auto value = jive_load_by_bitstring_create(address, 64, &bits4, 1, &state);
+	auto value = jive::bitload_op::create(address, 64, bits4, {state});
 
 	auto three = create_bitconstant(lb.subregion(), 4, 3);
 	value = jive::bits::create_add(4, value, three);

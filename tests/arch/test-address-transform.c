@@ -30,15 +30,15 @@ test_address_transform(void)
 
 	jive::graph graph;
 
-	jive::addrtype addr;
 	jive::memtype mem;
+	jive::addrtype at;
 	jive::bits::type bits64(64);
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits64, bits64, mem});
 
-	auto address0 = bit2addr_op::create(top->output(0), 64, addr);
-	auto address1 = bit2addr_op::create(top->output(1), 64, addr);
+	auto address0 = bit2addr_op::create(top->output(0), 64, at);
+	auto address1 = bit2addr_op::create(top->output(1), 64, at);
 
-	auto dcl = rcddeclaration::create(&graph, {&addr, &addr});
+	auto dcl = rcddeclaration::create(&graph, {&at, &at});
 
 	auto memberof = jive_memberof(address0, dcl, 0);
 	auto containerof = jive_containerof(address1, dcl, 1);
@@ -47,19 +47,19 @@ test_address_transform(void)
 	jive::external_label write_label("write", &write_symbol);
 	auto label = jive_label_to_address_create(graph.root(), &write_label);
 	jive::output * tmparray2[] = {memberof, containerof};
-	const jive::type * tmparray3[] = {&addr, &addr};
+	const jive::type * tmparray3[] = {&at, &at};
 	jive::node * call = jive_call_by_address_node_create(graph.root(),
 		label, NULL,
 		2, tmparray2,
 		2, tmparray3);
 
 	auto constant = create_bitconstant(graph.root(), 64, 1);
-	auto arraysub = jive_arraysubscript(call->output(0), &addr, constant);
+	auto arraysub = jive_arraysubscript(call->output(0), &at, constant);
 
-	auto arrayindex = jive_arrayindex(call->output(0), call->output(1), &addr, &bits64);
+	auto arrayindex = jive_arrayindex(call->output(0), call->output(1), &at, &bits64);
 
 	auto state = top->output(2);
-	auto load = jive_load_by_address_create(arraysub, &addr, 1, &state);
+	auto load = addrload_op::create(arraysub, at, {top->output(2)});
 	auto store = jive_store_by_address_create(arraysub, &bits64, arrayindex, 1, &state)[0]->node();
 
 	auto o_addr = addr2bit_op::create(load, 64, load->type());

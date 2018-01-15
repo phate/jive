@@ -230,11 +230,9 @@ select_op::reduce_operand(
 
 		auto element_address = jive_memberof(address, decl, index());
 		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
-			return jive_load_by_address_create(element_address, &decl->element(index()),
-				nstates, &states[0]);
+			return addrload_op::create(element_address, decl->element(index()), states);
 		} else {
-			return jive_load_by_bitstring_create(element_address, nbits, &decl->element(index()),
-				nstates, &states[0]);
+			return bitload_op::create(element_address, nbits, decl->element(index()), states);
 		}
 	}
 
