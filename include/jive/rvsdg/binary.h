@@ -14,26 +14,6 @@
 
 typedef size_t jive_binop_reduction_path_t;
 
-enum jive_binary_operation_flags {
-	jive_binary_operation_none = 0,
-	jive_binary_operation_associative = 1,
-	jive_binary_operation_commutative = 2
-};
-
-static inline constexpr jive_binary_operation_flags
-operator|(jive_binary_operation_flags a, jive_binary_operation_flags b)
-{
-	return static_cast<jive_binary_operation_flags>(
-		static_cast<int>(a) | static_cast<int>(b));
-}
-
-static inline constexpr jive_binary_operation_flags
-operator&(jive_binary_operation_flags a, jive_binary_operation_flags b)
-{
-	return static_cast<jive_binary_operation_flags>(
-		static_cast<int>(a) & static_cast<int>(b));
-}
-
 namespace jive {
 
 class binary_op;
@@ -123,6 +103,11 @@ public:
 */
 class binary_op : public simple_op {
 public:
+	enum class flags {
+	  none = 0
+	, associative = 1
+	, commutative = 2};
+
 	virtual ~binary_op() noexcept;
 
 	virtual jive_binop_reduction_path_t
@@ -136,20 +121,14 @@ public:
 		jive::output * op1,
 		jive::output * op2) const = 0;
 
-	virtual jive_binary_operation_flags
+	virtual jive::binary_op::flags
 	flags() const noexcept;
 
 	inline bool
-	is_associative() const noexcept
-	{
-		return flags() & jive_binary_operation_associative;
-	}
+	is_associative() const noexcept;
 
 	inline bool
-	is_commutative() const noexcept
-	{
-		return flags() & jive_binary_operation_commutative;
-	}
+	is_commutative() const noexcept;
 
 	static jive::binary_normal_form *
 	normal_form(jive::graph * graph) noexcept
@@ -211,6 +190,34 @@ private:
 	std::unique_ptr<binary_op> op_;
 	size_t narguments_;
 };
+
+/* binary flags operators */
+
+static inline constexpr enum binary_op::flags
+operator|(enum binary_op::flags a, enum binary_op::flags b)
+{
+	return static_cast<enum binary_op::flags>(static_cast<int>(a) | static_cast<int>(b));
+}
+
+static inline constexpr enum binary_op::flags
+operator&(enum binary_op::flags a, enum binary_op::flags b)
+{
+	return static_cast<enum binary_op::flags>(static_cast<int>(a) & static_cast<int>(b));
+}
+
+/* binary methods */
+
+inline bool
+binary_op::is_associative() const noexcept
+{
+	return static_cast<int>(flags() & binary_op::flags::associative);
+}
+
+inline bool
+binary_op::is_commutative() const noexcept
+{
+	return static_cast<int>(flags() & binary_op::flags::commutative);
+}
 
 }
 

@@ -153,7 +153,7 @@ private:
 template<
 	typename evaluator_functional,
 	const char * name,
-	jive_binary_operation_flags op_flags>
+	enum jive::binary_op::flags op_flags>
 class make_binop final : public binary_op {
 public:
 	virtual ~make_binop() noexcept {}
@@ -171,7 +171,7 @@ public:
 		return jive::create_normalized(arg1->region(), make_binop(), {arg1, arg2})[0];
 	}
 
-	virtual jive_binary_operation_flags
+	virtual enum jive::binary_op::flags
 	flags() const noexcept override
 	{
 		return op_flags;
@@ -203,7 +203,7 @@ private:
 template<
 	typename evaluator_functional,
 	const char * name,
-	jive_binary_operation_flags op_flags>
+	enum jive::binary_op::flags op_flags>
 class make_cmpop final : public compare_op {
 public:
 	virtual ~make_cmpop() noexcept {}
@@ -222,7 +222,7 @@ public:
 		return jive::create_normalized(arg1->region(), make_cmpop(), {arg1, arg2})[0];
 	}
 
-	virtual jive_binary_operation_flags
+	virtual enum jive::binary_op::flags
 	flags() const noexcept override
 	{
 		return op_flags;

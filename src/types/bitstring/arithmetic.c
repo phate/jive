@@ -67,7 +67,7 @@ NAME ## _op::reduce_constants( \
 	return REDUCTION; \
 } \
 \
-jive_binary_operation_flags \
+enum jive::binary_op::flags \
 NAME ## _op::flags() const noexcept \
 { \
 	return FLAGS; \
@@ -95,25 +95,25 @@ DEFINE_BITUNARY_OPERATION(neg, arg.neg(), BITNEGATE)
 DEFINE_BITUNARY_OPERATION(not, arg.lnot(), BITNOT)
 
 DEFINE_BITBINARY_OPERATION(add, arg1.add(arg2), BITADD,
-	jive_binary_operation_associative | jive_binary_operation_commutative)
+	jive::binary_op::flags::associative | jive::binary_op::flags::commutative)
 DEFINE_BITBINARY_OPERATION(and, arg1.land(arg2), BITAND,
-	jive_binary_operation_associative | jive_binary_operation_commutative)
-DEFINE_BITBINARY_OPERATION(ashr, arg1.ashr(arg2.to_uint()), BITASHR, jive_binary_operation_none)
+	jive::binary_op::flags::associative | jive::binary_op::flags::commutative)
+DEFINE_BITBINARY_OPERATION(ashr, arg1.ashr(arg2.to_uint()), BITASHR, jive::binary_op::flags::none)
 DEFINE_BITBINARY_OPERATION(mul, arg1.mul(arg2), BITMUL,
-	jive_binary_operation_associative | jive_binary_operation_commutative)
+	jive::binary_op::flags::associative | jive::binary_op::flags::commutative)
 DEFINE_BITBINARY_OPERATION(or, arg1.lor(arg2), BITOR,
-	jive_binary_operation_associative | jive_binary_operation_commutative)
-DEFINE_BITBINARY_OPERATION(sdiv, arg1.sdiv(arg2), BITSDIV, jive_binary_operation_none)
-DEFINE_BITBINARY_OPERATION(shl, arg1.shl(arg2.to_uint()), BITSHL, jive_binary_operation_none)
-DEFINE_BITBINARY_OPERATION(shr, arg1.shr(arg2.to_uint()), BITSHR, jive_binary_operation_none)
-DEFINE_BITBINARY_OPERATION(smod, arg1.smod(arg2), BITSMOD, jive_binary_operation_none)
-DEFINE_BITBINARY_OPERATION(smulh, arg1.smulh(arg2), BITSMULH, jive_binary_operation_none)
-DEFINE_BITBINARY_OPERATION(sub, arg1.sub(arg2), BITSUB, jive_binary_operation_none)
-DEFINE_BITBINARY_OPERATION(udiv, arg1.udiv(arg2), BITUDIV, jive_binary_operation_none)
-DEFINE_BITBINARY_OPERATION(umod, arg1.umod(arg2), BITUMOD, jive_binary_operation_none)
-DEFINE_BITBINARY_OPERATION(umulh, arg1.umulh(arg2), BITUMULH, jive_binary_operation_none)
+	jive::binary_op::flags::associative | jive::binary_op::flags::commutative)
+DEFINE_BITBINARY_OPERATION(sdiv, arg1.sdiv(arg2), BITSDIV, jive::binary_op::flags::none)
+DEFINE_BITBINARY_OPERATION(shl, arg1.shl(arg2.to_uint()), BITSHL, jive::binary_op::flags::none)
+DEFINE_BITBINARY_OPERATION(shr, arg1.shr(arg2.to_uint()), BITSHR, jive::binary_op::flags::none)
+DEFINE_BITBINARY_OPERATION(smod, arg1.smod(arg2), BITSMOD, jive::binary_op::flags::none)
+DEFINE_BITBINARY_OPERATION(smulh, arg1.smulh(arg2), BITSMULH, jive::binary_op::flags::none)
+DEFINE_BITBINARY_OPERATION(sub, arg1.sub(arg2), BITSUB, jive::binary_op::flags::none)
+DEFINE_BITBINARY_OPERATION(udiv, arg1.udiv(arg2), BITUDIV, jive::binary_op::flags::none)
+DEFINE_BITBINARY_OPERATION(umod, arg1.umod(arg2), BITUMOD, jive::binary_op::flags::none)
+DEFINE_BITBINARY_OPERATION(umulh, arg1.umulh(arg2), BITUMULH, jive::binary_op::flags::none)
 DEFINE_BITBINARY_OPERATION(xor, arg1.lxor(arg2), BITXOR,
-	jive_binary_operation_associative | jive_binary_operation_commutative)
+	jive::binary_op::flags::associative | jive::binary_op::flags::commutative)
 
 }
 }

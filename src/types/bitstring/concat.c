@@ -340,10 +340,10 @@ concat_op::reduce_operand_pair(
 	return NULL;
 }
 
-jive_binary_operation_flags
+enum jive::binary_op::flags
 concat_op::flags() const noexcept
 {
-	return jive_binary_operation_associative;
+	return jive::binary_op::flags::associative;
 }
 
 std::string

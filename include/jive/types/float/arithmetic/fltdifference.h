@@ -17,7 +17,7 @@ extern const char fltdifference_name[];
 typedef detail::make_binop<
 	std::minus<value_repr>,
 	fltdifference_name,
-	jive_binary_operation_none> sub_op;
+	jive::binary_op::flags::none> sub_op;
 
 }
 }

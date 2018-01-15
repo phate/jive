@@ -17,7 +17,7 @@ extern const char fltgreater_name[];
 typedef detail::make_cmpop<
 	std::greater<value_repr>,
 	fltgreater_name,
-	jive_binary_operation_none> gt_op;
+	jive::binary_op::flags::none> gt_op;
 
 }
 }

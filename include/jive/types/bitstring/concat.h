@@ -61,7 +61,7 @@ public:
 		jive::output * arg1,
 		jive::output * arg2) const override;
 
-	virtual jive_binary_operation_flags
+	virtual enum jive::binary_op::flags
 	flags() const noexcept override;
 
 	virtual std::string

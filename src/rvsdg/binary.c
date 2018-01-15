@@ -287,10 +287,10 @@ flattened_binary_normal_form::normalized_create(
 
 binary_op::~binary_op() noexcept {}
 
-jive_binary_operation_flags
+enum jive::binary_op::flags
 binary_op::flags() const noexcept
 {
-	return jive_binary_operation_none;
+	return jive::binary_op::flags::none;
 }
 
 /* flattened binary operator */

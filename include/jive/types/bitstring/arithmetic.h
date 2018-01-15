@@ -65,7 +65,7 @@ public: \
 	virtual bool \
 	operator==(const operation & other) const noexcept override; \
 \
-	virtual jive_binary_operation_flags \
+	virtual enum jive::binary_op::flags \
 	flags() const noexcept override; \
 \
 	virtual value_repr \

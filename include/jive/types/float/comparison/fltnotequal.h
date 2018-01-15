@@ -17,7 +17,7 @@ extern const char fltnotequal_name[];
 typedef detail::make_cmpop<
 	std::not_equal_to<value_repr>,
 	fltnotequal_name,
-	jive_binary_operation_commutative> ne_op;
+	jive::binary_op::flags::commutative> ne_op;
 
 }
 }
