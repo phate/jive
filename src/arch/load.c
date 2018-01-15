@@ -59,7 +59,7 @@ is_matching_store_op(const jive::load_op & l_op, const jive::operation & op)
 	if (!s_op)
 		return false;
 
-	return l_op.addresstype() == s_op->address_type() && l_op.valuetype() == s_op->data_type();
+	return l_op.addresstype() == s_op->addresstype() && l_op.valuetype() == s_op->valuetype();
 }
 
 static bool is_matching_store_node(

@@ -244,7 +244,7 @@ test_loadstore(jive::graph * graph)
 	auto three = create_bitconstant(lb.subregion(), 4, 3);
 	value = jive::bits::create_add(4, value, three);
 
-	state = jive_store_by_bitstring_create(address, 64, &bits4, value, 1, &state)[0];
+	state = jive::bitstore_op::create(address, value, 64, bits4, {state})[0];
 
 	auto f = lb.end_lambda({state})->output(0);
 

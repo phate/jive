@@ -60,7 +60,7 @@ test_address_transform(void)
 
 	auto state = top->output(2);
 	auto load = addrload_op::create(arraysub, at, {top->output(2)});
-	auto store = jive_store_by_address_create(arraysub, &bits64, arrayindex, 1, &state)[0]->node();
+	auto store = addrstore_op::create(arraysub, arrayindex, bits64, {state})[0]->node();
 
 	auto o_addr = addr2bit_op::create(load, 64, load->type());
 

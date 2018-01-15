@@ -33,7 +33,7 @@ static int test_main()
 	auto load0 = addrload_op::create(top->output(0), bits32, {top->output(2)});
 
 	state = top->output(2);
-	auto states = jive_store_by_address_create(top->output(1), &bits32, top->output(3), 1, &state);
+	auto states = addrstore_op::create(top->output(1), top->output(3), bits32, {state});
 	auto load1 = addrload_op::create(top->output(1), bits32, {states[0]});
 	assert(load1 == top->output(3));
 

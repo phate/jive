@@ -42,22 +42,21 @@ static int test_main(void)
 		{addrtype, memtype, bits8, bits16, bits32, memtype, addrtype});
 
 	auto state = top->output(1);
-	auto states0 = jive_store_by_address_create(top->output(0), &bits32, top->output(4), 1, &state);
+	auto states0 = addrstore_op::create(top->output(0), top->output(4), bits32, {state});
 
 	jive::output * tmparray1[] = {top->output(2), top->output(3), top->output(4)};
 	auto group = jive_group_create(rcddcl, 3, tmparray1);
-	jive::output * tmparray2[] = {top->output(1), top->output(5)};
-	auto states1 = jive_store_by_address_create(top->output(0), &rcdtype, group, 2, tmparray2);
+	auto states1 = addrstore_op::create(top->output(0), group, rcdtype,
+		{top->output(1), top->output(5)});
 
 	auto unify = jive_unify_create(unndcl, 2, top->output(4));
-	auto states2 = jive_store_by_address_create(top->output(0), &unntype, unify, 1, &state);
+	auto states2 = addrstore_op::create(top->output(0), unify, unntype, {state});
 
-	auto states3 = jive_store_by_address_create(top->output(6), &bits32, top->output(4), 1, &state);
-	auto states4 = jive_store_by_address_create(top->output(0), &bits32, top->output(4), 1,
-		&states3[0]);
+	auto states3 = addrstore_op::create(top->output(6), top->output(4), bits32, {state});
+	auto states4 = addrstore_op::create(top->output(0), top->output(4), bits32, {states3});
 
 	unify = jive_empty_unify_create(graph.root(), eunndcl);
-	auto states5 = jive_store_by_address_create(top->output(0), &eunntype, unify, 1, &state);
+	auto states5 = addrstore_op::create(top->output(0), unify, eunntype, {state});
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
 		std::vector<jive::port>(6, memtype),
