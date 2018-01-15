@@ -88,8 +88,7 @@ LIBJIVE_SRC += \
 	src/arch/call.c \
 	src/arch/compilate.c \
 	src/arch/dataobject.c \
-	src/arch/immediate-node.c \
-	src/arch/immediate-type.c \
+	src/arch/immediate.c \
 	src/arch/instruction.c \
 	src/arch/instructionset.c \
 	src/arch/label-mapper.c \

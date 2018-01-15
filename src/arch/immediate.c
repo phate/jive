@@ -4,29 +4,44 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/arch/immediate-node.h>
-
-#include <inttypes.h>
-#include <stdio.h>
-#include <string.h>
-
-#include <jive/arch/immediate-type.h>
-#include <jive/rvsdg/graph.h>
-#include <jive/rvsdg/nullary.h>
-#include <jive/rvsdg/region.h>
+#include <jive/arch/immediate.h>
 #include <jive/rvsdg/simple-node.h>
 
-/* immediate node */
-
 namespace jive {
+namespace imm {
 
-immediate_op::~immediate_op() noexcept {}
+type::~type() noexcept
+{}
+
+std::string
+type::debug_string() const
+{
+	return "imm";
+}
+
+bool
+type::operator==(const jive::type & other) const noexcept
+{
+	return dynamic_cast<const jive::imm::type*>(&other) != nullptr;
+}
+
+std::unique_ptr<jive::type>
+type::copy() const
+{
+	return std::unique_ptr<jive::type>(new type(*this));
+}
+
+}
+
+/* immediate operator */
+
+immediate_op::~immediate_op() noexcept
+{}
 
 bool
 immediate_op::operator==(const operation & other) const noexcept
 {
-	const immediate_op * op =
-		dynamic_cast<const immediate_op *>(&other);
+	auto op = dynamic_cast<const immediate_op*>(&other);
 	return op && (op->value() == value());
 }
 

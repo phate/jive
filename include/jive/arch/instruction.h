@@ -10,8 +10,7 @@
 #include <algorithm>
 #include <string.h>
 
-#include <jive/arch/immediate-node.h>
-#include <jive/arch/immediate-type.h>
+#include <jive/arch/immediate.h>
 #include <jive/arch/instruction-class.h>
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/registers.h>

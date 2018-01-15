@@ -5,8 +5,6 @@
  */
 
 #include <jive/arch/compilate.h>
-#include <jive/arch/immediate-node.h>
-#include <jive/arch/immediate-type.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/label-mapper.h>
 #include <jive/rvsdg/control.h>

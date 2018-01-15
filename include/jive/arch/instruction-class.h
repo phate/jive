@@ -9,7 +9,7 @@
 
 #include <string.h>
 
-#include <jive/arch/immediate-value.h>
+#include <jive/arch/immediate.h>
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/registers.h>
 #include <jive/rvsdg/label.h>

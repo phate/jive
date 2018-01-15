@@ -1,19 +1,46 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 2014 2015 2018 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_ARCH_IMMEDIATE_VALUE_H
-#define JIVE_ARCH_IMMEDIATE_VALUE_H
+#ifndef JIVE_ARCH_IMMEDIATE_H
+#define JIVE_ARCH_IMMEDIATE_H
 
-#include <jive/rvsdg/label.h>
+#include <jive/rvsdg/nullary.h>
+#include <jive/rvsdg/type.h>
 
 typedef uint64_t jive_immediate_int;
 
 namespace jive {
 
-/* immediates, as represented in the graph */
+class label;
+
+namespace imm {
+
+/* immediate type */
+
+class type final : public jive::valuetype {
+public:
+	virtual ~type() noexcept;
+
+	inline constexpr
+	type() noexcept
+	: jive::valuetype()
+	{}
+
+	virtual std::string debug_string() const override;
+
+	virtual bool
+	operator==(const jive::type & other) const noexcept override;
+
+	virtual std::unique_ptr<jive::type>
+	copy() const override;
+};
+
+}
+
+/* immediate */
 
 class immediate final {
 public:
@@ -64,7 +91,7 @@ public:
 		add_label_ = add1 ? add1 : add2;
 		sub_label_ = sub1 ? sub1 : sub2;
 		modifier_ = nullptr;
-	
+
 		return *this;
 	}
 
@@ -229,6 +256,45 @@ private:
 	const void * modifier_;
 };
 
+/* immediate operator */
+
+class immediate_op final : public base::nullary_op {
+public:
+	virtual
+	~immediate_op() noexcept;
+
+	inline constexpr
+	immediate_op(jive::immediate value) noexcept
+	: value_(std::move(value))
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override;
+
+	virtual std::string
+	debug_string() const override;
+
+	inline const jive::immediate &
+	value() const noexcept
+	{
+		return value_;
+	}
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
+private:
+	jive::immediate value_;
+};
+
 }
+
+jive::output *
+jive_immediate_create(
+	jive::region * region,
+	const jive::immediate * immediate_value);
 
 #endif
