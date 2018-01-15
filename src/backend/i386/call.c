@@ -34,11 +34,11 @@ jive_i386_call_node_substitute(
 	if (auto op = dynamic_cast<const jive::address::label_to_address_op*>(&addrop)) {
 		icls = &jive::i386::instr_call::instance();
 		jive::immediate imm(0, op->label());
-		operands.push_back(jive_immediate_create(region, &imm));
+		operands.push_back(jive::immediate_op::create(region, imm));
 	} else if (auto op = dynamic_cast<const jive::address::label_to_bitstring_op*>(&addrop)) {
 		icls = &jive::i386::instr_call::instance();
 		jive::immediate imm(0, op->label());
-		operands.push_back(jive_immediate_create(region, &imm));
+		operands.push_back(jive::immediate_op::create(region, imm));
 	} else {
 		icls = &jive::i386::instr_call_reg::instance();
 		operands.push_back(node->input(0)->origin());

@@ -8,6 +8,7 @@
 #define JIVE_ARCH_IMMEDIATE_H
 
 #include <jive/rvsdg/nullary.h>
+#include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/type.h>
 
 typedef uint64_t jive_immediate_int;
@@ -262,8 +263,8 @@ public:
 	~immediate_op() noexcept;
 
 	inline constexpr
-	immediate_op(jive::immediate value) noexcept
-	: value_(std::move(value))
+	immediate_op(const jive::immediate & value) noexcept
+	: value_(value)
 	{}
 
 	virtual bool
@@ -284,15 +285,19 @@ public:
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	static inline jive::output *
+	create(
+		jive::region * region,
+		const jive::immediate & value)
+	{
+		jive::immediate_op op(value);
+		return jive::create_normalized(region, op, {})[0];
+	}
+
 private:
 	jive::immediate value_;
 };
 
 }
-
-jive::output *
-jive_immediate_create(
-	jive::region * region,
-	const jive::immediate * immediate_value);
 
 #endif

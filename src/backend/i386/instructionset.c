@@ -1306,7 +1306,7 @@ instructionset::create_xfer(
 		jive::output * base;
 		jive::immediate displacement;
 		get_slot_memory_reference(in_class, &displacement, &base, sp, fp);
-		auto imm = jive_immediate_create(region, &displacement);
+		auto imm = immediate_op::create(region, displacement);
 		auto node = jive::create_instruction(region, &jive::i386::instr_int_load32_disp::instance(),
 			{base, imm, origin}, {in_class}, {});
 		return jive::xfer_description(node->input(2), node, node->output(0));
@@ -1316,7 +1316,7 @@ instructionset::create_xfer(
 		jive::output * base;
 		jive::immediate displacement;
 		get_slot_memory_reference(out_class, &displacement, &base, sp, fp);
-		auto imm = jive_immediate_create(region, &displacement);
+		auto imm = immediate_op::create(region, displacement);
 		auto node = jive::create_instruction(region, &jive::i386::instr_int_store32_disp::instance(),
 			{base, origin, imm}, {}, {out_class});
 		return jive::xfer_description(node->input(1), node, node->output(0));
