@@ -12,6 +12,6 @@
 jive::node *
 jive_i386_call_node_substitute(
 	jive::node * node,
-	const jive::call_operation & op);
+	const jive::call_op & op);
 
 #endif

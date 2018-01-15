@@ -46,17 +46,12 @@ test_address_transform(void)
 	jive_linker_symbol write_symbol;
 	jive::external_label write_label("write", &write_symbol);
 	auto label = jive_label_to_address_create(graph.root(), &write_label);
-	jive::output * tmparray2[] = {memberof, containerof};
-	const jive::type * tmparray3[] = {&at, &at};
-	jive::node * call = jive_call_by_address_node_create(graph.root(),
-		label, NULL,
-		2, tmparray2,
-		2, tmparray3);
+	auto call = addrcall_op::create(label, {memberof, containerof}, {&at, &at}, nullptr);
 
 	auto constant = create_bitconstant(graph.root(), 64, 1);
-	auto arraysub = jive_arraysubscript(call->output(0), &at, constant);
+	auto arraysub = jive_arraysubscript(call[0], &at, constant);
 
-	auto arrayindex = jive_arrayindex(call->output(0), call->output(1), &at, &bits64);
+	auto arrayindex = jive_arrayindex(call[0], call[1], &at, &bits64);
 
 	auto state = top->output(2);
 	auto load = addrload_op::create(arraysub, at, {top->output(2)});

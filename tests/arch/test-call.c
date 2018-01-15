@@ -19,30 +19,29 @@
 
 static int test_main(void)
 {
+	using namespace jive;
 	jive::graph graph;
 
-	jive::addrtype addr;
-	jive::bits::type bits16(16);
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {addr, bits16, addr});
+	jive::addrtype at;
+	jive::bits::type bt16(16);
 
-	const jive::type * tmparray1[] = {&bits16, &addr, &addr};
+	auto i0 = graph.add_import(at, "");
+	auto i1 = graph.add_import(bt16, "");
+	auto i2 = graph.add_import(at, "");
 
-	std::vector<jive::output*> tmp = {top->output(1), top->output(2)};
-	jive::node * call = jive_call_by_address_node_create(graph.root(),
-		top->output(0), NULL, 2, &tmp[0], 3, tmparray1);
-	JIVE_DEBUG_ASSERT(call->noutputs() == 3);
+	auto call = addrcall_op::create(i0, {i1, i2}, {&bt16, &at, &at}, nullptr);
+	JIVE_DEBUG_ASSERT(call.size() == 3);
 
-	auto bottom = jive::test::simple_node_create(graph.root(),
-		{bits16, addr, addr}, {call->output(0), call->output(1), call->output(2)}, {addr});
-	graph.add_export(bottom->output(0), "dummy");
+	graph.add_export(call[0], "");
+	graph.add_export(call[1], "");
+	graph.add_export(call[2], "");
 
 	jive::view(graph.root(), stdout);
 
 	jive::memlayout_mapper_simple mapper(4);
-
-	jive_node_address_transform(call, &mapper);
-
+	jive_node_address_transform(call[0]->node(), &mapper);
 	graph.prune();
+
 	jive::view(graph.root(), stdout);
 	
 	return 0;

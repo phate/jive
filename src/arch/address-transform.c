@@ -161,19 +161,18 @@ jive_label_to_address_node_address_transform(
 static void
 jive_call_node_address_transform(
 	jive::node * node,
-	const jive::call_operation & op,
+	const jive::call_op & op,
 	size_t nbits)
 {
 	bool transform = false;
-	std::vector<jive::output*> operands(node->ninputs());
-	for (size_t i = 0; i < node->ninputs(); i++){
-		if(dynamic_cast<const jive::addrtype*>(&node->input(i)->type())){
-			operands[i] = jive::addr2bit_op::create(node->input(i)->origin(), nbits,
-				node->input(i)->origin()->type());
+	std::vector<jive::output*> operands;
+	for (size_t i = 1; i < node->ninputs(); i++){
+		auto origin = node->input(i)->origin();
+		if(dynamic_cast<const jive::addrtype*>(&origin->type())) {
+			operands.push_back(jive::addr2bit_op::create(origin, nbits, origin->type()));
 			transform = true;
-		} else {
-			operands[i] = node->input(i)->origin();
-		}
+		} else
+			operands.push_back(node->input(i)->origin());
 	}
 
 	jive::bits::type address_type(nbits);
@@ -190,14 +189,15 @@ jive_call_node_address_transform(
 	if (!transform)
 		return;
 
-	auto call = jive_call_by_bitstring_node_create(node->region(), operands[0], nbits,
-		op.calling_convention(), node->ninputs() - 1, &operands[0] + 1, node->noutputs(),
-		&return_types[0]);
+	auto address = node->input(0)->origin();
+	address = jive::addr2bit_op::create(address, nbits, address->type());
+	auto call = jive::bitcall_op::create(address, nbits, operands, return_types,
+		op.calling_convention());
 
 	for (size_t i = 0; i < node->noutputs(); i++){
-		auto output = call->output(i);
+		auto output = call[i];
 		if(dynamic_cast<const jive::addrtype*>(&node->output(i)->type()))
-			output = jive::bit2addr_op::create(call->output(i), nbits, node->output(i)->type());
+			output = jive::bit2addr_op::create(output, nbits, node->output(i)->type());
 		node->output(i)->replace(output);
 	}
 }
@@ -338,7 +338,7 @@ jive_node_address_transform(jive::node * node, jive::memlayout_mapper * mapper)
 		jive_load_node_address_transform(node, *op, nbits);
 	} else if (auto op = dynamic_cast<const jive::store_op *>(&node->operation())) {
 		jive_store_node_address_transform(node, *op, nbits);
-	} else if (auto op = dynamic_cast<const jive::call_operation *>(&node->operation())) {
+	} else if (auto op = dynamic_cast<const jive::addrcall_op*>(&node->operation())) {
 		jive_call_node_address_transform(node, *op, nbits);
 	} else if (dynamic_cast<const jive::fct::apply_op *>(&node->operation())) {
 		jive_apply_node_address_transform(node, nbits);
