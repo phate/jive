@@ -8,29 +8,28 @@
 #include <jive/rvsdg/simple-node.h>
 
 namespace jive {
-namespace imm {
 
-type::~type() noexcept
+/* immediate type */
+
+immtype::~immtype() noexcept
 {}
 
 std::string
-type::debug_string() const
+immtype::debug_string() const
 {
 	return "imm";
 }
 
 bool
-type::operator==(const jive::type & other) const noexcept
+immtype::operator==(const jive::type & other) const noexcept
 {
-	return dynamic_cast<const jive::imm::type*>(&other) != nullptr;
+	return dynamic_cast<const immtype*>(&other) != nullptr;
 }
 
 std::unique_ptr<jive::type>
-type::copy() const
+immtype::copy() const
 {
-	return std::unique_ptr<jive::type>(new type(*this));
-}
-
+	return std::unique_ptr<jive::type>(new immtype(*this));
 }
 
 /* immediate operator */
@@ -49,8 +48,8 @@ const jive::port &
 immediate_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
-	static const jive::imm::type type;
-	static const jive::port p(type);
+	static const immtype it;
+	static const jive::port p(it);
 	return p;
 }
 

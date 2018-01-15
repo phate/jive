@@ -14,22 +14,20 @@ typedef uint64_t jive_immediate_int;
 
 namespace jive {
 
-class label;
-
-namespace imm {
-
 /* immediate type */
 
-class type final : public jive::valuetype {
+class immtype final : public jive::valuetype {
 public:
-	virtual ~type() noexcept;
+	virtual
+	~immtype() noexcept;
 
 	inline constexpr
-	type() noexcept
+	immtype() noexcept
 	: jive::valuetype()
 	{}
 
-	virtual std::string debug_string() const override;
+	virtual std::string
+	debug_string() const override;
 
 	virtual bool
 	operator==(const jive::type & other) const noexcept override;
@@ -38,9 +36,9 @@ public:
 	copy() const override;
 };
 
-}
-
 /* immediate */
+
+class label;
 
 class immediate final {
 public:

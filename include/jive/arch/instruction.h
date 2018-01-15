@@ -34,11 +34,11 @@ public:
 		const std::vector<jive::port> & oports)
 	: icls_(icls)
 	{
-		static const jive::imm::type immtype;
+		static const immtype it;
 		for (size_t n = 0; n < icls->ninputs(); n++)
 			arguments_.push_back(icls->input(n));
 		for (size_t n = 0; n < icls->nimmediates(); n++)
-			arguments_.push_back(immtype);
+			arguments_.push_back(it);
 		for (const auto & port : iports)
 			arguments_.push_back(port);
 
