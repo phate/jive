@@ -93,7 +93,6 @@ LIBJIVE_SRC += \
 	src/arch/instruction.c \
 	src/arch/instructionset.c \
 	src/arch/label-mapper.c \
-	src/arch/load-normal-form.c \
 	src/arch/load.c \
 	src/arch/memlayout-simple.c \
 	src/arch/memlayout.c \
