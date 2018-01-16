@@ -27,10 +27,10 @@ static int test_main(void)
 	jive::graph graph;
 
 	jive::addrtype addr;
-	jive::bits::type bits4(4);
-	jive::bits::type bits8(8);
-	jive::bits::type bits18(18);
-	jive::bits::type bits32(32);
+	bittype bits4(4);
+	bittype bits8(8);
+	bittype bits18(18);
+	bittype bits32(32);
 	auto rcddcl = rcddeclaration::create(&graph, {&bits4, &bits8, &bits18});
 	auto unndcl = unndeclaration::create(&graph, {&bits4, &bits8, &bits18});
 
@@ -63,14 +63,14 @@ static int test_main(void)
 	}
 	graph.prune();
 
-	assert(bottom->input(0)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 1));
-	assert(bottom->input(1)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 1));
-	assert(bottom->input(2)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 1));
-	assert(bottom->input(3)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
-	assert(bottom->input(4)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
-	assert(bottom->input(5)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
-	assert(bottom->input(6)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 8));
-	assert(bottom->input(7)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(bottom->input(0)->origin()->node()->operation() == uint_constant_op(32, 1));
+	assert(bottom->input(1)->origin()->node()->operation() == uint_constant_op(32, 1));
+	assert(bottom->input(2)->origin()->node()->operation() == uint_constant_op(32, 1));
+	assert(bottom->input(3)->origin()->node()->operation() == uint_constant_op(32, 4));
+	assert(bottom->input(4)->origin()->node()->operation() == uint_constant_op(32, 4));
+	assert(bottom->input(5)->origin()->node()->operation() == uint_constant_op(32, 4));
+	assert(bottom->input(6)->origin()->node()->operation() == uint_constant_op(32, 8));
+	assert(bottom->input(7)->origin()->node()->operation() == uint_constant_op(32, 4));
 	
 	jive::view(graph.root(), stdout);
 

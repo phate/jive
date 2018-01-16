@@ -32,7 +32,7 @@ test_address_transform(void)
 
 	jive::memtype mem;
 	jive::addrtype at;
-	jive::bits::type bits64(64);
+	bittype bits64(64);
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits64, bits64, mem});
 
 	auto address0 = bit2addr_op::create(top->output(0), 64, at);
@@ -84,8 +84,8 @@ test_address_transform_nodes(void)
 	jive::graph graph;
 
 	jive::addrtype addrtype;
-	jive::bits::type bits32(32);
-	jive::bits::type bits64(64);
+	bittype bits32(32);
+	bittype bits64(64);
 	auto i0 = graph.add_import(addrtype, "i0");
 	auto i1 = graph.add_import(bits32, "i1");
 	auto i2 = graph.add_import(bits64, "i2");
@@ -160,9 +160,9 @@ test_containerof_transform(void)
 	jive::graph graph;
 
 	jive::addrtype addrtype;
-	jive::bits::type bits8(8);
-	jive::bits::type bits16(16);
-	jive::bits::type bits32(32);
+	bittype bits8(8);
+	bittype bits16(16);
+	bittype bits32(32);
 	auto dcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32, &bits32});
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {},
@@ -206,24 +206,24 @@ test_containerof_transform(void)
 	}
 
 	auto sum = bottom->input(0)->origin()->node();
-	assert(sum->operation() == jive::bits::sub_op(32));
+	assert(sum->operation() == bitsub_op(32));
 	auto constant = sum->input(1)->origin()->node();
-	assert(constant->operation() == jive::bits::int_constant_op(32, 0));
+	assert(constant->operation() == int_constant_op(32, 0));
 
 	sum = bottom->input(1)->origin()->node();
-	assert(sum->operation() == jive::bits::sub_op(32));
+	assert(sum->operation() == bitsub_op(32));
 	constant = sum->input(1)->origin()->node();
-	assert(constant->operation() == jive::bits::int_constant_op(32, 2));
+	assert(constant->operation() == int_constant_op(32, 2));
 
 	sum = bottom->input(2)->origin()->node();
-	assert(sum->operation() == jive::bits::sub_op(32));
+	assert(sum->operation() == bitsub_op(32));
 	constant = sum->input(1)->origin()->node();
-	assert(constant->operation() == jive::bits::int_constant_op(32, 4));
+	assert(constant->operation() == int_constant_op(32, 4));
 
 	sum = bottom->input(3)->origin()->node();
-	assert(sum->operation() == jive::bits::sub_op(32));
+	assert(sum->operation() == bitsub_op(32));
 	constant = sum->input(1)->origin()->node();
-	assert(constant->operation() == jive::bits::int_constant_op(32, 8));
+	assert(constant->operation() == int_constant_op(32, 8));
 
 	return 0;
 }
@@ -239,9 +239,9 @@ test_memberof_transform(void)
 	jive::graph graph;
 
 	jive::addrtype addrtype;
-	jive::bits::type bits8(8);
-	jive::bits::type bits16(16);
-	jive::bits::type bits32(32);
+	jive::bittype bits8(8);
+	jive::bittype bits16(16);
+	jive::bittype bits32(32);
 	auto dcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32, &bits32});
 
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits32});
@@ -282,24 +282,24 @@ test_memberof_transform(void)
 	}
 
 	auto sum = bottom->input(0)->origin()->node();
-	assert(sum->operation() == jive::bits::add_op(32));
+	assert(sum->operation() == bitadd_op(32));
 	auto constant = sum->input(1)->origin()->node();
-	assert(constant->operation() == jive::bits::int_constant_op(32, 0));
+	assert(constant->operation() == int_constant_op(32, 0));
 
 	sum = bottom->input(1)->origin()->node();
-	assert(sum->operation() == jive::bits::add_op(32));
+	assert(sum->operation() == bitadd_op(32));
 	constant = sum->input(1)->origin()->node();
-	assert(constant->operation() == jive::bits::int_constant_op(32, 2));
+	assert(constant->operation() == int_constant_op(32, 2));
 
 	sum = bottom->input(2)->origin()->node();
-	assert(sum->operation() == jive::bits::add_op(32));
+	assert(sum->operation() == bitadd_op(32));
 	constant = sum->input(1)->origin()->node();
-	assert(constant->operation() == jive::bits::int_constant_op(32, 4));
+	assert(constant->operation() == int_constant_op(32, 4));
 
 	sum = bottom->input(3)->origin()->node();
-	assert(sum->operation() == jive::bits::add_op(32));
+	assert(sum->operation() == bitadd_op(32));
 	constant = sum->input(1)->origin()->node();
-	assert(constant->operation() == jive::bits::int_constant_op(32, 8));
+	assert(constant->operation() == int_constant_op(32, 8));
 
 	return 0;
 }

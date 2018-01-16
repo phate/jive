@@ -16,20 +16,6 @@
 #include <jive/types/float/fltoperation-classes.h>
 
 namespace jive {
-class output;
-
-namespace bits {
-class unary_op;
-class binary_op;
-class compare_op;
-}
-
-class flt_unary_operation;
-class flt_binary_operation;
-class flt_compare_operation;
-}
-
-namespace jive {
 namespace base {
 	class type;
 }
@@ -43,6 +29,15 @@ typedef uint32_t jive_regselect_mask;
 
 namespace jive {
 
+class bitunary_op;
+class bitbinary_op;
+class bitcompare_op;
+class output;
+
+class flt_unary_operation;
+class flt_binary_operation;
+class flt_compare_operation;
+
 class register_classifier {
 public:
 	virtual ~register_classifier() noexcept;
@@ -54,13 +49,13 @@ public:
 	classify_type(const jive::type * type, const jive::resource_class * rescls) const = 0;
 
 	virtual jive_regselect_mask
-	classify_fixed_unary(const jive::bits::unary_op & op) const = 0;
+	classify_fixed_unary(const jive::bitunary_op & op) const = 0;
 
 	virtual jive_regselect_mask
-	classify_fixed_binary(const jive::bits::binary_op & op) const = 0;
+	classify_fixed_binary(const jive::bitbinary_op & op) const = 0;
 
 	virtual jive_regselect_mask
-	classify_fixed_compare(const jive::bits::compare_op & op) const = 0;
+	classify_fixed_compare(const jive::bitcompare_op & op) const = 0;
 
 	virtual jive_regselect_mask
 	classify_float_unary(const jive::flt::unary_op & op) const = 0;

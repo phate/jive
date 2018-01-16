@@ -63,9 +63,7 @@ flatten_data_items(
 
 	std::vector<jive::output*> items;
 	const jive::type * type_ = &data->type();
-	if (dynamic_cast<const jive::bits::type*>(type_)) {
-		const jive::bits::type * type = static_cast<const jive::bits::type*>(type_);
-		
+	if (auto type = dynamic_cast<const jive::bittype*>(type_)) {
 		if (type->nbits() < 8 || !is_powerof2(type->nbits())) {
 			throw jive::compiler_error(
 				"Type mismatch: primitive data items must be power-of-two bytes in size");

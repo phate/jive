@@ -40,7 +40,7 @@ public:
 	~bitliteral() noexcept;
 
 	inline
-	bitliteral(const jive::bits::value_repr & vr)
+	bitliteral(const bitvalue_repr & vr)
 		: vr_(vr)
 		, type_(vr.nbits())
 	{}
@@ -51,15 +51,15 @@ public:
 	virtual std::unique_ptr<literal>
 	copy() const override;
 
-	inline const jive::bits::value_repr &
+	inline const bitvalue_repr &
 	value_repr() const noexcept
 	{
 		return vr_;
 	}
 
 private:
-	jive::bits::value_repr vr_;
-	jive::bits::type type_;
+	bitvalue_repr vr_;
+	bittype type_;
 };
 
 class ctlliteral final : public literal {

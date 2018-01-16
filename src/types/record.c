@@ -216,7 +216,7 @@ select_op::reduce_operand(
 		auto address = arg->node()->input(0)->origin();
 
 		size_t nbits = 0;
-		if (auto bt = dynamic_cast<const jive::bits::type*>(&address->type())) {
+		if (auto bt = dynamic_cast<const bittype*>(&address->type())) {
 			nbits = bt->nbits();
 			address = bit2addr_op::create(address, bt->nbits(), address->type());
 		}

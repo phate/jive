@@ -23,9 +23,9 @@ static int _test_rcdgroup(void)
 
 	jive::graph graph;
 	
-	static const jive::bits::type bits8(8);
-	static const jive::bits::type bits16(16);
-	static const jive::bits::type bits32(32);
+	bittype bits8(8);
+	bittype bits16(16);
+	bittype bits32(32);
 	auto dcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32});
 	jive::rcdtype rcdtype(dcl);
 
@@ -62,9 +62,9 @@ static int _test_rcdselect()
 	jive::graph graph;
 
 	jive::addrtype addrtype;
-	jive::bits::type bits8(8);
-	jive::bits::type bits16(16);
-	jive::bits::type bits32(32);
+	bittype bits8(8);
+	bittype bits16(16);
+	bittype bits32(32);
 	auto dcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32});
 	jive::rcdtype rcdtype(dcl);
 

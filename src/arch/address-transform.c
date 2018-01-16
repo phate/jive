@@ -50,7 +50,7 @@ convert_address_to_bitstring_type(
 	size_t nbits)
 {
 	if (dynamic_cast<const jive::addrtype*>(&type)) {
-		return std::unique_ptr<jive::type>(new jive::bits::type(nbits));
+		return std::unique_ptr<jive::type>(new jive::bittype(nbits));
 	} else  if (auto fcttype = dynamic_cast<const jive::fct::type*>(&type)) {
 		std::vector<std::unique_ptr<jive::type>> argument_types;
 		for (size_t n = 0; n < fcttype->narguments(); n++)
@@ -66,7 +66,7 @@ convert_address_to_bitstring_type(
 	if (dynamic_cast<const jive::memtype*>(&type))
 		return std::unique_ptr<jive::type>(new jive::memtype());
 
-	if (dynamic_cast<const jive::bits::type*>(&type))
+	if (dynamic_cast<const jive::bittype*>(&type))
 		return std::unique_ptr<jive::type>(type.copy());
 
 	JIVE_ASSERT(0);
@@ -90,9 +90,9 @@ jive_load_node_address_transform(
 	if (input_is_address)
 		address = jive::addr2bit_op::create(address, nbits, address->type());
 
-	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::type*>(&address->type())->nbits() == nbits);
+	JIVE_DEBUG_ASSERT(static_cast<const jive::bittype*>(&address->type())->nbits() == nbits);
 
-	jive::bits::type bits(nbits);
+	jive::bittype bits(nbits);
 	auto datatype = &op.valuetype();
 	if (output_is_address)
 		datatype = &bits;
@@ -126,9 +126,9 @@ jive_store_node_address_transform(
 	if (input0_is_address)
 		address = jive::addr2bit_op::create(address, nbits, address->type());
 
-	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::type*>(&address->type())->nbits() == nbits);
+	JIVE_DEBUG_ASSERT(static_cast<const jive::bittype*>(&address->type())->nbits() == nbits);
 
-	jive::bits::type bits(nbits);
+	jive::bittype bits(nbits);
 	auto datatype = &op.valuetype();
 	auto value = node->input(1)->origin();
 	if (input1_is_address){
@@ -175,7 +175,7 @@ jive_call_node_address_transform(
 			operands.push_back(node->input(i)->origin());
 	}
 
-	jive::bits::type address_type(nbits);
+	jive::bittype address_type(nbits);
 	std::vector<const jive::type*> return_types;
 	for (size_t i = 0; i < node->noutputs(); i++){
 		if (dynamic_cast<const jive::addrtype*>(&node->output(i)->type())){
@@ -218,7 +218,7 @@ jive_memberof_node_address_transform(
 	auto offset = create_bitconstant(node->region(), nbits, elem_offset);
 	auto address = jive::addr2bit_op::create(node->input(0)->origin(), nbits,
 		node->input(0)->origin()->type());
-	auto sum = jive::bits::create_add(nbits, address, offset);
+	auto sum = jive::create_bitadd(nbits, address, offset);
 	auto off_address = jive::bit2addr_op::create(sum, nbits, node->output(0)->type());
 
 	node->output(0)->replace(off_address);
@@ -240,7 +240,7 @@ jive_containerof_node_address_transform(
 	auto offset = create_bitconstant(node->region(), nbits, elem_offset);
 	auto address = jive::addr2bit_op::create(node->input(0)->origin(), nbits,
 		node->input(0)->origin()->type());
-	auto sum = jive::bits::create_sub(nbits, address, offset);
+	auto sum = jive::create_bitsub(nbits, address, offset);
 	auto off_address = jive::bit2addr_op::create(sum, nbits, node->output(0)->type());
 
 	node->output(0)->replace(off_address);
@@ -259,8 +259,8 @@ jive_arraysubscript_node_address_transform(
 	auto address = jive::addr2bit_op::create(node->input(0)->origin(), nbits,
 		node->input(0)->origin()->type());
 	auto elem_size = create_bitconstant(node->region(), nbits, elem_type_size);
-	auto offset = jive::bits::create_mul(nbits, elem_size, index);
-	auto sum = jive::bits::create_add(nbits, address, offset);
+	auto offset = jive::create_bitmul(nbits, elem_size, index);
+	auto sum = jive::create_bitadd(nbits, address, offset);
 	auto off_address = jive::bit2addr_op::create(sum, nbits, node->output(0)->type());
 	
 	node->output(0)->replace(off_address);
@@ -280,8 +280,8 @@ jive_arrayindex_node_address_transform(
 	auto address2 = jive::addr2bit_op::create(node->input(1)->origin(), nbits,
 		node->input(1)->origin()->type());
 	auto elem_size = create_bitconstant(node->region(), nbits, elem_type_size);
-	auto diff = jive::bits::create_sub(nbits, address1, address2);
-	auto div = jive::bits::create_sdiv(nbits, diff, elem_size);
+	auto diff = jive::create_bitsub(nbits, address1, address2);
+	auto div = jive::create_bitsdiv(nbits, diff, elem_size);
 
 	node->output(0)->replace(div);
 }

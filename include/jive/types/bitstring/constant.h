@@ -17,17 +17,18 @@
 #include <jive/types/bitstring/value-representation.h>
 
 namespace jive {
-namespace bits {
 
 struct type_of_value {
-	type operator()(const value_repr & repr) const
+	bittype
+	operator()(const bitvalue_repr & repr) const
 	{
-		return type(repr.nbits());
+		return bittype(repr.nbits());
 	}
 };
 
 struct format_value {
-	std::string operator()(const value_repr & repr) const
+	std::string
+	operator()(const bitvalue_repr & repr) const
 	{
 		if (repr.is_known() && repr.nbits() <= 64)
 			return detail::strfmt("BITS", repr.nbits(), "(", repr.to_uint(), ")");
@@ -37,40 +38,36 @@ struct format_value {
 };
 
 typedef base::domain_const_op<
-	type, value_repr, format_value, type_of_value
-> constant_op;
+	bittype, bitvalue_repr, format_value, type_of_value
+> bitconstant_op;
 
-inline constant_op
+inline bitconstant_op
 uint_constant_op(size_t nbits, uint64_t value)
 {
-	return constant_op(value_repr(nbits, value));
+	return bitconstant_op(bitvalue_repr(nbits, value));
 }
 
-inline constant_op
+inline bitconstant_op
 int_constant_op(size_t nbits, int64_t value)
 {
-	return constant_op(value_repr(nbits, value));
-}
-
+	return bitconstant_op(bitvalue_repr(nbits, value));
 }
 
 static inline bool
 is_bitconstant_node(const jive::node * node) noexcept
 {
-	return is_opnode<bits::constant_op>(node);
+	return is_opnode<bitconstant_op>(node);
 }
 
 namespace base {
 // declare explicit instantiation
-extern template class domain_const_op<
-	bits::type, bits::value_repr, bits::format_value, bits::type_of_value
->;
+extern template class domain_const_op<bittype, bitvalue_repr, format_value, type_of_value>;
 }
 
 static inline jive::output *
-create_bitconstant(jive::region * region, const bits::value_repr & vr)
+create_bitconstant(jive::region * region, const bitvalue_repr & vr)
 {
-	return create_normalized(region, bits::constant_op(vr), {})[0];
+	return create_normalized(region, bitconstant_op(vr), {})[0];
 }
 
 static inline jive::output *
@@ -83,14 +80,14 @@ static inline jive::output *
 create_bitconstant_undefined(jive::region * region, size_t nbits)
 {
 	std::string s(nbits, 'X');
-	return create_bitconstant(region, bits::value_repr(s.c_str()));
+	return create_bitconstant(region, bitvalue_repr(s.c_str()));
 }
 
 static inline jive::output *
 create_bitconstant_defined(jive::region * region, size_t nbits)
 {
 	std::string s(nbits, 'D');
-	return create_bitconstant(region, bits::value_repr(s.c_str()));
+	return create_bitconstant(region, bitvalue_repr(s.c_str()));
 }
 
 }

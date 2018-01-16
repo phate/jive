@@ -23,7 +23,7 @@ static int test_main(void)
 
 	jive::graph graph;
 
-	jive::bits::type bits32(32);
+	bittype bits32(32);
 	auto dcl = rcddeclaration::create(&graph, {&bits32, &bits32});
 
 	jive::addrtype addrtype;

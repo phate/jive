@@ -17,10 +17,12 @@
 static void
 test_gamma(void)
 {
+	using namespace jive;
+
 	jive::graph graph;
 
-	jive::bits::type bits2(2);
-	jive::bits::type bits32(32);
+	bittype bits2(2);
+	bittype bits32(32);
 
 	auto cmp = graph.add_import(bits2, "");
 	auto v0 = graph.add_import(bits32, "");
@@ -46,11 +48,13 @@ test_gamma(void)
 static void
 test_predicate_reduction(void)
 {
+	using namespace jive;
+
 	jive::graph graph;
 	jive::gamma_op::normal_form(&graph)->set_predicate_reduction(true);
 
-	jive::bits::type bits2(2);
-	jive::bits::type bits32(32);
+	bittype bits2(2);
+	bittype bits32(32);
 
 	auto v0 = graph.add_import(bits32, "");
 	auto v1 = graph.add_import(bits32, "");
@@ -102,7 +106,9 @@ test_invariant_reduction(void)
 static void
 test_control_constant_reduction()
 {
-	jive::bits::type bt(1);
+	using namespace jive;
+
+	bittype bt(1);
 
 	jive::graph graph;
 	jive::gamma_op::normal_form(&graph)->set_control_constant_reduction(true);

@@ -99,7 +99,7 @@ public:
 	inline size_t
 	nbits() const noexcept
 	{
-		return static_cast<const bits::type*>(&argument_.type())->nbits();
+		return static_cast<const bittype*>(&argument_.type())->nbits();
 	}
 
 	inline const_iterator

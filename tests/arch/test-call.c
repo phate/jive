@@ -23,7 +23,7 @@ static int test_main(void)
 	jive::graph graph;
 
 	jive::addrtype at;
-	jive::bits::type bt16(16);
+	bittype bt16(16);
 
 	auto i0 = graph.add_import(at, "");
 	auto i1 = graph.add_import(bt16, "");

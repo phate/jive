@@ -21,6 +21,8 @@
 
 static int test_main(void)
 {
+	using namespace jive;
+
 	jive::graph graph;
 
 	jive_linker_symbol bla_symbol;
@@ -60,8 +62,8 @@ static int test_main(void)
 	assert(o2->node()->operation() != *attrs3);
 	
 	jive::addrtype addr;
-	jive::bits::type bits32(32);
-	jive::bits::type bits16(16);
+	bittype bits32(32);
+	bittype bits16(16);
 	auto bottom = jive::test::simple_node_create(graph.root(),
 		{addr, addr, bits32, bits32, bits16}, {o0, o1, o2, o3, o4}, {addr});
 	graph.add_export(bottom->output(0), "dummy");

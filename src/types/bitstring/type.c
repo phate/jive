@@ -10,30 +10,29 @@
 #include <jive/rvsdg/node.h>
 
 namespace jive {
-namespace bits {
 
-/* type */
+/* bistring type */
 
-type::~type() noexcept {}
+bittype::~bittype() noexcept
+{}
 
 std::string
-type::debug_string() const
+bittype::debug_string() const
 {
-	return detail::strfmt("bits", nbits());
+	return detail::strfmt("bit", nbits());
 }
 
 bool
-type::operator==(const jive::type & _other) const noexcept
+bittype::operator==(const jive::type & other) const noexcept
 {
-	const jive::bits::type * other = dynamic_cast<const jive::bits::type*>(&_other);
-	return other != nullptr && this->nbits() == other->nbits();
+	auto type = dynamic_cast<const bittype*>(&other);
+	return type != nullptr && this->nbits() == type->nbits();
 }
 
 std::unique_ptr<jive::type>
-type::copy() const
+bittype::copy() const
 {
-	return std::unique_ptr<jive::type>(new type(*this));
+	return std::unique_ptr<jive::type>(new bittype(*this));
 }
 
-}
 }

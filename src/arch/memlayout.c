@@ -39,7 +39,7 @@ memlayout_mapper::~memlayout_mapper()
 const dataitem_memlayout &
 memlayout_mapper::map_value_type(const valuetype & type)
 {
-	if (auto t = dynamic_cast<const bits::type*>(&type))
+	if (auto t = dynamic_cast<const bittype*>(&type))
 		return map_bitstring(t->nbits());
 
 	if (dynamic_cast<const addrtype*>(&type))

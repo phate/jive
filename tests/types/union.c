@@ -24,9 +24,9 @@ static int test_unnchoose(void)
 	jive::graph graph;
 
 	addrtype at;
-	static const bits::type bt8(8);
-	static const bits::type bt16(16);
-	static const bits::type bt32(32);
+	bittype bt8(8);
+	bittype bt16(16);
+	bittype bt32(32);
 
 	auto dcl = unndeclaration::create(&graph, {&bt8, &bt16, &bt32});
 	jive::unntype unntype(dcl);
@@ -69,9 +69,9 @@ static int test_unnunify(void)
 
 	jive::graph graph;
 	
-	static const jive::bits::type bits8(8);
-	static const jive::bits::type bits16(16);
-	static const jive::bits::type bits32(32);
+	bittype bits8(8);
+	bittype bits16(16);
+	bittype bits32(32);
 
 	auto dcl = unndeclaration::create(&graph, {&bits8, &bits16, &bits32});
 	jive::unntype unntype(dcl);

@@ -167,13 +167,13 @@ public:
 		const std::vector<const jive::type*> & arguments,
 		const std::vector<const jive::type*> & results,
 		const jive_calling_convention * callconv)
-	: call_op(jive::bits::type(nbits), arguments, results, callconv)
+	: call_op(bittype(nbits), arguments, results, callconv)
 	{}
 
-	inline const jive::bits::type &
+	inline const bittype &
 	addresstype() const noexcept
 	{
-		return *static_cast<const jive::bits::type*>(&call_op::addresstype());
+		return *static_cast<const bittype*>(&call_op::addresstype());
 	}
 
 	static inline std::vector<jive::output*>

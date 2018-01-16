@@ -152,7 +152,7 @@ const jive::port &
 compare_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
-	static const jive::port p(jive::bits::type(1));
+	static const jive::port p(jive::bittype(1));
 	return p;
 }
 

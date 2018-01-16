@@ -11,17 +11,16 @@
 #include <jive/types/bitstring/bitoperation-classes.h>
 
 namespace jive {
-namespace bits {
 
 #define DECLARE_BITCOMPARISON_OPERATION(NAME) \
-class NAME ## _op final : public compare_op { \
+class NAME ## _op final : public bitcompare_op { \
 public: \
 	virtual \
 	~NAME ## _op() noexcept; \
 \
 	inline \
-	NAME ## _op(const jive::bits::type & type) noexcept \
-	: compare_op(type) \
+	NAME ## _op(const bittype & type) noexcept \
+	: bitcompare_op(type) \
 	{} \
 \
 	virtual bool \
@@ -32,8 +31,8 @@ public: \
 \
 	virtual compare_result \
 	reduce_constants( \
-		const value_repr & arg1, \
-		const value_repr & arg2) const override; \
+		const bitvalue_repr & arg1, \
+		const bitvalue_repr & arg2) const override; \
 \
 	virtual std::string \
 	debug_string() const override; \
@@ -41,7 +40,7 @@ public: \
 	virtual std::unique_ptr<jive::operation> \
 	copy() const override; \
 \
-	virtual std::unique_ptr<bits::compare_op> \
+	virtual std::unique_ptr<bitcompare_op> \
 	create(size_t nbits) const override; \
 }; \
 \
@@ -57,18 +56,17 @@ is_ ## NAME ## _node(const jive::node * node) noexcept \
 	return is_opnode<NAME ## _op>(node); \
 } \
 
-DECLARE_BITCOMPARISON_OPERATION(eq)
-DECLARE_BITCOMPARISON_OPERATION(ne)
-DECLARE_BITCOMPARISON_OPERATION(sge)
-DECLARE_BITCOMPARISON_OPERATION(sgt)
-DECLARE_BITCOMPARISON_OPERATION(sle)
-DECLARE_BITCOMPARISON_OPERATION(slt)
-DECLARE_BITCOMPARISON_OPERATION(uge)
-DECLARE_BITCOMPARISON_OPERATION(ugt)
-DECLARE_BITCOMPARISON_OPERATION(ule)
-DECLARE_BITCOMPARISON_OPERATION(ult)
+DECLARE_BITCOMPARISON_OPERATION(biteq)
+DECLARE_BITCOMPARISON_OPERATION(bitne)
+DECLARE_BITCOMPARISON_OPERATION(bitsge)
+DECLARE_BITCOMPARISON_OPERATION(bitsgt)
+DECLARE_BITCOMPARISON_OPERATION(bitsle)
+DECLARE_BITCOMPARISON_OPERATION(bitslt)
+DECLARE_BITCOMPARISON_OPERATION(bituge)
+DECLARE_BITCOMPARISON_OPERATION(bitugt)
+DECLARE_BITCOMPARISON_OPERATION(bitule)
+DECLARE_BITCOMPARISON_OPERATION(bitult)
 
-}
 }
 
 #endif

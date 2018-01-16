@@ -50,7 +50,7 @@ regvalue_to_immediate(const jive::output * regvalue)
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::regvalue_op *>(&rvnode->operation()));
 	auto value = dynamic_cast<jive::simple_output*>(rvnode->input(1)->origin());
 
-	if (auto bcop = dynamic_cast<const jive::bits::constant_op *>(&value->node()->operation())) {
+	if (auto bcop = dynamic_cast<const jive::bitconstant_op *>(&value->node()->operation())) {
 		return bcop->value().to_uint();
 	}
 
@@ -140,112 +140,112 @@ static const jive::detail::typeinfo_map<
 	std::function<void(jive::node*)>
 > bitbinary_map = {
 	{
-		&typeid(jive::bits::and_op),
+		&typeid(jive::bitand_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_and::instance(),
 			&jive::i386::instr_int_and_immediate::instance())
 	},
 	{
-		&typeid(jive::bits::or_op),
+		&typeid(jive::bitor_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_or::instance(),
 			&jive::i386::instr_int_or_immediate::instance())
 	},
 	{
-		&typeid(jive::bits::xor_op),
+		&typeid(jive::bitxor_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_xor::instance(),
 			&jive::i386::instr_int_xor_immediate::instance())
 	},
 	{
-		&typeid(jive::bits::add_op),
+		&typeid(jive::bitadd_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_add::instance(),
 			&jive::i386::instr_int_add_immediate::instance())
 	},
 	{
-		&typeid(jive::bits::sub_op),
+		&typeid(jive::bitsub_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_sub::instance(),
 			&jive::i386::instr_int_sub_immediate::instance())
 	},
 	{
-		&typeid(jive::bits::mul_op),
+		&typeid(jive::bitmul_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_mul::instance(),
 			&jive::i386::instr_int_mul_immediate::instance())
 	},
 	{
-		&typeid(jive::bits::xor_op),
+		&typeid(jive::bitxor_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_xor::instance(),
 			&jive::i386::instr_int_xor_immediate::instance())
 	},
 	{
-		&typeid(jive::bits::shr_op),
+		&typeid(jive::bitshr_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_shr::instance(),
 			&jive::i386::instr_int_shr_immediate::instance())
 	},
 	{
-		&typeid(jive::bits::ashr_op),
+		&typeid(jive::bitashr_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_ashr::instance(),
 			&jive::i386::instr_int_ashr_immediate::instance())
 	},
 	{
-		&typeid(jive::bits::shl_op),
+		&typeid(jive::bitshl_op),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_shl::instance(),
 			&jive::i386::instr_int_shl_immediate::instance())
 	},
 	{
-		&typeid(jive::bits::umulh_op),
+		&typeid(jive::bitumulh_op),
 		std::bind(convert_complex_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_mul_expand_unsigned::instance(),
 			0)
 	},
 	{
-		&typeid(jive::bits::smulh_op),
+		&typeid(jive::bitsmulh_op),
 		std::bind(convert_complex_bitbinary,
 			std::placeholders::_1,
 			&jive::i386::instr_int_mul_expand_signed::instance(),
 			0)
 	},
 	{
-		&typeid(jive::bits::udiv_op),
+		&typeid(jive::bitudiv_op),
 		std::bind(convert_divmod,
 			std::placeholders::_1,
 			false,
 			1)
 	},
 	{
-		&typeid(jive::bits::sdiv_op),
+		&typeid(jive::bitsdiv_op),
 		std::bind(convert_divmod,
 			std::placeholders::_1,
 			true,
 			1)
 	},
 	{
-		&typeid(jive::bits::umod_op),
+		&typeid(jive::bitumod_op),
 		std::bind(convert_divmod,
 			std::placeholders::_1,
 			false,
 			0)
 	},
 	{
-		&typeid(jive::bits::smod_op),
+		&typeid(jive::bitsmod_op),
 		std::bind(convert_divmod,
 			std::placeholders::_1,
 			true,
@@ -312,70 +312,70 @@ static const jive::detail::typeinfo_map<
 	std::pair<const jive::instruction *, const jive::instruction *>
 > bitcompare_map = {
 	{
-		&typeid(jive::bits::eq_op),
+		&typeid(jive::biteq_op),
 		{
 			&jive::i386::instr_int_jump_equal::instance(),
 			&jive::i386::instr_int_jump_equal::instance()
 		}
 	},
 	{
-		&typeid(jive::bits::ne_op),
+		&typeid(jive::bitne_op),
 		{
 			&jive::i386::instr_int_jump_notequal::instance(),
 			&jive::i386::instr_int_jump_notequal::instance()
 		}
 	},
 	{
-		&typeid(jive::bits::slt_op),
+		&typeid(jive::bitslt_op),
 		{
 			&jive::i386::instr_int_jump_sless::instance(),
 			&jive::i386::instr_int_jump_sgreater::instance()
 		}
 	},
 	{
-		&typeid(jive::bits::sle_op),
+		&typeid(jive::bitsle_op),
 		{
 			&jive::i386::instr_int_jump_slesseq::instance(),
 			&jive::i386::instr_int_jump_sgreatereq::instance()
 		}
 	},
 	{
-		&typeid(jive::bits::sgt_op),
+		&typeid(jive::bitsgt_op),
 		{
 			&jive::i386::instr_int_jump_sgreater::instance(),
 			&jive::i386::instr_int_jump_sless::instance()
 		}
 	},
 	{
-		&typeid(jive::bits::sge_op),
+		&typeid(jive::bitsge_op),
 		{
 			&jive::i386::instr_int_jump_sgreatereq::instance(),
 			&jive::i386::instr_int_jump_slesseq::instance()
 		}
 	},
 	{
-		&typeid(jive::bits::ult_op),
+		&typeid(jive::bitult_op),
 		{
 			&jive::i386::instr_int_jump_uless::instance(),
 			&jive::i386::instr_int_jump_ugreater::instance()
 		}
 	},
 	{
-		&typeid(jive::bits::ule_op),
+		&typeid(jive::bitule_op),
 		{
 			&jive::i386::instr_int_jump_ulesseq::instance(),
 			&jive::i386::instr_int_jump_ugreatereq::instance()
 		}
 	},
 	{
-		&typeid(jive::bits::ugt_op),
+		&typeid(jive::bitugt_op),
 		{
 			&jive::i386::instr_int_jump_ugreater::instance(),
 			&jive::i386::instr_int_jump_uless::instance()
 		}
 	},
 	{
-		&typeid(jive::bits::uge_op),
+		&typeid(jive::bituge_op),
 		{
 			&jive::i386::instr_int_jump_ugreatereq::instance(),
 			&jive::i386::instr_int_jump_ulesseq::instance()
@@ -398,14 +398,8 @@ match_gpr_bitcmp(jive::node * node)
 }
 
 static const jive::detail::typeinfo_map<const jive::instruction *> bitunary_map = {
-	{
-		&typeid(jive::bits::neg_op),
-		&jive::i386::instr_int_neg::instance()
-	},
-	{
-		&typeid(jive::bits::not_op),
-		&jive::i386::instr_int_not::instance()
-	}
+	  {&typeid(jive::bitneg_op), &jive::i386::instr_int_neg::instance()}
+	, {&typeid(jive::bitnot_op), &jive::i386::instr_int_not::instance()}
 };
 
 static void
@@ -521,7 +515,7 @@ match_gpr_store(jive::node * node)
 static void
 match_single(jive::node * node, const jive::register_selector * regselector)
 {
-	if (dynamic_cast<const jive::bits::binary_op *>(&node->operation())) {
+	if (dynamic_cast<const jive::bitbinary_op*>(&node->operation())) {
 		auto regcls = jive_regselector_map_output(regselector,
 			dynamic_cast<jive::simple_output*>(node->output(0)));
 		if (regcls == &jive::i386::gpr_regcls) {
@@ -529,7 +523,7 @@ match_single(jive::node * node, const jive::register_selector * regselector)
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (dynamic_cast<const jive::bits::unary_op *>(&node->operation())) {
+	} else if (dynamic_cast<const jive::bitunary_op*>(&node->operation())) {
 		auto regcls = jive_regselector_map_output(regselector,
 			dynamic_cast<jive::simple_output*>(node->output(0)));
 		if (regcls == &jive::i386::gpr_regcls) {
@@ -538,7 +532,7 @@ match_single(jive::node * node, const jive::register_selector * regselector)
 			JIVE_DEBUG_ASSERT(false);
 		}
 	} else if (dynamic_cast<const jive::ctl::match_op *>(&node->operation())
-		&& dynamic_cast<const jive::bits::compare_op *>(
+		&& dynamic_cast<const jive::bitcompare_op*>(
 		& node->input(0)->origin()->node()->operation())) {
 		auto cmp_input = dynamic_cast<jive::simple_input*>(node->input(0)->origin()->node()->input(0));
 		auto regcls = jive_regselector_map_input(regselector, cmp_input);

@@ -12,23 +12,22 @@
 #include <jive/types/bitstring/type.h>
 
 namespace jive {
-namespace bits {
 
-class slice_op : public jive::unary_op {
+class bitslice_op : public jive::unary_op {
 public:
+	virtual
+	~bitslice_op() noexcept;
+
 	inline
-	slice_op(
-		const jive::bits::type & argument_type,
+	bitslice_op(
+		const bittype & argument_type,
 		size_t low,
 		size_t high) noexcept
 	: unary_op()
 	, low_(low)
-	, result_(jive::bits::type(high-low))
+	, result_(bittype(high-low))
 	, argument_(argument_type)
 	{}
-
-	virtual
-	~slice_op() noexcept;
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -60,7 +59,7 @@ public:
 	inline size_t
 	high() const noexcept
 	{
-		return low_ + static_cast<const jive::bits::type*>(&result_.type())->nbits();
+		return low_ + static_cast<const bittype*>(&result_.type())->nbits();
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -69,7 +68,7 @@ public:
 	inline const type &
 	argument_type() const noexcept
 	{
-		return *static_cast<const jive::bits::type*>(&argument_.type());
+		return *static_cast<const bittype*>(&argument_.type());
 	}
 
 private:
@@ -78,7 +77,6 @@ private:
 	jive::port argument_;
 };
 
-}
 }
 
 /**

@@ -44,9 +44,9 @@ compute_bitconstant_op(
 	const std::vector<std::unique_ptr<const literal>> & operands)
 {
 	JIVE_DEBUG_ASSERT(operands.size() == 0);
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bits::constant_op*>(&operation));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bitconstant_op*>(&operation));
 
-	const jive::bits::constant_op * op = static_cast<const jive::bits::constant_op*>(&operation);
+	auto op = static_cast<const jive::bitconstant_op*>(&operation);
 
 	std::vector<std::unique_ptr<const literal>> results;
 	results.emplace_back(bitliteral(op->value()).copy());
@@ -59,9 +59,9 @@ compute_bitconcat_op(
 	const std::vector<std::unique_ptr<const literal>> & operands)
 {
 	JIVE_DEBUG_ASSERT(operands.size() != 0);
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bits::concat_op*>(&operation));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bitconcat_op*>(&operation));
 
-	jive::bits::value_repr result(static_cast<const bitliteral*>(operands[0].get())->value_repr());
+	jive::bitvalue_repr result(static_cast<const bitliteral*>(operands[0].get())->value_repr());
 	for (size_t n = 1; n < operands.size(); n++)
 		result = result.concat(static_cast<const bitliteral*>(operands[n].get())->value_repr());
 
@@ -76,12 +76,12 @@ compute_bitslice_op(
 	const std::vector<std::unique_ptr<const literal>> & operands)
 {
 	JIVE_DEBUG_ASSERT(operands.size() == 1);
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bits::slice_op*>(&operation));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bitslice_op*>(&operation));
 
-	const jive::bits::slice_op * op = static_cast<const jive::bits::slice_op*>(&operation);
+	auto op = static_cast<const jive::bitslice_op*>(&operation);
 
 	const bitliteral * operand = static_cast<const bitliteral*>(operands[0].get());
-	jive::bits::value_repr result = operand->value_repr().slice(op->low(), op->high());
+	jive::bitvalue_repr result = operand->value_repr().slice(op->low(), op->high());
 
 	std::vector<std::unique_ptr<const literal>> results;
 	results.emplace_back(bitliteral(result).copy());
@@ -94,12 +94,12 @@ compute_bitunary_op(
 	const std::vector<std::unique_ptr<const literal>> & operands)
 {
 	JIVE_DEBUG_ASSERT(operands.size() == 1);
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bits::unary_op*>(&operation));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bitunary_op*>(&operation));
 
-	const jive::bits::unary_op * op = static_cast<const jive::bits::unary_op*>(&operation);
+	auto op = static_cast<const jive::bitunary_op*>(&operation);
 
 	const bitliteral * operand = static_cast<const bitliteral*>(operands[0].get());
-	jive::bits::value_repr result = op->reduce_constant(operand->value_repr());
+	jive::bitvalue_repr result = op->reduce_constant(operand->value_repr());
 
 	std::vector<std::unique_ptr<const literal>> results;
 	results.emplace_back(bitliteral(result).copy());
@@ -112,15 +112,14 @@ compute_bitbinary_op(
 	const std::vector<std::unique_ptr<const literal>> & operands)
 {
 	JIVE_DEBUG_ASSERT(operands.size() == 2);
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bits::binary_op*>(&operation));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bitbinary_op*>(&operation));
 
-	const jive::bits::binary_op * op = static_cast<const jive::bits::binary_op*>(&operation);
+	auto op = static_cast<const jive::bitbinary_op*>(&operation);
 
-	const bitliteral * operand1 = static_cast<const bitliteral*>(operands[0].get());
-	const bitliteral * operand2 = static_cast<const bitliteral*>(operands[1].get());
+	const bitliteral * op1 = static_cast<const bitliteral*>(operands[0].get());
+	const bitliteral * op2 = static_cast<const bitliteral*>(operands[1].get());
 
-	jive::bits::value_repr result = op->reduce_constants(operand1->value_repr(),
-		operand2->value_repr());
+	jive::bitvalue_repr result = op->reduce_constants(op1->value_repr(), op2->value_repr());
 
 	std::vector<std::unique_ptr<const literal>> results;
 	results.emplace_back(bitliteral(result).copy());
@@ -133,20 +132,20 @@ compute_bitcompare_op(
 	const std::vector<std::unique_ptr<const literal>> & operands)
 {
 	JIVE_DEBUG_ASSERT(operands.size() == 2);
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bits::compare_op*>(&operation));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bitcompare_op*>(&operation));
 
-	const jive::bits::compare_op * op = static_cast<const jive::bits::compare_op*>(&operation);
+	auto op = static_cast<const jive::bitcompare_op*>(&operation);
 
 	const bitliteral * operand1 = static_cast<const bitliteral*>(operands[0].get());
 	const bitliteral * operand2 = static_cast<const bitliteral*>(operands[1].get());
 
 	std::vector<std::unique_ptr<const literal>> results;
 	switch (op->reduce_constants(operand1->value_repr(), operand2->value_repr())) {
-		case bits::compare_result::static_true:
-			results.emplace_back(bitliteral(bits::value_repr(1, 1)).copy());
+		case compare_result::static_true:
+			results.emplace_back(bitliteral(bitvalue_repr(1, 1)).copy());
 			break;
-		case bits::compare_result::static_false:
-			results.emplace_back(bitliteral(bits::value_repr(1, 0)).copy());
+		case compare_result::static_false:
+			results.emplace_back(bitliteral(bitvalue_repr(1, 0)).copy());
 			break;
 		default:
 			throw compiler_error("Comparison is undecidable.");
@@ -165,14 +164,14 @@ compute_bitload_op(
 	JIVE_DEBUG_ASSERT(dynamic_cast<const bitliteral*>(operands[0].get()));
 
 	auto op = static_cast<const bitload_op*>(&operation);
-	auto vtype = dynamic_cast<const jive::bits::type*>(&op->valuetype());
+	auto vtype = dynamic_cast<const bittype*>(&op->valuetype());
 
 	const bitliteral * address = static_cast<const bitliteral*>(operands[0].get());
 	JIVE_DEBUG_ASSERT(address->value_repr().nbits() <= 64);
 	uint64_t value = *((uint64_t*)address->value_repr().to_uint());
 	value = value & ((uint64_t)-1) >> (64 - vtype->nbits());
 
-	bitliteral result(bits::value_repr(vtype->nbits(), value));
+	bitliteral result(bitvalue_repr(vtype->nbits(), value));
 	std::vector<std::unique_ptr<const literal>> results;
 	results.emplace_back(result.copy());
 	return results;
@@ -188,8 +187,8 @@ compute_bitstore_op(
 	JIVE_DEBUG_ASSERT(dynamic_cast<const bitliteral*>(operands[0].get()));
 	JIVE_DEBUG_ASSERT(dynamic_cast<const bitliteral*>(operands[1].get()));
 
-	const bits::value_repr av = static_cast<const bitliteral*>(operands[0].get())->value_repr();
-	const bits::value_repr dv = static_cast<const bitliteral*>(operands[1].get())->value_repr();
+	auto & av = static_cast<const bitliteral*>(operands[0].get())->value_repr();
+	auto & dv = static_cast<const bitliteral*>(operands[1].get())->value_repr();
 	JIVE_DEBUG_ASSERT(av.nbits() <= 64);
 	JIVE_DEBUG_ASSERT(dv.nbits() <= 64);
 
@@ -243,36 +242,36 @@ compute_match_op(
 }
 
 static operation_map opmap({
-	{std::type_index(typeid(jive::bits::constant_op)), compute_bitconstant_op},
-	{std::type_index(typeid(jive::bits::concat_op)), compute_bitconcat_op},
-	{std::type_index(typeid(jive::bits::slice_op)), compute_bitslice_op},
-	{std::type_index(typeid(jive::bits::not_op)), compute_bitunary_op},
-	{std::type_index(typeid(jive::bits::neg_op)), compute_bitunary_op},
-	{std::type_index(typeid(jive::bits::and_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::add_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::ashr_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::sub_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::or_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::mul_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::umulh_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::smulh_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::shl_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::shr_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::smod_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::umod_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::sdiv_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::udiv_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::xor_op)), compute_bitbinary_op},
-	{std::type_index(typeid(jive::bits::eq_op)), compute_bitcompare_op},
-	{std::type_index(typeid(jive::bits::ne_op)), compute_bitcompare_op},
-	{std::type_index(typeid(jive::bits::ult_op)), compute_bitcompare_op},
-	{std::type_index(typeid(jive::bits::slt_op)), compute_bitcompare_op},
-	{std::type_index(typeid(jive::bits::ule_op)), compute_bitcompare_op},
-	{std::type_index(typeid(jive::bits::sle_op)), compute_bitcompare_op},
-	{std::type_index(typeid(jive::bits::sgt_op)), compute_bitcompare_op},
-	{std::type_index(typeid(jive::bits::ugt_op)), compute_bitcompare_op},
-	{std::type_index(typeid(jive::bits::sge_op)), compute_bitcompare_op},
-	{std::type_index(typeid(jive::bits::uge_op)), compute_bitcompare_op},
+	{std::type_index(typeid(jive::bitconstant_op)), compute_bitconstant_op},
+	{std::type_index(typeid(jive::bitconcat_op)), compute_bitconcat_op},
+	{std::type_index(typeid(jive::bitslice_op)), compute_bitslice_op},
+	{std::type_index(typeid(jive::bitnot_op)), compute_bitunary_op},
+	{std::type_index(typeid(jive::bitneg_op)), compute_bitunary_op},
+	{std::type_index(typeid(jive::bitand_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitadd_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitashr_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitsub_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitor_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitmul_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitumulh_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitsmulh_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitshl_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitshr_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitsmod_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitumod_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitsdiv_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitudiv_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::bitxor_op)), compute_bitbinary_op},
+	{std::type_index(typeid(jive::biteq_op)), compute_bitcompare_op},
+	{std::type_index(typeid(jive::bitne_op)), compute_bitcompare_op},
+	{std::type_index(typeid(jive::bitult_op)), compute_bitcompare_op},
+	{std::type_index(typeid(jive::bitslt_op)), compute_bitcompare_op},
+	{std::type_index(typeid(jive::bitule_op)), compute_bitcompare_op},
+	{std::type_index(typeid(jive::bitsle_op)), compute_bitcompare_op},
+	{std::type_index(typeid(jive::bitsgt_op)), compute_bitcompare_op},
+	{std::type_index(typeid(jive::bitugt_op)), compute_bitcompare_op},
+	{std::type_index(typeid(jive::bitsge_op)), compute_bitcompare_op},
+	{std::type_index(typeid(jive::bituge_op)), compute_bitcompare_op},
 	{std::type_index(typeid(jive::load_op)), compute_bitload_op},
 	{std::type_index(typeid(jive::store_op)), compute_bitstore_op},
 	{std::type_index(typeid(jive::ctl::constant_op)), compute_ctlconstant_op},

@@ -10,24 +10,23 @@
 #include <jive/types/bitstring/bitoperation-classes.h>
 
 namespace jive {
-namespace bits {
 
 #define DECLARE_BITUNARY_OPERATION(NAME) \
-class NAME ## _op final : public unary_op { \
+class NAME ## _op final : public bitunary_op { \
 public: \
 	virtual \
 	~NAME ## _op() noexcept; \
 \
 	inline \
-	NAME ## _op(const jive::bits::type & type) noexcept \
-	: unary_op(type) \
+	NAME ## _op(const bittype & type) noexcept \
+	: bitunary_op(type) \
 	{} \
 \
 	virtual bool \
 	operator==(const operation & other) const noexcept override; \
 \
-	virtual value_repr \
-	reduce_constant(const value_repr & arg) const override; \
+	virtual bitvalue_repr \
+	reduce_constant(const bitvalue_repr & arg) const override; \
 \
 	virtual std::string \
 	debug_string() const override; \
@@ -35,7 +34,7 @@ public: \
 	virtual std::unique_ptr<jive::operation> \
 	copy() const override; \
 \
-	virtual std::unique_ptr<bits::unary_op> \
+	virtual std::unique_ptr<bitunary_op> \
 	create(size_t nbits) const override; \
 }; \
 \
@@ -52,14 +51,14 @@ is_ ## NAME ## _node(const jive::node * node) noexcept \
 } \
 
 #define DECLARE_BITBINARY_OPERATION(NAME) \
-class NAME ## _op final : public binary_op { \
+class NAME ## _op final : public bitbinary_op { \
 public: \
 	virtual \
 	~NAME ## _op() noexcept; \
 \
 	inline \
-	NAME ## _op(const jive::bits::type & type) noexcept \
-	: binary_op(type) \
+	NAME ## _op(const bittype & type) noexcept \
+	: bitbinary_op(type) \
 	{} \
 \
 	virtual bool \
@@ -68,10 +67,10 @@ public: \
 	virtual enum jive::binary_op::flags \
 	flags() const noexcept override; \
 \
-	virtual value_repr \
+	virtual bitvalue_repr \
 	reduce_constants( \
-		const value_repr & arg1, \
-		const value_repr & arg2) const override; \
+		const bitvalue_repr & arg1, \
+		const bitvalue_repr & arg2) const override; \
 \
 	virtual std::string \
 	debug_string() const override; \
@@ -79,7 +78,7 @@ public: \
 	virtual std::unique_ptr<jive::operation> \
 	copy() const override; \
 \
-	virtual std::unique_ptr<bits::binary_op> \
+	virtual std::unique_ptr<bitbinary_op> \
 	create(size_t nbits) const override; \
 }; \
 \
@@ -95,26 +94,25 @@ is_ ## NAME ## _node(const jive::node * node) noexcept \
 	return is_opnode<NAME ## _op>(node); \
 } \
 
-DECLARE_BITUNARY_OPERATION(neg)
-DECLARE_BITUNARY_OPERATION(not)
+DECLARE_BITUNARY_OPERATION(bitneg)
+DECLARE_BITUNARY_OPERATION(bitnot)
 
-DECLARE_BITBINARY_OPERATION(add)
-DECLARE_BITBINARY_OPERATION(and)
-DECLARE_BITBINARY_OPERATION(ashr)
-DECLARE_BITBINARY_OPERATION(mul)
-DECLARE_BITBINARY_OPERATION(or)
-DECLARE_BITBINARY_OPERATION(sdiv)
-DECLARE_BITBINARY_OPERATION(shl)
-DECLARE_BITBINARY_OPERATION(shr)
-DECLARE_BITBINARY_OPERATION(smod)
-DECLARE_BITBINARY_OPERATION(smulh)
-DECLARE_BITBINARY_OPERATION(sub)
-DECLARE_BITBINARY_OPERATION(udiv)
-DECLARE_BITBINARY_OPERATION(umod)
-DECLARE_BITBINARY_OPERATION(umulh)
-DECLARE_BITBINARY_OPERATION(xor)
+DECLARE_BITBINARY_OPERATION(bitadd)
+DECLARE_BITBINARY_OPERATION(bitand)
+DECLARE_BITBINARY_OPERATION(bitashr)
+DECLARE_BITBINARY_OPERATION(bitmul)
+DECLARE_BITBINARY_OPERATION(bitor)
+DECLARE_BITBINARY_OPERATION(bitsdiv)
+DECLARE_BITBINARY_OPERATION(bitshl)
+DECLARE_BITBINARY_OPERATION(bitshr)
+DECLARE_BITBINARY_OPERATION(bitsmod)
+DECLARE_BITBINARY_OPERATION(bitsmulh)
+DECLARE_BITBINARY_OPERATION(bitsub)
+DECLARE_BITBINARY_OPERATION(bitudiv)
+DECLARE_BITBINARY_OPERATION(bitumod)
+DECLARE_BITBINARY_OPERATION(bitumulh)
+DECLARE_BITBINARY_OPERATION(bitxor)
 
-}
 }
 
 #endif

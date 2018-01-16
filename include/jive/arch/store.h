@@ -147,16 +147,16 @@ public:
 
 	inline
 	bitstore_op(
-		const jive::bits::type & address,
+		const bittype & address,
 		const jive::valuetype & value,
 		size_t nstates)
 	: store_op(address, value, nstates)
 	{}
 
-	inline const jive::bits::type &
+	inline const bittype &
 	addresstype() const noexcept
 	{
-		return *static_cast<const bits::type*>(&store_op::addresstype());
+		return *static_cast<const bittype*>(&store_op::addresstype());
 	}
 
 	static inline std::vector<jive::output*>
@@ -170,7 +170,7 @@ public:
 		std::vector<jive::output*> operands({address, value});
 		operands.insert(operands.end(), states.begin(), states.end());
 
-		jive::bitstore_op op(jive::bits::type(nbits), valuetype, states.size());
+		bitstore_op op(bittype(nbits), valuetype, states.size());
 		return jive::create_normalized(address->region(), op, operands);
 	}
 };

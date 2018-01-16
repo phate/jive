@@ -16,16 +16,14 @@
 #include <jive/types/bitstring/type.h>
 
 namespace jive {
-namespace bits {
 
-slice_op::~slice_op() noexcept
-{
-}
+bitslice_op::~bitslice_op() noexcept
+{}
 
 bool
-slice_op::operator==(const operation & other) const noexcept
+bitslice_op::operator==(const operation & other) const noexcept
 {
-	auto op = dynamic_cast<const slice_op*>(&other);
+	auto op = dynamic_cast<const bitslice_op*>(&other);
 	return op
 	    && op->low_ == low_
 	    && op->result_ == result_
@@ -33,43 +31,40 @@ slice_op::operator==(const operation & other) const noexcept
 }
 
 std::string
-slice_op::debug_string() const
+bitslice_op::debug_string() const
 {
 	return detail::strfmt("SLICE[", low(), ":", high(), ")");
 }
 
 const jive::port &
-slice_op::argument(size_t index) const noexcept
+bitslice_op::argument(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < narguments());
 	return argument_;
 }
 
 const jive::port &
-slice_op::result(size_t index) const noexcept
+bitslice_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
 	return result_;
 }
 
 jive_unop_reduction_path_t
-slice_op::can_reduce_operand(const jive::output * arg) const noexcept
+bitslice_op::can_reduce_operand(const jive::output * arg) const noexcept
 {
-	/*
-		FIXME: this should be a dynamic_cast
-	*/
-	const jive::bits::type & arg_type = static_cast<const jive::bits::type &>(arg->type());
+	auto & arg_type = *dynamic_cast<const bittype*>(&arg->type());
 
 	if ((low() == 0) && (high() == arg_type.nbits())) {
 		return jive_unop_reduction_idempotent;
 	}
-	if (arg->node() && dynamic_cast<const slice_op*>(&arg->node()->operation())) {
+	if (arg->node() && dynamic_cast<const bitslice_op*>(&arg->node()->operation())) {
 		return jive_unop_reduction_narrow;
 	}
-	if (arg->node() && dynamic_cast<const constant_op*>(&arg->node()->operation())) {
+	if (arg->node() && dynamic_cast<const bitconstant_op*>(&arg->node()->operation())) {
 		return jive_unop_reduction_constant;
 	}
-	if (arg->node() && dynamic_cast<const concat_op*>(&arg->node()->operation())) {
+	if (arg->node() && dynamic_cast<const bitconcat_op*>(&arg->node()->operation())) {
 		return jive_unop_reduction_distribute;
 	}
 	
@@ -77,7 +72,7 @@ slice_op::can_reduce_operand(const jive::output * arg) const noexcept
 }
 
 jive::output *
-slice_op::reduce_operand(
+bitslice_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
@@ -86,12 +81,12 @@ slice_op::reduce_operand(
 	}
 	
 	if (path == jive_unop_reduction_narrow) {
-		auto op = static_cast<const slice_op &>(arg->node()->operation());
+		auto op = static_cast<const bitslice_op&>(arg->node()->operation());
 		return jive_bitslice(arg->node()->input(0)->origin(), low() + op.low(), high() + op.low());
 	}
 	
 	if (path == jive_unop_reduction_constant) {
-		auto op = static_cast<const constant_op &>(arg->node()->operation());
+		auto op = static_cast<const bitconstant_op&>(arg->node()->operation());
 		std::string s(&op.value()[0]+low(), high()-low());
 		return create_bitconstant(arg->region(), s.c_str());
 	}
@@ -102,7 +97,7 @@ slice_op::reduce_operand(
 		for (n = 0; n < arg->node()->ninputs(); n++) {
 			auto argument = arg->node()->input(n)->origin();
 			size_t base = pos;
-			size_t nbits = static_cast<const jive::bits::type&>(argument->type()).nbits();
+			size_t nbits = static_cast<const bittype&>(argument->type()).nbits();
 			pos = pos + nbits;
 			if (base < high() && pos > low()) {
 				size_t slice_low = (low() > base) ? (low() - base) : 0;
@@ -119,18 +114,17 @@ slice_op::reduce_operand(
 }
 
 std::unique_ptr<jive::operation>
-slice_op::copy() const
+bitslice_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new slice_op(*this));
+	return std::unique_ptr<jive::operation>(new bitslice_op(*this));
 }
 
-}
 }
 
 jive::output *
 jive_bitslice(jive::output * argument, size_t low, size_t high)
 {
-	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(argument->type());
-	jive::bits::slice_op op(type, low, high);
+	auto & type = dynamic_cast<const jive::bittype&>(argument->type());
+	jive::bitslice_op op(type, low, high);
 	return jive::create_normalized(argument->region(), op, {argument})[0];
 }

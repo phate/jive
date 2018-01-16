@@ -22,7 +22,9 @@
 static int
 function_test_build_lambda(void)
 {
-	jive::bits::type bt32(32);
+	using namespace jive;
+
+	bittype bt32(32);
 
 	jive::graph graph;
 	auto x = graph.add_import(bt32, "x");
@@ -31,7 +33,7 @@ function_test_build_lambda(void)
 	auto arguments = lb.begin_lambda(graph.root(), {{&bt32, &bt32}, {&bt32}});
 	lb.add_dependency(x);
 
-	auto sum = jive::bits::create_add(32, arguments[0], arguments[1]);
+	auto sum = create_bitadd(32, arguments[0], arguments[1]);
 
 	auto f1 = lb.end_lambda({sum});
 	auto f2 = static_cast<jive::structural_node*>(f1)->copy(graph.root(), {x});
@@ -48,9 +50,11 @@ JIVE_UNIT_TEST_REGISTER("function/test-build-lambda", function_test_build_lambda
 
 static int function_test_call(void)
 {
+	using namespace jive;
+
 	jive::graph graph;
 
-	jive::bits::type btype(8);
+	bittype btype(8);
 	jive::fct::type ftype({&btype}, {&btype}) ;
 
 	auto constant = create_bitconstant(graph.root(), "00001111");
@@ -68,8 +72,10 @@ JIVE_UNIT_TEST_REGISTER("function/test-call", function_test_call)
 
 static int function_test_equals(void)
 {
-	jive::bits::type btype0(8);
-	jive::bits::type btype1(8);
+	using namespace jive;
+
+	bittype btype0(8);
+	bittype btype1(8);
 	jive::fct::type type0({&btype0}, {&btype0});
 	jive::fct::type type1({&btype0}, {&btype1});
 	jive::fct::type type2({&btype0}, {&btype1, &btype1});

@@ -25,8 +25,8 @@ const jive::registers jive_testarch_reg_cc("cc", &jive_testarch_regcls_cc, 0);
 #define CLS(x) &jive_testarch_regcls_##x
 #define STACK4 &jive_stackslot_class_4_4
 
-static const jive::bits::type bits16(16);
-static const jive::bits::type bits32(32);
+static const jive::bittype bits16(16);
+static const jive::bittype bits32(32);
 
 const jive::register_class jive_testarch_regcls_r0(
 	"r0", {&jive_testarch_reg_r0},
@@ -216,19 +216,19 @@ jive_testarch_reg_classifier::classify_type(
 }
 
 jive_regselect_mask
-jive_testarch_reg_classifier::classify_fixed_unary(const jive::bits::unary_op & op) const
+jive_testarch_reg_classifier::classify_fixed_unary(const jive::bitunary_op & op) const
 {
 	return (1 << jive_testarch_classify_gpr);
 }
 
 jive_regselect_mask
-jive_testarch_reg_classifier::classify_fixed_binary(const jive::bits::binary_op & op) const
+jive_testarch_reg_classifier::classify_fixed_binary(const jive::bitbinary_op & op) const
 {
 	return (1 << jive_testarch_classify_gpr);
 }
 
 jive_regselect_mask
-jive_testarch_reg_classifier::classify_fixed_compare(const jive::bits::compare_op & op) const
+jive_testarch_reg_classifier::classify_fixed_compare(const jive::bitcompare_op & op) const
 {
 	return (1 << jive_testarch_classify_gpr);
 }

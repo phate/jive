@@ -9,10 +9,9 @@
 #include <stdexcept>
 
 namespace jive {
-namespace bits {
 
 uint64_t
-value_repr::to_uint() const
+bitvalue_repr::to_uint() const
 {
 	size_t limit = std::min(nbits(), size_t(64));
 	/* bits beyond 64 must be zero, else value is not representable as uint64_t */
@@ -42,7 +41,7 @@ value_repr::to_uint() const
 }
 
 int64_t
-value_repr::to_int() const
+bitvalue_repr::to_int() const
 {
 	/* all bits from 63 on must be identical, else value is not representable as int64_t */
 	char sign_bit = data_[nbits()-1];
@@ -72,5 +71,4 @@ value_repr::to_int() const
 	return result;
 }
 
-}
 }

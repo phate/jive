@@ -14,26 +14,20 @@
 #include <jive/types/bitstring/type.h>
 
 namespace jive {
-namespace bits {
 
-class concat_op final : public jive::binary_op {
+class bitconcat_op final : public jive::binary_op {
 public:
-	virtual ~concat_op() noexcept;
+	virtual
+	~bitconcat_op() noexcept;
 
 	explicit inline
-	concat_op(std::vector<type> types)
+	bitconcat_op(std::vector<bittype> types)
 	: binary_op()
 	, result_(aggregate_arguments(types))
 	{
 		for (const auto & type : types)
 			arguments_.push_back({type});
 	}
-
-	inline
-	concat_op(const concat_op & other) = default;
-
-	inline
-	concat_op(concat_op && other) = default;
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -71,15 +65,14 @@ public:
 	copy() const override;
 
 private:
-	static type
+	static bittype
 	aggregate_arguments(
-		const std::vector<type>& argument_types) noexcept;
+		const std::vector<bittype>& argument_types) noexcept;
 
 	jive::port result_;
 	std::vector<jive::port> arguments_;
 };
 
-}
 }
 
 jive::output *

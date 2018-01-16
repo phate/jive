@@ -32,7 +32,7 @@ sizeof_op::result(size_t index) const noexcept
 	/* FIXME: either need a "universal" integer type,
 	or some way to specify the representation type for the
 	sizeof operator */
-	static const jive::port port(jive::bits::type(32));
+	static const jive::port port(jive::bittype(32));
 	return port;
 }
 

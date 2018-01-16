@@ -99,13 +99,13 @@ public:
 	classify_type(const jive::type * type, const jive::resource_class * rescls) const override;
 
 	virtual jive_regselect_mask
-	classify_fixed_unary(const jive::bits::unary_op & op) const override;
+	classify_fixed_unary(const jive::bitunary_op & op) const override;
 
 	virtual jive_regselect_mask
-	classify_fixed_binary(const jive::bits::binary_op & op) const override;
+	classify_fixed_binary(const jive::bitbinary_op & op) const override;
 
 	virtual jive_regselect_mask
-	classify_fixed_compare(const jive::bits::compare_op & op) const override;
+	classify_fixed_compare(const jive::bitcompare_op & op) const override;
 
 	virtual jive_regselect_mask
 	classify_float_unary(const jive::flt::unary_op & op) const override;

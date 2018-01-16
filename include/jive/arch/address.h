@@ -134,7 +134,7 @@ public:
 	arraysubscript_op(arraysubscript_op && other) noexcept;
 	arraysubscript_op(
 		const jive::valuetype & element_type,
-		const jive::bits::type & index_type);
+		const bittype & index_type);
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -160,10 +160,10 @@ public:
 		return *static_cast<const valuetype*>(element_type_.get());
 	}
 
-	inline const jive::bits::type &
+	inline const bittype &
 	index_type() const noexcept
 	{
-		return *static_cast<const jive::bits::type*>(&index_.type());
+		return *static_cast<const bittype*>(&index_.type());
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -182,7 +182,7 @@ public:
 	arrayindex_op(arrayindex_op && other) noexcept;
 	arrayindex_op(
 		const jive::valuetype & element_type,
-		const jive::bits::type & index_type);
+		const bittype & index_type);
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -208,10 +208,10 @@ public:
 		return *static_cast<const valuetype*>(element_type_.get());
 	}
 
-	inline const jive::bits::type &
+	inline const bittype &
 	index_type() const noexcept
 	{
-		return *static_cast<const jive::bits::type*>(&index_.type());
+		return *static_cast<const bittype*>(&index_.type());
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -265,7 +265,7 @@ public:
 		const jive::label * label,
 		size_t nbits) noexcept
 	: base::nullary_op()
-	, result_(jive::bits::type(nbits))
+	, result_(bittype(nbits))
 	, label_(label)
 	{}
 
@@ -287,7 +287,7 @@ public:
 	size_t
 	nbits() const noexcept
 	{
-		return static_cast<const jive::bits::type*>(&result_.type())->nbits();
+		return static_cast<const bittype*>(&result_.type())->nbits();
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -389,7 +389,7 @@ difference of their indices */
 jive::output *
 jive_arrayindex(jive::output * addr1, jive::output * addr2,
 	const jive::valuetype * element_type,
-	const jive::bits::type * difference_type);
+	const jive::bittype * difference_type);
 
 /* label_to_address node */
 

@@ -13,16 +13,16 @@
 #include <jive/types/bitstring/value-representation.h>
 
 namespace jive {
-namespace bits {
 
 /* Represents a unary operation on a bitstring of a specific width,
  * produces another bitstring of the same width. */
-class unary_op : public jive::unary_op {
+class bitunary_op : public jive::unary_op {
 public:
-	virtual ~unary_op() noexcept;
+	virtual
+	~bitunary_op() noexcept;
 
 	inline
-	unary_op(const jive::bits::type & type) noexcept
+	bitunary_op(const bittype & type) noexcept
 	: port_(type)
 	{}
 
@@ -38,10 +38,10 @@ public:
 	virtual const jive::port &
 	result(size_t index) const noexcept override;
 
-	inline const jive::bits::type &
+	inline const bittype &
 	type() const noexcept
 	{
-		return *static_cast<const jive::bits::type*>(&port_.type());
+		return *static_cast<const bittype*>(&port_.type());
 	}
 
 	/* reduction methods */
@@ -54,11 +54,11 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	virtual value_repr
+	virtual bitvalue_repr
 	reduce_constant(
-		const value_repr & arg) const = 0;
+		const bitvalue_repr & arg) const = 0;
 
-	virtual std::unique_ptr<bits::unary_op>
+	virtual std::unique_ptr<bitunary_op>
 	create(size_t nbits) const = 0;
 
 private:
@@ -68,12 +68,13 @@ private:
 /* Represents a binary operation (possibly normalized n-ary if associative)
  * on a bitstring of a specific width, produces another bitstring of the
  * same width. */
-class binary_op : public jive::binary_op {
+class bitbinary_op : public jive::binary_op {
 public:
-	virtual ~binary_op() noexcept;
+	virtual
+	~bitbinary_op() noexcept;
 
 	inline
-	binary_op(const jive::bits::type & type, size_t arity = 2) noexcept
+	bitbinary_op(const bittype & type, size_t arity = 2) noexcept
 	: arity_(arity)
 	, port_(type)
 	{}
@@ -102,18 +103,18 @@ public:
 		jive::output * arg1,
 		jive::output * arg2) const override;
 
-	virtual value_repr
+	virtual bitvalue_repr
 	reduce_constants(
-		const value_repr & arg1,
-		const value_repr & arg2) const = 0;
+		const bitvalue_repr & arg1,
+		const bitvalue_repr & arg2) const = 0;
 
-	virtual std::unique_ptr<bits::binary_op>
+	virtual std::unique_ptr<bitbinary_op>
 	create(size_t nbits) const = 0;
 
-	inline const jive::bits::type &
+	inline const bittype &
 	type() const noexcept
 	{
-		return *static_cast<const jive::bits::type*>(&port_.type());
+		return *static_cast<const bittype*>(&port_.type());
 	}
 
 	inline size_t
@@ -133,14 +134,15 @@ enum class compare_result {
 	static_false
 };
 
-class compare_op : public jive::binary_op {
+class bitcompare_op : public jive::binary_op {
 public:
+	virtual
+	~bitcompare_op() noexcept;
+
 	inline
-	compare_op(const jive::bits::type & type) noexcept
+	bitcompare_op(const bittype & type) noexcept
 	: port_(type)
 	{}
-
-	virtual ~compare_op() noexcept;
 
 	virtual size_t
 	narguments() const noexcept override;
@@ -167,16 +169,16 @@ public:
 
 	virtual compare_result
 	reduce_constants(
-		const value_repr & arg1,
-		const value_repr & arg2) const = 0;
+		const bitvalue_repr & arg1,
+		const bitvalue_repr & arg2) const = 0;
 
-	virtual std::unique_ptr<bits::compare_op>
+	virtual std::unique_ptr<bitcompare_op>
 	create(size_t nbits) const = 0;
 
-	inline const jive::bits::type &
+	inline const bittype &
 	type() const noexcept
 	{
-		return *static_cast<const jive::bits::type*>(&port_.type());
+		return *static_cast<const bittype*>(&port_.type());
 	}
 
 private:
@@ -184,7 +186,6 @@ private:
 	jive::port port_;
 };
 
-}
 }
 
 #endif

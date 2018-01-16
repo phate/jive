@@ -210,7 +210,7 @@ arraysubscript_op::arraysubscript_op(arraysubscript_op && other) noexcept
 
 arraysubscript_op::arraysubscript_op(
 	const jive::valuetype & type,
-	const jive::bits::type & index_type)
+	const jive::bittype & index_type)
 : index_(std::move(index_type.copy()))
 , element_type_(type.copy())
 {}
@@ -278,7 +278,7 @@ jive_arraysubscript(
 {
 	jive::address::arraysubscript_op op(
 		*element_type,
-		dynamic_cast<const jive::bits::type &>(index->type()));
+		dynamic_cast<const jive::bittype &>(index->type()));
 
 	return jive::create_normalized(address->region(), op, {address, index})[0];
 }
@@ -306,7 +306,7 @@ arrayindex_op::arrayindex_op(arrayindex_op && other) noexcept
 
 arrayindex_op::arrayindex_op(
 	const jive::valuetype & element_type,
-	const jive::bits::type & index_type)
+	const jive::bittype & index_type)
 : simple_op()
 , index_(std::move(index_type.copy()))
 , element_type_(element_type.copy())
@@ -364,7 +364,7 @@ jive::output *
 jive_arrayindex(
 	jive::output * addr1, jive::output * addr2,
 	const jive::valuetype * element_type,
-	const jive::bits::type * difference_type)
+	const jive::bittype * difference_type)
 {
 	jive::address::arrayindex_op op(*element_type, difference_type->nbits());
 	return jive::create_normalized(addr1->region(), op, {addr1, addr2})[0];

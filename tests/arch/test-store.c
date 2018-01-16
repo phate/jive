@@ -24,9 +24,9 @@ static int test_main(void)
 
 	jive::graph graph;
 
-	static const jive::bits::type bits8(8);
-	static const jive::bits::type bits16(16);
-	static const jive::bits::type bits32(32);
+	bittype bits8(8);
+	bittype bits16(16);
+	bittype bits32(32);
 
 	auto rcddcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32});
 	auto unndcl = unndeclaration::create(&graph, {&bits8, &bits16, &bits32});

@@ -151,7 +151,7 @@ choose_op::reduce_operand(
 		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
 			return addrload_op::create(address, dcl->option(option()), states);
 		} else {
-			size_t nbits = static_cast<const jive::bits::type*>(&address->type())->nbits();
+			size_t nbits = static_cast<const bittype*>(&address->type())->nbits();
 			return bitload_op::create(address, nbits, dcl->option(option()), states);
 		}
 	}

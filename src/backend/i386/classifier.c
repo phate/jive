@@ -44,7 +44,7 @@ register_classifier::classify_type(
 	else if (rescls == &cc_regcls)
 		return (1 << jive_i386_classify_flags);
 
-	auto btype = dynamic_cast<const jive::bits::type*>(type);
+	auto btype = dynamic_cast<const jive::bittype*>(type);
 	if (btype != nullptr) {
 		if (btype->nbits() == 32)
 			return (1 << jive_i386_classify_gpr);
@@ -64,20 +64,20 @@ register_classifier::classify_type(
 
 jive_regselect_mask
 register_classifier::classify_fixed_unary(
-	const jive::bits::unary_op & op) const
+	const jive::bitunary_op & op) const
 {
 	return (1 << jive_i386_classify_gpr);
 }
 
 jive_regselect_mask
 register_classifier::classify_fixed_binary(
-	const jive::bits::binary_op & op) const
+	const jive::bitbinary_op & op) const
 {
 	return (1 << jive_i386_classify_gpr);
 }
 
 jive_regselect_mask
-register_classifier::classify_fixed_compare(const jive::bits::compare_op & op) const
+register_classifier::classify_fixed_compare(const jive::bitcompare_op & op) const
 {
 	return (1 << jive_i386_classify_gpr);
 }

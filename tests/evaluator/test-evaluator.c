@@ -33,7 +33,7 @@ fib(size_t n)
   return j;
 }
 */
-	jive::bits::type bits32(32);
+	jive::bittype bits32(32);
 
 	jive::lambda_builder lb;
 	auto arguments = lb.begin_lambda(graph->root(), {{&bits32}, {&bits32}});
@@ -49,13 +49,13 @@ fib(size_t n)
 	auto lv_k = theta->add_loopvar(k);
 	auto lv_n = theta->add_loopvar(n);
 
-	auto t = jive::bits::create_add(32, lv_i->argument(), lv_j->argument());
+	auto t = jive::create_bitadd(32, lv_i->argument(), lv_j->argument());
 
 	auto one = create_bitconstant(theta->subregion(), 32, 1);
 
-	auto new_k = jive::bits::create_add(32, one, lv_k->argument());
+	auto new_k = jive::create_bitadd(32, one, lv_k->argument());
 
-	auto cmp = jive::bits::create_ule(32, new_k, lv_n->argument());
+	auto cmp = jive::create_bitule(32, new_k, lv_n->argument());
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
 	lv_k->result()->divert_origin(new_k);
@@ -64,7 +64,7 @@ fib(size_t n)
 	lv_n->result()->divert_origin(lv_n->argument());
 	theta->set_predicate(predicate);
 
-	cmp = jive::bits::create_ule(32, k, n);
+	cmp = jive::create_bitule(32, k, n);
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
 	auto gamma = jive::gamma_node::create(predicate, 2);
@@ -96,7 +96,7 @@ test_fib_iter(jive::graph * graph)
 	std::unique_ptr<const literal> result;
 
 	/* test fib(0) */
-	bitliteral arg(jive::bits::value_repr(32, 0));
+	bitliteral arg(jive::bitvalue_repr(32, 0));
 	result = std::move(eval(graph, "fib_iter", {&arg})->copy());
 	const fctliteral * fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
@@ -105,7 +105,7 @@ test_fib_iter(jive::graph * graph)
 	assert(fib->value_repr() == 0);
 
 	/* test fib(1) */
-	arg = bitliteral(jive::bits::value_repr(32, 1));
+	arg = bitliteral(jive::bitvalue_repr(32, 1));
 	result = std::move(eval(graph, "fib_iter", {&arg})->copy());
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
@@ -113,7 +113,7 @@ test_fib_iter(jive::graph * graph)
 	assert(fib->value_repr() == 1);
 
 	/* test fib(2) */
-	arg = bitliteral(jive::bits::value_repr(32, 2));
+	arg = bitliteral(jive::bitvalue_repr(32, 2));
 	result = std::move(eval(graph, "fib_iter", {&arg})->copy());
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
@@ -121,7 +121,7 @@ test_fib_iter(jive::graph * graph)
 	assert(fib->value_repr() == 1);
 
 	/* test fib(11) */
-	arg = bitliteral(jive::bits::value_repr(32, 11));
+	arg = bitliteral(jive::bitvalue_repr(32, 11));
 	result = std::move(eval(graph, "fib_iter", {&arg})->copy());
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
@@ -140,7 +140,7 @@ unsigned int fib(unsigned int n){
      return fib(n - 1) + fib(n - 2);
  }
 */
-	jive::bits::type bits32(32);
+	jive::bittype bits32(32);
 	std::vector<const jive::type*> args({&bits32});
 	std::vector<const jive::type*> res({&bits32});
 	jive::fct::type fcttype({&bits32}, {&bits32});
@@ -157,15 +157,15 @@ unsigned int fib(unsigned int n){
 	auto one = create_bitconstant(lb.subregion(), 32, 1);
 	auto two = create_bitconstant(lb.subregion(), 32, 2);
 
-	auto tmp = jive::bits::create_sub(32, n, one);
+	auto tmp = jive::create_bitsub(32, n, one);
 	tmp = jive::fct::create_apply(dep, {tmp})[0];
 
-	auto tmp2 = jive::bits::create_sub(32, n, two);
+	auto tmp2 = jive::create_bitsub(32, n, two);
 	tmp2 = jive::fct::create_apply(dep, {tmp2})[0];
 
-	auto result = jive::bits::create_add(32, tmp, tmp2);
+	auto result = jive::create_bitadd(32, tmp, tmp2);
 
-	auto cmp = jive::bits::create_ult(32, n, two);
+	auto cmp = jive::create_bitult(32, n, two);
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 
 	auto gamma = jive::gamma_node::create(predicate, 2);
@@ -193,7 +193,7 @@ test_fib_rec(jive::graph * graph)
 	std::unique_ptr<const literal> result;
 
 	/* test fib(0) */
-	bitliteral arg(jive::bits::value_repr(32, 0));
+	bitliteral arg(jive::bitvalue_repr(32, 0));
 	result = std::move(eval(graph, "fib_rec", {&arg})->copy());
 	const fctliteral * fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
@@ -201,7 +201,7 @@ test_fib_rec(jive::graph * graph)
 	assert(fib->value_repr() == 0);
 
 	/* test fib(1) */
-	arg = bitliteral(jive::bits::value_repr(32, 1));
+	arg = bitliteral(jive::bitvalue_repr(32, 1));
 	result = std::move(eval(graph, "fib_rec", {&arg})->copy());
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
@@ -209,7 +209,7 @@ test_fib_rec(jive::graph * graph)
 	assert(fib->value_repr() == 1);
 
 	/* test fib(2) */
-	arg = bitliteral(jive::bits::value_repr(32, 2));
+	arg = bitliteral(jive::bitvalue_repr(32, 2));
 	result = std::move(eval(graph, "fib_rec", {&arg})->copy());
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
@@ -217,7 +217,7 @@ test_fib_rec(jive::graph * graph)
 	assert(fib->value_repr() == 1);
 
 	/* test fib(8) */
-	arg = bitliteral(jive::bits::value_repr(32, 8));
+	arg = bitliteral(jive::bitvalue_repr(32, 8));
 	result = std::move(eval(graph, "fib_rec", {&arg})->copy());
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
@@ -230,7 +230,7 @@ test_loadstore(jive::graph * graph)
 {
 	using namespace jive::eval;
 
-	jive::bits::type bits64(64), bits4(4);
+	jive::bittype bits64(64), bits4(4);
 	const auto & mem = jive::memtype::instance();
 
 	jive::lambda_builder lb;
@@ -242,7 +242,7 @@ test_loadstore(jive::graph * graph)
 	auto value = jive::bitload_op::create(address, 64, bits4, {state});
 
 	auto three = create_bitconstant(lb.subregion(), 4, 3);
-	value = jive::bits::create_add(4, value, three);
+	value = create_bitadd(4, value, three);
 
 	state = jive::bitstore_op::create(address, value, 64, bits4, {state})[0];
 
@@ -255,7 +255,7 @@ test_loadstore(jive::graph * graph)
 	uint32_t v = 0xF05;
 
 	memliteral s;
-	bitliteral a(jive::bits::value_repr(64, (uint64_t)&v));
+	bitliteral a(jive::bitvalue_repr(64, (uint64_t)&v));
 	eval(graph, "loadstore", {&s, &a});
 
 	assert(v == 0xF08);
@@ -269,13 +269,13 @@ test_external_function()
 	jive::graph graph;
 	graph.node_normal_form(typeid(jive::operation))->set_mutable(false);
 
-	jive::bits::type bits64(64);
+	jive::bittype bits64(64);
 	auto i = graph.add_import(bits64, "v");
 
 	jive::lambda_builder lb;
 	auto arguments = lb.begin_lambda(graph.root(), {{&bits64}, {&bits64}});
 	auto v = lb.add_dependency(i);
-	auto sum = jive::bits::create_add(64, arguments[0], v);
+	auto sum = jive::create_bitadd(64, arguments[0], v);
 	auto lambda = lb.end_lambda({sum});
 
 	graph.add_export(lambda->output(0), "test");
@@ -285,7 +285,7 @@ test_external_function()
 	bool exception_caught = false;
 	try {
 		uint32_t g = 42;
-		bitliteral arg(jive::bits::value_repr(64, (uint64_t)&g));
+		bitliteral arg(jive::bitvalue_repr(64, (uint64_t)&g));
 		eval(&graph, "test", {&arg});
 	} catch (jive::compiler_error e) {
 		exception_caught = true;

@@ -150,13 +150,13 @@ register_selector::annotate_node_proper(jive::node * node)
 		for (size_t n = 0; n < node->noutputs(); n++)
 			outputs.push_back(dynamic_cast<jive::simple_output*>(node->output(n)));
 		jive_negotiator_annotate_identity(this, 2, &input, 0, &outputs[0], &option);
-	} else if (auto op = dynamic_cast<const jive::bits::unary_op *>(gen_op)) {
+	} else if (auto op = dynamic_cast<const jive::bitunary_op *>(gen_op)) {
 		option.mask = classifier->classify_fixed_unary(*op);
 		jive_negotiator_annotate_identity_node(this, node, &option);
-	} else if (auto op = dynamic_cast<const jive::bits::binary_op *>(gen_op)) {
+	} else if (auto op = dynamic_cast<const jive::bitbinary_op *>(gen_op)) {
 		option.mask = classifier->classify_fixed_binary(*op);
 		jive_negotiator_annotate_identity_node(this, node, &option);
-	} else if (auto op = dynamic_cast<const jive::bits::compare_op *>(gen_op)) {
+	} else if (auto op = dynamic_cast<const jive::bitcompare_op *>(gen_op)) {
 		option.mask = classifier->classify_fixed_compare(*op);
 		auto input = dynamic_cast<jive::simple_input*>(node->input(0));
 		std::vector<jive::simple_output*> outputs;

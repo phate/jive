@@ -38,8 +38,8 @@ const jive::registers xmm7("xmm7", &xmm7_regcls, 7);
 #define CLS(x) &x##_regcls
 #define STACK4 &jive_stackslot_class_4_4
 
-static const jive::bits::type bits16(16);
-static const jive::bits::type bits32(32);
+static const jive::bittype bits16(16);
+static const jive::bittype bits32(32);
 static const jive::flt::type flt;
 
 const jive::register_class cc_regcls(

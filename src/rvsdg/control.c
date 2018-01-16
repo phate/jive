@@ -34,7 +34,7 @@ match_op::match_op(
 	size_t nalternatives)
 : jive::unary_op()
 , result_(type(nalternatives))
-, argument_(jive::bits::type(nbits))
+, argument_(jive::bittype(nbits))
 , default_alternative_(default_alternative)
 , mapping_(mapping)
 {}
@@ -77,7 +77,7 @@ jive::output *
 match_op::reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) const
 {
 	if (path == jive_unop_reduction_constant) {
-		auto op = static_cast<const bits::constant_op&>(producer(arg)->operation());
+		auto op = static_cast<const bitconstant_op&>(producer(arg)->operation());
 		return jive_control_constant(arg->region(), nalternatives(),
 			alternative(op.value().to_uint()));
 	}
