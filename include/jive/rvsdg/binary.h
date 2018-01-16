@@ -108,7 +108,31 @@ public:
 	, associative = 1
 	, commutative = 2};
 
-	virtual ~binary_op() noexcept;
+	virtual
+	~binary_op() noexcept;
+
+	inline
+	binary_op(
+		const std::vector<jive::port> & operands,
+		const jive::port & result)
+	: result_(result)
+	, operands_(operands)
+	{}
+
+	virtual bool
+	operator==(const jive::operation & other) const noexcept;
+
+	virtual size_t
+	narguments() const noexcept override final;
+
+	virtual const jive::port &
+	argument(size_t index) const noexcept override final;
+
+	virtual size_t
+	nresults() const noexcept override final;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override final;
 
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
@@ -135,6 +159,10 @@ public:
 	{
 		return static_cast<jive::binary_normal_form*>(graph->node_normal_form(typeid(binary_op)));
 	}
+
+private:
+	jive::port result_;
+	std::vector<jive::port> operands_;
 };
 
 class flattened_binary_op final : public simple_op {

@@ -14,9 +14,6 @@
 namespace jive {
 namespace flt {
 
-static const type type_instance;
-static const jive::port p(type_instance);
-
 unary_op::~unary_op() noexcept
 {}
 
@@ -46,32 +43,6 @@ unary_op::reduce_operand(
 
 binary_op::~binary_op() noexcept
 {
-}
-
-size_t
-binary_op::narguments() const noexcept
-{
-	return 2;
-}
-
-const jive::port &
-binary_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return p;
-}
-
-size_t
-binary_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-binary_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return p;
 }
 
 /* reduction methods */
@@ -111,33 +82,6 @@ binary_op::reduce_operand_pair(
 
 compare_op::~compare_op() noexcept
 {
-}
-
-size_t
-compare_op::narguments() const noexcept
-{
-	return 2;
-}
-
-const jive::port &
-compare_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return p;
-}
-
-size_t
-compare_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-compare_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	static const jive::port p(jive::bittype(1));
-	return p;
 }
 
 jive_binop_reduction_path_t

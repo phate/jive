@@ -46,32 +46,6 @@ bitunary_op::reduce_operand(
 bitbinary_op::~bitbinary_op() noexcept
 {}
 
-size_t
-bitbinary_op::narguments() const noexcept
-{
-	return arity_;
-}
-
-const jive::port &
-bitbinary_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return port_;
-}
-
-size_t
-bitbinary_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-bitbinary_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return port_;
-}
-
 jive_binop_reduction_path_t
 bitbinary_op::can_reduce_operand_pair(
 	const jive::output * arg1,
@@ -102,33 +76,6 @@ bitbinary_op::reduce_operand_pair(
 
 bitcompare_op::~bitcompare_op() noexcept
 {}
-
-size_t
-bitcompare_op::narguments() const noexcept
-{
-	return 2;
-}
-
-const jive::port &
-bitcompare_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return port_;
-}
-
-size_t
-bitcompare_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-bitcompare_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	static const jive::port port(bittype(1));
-	return port;
-}
 
 jive_binop_reduction_path_t
 bitcompare_op::can_reduce_operand_pair(

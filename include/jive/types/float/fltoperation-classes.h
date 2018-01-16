@@ -10,6 +10,7 @@
 #include <jive/rvsdg/binary.h>
 #include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/unary.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/types/float/flttype.h>
 #include <jive/types/float/value-representation.h>
 
@@ -41,20 +42,13 @@ public:
 /* Represents a binary operation on a float. */
 class binary_op : public jive::binary_op {
 public:
-	virtual ~binary_op() noexcept;
+	virtual
+	~binary_op() noexcept;
 
-	/* type signature methods */
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
+	inline
+	binary_op()
+	: jive::binary_op({type(), type()}, type())
+	{}
 
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
@@ -76,20 +70,13 @@ public:
 /* Represents a comparison operation on a float. */
 class compare_op : public jive::binary_op {
 public:
-	virtual ~compare_op() noexcept;
+	virtual
+	~compare_op() noexcept;
 
-	/* type signature methods */
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
+	inline
+	compare_op()
+	: jive::binary_op({type(), type()}, bit1)
+	{}
 
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(

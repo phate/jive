@@ -227,50 +227,27 @@ register_node_normal_form(void)
 }
 
 bittype
-bitconcat_op::aggregate_arguments(const std::vector<bittype>& argument_types) noexcept
+bitconcat_op::aggregate_arguments(const std::vector<bittype> & types) noexcept
 {
 	size_t total = 0;
-	for (const auto & t : argument_types) {
+	for (const auto & t : types) {
 		total += t.nbits();
 	}
 	return bittype(total);
 }
 
+std::vector<jive::port>
+bitconcat_op::to_ports(const std::vector<bittype> & types)
+{
+	std::vector<jive::port> ports;
+	for (const auto & type : types)
+		ports.push_back({type});
+
+	return ports;
+}
+
 bitconcat_op::~bitconcat_op() noexcept
 {}
-
-bool
-bitconcat_op::operator==(const operation & other) const noexcept
-{
-	auto op = dynamic_cast<const bitconcat_op*>(&other);
-	return op && op->result_ == result_ && op->arguments_ == arguments_;
-}
-
-size_t
-bitconcat_op::narguments() const noexcept
-{
-	return arguments_.size();
-}
-
-const jive::port &
-bitconcat_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return arguments_[index];
-}
-
-size_t
-bitconcat_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-bitconcat_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
-}
 
 jive_binop_reduction_path_t
 bitconcat_op::can_reduce_operand_pair(

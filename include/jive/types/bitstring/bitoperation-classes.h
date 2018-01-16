@@ -60,21 +60,8 @@ public:
 
 	inline
 	bitbinary_op(const bittype & type, size_t arity = 2) noexcept
-	: arity_(arity)
-	, port_(type)
+	: binary_op(std::vector<jive::port>(arity, {type}), type)
 	{}
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	/* reduction methods */
 	virtual jive_binop_reduction_path_t
@@ -99,18 +86,8 @@ public:
 	inline const bittype &
 	type() const noexcept
 	{
-		return *static_cast<const bittype*>(&port_.type());
+		return *static_cast<const bittype*>(&result(0).type());
 	}
-
-	inline size_t
-	arity() const noexcept
-	{
-		return arity_;
-	}
-
-private:
-	size_t arity_;
-	jive::port port_;
 };
 
 enum class compare_result {
@@ -126,20 +103,8 @@ public:
 
 	inline
 	bitcompare_op(const bittype & type) noexcept
-	: port_(type)
+	: binary_op({type, type}, bit1)
 	{}
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
@@ -163,12 +128,8 @@ public:
 	inline const bittype &
 	type() const noexcept
 	{
-		return *static_cast<const bittype*>(&port_.type());
+		return *static_cast<const bittype*>(&argument(0).type());
 	}
-
-private:
-	size_t arity_;
-	jive::port port_;
 };
 
 }

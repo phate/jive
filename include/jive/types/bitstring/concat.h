@@ -21,28 +21,9 @@ public:
 	~bitconcat_op() noexcept;
 
 	explicit inline
-	bitconcat_op(std::vector<bittype> types)
-	: binary_op()
-	, result_(aggregate_arguments(types))
-	{
-		for (const auto & type : types)
-			arguments_.push_back({type});
-	}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
+	bitconcat_op(const std::vector<bittype> & types)
+	: binary_op(to_ports(types), {aggregate_arguments(types)})
+	{}
 
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
@@ -66,11 +47,10 @@ public:
 
 private:
 	static bittype
-	aggregate_arguments(
-		const std::vector<bittype>& argument_types) noexcept;
+	aggregate_arguments(const std::vector<bittype> & types) noexcept;
 
-	jive::port result_;
-	std::vector<jive::port> arguments_;
+	static std::vector<jive::port>
+	to_ports(const std::vector<bittype> & types);
 };
 
 }

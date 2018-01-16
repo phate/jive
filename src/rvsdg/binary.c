@@ -285,7 +285,43 @@ flattened_binary_normal_form::normalized_create(
 
 /* binary operator */
 
-binary_op::~binary_op() noexcept {}
+binary_op::~binary_op() noexcept
+{}
+
+bool
+binary_op::operator==(const jive::operation & other) const noexcept
+{
+	auto op = dynamic_cast<const jive::binary_op*>(&other);
+	return op
+	    && op->operands_ == operands_
+	    && op->result_ == result_;
+}
+
+size_t
+binary_op::narguments() const noexcept
+{
+	return operands_.size();
+}
+
+const jive::port &
+binary_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return operands_[index];
+}
+
+size_t
+binary_op::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive::port &
+binary_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return result_;
+}
 
 enum jive::binary_op::flags
 binary_op::flags() const noexcept
