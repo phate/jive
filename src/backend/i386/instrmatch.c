@@ -22,6 +22,9 @@
 #include <jive/types/bitstring.h>
 #include <jive/util/typeinfo-map.h>
 
+namespace jive {
+namespace i386 {
+
 static inline bool
 is_gpr_immediate(jive::output * arg)
 {
@@ -567,10 +570,11 @@ match_single(jive::node * node, const jive::register_selector * regselector)
 }
 
 void
-jive_i386_match_instructions(jive::graph * graph, const jive::register_selector * regselector)
+match_instructions(jive::graph * graph, const jive::register_selector * regselector)
 {
 	for (jive::node * node : jive::bottomup_traverser(graph->root())) {
 		match_single(node, regselector);
 	}
 }
 
+}}

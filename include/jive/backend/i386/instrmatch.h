@@ -8,7 +8,12 @@
 
 #include <jive/arch/regselector.h>
 
+namespace jive {
+namespace i386 {
+
 void
-jive_i386_match_instructions(jive::graph * graph, const jive::register_selector * regselector);
+match_instructions(jive::graph * graph, const jive::register_selector * regselector);
+
+}}
 
 #endif
