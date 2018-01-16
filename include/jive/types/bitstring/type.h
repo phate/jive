@@ -46,6 +46,12 @@ private:
 	size_t nbits_;
 };
 
+extern const bittype bit1;
+extern const bittype bit8;
+extern const bittype bit16;
+extern const bittype bit32;
+extern const bittype bit64;
+
 }
 
 #endif

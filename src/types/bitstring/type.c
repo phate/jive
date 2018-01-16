@@ -35,4 +35,10 @@ bittype::copy() const
 	return std::unique_ptr<jive::type>(new bittype(*this));
 }
 
+const bittype bit1(1);
+const bittype bit8(8);
+const bittype bit16(16);
+const bittype bit32(32);
+const bittype bit64(64);
+
 }
