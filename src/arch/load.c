@@ -147,41 +147,9 @@ load_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const load_op *>(&other);
 	return op
-	    && op->value_ == value_
-	    && op->address_ == address_
-			&& op->nstates_ == nstates_;
-}
-
-size_t
-load_op::narguments() const noexcept
-{
-	return 1 + nstates_;
-}
-
-const jive::port &
-load_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-
-	if (index == 0)
-		return address_;
-
-	static const jive::memtype mt;
-	static const jive::port p(mt);
-	return p;
-}
-
-size_t
-load_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-load_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return value_;
+	    && op->addresstype() == addresstype()
+	    && op->valuetype() == valuetype()
+	    && op->narguments() == narguments();
 }
 
 std::string
@@ -194,6 +162,16 @@ std::unique_ptr<jive::operation>
 load_op::copy() const
 {
 	return std::unique_ptr<jive::operation>(new load_op(*this));
+}
+
+std::vector<jive::port>
+load_op::create_operands(const jive::valuetype & address, size_t nstates)
+{
+	std::vector<jive::port> operands({address});
+	for (size_t n = 0; n < nstates; n++)
+		operands.push_back({memtype()});
+
+	return operands;
 }
 
 /* address load operator */

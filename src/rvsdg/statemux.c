@@ -21,35 +21,9 @@ mux_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const mux_op*>(&other);
 	return op
-	    && op->narguments_ == narguments_
-	    && op->nresults_ == nresults_
-	    && op->port_ == port_;
-}
-
-size_t
-mux_op::narguments() const noexcept
-{
-	return narguments_;
-}
-
-const jive::port &
-mux_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return port_;
-}
-
-size_t
-mux_op::nresults() const noexcept
-{
-	return nresults_;
-}
-
-const jive::port &
-mux_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return port_;
+	    && op->narguments() == narguments()
+	    && op->nresults() == nresults()
+	    && op->result(0) == result(0);
 }
 
 std::string

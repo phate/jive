@@ -152,20 +152,32 @@ public:
 	virtual
 	~simple_op();
 
-	virtual size_t
-	narguments() const noexcept = 0;
+	inline
+	simple_op(
+		const std::vector<jive::port> & operands,
+		const std::vector<jive::port> & results)
+	: results_(results)
+	, operands_(operands)
+	{}
 
-	virtual const jive::port &
-	argument(size_t index) const noexcept = 0;
+	size_t
+	narguments() const noexcept;
 
-	virtual size_t
-	nresults() const noexcept = 0;
+	const jive::port &
+	argument(size_t index) const noexcept;
 
-	virtual const jive::port &
-	result(size_t index) const noexcept = 0;
+	size_t
+	nresults() const noexcept;
+
+	const jive::port &
+	result(size_t index) const noexcept;
 
 	static jive::simple_normal_form *
 	normal_form(jive::graph * graph) noexcept;
+
+private:
+	std::vector<jive::port> results_;
+	std::vector<jive::port> operands_;
 };
 
 /* structural operation */

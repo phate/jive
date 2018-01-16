@@ -113,26 +113,11 @@ public:
 
 	inline
 	group_op(const rcddeclaration * dcl) noexcept
-	: result_(rcdtype(dcl))
-	{
-		for (size_t n = 0; n < dcl->nelements(); n++)
-			arguments_.push_back({dcl->element(n)});
-	}
+	: simple_op(create_operands(dcl), {rcdtype(dcl)})
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
@@ -140,15 +125,15 @@ public:
 	inline const rcddeclaration *
 	declaration() const noexcept
 	{
-		return static_cast<const rcdtype*>(&result_.type())->declaration();
+		return static_cast<const rcdtype*>(&result(0).type())->declaration();
 	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	jive::port result_;
-	std::vector<jive::port> arguments_;
+	static std::vector<jive::port>
+	create_operands(const rcddeclaration * dcl);
 };
 
 }

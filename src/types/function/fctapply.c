@@ -17,48 +17,24 @@ apply_op::~apply_op() noexcept
 {
 }
 
-apply_op::apply_op(const type & fcttype)
-: simple_op()
-{
-	arguments_.push_back({fcttype});
-	for (size_t n = 0; n < fcttype.narguments(); n++)
-		arguments_.push_back({fcttype.argument_type(n)});
-
-	for (size_t n = 0; n < fcttype.nresults(); n++)
-		results_.push_back({fcttype.result_type(n)});
-}
-
 bool
 apply_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const apply_op*>(&other);
-	return op && op->results_ == results_ && op->arguments_ == arguments_;
-}
+	if (!op || op->narguments() != narguments() || op->nresults() != nresults())
+		return false;
 
-size_t
-apply_op::narguments() const noexcept
-{
-	return arguments_.size();
-}
+	for (size_t n = 0; n < narguments(); n++) {
+		if (argument(n) != op->argument(n))
+			return false;
+	}
 
-const jive::port &
-apply_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return arguments_[index];
-}
+	for (size_t n = 0; n < nresults(); n++) {
+		if (result(n) != op->result(n))
+			return false;
+	}
 
-size_t
-apply_op::nresults() const noexcept
-{
-	return results_.size();
-}
-
-const jive::port &
-apply_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return results_[index];
+	return true;
 }
 
 std::string
@@ -71,6 +47,26 @@ std::unique_ptr<jive::operation>
 apply_op::copy() const
 {
 	return std::unique_ptr<jive::operation>(new apply_op(*this));
+}
+
+std::vector<jive::port>
+apply_op::create_operands(const fct::type & type)
+{
+	std::vector<jive::port> operands({type});
+	for (size_t n = 0; n < type.narguments(); n++)
+		operands.push_back(type.argument_type(n));
+
+	return operands;
+}
+
+std::vector<jive::port>
+apply_op::create_results(const fct::type & type)
+{
+	std::vector<jive::port> results;
+	for (size_t n = 0; n < type.nresults(); n++)
+		results.push_back({type.result_type(n)});
+
+	return results;
 }
 
 }

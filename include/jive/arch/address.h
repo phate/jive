@@ -116,28 +116,25 @@ private:
 
 class arraysubscript_op : public simple_op {
 public:
-	virtual ~arraysubscript_op() noexcept;
+	virtual
+	~arraysubscript_op() noexcept;
 
-	arraysubscript_op(const arraysubscript_op & other);
-	arraysubscript_op(arraysubscript_op && other) noexcept;
+	inline
 	arraysubscript_op(
 		const jive::valuetype & element_type,
-		const bittype & index_type);
+		const bittype & index_type)
+	: simple_op({addrtype::instance(), index_type}, {addrtype::instance()})
+	, element_type_(std::move(element_type.copy()))
+	{}
+
+	inline
+	arraysubscript_op(const arraysubscript_op & other)
+	: simple_op(other)
+	, element_type_(other.element_type_->copy())
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
@@ -151,41 +148,37 @@ public:
 	inline const bittype &
 	index_type() const noexcept
 	{
-		return *static_cast<const bittype*>(&index_.type());
+		return *static_cast<const bittype*>(&argument(1).type());
 	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	jive::port index_;
 	std::unique_ptr<jive::type> element_type_;
 };
 
 class arrayindex_op : public simple_op {
 public:
-	virtual ~arrayindex_op() noexcept;
+	virtual
+	~arrayindex_op() noexcept;
 
-	arrayindex_op(const arrayindex_op & other);
-	arrayindex_op(arrayindex_op && other) noexcept;
+	inline
 	arrayindex_op(
-		const jive::valuetype & element_type,
-		const bittype & index_type);
+		const valuetype & element_type,
+		const bittype & index_type)
+	: simple_op({addrtype::instance(), addrtype::instance()}, {index_type})
+	, element_type_(element_type.copy())
+	{}
+
+	inline
+	arrayindex_op(const arrayindex_op & other)
+	: simple_op(other)
+	, element_type_(other.element_type_->copy())
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
@@ -199,14 +192,13 @@ public:
 	inline const bittype &
 	index_type() const noexcept
 	{
-		return *static_cast<const bittype*>(&index_.type());
+		return *static_cast<const bittype*>(&result(0).type());
 	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	jive::port index_;
 	std::unique_ptr<jive::type> element_type_;
 };
 

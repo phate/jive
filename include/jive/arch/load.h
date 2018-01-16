@@ -60,44 +60,24 @@ protected:
 		const jive::valuetype & address,
 		const jive::valuetype & value,
 		size_t nstates)
-	: nstates_(nstates)
-	, value_(value)
-	, address_(address)
+	: simple_op(create_operands(address, nstates), {value})
 	{}
-
-	inline
-	load_op(const load_op & other) = default;
-
-	inline
-	load_op(load_op && other) noexcept = default;
 
 public:
 	inline const jive::valuetype &
 	addresstype() const noexcept
 	{
-		return *static_cast<const jive::valuetype*>(&address_.type());
+		return *static_cast<const jive::valuetype*>(&argument(0).type());
 	}
 
 	inline const jive::valuetype &
 	valuetype() const noexcept
 	{
-		return *static_cast<const jive::valuetype*>(&value_.type());
+		return *static_cast<const jive::valuetype*>(&result(0).type());
 	}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override final;
-
-	virtual size_t
-	narguments() const noexcept override final;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override final;
-
-	virtual size_t
-	nresults() const noexcept override final;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override final;
 
 	virtual std::string
 	debug_string() const override final;
@@ -112,9 +92,8 @@ public:
 	}
 
 private:
-	size_t nstates_;
-	jive::port value_;
-	jive::port address_;
+	static std::vector<jive::port>
+	create_operands(const jive::valuetype & address, size_t nstates);
 };
 
 static inline bool

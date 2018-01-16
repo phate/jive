@@ -91,33 +91,15 @@ bool
 group_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const group_op*>(&other);
-	return op && op->result_ == result_ && op->arguments_ == arguments_;
-}
+	if (!op || op->narguments() != narguments())
+		return false;
 
-size_t
-group_op::narguments() const noexcept
-{
-	return arguments_.size();
-}
+	for (size_t n = 0; n < narguments(); n++) {
+		if (op->argument(n) != argument(n))
+			return false;
+	}
 
-const jive::port &
-group_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return arguments_[index];
-}
-
-size_t
-group_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-group_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
+	return op->result(0) == result(0);
 }
 
 std::string
@@ -130,6 +112,16 @@ std::unique_ptr<jive::operation>
 group_op::copy() const
 {
 	return std::unique_ptr<jive::operation>(new group_op(*this));
+}
+
+std::vector<jive::port>
+group_op::create_operands(const rcddeclaration * dcl)
+{
+	std::vector<jive::port> operands;
+	for (size_t n = 0; n < dcl->nelements(); n++)
+		operands.push_back({dcl->element(n)});
+
+	return operands;
 }
 
 }

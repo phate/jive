@@ -50,35 +50,20 @@ bool
 simple_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const jive::test::simple_op*>(&other);
-	return op
-	    && arguments_ == op->arguments_
-	    && results_ == op->results_;
-}
+	if (!op || op->narguments() != narguments() || op->nresults() != nresults())
+		return false;
 
-size_t
-simple_op::narguments() const noexcept
-{
-	return arguments_.size();
-}
+	for (size_t n = 0; n < narguments(); n++) {
+		if (argument(n) != op->argument(n))
+			return false;
+	}
 
-const jive::port &
-simple_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return arguments_[index];
-}
+	for (size_t n = 0; n < nresults(); n++) {
+		if (result(n) != op->result(n))
+			return false;
+	}
 
-size_t
-simple_op::nresults() const noexcept
-{
-	return results_.size();
-}
-
-const jive::port &
-simple_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return results_[index];
+	return true;
 }
 
 std::string

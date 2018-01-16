@@ -19,22 +19,13 @@ public:
 	virtual
 	~apply_op() noexcept;
 
-	explicit apply_op(const type & function_type);
+	inline
+	apply_op(const fct::type & type)
+	: simple_op(create_operands(type), create_results(type))
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
@@ -49,8 +40,11 @@ public:
 	copy() const override;
 
 private:
-	std::vector<jive::port> results_;
-	std::vector<jive::port> arguments_;
+	static std::vector<jive::port>
+	create_operands(const fct::type & type);
+
+	static std::vector<jive::port>
+	create_results(const fct::type & type);
 };
 
 static inline std::vector<jive::output*>

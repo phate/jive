@@ -65,32 +65,13 @@ public:
 	~mux_op() noexcept;
 
 	inline
-	mux_op(const statetype & state_type, size_t narguments, size_t nresults)
-	: port_(state_type)
-	, nresults_(nresults)
-	, narguments_(narguments)
+	mux_op(const statetype & type, size_t narguments, size_t nresults)
+	: simple_op(std::vector<jive::port>(narguments, {type}),
+			std::vector<jive::port>(nresults, {type}))
 	{}
-
-	inline
-	mux_op(const mux_op &) = default;
-
-	inline
-	mux_op(mux_op && other) = default;
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
@@ -103,11 +84,6 @@ public:
 	{
 		return static_cast<jive::mux_normal_form*>(graph->node_normal_form(typeid(mux_op)));
 	}
-
-private:
-	jive::port port_;
-	size_t nresults_;
-	size_t narguments_;
 };
 
 static inline bool

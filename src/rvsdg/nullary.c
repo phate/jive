@@ -36,32 +36,7 @@ bool
 nullary_op::operator==(const jive::operation & other) const noexcept
 {
 	auto op = dynamic_cast<const nullary_op*>(&other);
-	return op && op->dstport_ == dstport_;
-}
-
-size_t
-nullary_op::narguments() const noexcept
-{
-	return 0;
-}
-
-const port &
-nullary_op::argument(size_t index) const noexcept
-{
-	JIVE_ASSERT(0 && "No arguments to nullary operation.");
-}
-
-size_t
-nullary_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const port &
-nullary_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return dstport_;
+	return op && op->result(0) == result(0);
 }
 
 }

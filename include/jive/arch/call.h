@@ -36,40 +36,19 @@ protected:
 		const std::vector<const jive::type*> & arguments,
 		const std::vector<const jive::type*> & results,
 		const jive_calling_convention * callconv)
-	: address_(address)
+	: simple_op(create_operands(address, arguments), create_results(results))
 	, callconv_(callconv)
-	{
-		for (const auto & type : arguments)
-			arguments_.push_back({std::move(type->copy())});
-		for (const auto & type : results)
-			results_.push_back({std::move(type->copy())});
-	}
-
-	call_op(const call_op &) = default;
-
-	call_op(call_op &&) = default;
+	{}
 
 public:
 	inline const jive::valuetype &
 	addresstype() const noexcept
 	{
-		return *static_cast<const jive::valuetype*>(&address_.type());
+		return *static_cast<const jive::valuetype*>(&argument(0).type());
 	}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override final;
-
-	virtual size_t
-	narguments() const noexcept override final;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override final;
-
-	virtual size_t
-	nresults() const noexcept override final;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override final;
 
 	virtual std::string
 	debug_string() const override final;
@@ -81,9 +60,14 @@ public:
 	}
 
 private:
-	jive::port address_;
-	std::vector<jive::port> results_;
-	std::vector<jive::port> arguments_;
+	static std::vector<jive::port>
+	create_operands(
+		const valuetype & address,
+		const std::vector<const type*> & arguments);
+
+	static std::vector<jive::port>
+	create_results(const std::vector<const type*> & results);
+
 	const jive_calling_convention * callconv_;
 };
 

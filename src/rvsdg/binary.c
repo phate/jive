@@ -292,35 +292,19 @@ bool
 binary_op::operator==(const jive::operation & other) const noexcept
 {
 	auto op = dynamic_cast<const jive::binary_op*>(&other);
-	return op
-	    && op->operands_ == operands_
-	    && op->result_ == result_;
-}
+	if (!op || op->narguments() != narguments())
+		return false;
 
-size_t
-binary_op::narguments() const noexcept
-{
-	return operands_.size();
-}
+	for (size_t n = 0; n < narguments(); n++) {
+		if (argument(n) != op->argument(n))
+			return false;
+	}
 
-const jive::port &
-binary_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return operands_[index];
-}
+	JIVE_DEBUG_ASSERT(nresults() == 1);
+	if (result(0) != op->result(0))
+		return false;
 
-size_t
-binary_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-binary_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
+	return true;
 }
 
 enum jive::binary_op::flags
@@ -338,35 +322,10 @@ flattened_binary_op::~flattened_binary_op() noexcept
 bool
 flattened_binary_op::operator==(const operation & other) const noexcept
 {
-	const flattened_binary_op * other_op =
-		dynamic_cast<const flattened_binary_op *>(&other);
-	return other_op && *other_op->op_ == *op_ && other_op->narguments_ == narguments_;
-}
-
-size_t
-flattened_binary_op::narguments() const noexcept
-{
-	return narguments_;
-}
-
-const jive::port &
-flattened_binary_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return op_->argument(index);
-}
-
-size_t
-flattened_binary_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-flattened_binary_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return op_->result(index);
+	auto op = dynamic_cast<const flattened_binary_op*>(&other);
+	return op
+	    && *op->op_ == *op
+	    && op->narguments() == narguments();
 }
 
 std::string
@@ -378,10 +337,19 @@ flattened_binary_op::debug_string() const
 std::unique_ptr<jive::operation>
 flattened_binary_op::copy() const
 {
-	std::unique_ptr<binary_op> copied_op(
-		static_cast<binary_op *>(op_->copy().release()));
+	std::unique_ptr<binary_op> copied_op(static_cast<binary_op *>(op_->copy().release()));
 	return std::unique_ptr<jive::operation>(
-		new flattened_binary_op(std::move(copied_op), narguments_));
+		new flattened_binary_op(std::move(copied_op), narguments()));
+}
+
+std::vector<jive::port>
+flattened_binary_op::create_operands(const binary_op & op)
+{
+	std::vector<jive::port> operands;
+	for (size_t n = 0; n < op.narguments(); n++)
+		operands.push_back(op.argument(n));
+
+	return operands;
 }
 
 }

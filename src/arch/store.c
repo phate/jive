@@ -24,47 +24,9 @@ store_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const store_op *>(&other);
 	return op
-	    && op->address_ == address_
-	    && op->value_ == value_
-	    && op->nstates_ == nstates_;
-}
-
-size_t
-store_op::narguments() const noexcept
-{
-	return 2 + nstates_;
-}
-
-const jive::port &
-store_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-
-	if (index == 0)
-		return address_;
-
-	if (index == 1)
-		return value_;
-
-	static const jive::memtype mt;
-	static const jive::port p(mt);
-	return p;
-}
-
-size_t
-store_op::nresults() const noexcept
-{
-	return nstates_;
-}
-
-const jive::port &
-store_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-
-	static const jive::memtype mt;
-	static const jive::port p(mt);
-	return p;
+	    && op->addresstype() == addresstype()
+	    && op->valuetype() == valuetype()
+	    && op->nresults() == nresults();
 }
 
 std::string
@@ -77,6 +39,20 @@ std::unique_ptr<jive::operation>
 store_op::copy() const
 {
 	return std::unique_ptr<jive::operation>(new store_op(*this));
+}
+
+std::vector<jive::port>
+store_op::create_operands(
+	const jive::valuetype & address,
+	const jive::valuetype & value,
+	size_t nstates)
+{
+	std::vector<jive::port> operands({address});
+	operands.push_back(value);
+	for (size_t n = 0; n < nstates; n++)
+		operands.push_back({memtype()});
+
+	return operands;
 }
 
 /* address store operator */

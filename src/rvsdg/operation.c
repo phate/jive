@@ -53,6 +53,32 @@ operation::normal_form(jive::graph * graph) noexcept
 simple_op::~simple_op()
 {}
 
+size_t
+simple_op::narguments() const noexcept
+{
+	return operands_.size();
+}
+
+const jive::port &
+simple_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return operands_[index];
+}
+
+size_t
+simple_op::nresults() const noexcept
+{
+	return results_.size();
+}
+
+const jive::port &
+simple_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return results_[index];
+}
+
 jive::simple_normal_form *
 simple_op::normal_form(jive::graph * graph) noexcept
 {

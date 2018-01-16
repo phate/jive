@@ -24,27 +24,12 @@ public:
 	~nullary_op() noexcept;
 
 	inline
-	nullary_op(const jive::port & dstport)
-	: dstport_(dstport)
+	nullary_op(const jive::port & result)
+	: simple_op({}, {result})
 	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual size_t
-	narguments() const noexcept override final;
-
-	virtual size_t
-	nresults() const noexcept override final;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override final;
-
-private:
-	virtual const port &
-	argument(size_t index) const noexcept override final;
-
-	jive::port dstport_;
 };
 
 template<typename Type, typename ValueRepr>

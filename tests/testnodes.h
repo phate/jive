@@ -89,15 +89,10 @@ public:
 
 	inline
 	simple_op(
-		const std::vector<jive::port> & arguments,
+		const std::vector<jive::port> & operands,
 		const std::vector<jive::port> & results)
-	: jive::simple_op()
-	, results_(results)
-	, arguments_(arguments)
+	: jive::simple_op(operands, results)
 	{}
-
-	inline
-	simple_op() noexcept {}
 
 	simple_op(const simple_op &) = default;
 
@@ -107,27 +102,11 @@ public:
 	virtual bool
 	operator==(const operation & other) const noexcept override;
 
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
-
 	virtual std::string
 	debug_string() const override;
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
-
-private:
-	std::vector<jive::port> results_;
-	std::vector<jive::port> arguments_;
 };
 
 static inline jive::node *

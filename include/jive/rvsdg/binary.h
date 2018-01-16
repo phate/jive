@@ -115,24 +115,11 @@ public:
 	binary_op(
 		const std::vector<jive::port> & operands,
 		const jive::port & result)
-	: result_(result)
-	, operands_(operands)
+	: simple_op(operands, {result})
 	{}
 
 	virtual bool
 	operator==(const jive::operation & other) const noexcept;
-
-	virtual size_t
-	narguments() const noexcept override final;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override final;
-
-	virtual size_t
-	nresults() const noexcept override final;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override final;
 
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
@@ -159,10 +146,6 @@ public:
 	{
 		return static_cast<jive::binary_normal_form*>(graph->node_normal_form(typeid(binary_op)));
 	}
-
-private:
-	jive::port result_;
-	std::vector<jive::port> operands_;
 };
 
 class flattened_binary_op final : public simple_op {
@@ -173,34 +156,20 @@ public:
 	flattened_binary_op(
 		std::unique_ptr<binary_op> op,
 		size_t narguments) noexcept
-		: op_(std::move(op))
-		, narguments_(narguments)
-	{
-	}
+	: simple_op(create_operands(*op), {op->result(0)})
+	, op_(std::move(op))
+	{}
 
 	inline
 	flattened_binary_op(
 		const binary_op & op,
 		size_t narguments)
-		: op_(std::unique_ptr<binary_op>(static_cast<binary_op *>(op.copy().release())))
-		, narguments_(narguments)
-	{
-	}
+	: simple_op(create_operands(op), {op.result(0)})
+	, op_(std::unique_ptr<binary_op>(static_cast<binary_op*>(op.copy().release())))
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
@@ -215,8 +184,10 @@ public:
 	}
 
 private:
+	static std::vector<jive::port>
+	create_operands(const binary_op & op);
+
 	std::unique_ptr<binary_op> op_;
-	size_t narguments_;
 };
 
 /* binary flags operators */

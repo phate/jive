@@ -25,36 +25,20 @@ bool
 instruction_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const instruction_op *>(&other);
-	return op
-	    && op->icls() == icls()
-	    && op->results_ == results_
-	    && op->arguments_ == arguments_;
-}
+	if (!op || op->narguments() != narguments() || op->nresults() != nresults())
+		return false;
 
-size_t
-instruction_op::narguments() const noexcept
-{
-	return arguments_.size();
-}
+	for (size_t n = 0; n < narguments(); n++) {
+		if (argument(n) != op->argument(n))
+			return false;
+	}
 
-const jive::port &
-instruction_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return arguments_[index];
-}
+	for (size_t n = 0; n < nresults(); n++) {
+		if (result(n) != op->result(n))
+			return false;
+	}
 
-size_t
-instruction_op::nresults() const noexcept
-{
-	return results_.size();
-}
-
-const jive::port &
-instruction_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return results_[index];
+	return op->icls() == icls();
 }
 
 std::string
@@ -67,6 +51,35 @@ std::unique_ptr<jive::operation>
 instruction_op::copy() const
 {
 	return std::unique_ptr<jive::operation>(new instruction_op(*this));
+}
+
+std::vector<jive::port>
+instruction_op::create_operands(
+	const jive::instruction * icls,
+	const std::vector<jive::port> & iports)
+{
+	static const immtype it;
+	std::vector<jive::port> operands;
+	for (size_t n = 0; n < icls->ninputs(); n++)
+		operands.push_back(icls->input(n));
+	for (size_t n = 0; n < icls->nimmediates(); n++)
+		operands.push_back(it);
+
+	operands.insert(operands.end(), iports.begin(), iports.end());
+	return operands;
+}
+
+std::vector<jive::port>
+instruction_op::create_results(
+	const jive::instruction * icls,
+	const std::vector<jive::port> & oports)
+{
+	std::vector<jive::port> results;
+	for (size_t n = 0; n < icls->noutputs(); n++)
+		results.push_back({icls->output(n)});
+
+	results.insert(results.end(), oports.begin(), oports.end());
+	return results;
 }
 
 }

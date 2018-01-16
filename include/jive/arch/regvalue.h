@@ -21,23 +21,11 @@ public:
 
 	inline
 	regvalue_op(const register_class * regcls) noexcept
-	: port_(regcls)
+	: simple_op({regcls}, {regcls})
 	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
@@ -45,14 +33,11 @@ public:
 	inline const register_class *
 	regcls() const
 	{
-		return static_cast<const register_class*>(port_.rescls());
+		return static_cast<const register_class*>(argument(0).rescls());
 	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
-
-private:
-	jive::port port_;
 };
 
 }

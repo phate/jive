@@ -23,33 +23,7 @@ bool
 regvalue_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const regvalue_op *>(&other);
-	return op && op->port_ == port_;
-}
-
-size_t
-regvalue_op::narguments() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-regvalue_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return port_;
-}
-
-size_t
-regvalue_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-regvalue_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return port_;
+	return op && op->argument(0) == argument(0);
 }
 
 std::string

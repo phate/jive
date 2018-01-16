@@ -17,47 +17,48 @@ bool
 call_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const call_op*>(&other);
-	return op
-	    && op->address_ == address_
-	    && op->calling_convention() == calling_convention()
-	    && op->arguments_ == arguments_
-	    && op->results_ == results_;
-}
+	if (!op || op->narguments() != narguments() || op->nresults() != nresults())
+		return false;
 
-size_t
-call_op::narguments() const noexcept
-{
-	return 1 + arguments_.size();
-}
+	for (size_t n = 0; n < narguments(); n++) {
+		if (argument(n) != op->argument(n))
+			return false;
+	}
 
-const jive::port &
-call_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
+	for (size_t n = 0; n < nresults(); n++) {
+		if (result(n) != op->result(n))
+			return false;
+	}
 
-	if (index == 0)
-		return address_;
-
-	return arguments_[index-1];
-}
-
-size_t
-call_op::nresults() const noexcept
-{
-	return results_.size();
-}
-
-const jive::port &
-call_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return results_[index];
+	return calling_convention() == op->calling_convention();
 }
 
 std::string
 call_op::debug_string() const
 {
 	return "CALL";
+}
+
+std::vector<jive::port>
+call_op::create_operands(
+	const valuetype & address,
+	const std::vector<const type*> & arguments)
+{
+	std::vector<jive::port> operands({address});
+	for (const auto & type : arguments)
+		operands.push_back({*type});
+
+	return operands;
+}
+
+std::vector<jive::port>
+call_op::create_results(const std::vector<const type*> & types)
+{
+	std::vector<port> results;
+	for (const auto & type : types)
+		results.push_back({*type});
+
+	return results;
 }
 
 /* address call operation */
