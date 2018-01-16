@@ -17,12 +17,15 @@
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/splitnode.h>
 
+namespace jive {
+namespace i386 {
+
 jive::node *
-jive_i386_call_node_substitute(
-	jive::node * node,
-	const jive::call_op & op)
+substitute_call(jive::node * node)
 {
-	jive::region * region = node->region();
+	JIVE_DEBUG_ASSERT(is_call_node(node));
+	auto op = static_cast<const jive::call_op*>(&node->operation());
+	auto region = node->region();
 	size_t nargs = node->ninputs() - 1;
 
 	std::vector<jive::port> iports;
@@ -32,15 +35,13 @@ jive_i386_call_node_substitute(
 	const jive::instruction * icls;
 	auto & addrop = node->input(0)->origin()->node()->operation();
 	if (auto op = dynamic_cast<const jive::lbl2addr_op*>(&addrop)) {
-		icls = &jive::i386::instr_call::instance();
-		jive::immediate imm(0, op->label());
-		operands.push_back(jive::immediate_op::create(region, imm));
+		icls = &instr_call::instance();
+		operands.push_back(jive::immediate_op::create(region, immediate(0, op->label())));
 	} else if (auto op = dynamic_cast<const jive::lbl2bit_op*>(&addrop)) {
-		icls = &jive::i386::instr_call::instance();
-		jive::immediate imm(0, op->label());
-		operands.push_back(jive::immediate_op::create(region, imm));
+		icls = &instr_call::instance();
+		operands.push_back(jive::immediate_op::create(region, immediate(0, op->label())));
 	} else {
-		icls = &jive::i386::instr_call_reg::instance();
+		icls = &instr_call_reg::instance();
 		operands.push_back(node->input(0)->origin());
 	}
 
@@ -52,7 +53,7 @@ jive_i386_call_node_substitute(
 
 		if (value_cls == &jive_root_resource_class) {
 			/* FIXME: assumes  int32 */
-			value_cls = &jive::i386::gpr_regcls;
+			value_cls = &gpr_regcls;
 		}
 		
 		auto slot_cls = jive_callslot_class_get(4, 4, offset);
@@ -62,17 +63,17 @@ jive_i386_call_node_substitute(
 		operands.push_back(jive::split_op::create(value, value_cls, slot_cls));
 	}
 
-	oports.push_back(&jive::i386::eax_regcls);
-	oports.push_back(&jive::i386::edx_regcls);
-	oports.push_back(&jive::i386::ecx_regcls);
-	oports.push_back(&jive::i386::cc_regcls);
-	for (size_t n = op.nresults(); n < node->noutputs(); n++)
+	oports.push_back(&eax_regcls);
+	oports.push_back(&edx_regcls);
+	oports.push_back(&ecx_regcls);
+	oports.push_back(&cc_regcls);
+	for (size_t n = op->nresults(); n < node->noutputs(); n++)
 		oports.push_back(node->output(n)->port());
 
 	auto call = jive::create_instruction(region, icls, operands, iports, oports);
 
-	JIVE_DEBUG_ASSERT(op.nresults() <= 1);
-	if (op.nresults() == 1) {
+	JIVE_DEBUG_ASSERT(op->nresults() <= 1);
+	if (op->nresults() == 1) {
 		/* FIXME: assumes  int32 */
 		node->output(0)->replace(call->output(0));
 	}
@@ -82,3 +83,5 @@ jive_i386_call_node_substitute(
 
 	return call;
 }
+
+}}

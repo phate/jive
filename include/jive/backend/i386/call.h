@@ -7,11 +7,15 @@
 #ifndef JIVE_BACKEND_I386_CALL_H
 #define JIVE_BACKEND_I386_CALL_H
 
-#include <jive/arch/call.h>
+namespace jive {
+
+class node;
+
+namespace i386 {
 
 jive::node *
-jive_i386_call_node_substitute(
-	jive::node * node,
-	const jive::call_op & op);
+substitute_call(jive::node * node);
+
+}}
 
 #endif
