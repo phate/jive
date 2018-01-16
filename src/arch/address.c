@@ -25,31 +25,16 @@ memberof_op::~memberof_op() noexcept
 bool
 memberof_op::operator==(const operation & other) const noexcept
 {
-	const memberof_op * op =
-		dynamic_cast<const memberof_op *>(&other);
-
-	return op && op->record_decl() == record_decl() && op->index() == index();
+	auto op = dynamic_cast<const memberof_op *>(&other);
+	return op
+	    && op->record_decl() == record_decl()
+	    && op->index() == index()
+	    && unary_op::operator==(other);
 }
 std::string
 memberof_op::debug_string() const
 {
 	return detail::strfmt("MEMBEROF", record_decl(), index());
-}
-
-const jive::port &
-memberof_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	static const jive::port p(addrtype::instance());
-	return p;
-}
-
-const jive::port &
-memberof_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	static const jive::port p(addrtype::instance());
-	return p;
 }
 
 jive_unop_reduction_path_t
@@ -112,30 +97,16 @@ containerof_op::~containerof_op() noexcept
 bool
 containerof_op::operator==(const operation & other) const noexcept
 {
-	const containerof_op * op =
-		dynamic_cast<const containerof_op *>(&other);
-	return op && op->record_decl() == record_decl() && op->index() == index();
+	auto op = dynamic_cast<const containerof_op *>(&other);
+	return op
+	    && op->record_decl() == record_decl()
+	    && op->index() == index()
+	    && unary_op::operator==(other);
 }
 std::string
 containerof_op::debug_string() const
 {
 	return detail::strfmt("CONTAINEROF", record_decl(), index());
-}
-
-const jive::port &
-containerof_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	static const jive::port p(addrtype::instance());
-	return p;
-}
-
-const jive::port &
-containerof_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	static const jive::port p(addrtype::instance());
-	return p;
 }
 
 jive_unop_reduction_path_t

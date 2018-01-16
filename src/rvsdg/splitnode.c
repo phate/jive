@@ -32,20 +32,6 @@ split_op::debug_string() const
 	return "SPLIT";
 }
 
-const jive::port &
-split_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_;
-}
-
-const jive::port &
-split_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
-}
-
 jive_unop_reduction_path_t
 split_op::can_reduce_operand(const jive::output * arg) const noexcept
 {

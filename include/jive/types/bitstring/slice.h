@@ -20,13 +20,11 @@ public:
 
 	inline
 	bitslice_op(
-		const bittype & argument_type,
+		const bittype & argument,
 		size_t low,
 		size_t high) noexcept
-	: unary_op()
+	: unary_op(argument, bittype(high-low))
 	, low_(low)
-	, result_(bittype(high-low))
-	, argument_(argument_type)
 	{}
 
 	virtual bool
@@ -34,12 +32,6 @@ public:
 
 	virtual std::string
 	debug_string() const override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
@@ -59,7 +51,7 @@ public:
 	inline size_t
 	high() const noexcept
 	{
-		return low_ + static_cast<const bittype*>(&result_.type())->nbits();
+		return low_ + static_cast<const bittype*>(&result(0).type())->nbits();
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -68,13 +60,11 @@ public:
 	inline const type &
 	argument_type() const noexcept
 	{
-		return *static_cast<const bittype*>(&argument_.type());
+		return *static_cast<const bittype*>(&argument(0).type());
 	}
 
 private:
 	size_t low_;
-	jive::port result_;
-	jive::port argument_;
 };
 
 }

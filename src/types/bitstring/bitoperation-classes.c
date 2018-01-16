@@ -18,32 +18,6 @@ namespace jive {
 bitunary_op::~bitunary_op() noexcept
 {}
 
-size_t
-bitunary_op::narguments() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-bitunary_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return port_;
-}
-
-size_t
-bitunary_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::port &
-bitunary_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return port_;
-}
-
 jive_binop_reduction_path_t
 bitunary_op::can_reduce_operand(
 	const jive::output * arg) const noexcept

@@ -28,32 +28,14 @@ jive_negotiator_connection_destroy(jive_negotiator_connection * self);
 namespace jive {
 
 bool
-negotiator_split_operation::operator==(const operation& gen_other) const noexcept
+negotiator_split_operation::operator==(const operation & other) const noexcept
 {
-	const negotiator_split_operation * other =
-		dynamic_cast<const negotiator_split_operation *>(&gen_other);
-	
-	return
-		other &&
-		argument_ == other->argument_ &&
-		input_option() == other->input_option() &&
-		result_ == other->result_ &&
-		output_option() == other->output_option() &&
-		negotiator() == other->negotiator();
-}
-
-const jive::port &
-negotiator_split_operation::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_;
-}
-
-const jive::port &
-negotiator_split_operation::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
+	auto op = dynamic_cast<const negotiator_split_operation*>(&other);
+	return op
+	    && input_option() == op->input_option()
+	    && output_option() == op->output_option()
+	    && negotiator() == op->negotiator()
+	    && unary_op::operator==(other);
 }
 
 std::string

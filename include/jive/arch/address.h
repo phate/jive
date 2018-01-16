@@ -32,7 +32,8 @@ public:
 	memberof_op(
 		const jive::rcddeclaration * dcl,
 		size_t index)
-	: index_(index)
+	: unary_op(addrtype::instance(), addrtype::instance())
+	, index_(index)
 	, dcl_(dcl)
 	{}
 
@@ -41,12 +42,6 @@ public:
 
 	virtual std::string
 	debug_string() const override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
@@ -82,7 +77,8 @@ public:
 	containerof_op(
 		const jive::rcddeclaration * dcl,
 		size_t index)
-	: index_(index)
+	: unary_op(addrtype::instance(), addrtype::instance())
+	, index_(index)
 	, dcl_(dcl)
 	{}
 
@@ -91,12 +87,6 @@ public:
 
 	virtual std::string
 	debug_string() const override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(

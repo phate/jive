@@ -113,9 +113,8 @@ public:
 
 	inline
 	unify_op(const jive::unntype & type, size_t option) noexcept
-	: option_(option)
-	, result_(type)
-	, argument_(type.declaration()->option(option))
+	: unary_op(type.declaration()->option(option), type)
+	, option_(option)
 	{}
 
 	inline
@@ -129,12 +128,6 @@ public:
 
 	virtual std::string
 	debug_string() const override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual  const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
@@ -151,7 +144,7 @@ public:
 	inline const jive::unndeclaration *
 	declaration() const noexcept
 	{
-		return static_cast<const jive::unntype*>(&result_.type())->declaration();
+		return static_cast<const jive::unntype*>(&result(0).type())->declaration();
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -159,8 +152,6 @@ public:
 
 private:
 	size_t option_;
-	jive::port result_;
-	jive::port argument_;
 };
 
 }
@@ -228,9 +219,8 @@ public:
 	choose_op(
 		const jive::unntype & type,
 		size_t option) noexcept
-	: option_(option)
-	, result_(type.declaration()->option(option))
-	, argument_(type)
+	: unary_op(type, type.declaration()->option(option))
+	, option_(option)
 	{}
 
 	virtual bool
@@ -238,12 +228,6 @@ public:
 
 	virtual std::string
 	debug_string() const override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
@@ -263,7 +247,7 @@ public:
 	inline const jive::unndeclaration *
 	declaration() const noexcept
 	{
-		return static_cast<const jive::unntype*>(&result_.type())->declaration();
+		return static_cast<const jive::unntype*>(&result(0).type())->declaration();
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -287,8 +271,6 @@ public:
 
 private:
 	size_t option_;
-	jive::port result_;
-	jive::port argument_;
 };
 
 static inline bool

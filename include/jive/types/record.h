@@ -176,9 +176,8 @@ public:
 private:
 	inline
 	select_op(const jive::rcdtype & type, size_t index) noexcept
-	: index_(index)
-	, result_(type.declaration()->element(index))
-	, argument_(type)
+	: unary_op(type, type.declaration()->element(index))
+	, index_(index)
 	{}
 
 public:
@@ -187,12 +186,6 @@ public:
 
 	virtual std::string
 	debug_string() const override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
@@ -224,8 +217,6 @@ public:
 
 private:
 	size_t index_;
-	jive::port result_;
-	jive::port argument_;
 };
 
 static inline bool

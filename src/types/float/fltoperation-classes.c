@@ -8,7 +8,6 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/types/float/fltconstant.h>
 #include <jive/types/float/fltoperation-classes.h>
-#include <jive/types/float/flttype.h>
 
 #include <jive/rvsdg/control.h>
 
@@ -19,22 +18,7 @@ static const type type_instance;
 static const jive::port p(type_instance);
 
 unary_op::~unary_op() noexcept
-{
-}
-
-const jive::port &
-unary_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return p;
-}
-
-const jive::port &
-unary_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return p;
-}
+{}
 
 jive_unop_reduction_path_t
 unary_op::can_reduce_operand(

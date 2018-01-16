@@ -26,28 +26,13 @@ bitslice_op::operator==(const operation & other) const noexcept
 	auto op = dynamic_cast<const bitslice_op*>(&other);
 	return op
 	    && op->low_ == low_
-	    && op->result_ == result_
-	    && op->argument_ == argument_;
+	    && unary_op::operator==(other);
 }
 
 std::string
 bitslice_op::debug_string() const
 {
 	return detail::strfmt("SLICE[", low(), ":", high(), ")");
-}
-
-const jive::port &
-bitslice_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_;
-}
-
-const jive::port &
-bitslice_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
 }
 
 jive_unop_reduction_path_t

@@ -93,28 +93,13 @@ choose_op::operator==(const operation & other) const noexcept
 	auto op = dynamic_cast<const choose_op*>(&other);
 	return op
 	    && option_ == op->option_
-	    && result_ == op->result_
-	    && argument_ == op->argument_;
+	    && unary_op::operator==(other);
 }
 
 std::string
 choose_op::debug_string() const
 {
 	return detail::strfmt("CHOOSE(", option(), ")");
-}
-
-const jive::port &
-choose_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_;
-}
-
-const jive::port &
-choose_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
 }
 
 jive_unop_reduction_path_t
@@ -176,28 +161,13 @@ unify_op::operator==(const operation & other) const noexcept
 	auto op = dynamic_cast<const unify_op*>(&other);
 	return op
 	    && option_ == op->option_
-	    && result_ == op->result_
-	    && argument_ == op->argument_;
+	    && unary_op::operator==(other);
 }
 
 std::string
 unify_op::debug_string() const
 {
 	return detail::strfmt("UNIFY(", option(), ")");
-}
-
-const jive::port &
-unify_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return argument_;
-}
-
-const jive::port &
-unify_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
 }
 
 jive_unop_reduction_path_t

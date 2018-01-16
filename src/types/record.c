@@ -168,28 +168,13 @@ select_op::operator==(const operation & other) const noexcept
 	auto op = dynamic_cast<const select_op*>(&other);
 	return op
 	    && op->index_ == index_
-	    && op->result_ == result_
-	    && op->argument_ == argument_;
+	    && unary_op::operator==(other);
 }
 
 std::string
 select_op::debug_string() const
 {
 	return detail::strfmt("SELECT(", index(), ")");
-}
-
-const jive::port &
-select_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_;
-}
-
-const jive::port &
-select_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
 }
 
 jive_unop_reduction_path_t

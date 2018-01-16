@@ -346,9 +346,8 @@ addr2bit_op::~addr2bit_op() noexcept
 addr2bit_op::addr2bit_op(
 	size_t nbits,
 	const jive::type & type)
-: nbits_(nbits)
-, result_(*convert_address_to_bitstring_type(type, nbits))
-, argument_(type)
+: unary_op(type, *convert_address_to_bitstring_type(type, nbits))
+, nbits_(nbits)
 {}
 
 jive_unop_reduction_path_t
@@ -364,7 +363,7 @@ addr2bit_op::can_reduce_operand(const jive::output * arg) const noexcept
 		if (op->nbits() != nbits())
 			return jive_unop_reduction_none;
 
-		if (op->original_type() != argument_.type())
+		if (op->original_type() != argument(0).type())
 			return jive_unop_reduction_none;
 
 		return jive_unop_reduction_inverse;
@@ -387,29 +386,15 @@ addr2bit_op::reduce_operand(
 	return nullptr;
 }
 
-const jive::port &
-addr2bit_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_;
-}
-
-const jive::port &
-addr2bit_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
-}
-
 bool
 addr2bit_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const addr2bit_op*>(&other);
 	return op
 	    && nbits() == op->nbits()
-	    && result_ == op->result_
-	    && argument_ == op->argument_;
+	    && unary_op::operator==(other);
 }
+
 std::string
 addr2bit_op::debug_string() const
 {
@@ -430,9 +415,8 @@ bit2addr_op::~bit2addr_op() noexcept
 bit2addr_op::bit2addr_op(
 	size_t nbits,
 	const jive::type & type)
-: nbits_(nbits)
-, result_(type)
-, argument_(*convert_address_to_bitstring_type(type, nbits))
+: unary_op(*convert_address_to_bitstring_type(type, nbits), type)
+, nbits_(nbits)
 {}
 
 jive_unop_reduction_path_t
@@ -448,7 +432,7 @@ bit2addr_op::can_reduce_operand(const jive::output * arg) const noexcept
 		if (op->nbits() != nbits())
 			return jive_unop_reduction_none;
 
-		if (op->original_type() != result_.type())
+		if (op->original_type() != result(0).type())
 			return jive_unop_reduction_none;
 
 		return jive_unop_reduction_inverse;
@@ -472,29 +456,15 @@ bit2addr_op::reduce_operand(
 	return nullptr;
 }
 
-const jive::port &
-bit2addr_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_;
-}
-
-const jive::port &
-bit2addr_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
-}
-
 bool
 bit2addr_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const bit2addr_op*>(&other);
 	return op
 	    && nbits() == op->nbits()
-	    && result_ == op->result_
-	    && argument_ == op->argument_;
+	    && unary_op::operator==(other);
 }
+
 std::string
 bit2addr_op::debug_string() const
 {

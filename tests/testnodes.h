@@ -29,19 +29,8 @@ public:
 	unary_op(
 		const jive::port & srcport,
 		const jive::port & dstport) noexcept
-	: jive::unary_op()
-	, srcport_(srcport)
-	, dstport_(dstport)
+	: jive::unary_op(srcport, dstport)
 	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
@@ -77,10 +66,6 @@ public:
 		unary_op op(srcport, dstport);
 		return jive::create_normalized(operand->region(), op, {operand})[0];
 	}
-
-private:
-	jive::port srcport_;
-	jive::port dstport_;
 };
 
 static inline bool

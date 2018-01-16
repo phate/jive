@@ -16,27 +16,6 @@ namespace test {
 unary_op::~unary_op() noexcept
 {}
 
-bool
-unary_op::operator==(const operation & other) const noexcept
-{
-	auto op = dynamic_cast<const unary_op*>(&other);
-	return op && op->srcport_ == srcport_ && op->dstport_ == dstport_;
-}
-
-const jive::port &
-unary_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return srcport_;
-}
-
-const jive::port &
-unary_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return dstport_;
-}
-
 jive_unop_reduction_path_t
 unary_op::can_reduce_operand(const jive::output * operand) const noexcept
 {

@@ -40,12 +40,6 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
-
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
 		const jive::output * arg) const noexcept override;
@@ -64,7 +58,7 @@ public:
 	inline const jive::type &
 	original_type() const noexcept
 	{
-		return argument_.type();
+		return argument(0).type();
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -79,8 +73,6 @@ public:
 
 private:
 	size_t nbits_;
-	jive::port result_;
-	jive::port argument_;
 };
 
 static inline bool
@@ -118,12 +110,6 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
-
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
 		const jive::output * arg) const noexcept override;
@@ -142,7 +128,7 @@ public:
 	inline const jive::type &
 	original_type() const noexcept
 	{
-		return result_.type();
+		return result(0).type();
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -157,8 +143,6 @@ public:
 
 private:
 	size_t nbits_;
-	jive::port result_;
-	jive::port argument_;
 };
 
 static inline bool

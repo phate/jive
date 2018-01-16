@@ -23,25 +23,13 @@ public:
 
 	inline
 	bitunary_op(const bittype & type) noexcept
-	: port_(type)
+	: unary_op(type, type)
 	{}
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	inline const bittype &
 	type() const noexcept
 	{
-		return *static_cast<const bittype*>(&port_.type());
+		return *static_cast<const bittype*>(&argument(0).type());
 	}
 
 	/* reduction methods */
@@ -60,9 +48,6 @@ public:
 
 	virtual std::unique_ptr<bitunary_op>
 	create(size_t nbits) const = 0;
-
-private:
-	jive::port port_;
 };
 
 /* Represents a binary operation (possibly normalized n-ary if associative)

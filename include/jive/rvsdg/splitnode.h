@@ -27,8 +27,7 @@ public:
 	split_op(
 		const resource_class * srcrescls,
 		const resource_class * dstrescls) noexcept
-	: result_(dstrescls)
-	, argument_(srcrescls)
+	: unary_op(srcrescls, dstrescls)
 	{}
 
 	virtual bool
@@ -36,12 +35,6 @@ public:
 
 	virtual std::string
 	debug_string() const override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
@@ -55,13 +48,13 @@ public:
 	inline const resource_class *
 	srcrescls() const noexcept
 	{
-		return argument_.rescls();
+		return argument(0).rescls();
 	}
 
 	inline const resource_class *
 	dstrescls() const noexcept
 	{
-		return result_.rescls();
+		return result(0).rescls();
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -86,10 +79,6 @@ public:
 		split_op op(srcrescls, dstrescls);
 		return create_normalized(operand->region(), op, {operand})[0];
 	}
-
-private:
-	jive::port result_;
-	jive::port argument_;
 };
 
 static inline bool

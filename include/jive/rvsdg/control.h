@@ -138,12 +138,6 @@ public:
 	virtual bool
 	operator==(const operation & other) const noexcept override;
 
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
-
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(const jive::output * arg) const noexcept override;
 
@@ -159,7 +153,7 @@ public:
 	inline uint64_t
 	nalternatives() const noexcept
 	{
-		return static_cast<const ctltype*>(&result_.type())->nalternatives();
+		return static_cast<const ctltype*>(&result(0).type())->nalternatives();
 	}
 
 	inline uint64_t
@@ -181,7 +175,7 @@ public:
 	inline size_t
 	nbits() const noexcept
 	{
-		return static_cast<const bittype*>(&argument_.type())->nbits();
+		return static_cast<const bittype*>(&argument(0).type())->nbits();
 	}
 
 	inline const_iterator
@@ -197,8 +191,6 @@ public:
 	}
 
 private:
-	jive::port result_;
-	jive::port argument_;
 	uint64_t default_alternative_;
 	std::unordered_map<uint64_t, uint64_t> mapping_;
 };

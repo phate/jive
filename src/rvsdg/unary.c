@@ -85,7 +85,17 @@ unary_normal_form::set_reducible(bool enable)
 
 /* unary operator */
 
-unary_op::~unary_op() noexcept {}
+unary_op::~unary_op() noexcept
+{}
+
+bool
+unary_op::operator==(const operation & other) const noexcept
+{
+	auto op = dynamic_cast<const unary_op*>(&other);
+	return op
+	    && op->srcport_ == srcport_
+	    && op->dstport_ == dstport_;
+}
 
 size_t
 unary_op::narguments() const noexcept
@@ -93,10 +103,24 @@ unary_op::narguments() const noexcept
 	return 1;
 }
 
+const jive::port &
+unary_op::argument(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return srcport_;
+}
+
 size_t
 unary_op::nresults() const noexcept
 {
 	return 1;
+}
+
+const jive::port &
+unary_op::result(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < nresults());
+	return dstport_;
 }
 
 }

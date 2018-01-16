@@ -51,13 +51,31 @@ private:
 */
 class unary_op : public simple_op {
 public:
-	virtual ~unary_op() noexcept;
+	virtual
+	~unary_op() noexcept;
+
+	inline
+	unary_op(
+		const jive::port & srcport,
+		const jive::port & dstport)
+	: srcport_(srcport)
+	, dstport_(dstport)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
 
 	virtual size_t
-	narguments() const noexcept override;
+	narguments() const noexcept override final;
+
+	virtual const jive::port &
+	argument(size_t index) const noexcept override final;
 
 	virtual size_t
-	nresults() const noexcept override;
+	nresults() const noexcept override final;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override final;
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(const jive::output * arg) const noexcept = 0;
@@ -72,6 +90,10 @@ public:
 	{
 		return static_cast<jive::unary_normal_form*>(graph->node_normal_form(typeid(unary_op)));
 	}
+
+private:
+	jive::port srcport_;
+	jive::port dstport_;
 };
 
 }

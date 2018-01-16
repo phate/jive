@@ -73,9 +73,7 @@ match_op::match_op(
 	const std::unordered_map<uint64_t, uint64_t> & mapping,
 	uint64_t default_alternative,
 	size_t nalternatives)
-: jive::unary_op()
-, result_(ctltype(nalternatives))
-, argument_(jive::bittype(nbits))
+: jive::unary_op(bittype(nbits), ctltype(nalternatives))
 , default_alternative_(default_alternative)
 , mapping_(mapping)
 {}
@@ -85,24 +83,9 @@ match_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const match_op*>(&other);
 	return op
-	    && op->result_ == result_
-	    && op->argument_ == argument_
 	    && op->default_alternative_ == default_alternative_
-	    && op->mapping_ == mapping_;
-}
-
-const jive::port &
-match_op::argument(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < narguments());
-	return argument_;
-}
-
-const jive::port &
-match_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
+	    && op->mapping_ == mapping_
+			&& unary_op::operator==(other);
 }
 
 jive_unop_reduction_path_t

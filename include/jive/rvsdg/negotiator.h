@@ -73,9 +73,7 @@ public:
 		const jive_negotiator_option & input_option,
 		const jive::type & output_type,
 		const jive_negotiator_option & output_option)
-	: unary_op()
-	, result_(output_type)
-	, argument_(input_type)
+	: unary_op(input_type, output_type)
 	, negotiator_(negotiator)
 	, input_option_(input_option.copy())
 	, output_option_(output_option.copy())
@@ -84,8 +82,6 @@ public:
 	inline
 	negotiator_split_operation(const negotiator_split_operation & other)
 	: unary_op(other)
-	, result_(other.result_)
-	, argument_(other.argument_)
 	, negotiator_(other.negotiator())
 	, input_option_(other.input_option().copy())
 	, output_option_(other.output_option().copy())
@@ -93,12 +89,6 @@ public:
 
 	virtual bool
 	operator==(const operation& other) const noexcept override;
-
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
@@ -121,7 +111,7 @@ public:
 	inline const jive::type &
 	input_type() const noexcept
 	{
-		return argument_.type();
+		return argument(0).type();
 	}
 
 	inline const jive_negotiator_option &
@@ -130,7 +120,7 @@ public:
 	inline const jive::type &
 	output_type() const noexcept
 	{
-		return result_.type();
+		return result(0).type();
 	}
 
 	inline const jive_negotiator_option &
@@ -140,8 +130,6 @@ public:
 	copy() const override;
 
 private:
-	jive::port result_;
-	jive::port argument_;
 	jive::negotiator * negotiator_;
 	std::unique_ptr<jive_negotiator_option> input_option_;
 	std::unique_ptr<jive_negotiator_option> output_option_;

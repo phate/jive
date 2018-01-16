@@ -10,6 +10,7 @@
 #include <jive/rvsdg/binary.h>
 #include <jive/rvsdg/simple-node.h>
 #include <jive/rvsdg/unary.h>
+#include <jive/types/float/flttype.h>
 #include <jive/types/float/value-representation.h>
 
 namespace jive {
@@ -18,13 +19,13 @@ namespace flt {
 /* Represents a unary operation on a float. */
 class unary_op : public jive::unary_op {
 public:
-	virtual ~unary_op() noexcept;
+	virtual
+	~unary_op() noexcept;
 
-	virtual const jive::port &
-	argument(size_t index) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
+	inline
+	unary_op()
+	: jive::unary_op(flt::type(), flt::type())
+	{}
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(const jive::output * arg) const noexcept override;
