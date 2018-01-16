@@ -68,7 +68,7 @@ public:
 	~ctlliteral() noexcept;
 
 	inline
-	ctlliteral(const jive::ctl::value_repr & vr)
+	ctlliteral(const jive::ctlvalue_repr & vr)
 		: vr_(vr)
 		, type_(vr.nalternatives())
 	{}
@@ -79,7 +79,7 @@ public:
 	virtual std::unique_ptr<literal>
 	copy() const override;
 
-	inline const jive::ctl::value_repr &
+	inline const jive::ctlvalue_repr &
 	value_repr() const noexcept
 	{
 		return vr_;
@@ -92,8 +92,8 @@ public:
 	}
 
 private:
-	jive::ctl::value_repr vr_;
-	jive::ctl::type type_;
+	jive::ctlvalue_repr vr_;
+	jive::ctltype type_;
 };
 
 class fctliteral final : public literal {

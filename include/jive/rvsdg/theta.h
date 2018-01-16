@@ -100,7 +100,7 @@ private:
 	: structural_node(jive::theta_op(), parent, 1)
 	{
 		auto predicate = jive_control_false(subregion());
-		subregion()->add_result(predicate, nullptr, jive::ctl::type(2));
+		subregion()->add_result(predicate, nullptr, ctltype(2));
 	}
 
 public:
@@ -120,7 +120,7 @@ public:
 	predicate() const noexcept
 	{
 		auto result = subregion()->result(0);
-		JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&result->type()));
+		JIVE_DEBUG_ASSERT(dynamic_cast<const ctltype*>(&result->type()));
 		return result;
 	}
 

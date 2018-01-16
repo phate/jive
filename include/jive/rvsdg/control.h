@@ -18,16 +18,15 @@
 #include <inttypes.h>
 
 namespace jive {
-namespace ctl {
 
 /* control type */
 
-class type final : public jive::statetype {
+class ctltype final : public jive::statetype {
 public:
 	virtual
-	~type() noexcept;
+	~ctltype() noexcept;
 
-	type(size_t nalternatives);
+	ctltype(size_t nalternatives);
 
 	virtual std::string
 	debug_string() const override;
@@ -48,30 +47,26 @@ private:
 	size_t nalternatives_;
 };
 
-}
-
 static inline bool
 is_ctltype(const jive::type & type) noexcept
 {
-	return dynamic_cast<const jive::ctl::type*>(&type) != nullptr;
+	return dynamic_cast<const ctltype*>(&type) != nullptr;
 }
 
 /* control value representation */
 
-namespace ctl {
-
-class value_repr {
+class ctlvalue_repr {
 public:
-	value_repr(size_t alternative, size_t nalternatives);
+	ctlvalue_repr(size_t alternative, size_t nalternatives);
 
 	inline bool
-	operator==(const jive::ctl::value_repr & other) const noexcept
+	operator==(const ctlvalue_repr & other) const noexcept
 	{
 		return alternative_ == other.alternative_ && nalternatives_ == other.nalternatives_;
 	}
 
 	inline bool
-	operator!=(const jive::ctl::value_repr & other) const noexcept
+	operator!=(const ctlvalue_repr & other) const noexcept
 	{
 		return !(*this == other);
 	}
@@ -95,40 +90,37 @@ private:
 
 /* control constant */
 
-struct type_of_value {
-	type operator()(const value_repr & repr) const
+struct ctltype_of_value {
+	ctltype
+	operator()(const ctlvalue_repr & repr) const
 	{
-		return type(repr.nalternatives());
+		return ctltype(repr.nalternatives());
 	}
 };
 
-struct format_value {
-	std::string operator()(const value_repr & repr) const
+struct ctlformat_value {
+	std::string operator()(const ctlvalue_repr & repr) const
 	{
 		return jive::detail::strfmt("CTL(", repr.alternative(), ")");
 	}
 };
 
-typedef domain_const_op<type, value_repr, format_value, type_of_value> constant_op;
-
-}
+typedef domain_const_op<ctltype, ctlvalue_repr, ctlformat_value, ctltype_of_value> ctlconstant_op;
 
 static inline bool
 is_ctlconstant_op(const jive::operation & op) noexcept
 {
-	return dynamic_cast<const jive::ctl::constant_op*>(&op) != nullptr;
+	return dynamic_cast<const ctlconstant_op*>(&op) != nullptr;
 }
 
-static inline const ctl::constant_op &
+static inline const ctlconstant_op &
 to_ctlconstant_op(const jive::operation & op) noexcept
 {
 	JIVE_DEBUG_ASSERT(is_ctlconstant_op(op));
-	return *static_cast<const ctl::constant_op*>(&op);
+	return *static_cast<const ctlconstant_op*>(&op);
 }
 
 /* match operator */
-
-namespace ctl {
 
 class match_op final : public jive::unary_op {
 	typedef std::unordered_map<uint64_t,uint64_t>::const_iterator const_iterator;
@@ -167,7 +159,7 @@ public:
 	inline uint64_t
 	nalternatives() const noexcept
 	{
-		return static_cast<const jive::ctl::type*>(&result_.type())->nalternatives();
+		return static_cast<const ctltype*>(&result_.type())->nalternatives();
 	}
 
 	inline uint64_t
@@ -219,32 +211,28 @@ match(
 	size_t nalternatives,
 	jive::output * operand);
 
-const type boolean(2);
-
-}
+const ctltype boolean(2);
 
 // declare explicit instantiation
-extern template class domain_const_op<
-	ctl::type, ctl::value_repr, ctl::format_value, ctl::type_of_value
->;
+extern template class domain_const_op<ctltype, ctlvalue_repr, ctlformat_value, ctltype_of_value>;
 
 static inline bool
 is_match_op(const jive::operation & op) noexcept
 {
-	return dynamic_cast<const jive::ctl::match_op*>(&op) != nullptr;
+	return dynamic_cast<const match_op*>(&op) != nullptr;
 }
 
 static inline bool
 is_match_node(const jive::node * node) noexcept
 {
-	return is_opnode<jive::ctl::match_op>(node);
+	return is_opnode<match_op>(node);
 }
 
-static inline const ctl::match_op &
+static inline const match_op &
 to_match_op(const jive::operation & op) noexcept
 {
 	JIVE_DEBUG_ASSERT(is_match_op(op));
-	return *static_cast<const ctl::match_op*>(&op);
+	return *static_cast<const match_op*>(&op);
 }
 
 }

@@ -373,7 +373,7 @@ public:
 		auto & ptgate = subroutine.builder_state->passthroughs[1].gate;
 		auto & ptorigin = subroutine.builder_state->passthroughs[1].output;
 		auto ret_instr = create_instruction(subroutine.region,
-			&jive::testarch::instr_ret::instance(), {ptorigin}, {ptgate}, {jive::ctl::boolean});
+			&jive::testarch::instr_ret::instance(), {ptorigin}, {ptgate}, {jive::boolean});
 		return dynamic_cast<jive::simple_output*>(ret_instr->output(0));
 	}
 };

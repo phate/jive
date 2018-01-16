@@ -213,12 +213,11 @@ compute_ctlconstant_op(
 	const std::vector<std::unique_ptr<const literal>> & operands)
 {
 	JIVE_DEBUG_ASSERT(operands.size() == 0);
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::constant_op*>(&operation));
-
-	const jive::ctl::constant_op * op = static_cast<const jive::ctl::constant_op*>(&operation);
+	JIVE_DEBUG_ASSERT(is_ctlconstant_op(operation));
+	auto & op = to_ctlconstant_op(operation);
 
 	std::vector<std::unique_ptr<const literal>> results;
-	results.emplace_back(ctlliteral(op->value()).copy());
+	results.emplace_back(ctlliteral(op.value()).copy());
 	return results;
 }
 
@@ -229,12 +228,12 @@ compute_match_op(
 {
 	JIVE_DEBUG_ASSERT(operands.size() == 1);
 	JIVE_DEBUG_ASSERT(dynamic_cast<const bitliteral*>(operands[0].get()));
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::match_op*>(&operation));
+	JIVE_DEBUG_ASSERT(is_match_op(operation));
 
-	auto op = static_cast<const jive::ctl::match_op*>(&operation);
+	auto op = static_cast<const match_op*>(&operation);
 	const bitliteral * cmp = static_cast<const bitliteral*>(operands[0].get());
 
-	jive::ctl::value_repr vr(op->alternative(cmp->value_repr().to_uint()), op->nalternatives());
+	ctlvalue_repr vr(op->alternative(cmp->value_repr().to_uint()), op->nalternatives());
 
 	std::vector<std::unique_ptr<const literal>> results;
 	results.emplace_back(ctlliteral(vr).copy());
@@ -274,8 +273,8 @@ static operation_map opmap({
 	{std::type_index(typeid(jive::bituge_op)), compute_bitcompare_op},
 	{std::type_index(typeid(jive::load_op)), compute_bitload_op},
 	{std::type_index(typeid(jive::store_op)), compute_bitstore_op},
-	{std::type_index(typeid(jive::ctl::constant_op)), compute_ctlconstant_op},
-	{std::type_index(typeid(jive::ctl::match_op)), compute_match_op}
+	{std::type_index(typeid(jive::ctlconstant_op)), compute_ctlconstant_op},
+	{std::type_index(typeid(jive::match_op)), compute_match_op}
 });
 
 static std::vector<std::unique_ptr<const literal>>
@@ -344,7 +343,7 @@ eval_gamma_node(const jive::node * node, size_t index, context & ctx)
 	auto gamma = static_cast<const jive::structural_node*>(node);
 
 	auto predicate = node->input(0);
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&predicate->type()));
+	JIVE_DEBUG_ASSERT(is_ctltype(predicate->type()));
 
 	size_t alt = static_cast<const ctlliteral*>(eval_input(predicate, ctx).get())->alternative();
 	auto region = gamma->subregion(alt);
@@ -387,7 +386,7 @@ eval_theta_node(const jive::node * node, size_t index, context & ctx)
 			results.emplace_back(eval_input(subregion->result(n), ctx));
 		ctx.pop_frame(subregion);
 
-		JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&results[0]->type()));
+		JIVE_DEBUG_ASSERT(is_ctltype(results[0]->type()));
 	} while (static_cast<const ctlliteral*>(results[0].get())->alternative());
 
 

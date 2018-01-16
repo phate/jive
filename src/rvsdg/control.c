@@ -19,16 +19,14 @@ namespace jive {
 /* control constant */
 
 // explicit instantiation
-template class domain_const_op<ctl::type, ctl::value_repr, ctl::format_value, ctl::type_of_value>;
-
-namespace ctl {
+template class domain_const_op<ctltype, ctlvalue_repr, ctlformat_value, ctltype_of_value>;
 
 /* control type */
 
-type::~type() noexcept
+ctltype::~ctltype() noexcept
 {}
 
-type::type(size_t nalternatives)
+ctltype::ctltype(size_t nalternatives)
 : jive::statetype()
 , nalternatives_(nalternatives)
 {
@@ -37,27 +35,27 @@ type::type(size_t nalternatives)
 }
 
 std::string
-type::debug_string() const
+ctltype::debug_string() const
 {
 	return detail::strfmt("ctl(", nalternatives_, ")");
 }
 
 bool
-type::operator==(const jive::type & other) const noexcept
+ctltype::operator==(const jive::type & other) const noexcept
 {
-	const jive::ctl::type * type = dynamic_cast<const jive::ctl::type*>(&other);
+	auto type = dynamic_cast<const ctltype*>(&other);
 	return type && type->nalternatives_ == nalternatives_;
 }
 
 std::unique_ptr<jive::type>
-type::copy() const
+ctltype::copy() const
 {
-	return std::unique_ptr<jive::type>(new type(*this));
+	return std::unique_ptr<jive::type>(new ctltype(*this));
 }
 
 /* control value representation */
 
-value_repr::value_repr(size_t alternative, size_t nalternatives)
+ctlvalue_repr::ctlvalue_repr(size_t alternative, size_t nalternatives)
 : alternative_(alternative)
 , nalternatives_(nalternatives)
 {
@@ -76,7 +74,7 @@ match_op::match_op(
 	uint64_t default_alternative,
 	size_t nalternatives)
 : jive::unary_op()
-, result_(type(nalternatives))
+, result_(ctltype(nalternatives))
 , argument_(jive::bittype(nbits))
 , default_alternative_(default_alternative)
 , mapping_(mapping)
@@ -158,11 +156,10 @@ match(
 }
 
 }
-}
 
 jive::output *
 jive_control_constant(jive::region * region, size_t nalternatives, size_t alternative)
 {
-	jive::ctl::constant_op op(jive::ctl::value_repr(alternative, nalternatives));
+	jive::ctlconstant_op op({alternative, nalternatives});
 	return jive::create_normalized(region, op, {})[0];
 }

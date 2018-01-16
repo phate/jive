@@ -32,7 +32,7 @@ static void
 perform_predicate_reduction(jive::gamma_node * gamma)
 {
 	auto constant = gamma->predicate()->origin()->node();
-	auto cop = static_cast<const jive::ctl::constant_op*>(&constant->operation());
+	auto cop = static_cast<const ctlconstant_op*>(&constant->operation());
 	auto alternative = cop->value().alternative();
 
 	jive::substitution_map smap;
@@ -77,12 +77,11 @@ is_control_constant_reducible(jive::gamma_node * gamma)
 {
 	/* check gamma predicate */
 	auto match = gamma->predicate()->origin()->node();
-	if (!match) return {};
-
-	auto match_op = dynamic_cast<const ctl::match_op*>(&match->operation());
-	if (!match_op) return {};
+	if (!is_match_node(match))
+		return {};
 
 	/* check number of alternatives */
+	auto match_op = static_cast<const jive::match_op*>(&match->operation());
 	std::unordered_set<uint64_t> set({match_op->default_alternative()});
 	for (const auto & pair : *match_op)
 		set.insert(pair.second);
@@ -135,7 +134,7 @@ perform_control_constant_reduction(std::unordered_set<jive::structural_output*> 
 
 		auto nalt = new_mapping.size()+1;
 		auto origin = match->input(0)->origin();
-		auto m = jive::ctl::match(match_op.nbits(), new_mapping, defalt, nalt, origin);
+		auto m = jive::match(match_op.nbits(), new_mapping, defalt, nalt, origin);
 		xv->replace(m);
 	}
 }

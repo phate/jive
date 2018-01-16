@@ -29,7 +29,7 @@ test_gamma(void)
 	auto v1 = graph.add_import(bits32, "");
 	auto v2 = graph.add_import(bits32, "");
 
-	auto pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
+	auto pred = match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 
 	auto gamma = jive::gamma_node::create(pred, 3);
 	auto ev0 = gamma->add_entryvar(v0);
@@ -81,12 +81,14 @@ test_predicate_reduction(void)
 static void
 test_invariant_reduction(void)
 {
+	using namespace jive;
+
 	jive::graph graph;
 	jive::gamma_op::normal_form(&graph)->set_invariant_reduction(true);
 
 	jive::test::valuetype vtype;
 
-	auto pred = graph.add_import(jive::ctl::boolean, "");
+	auto pred = graph.add_import(boolean, "");
 	auto v = graph.add_import(vtype, "");
 
 	auto gamma = jive::gamma_node::create(pred, 2);
@@ -115,7 +117,7 @@ test_control_constant_reduction()
 
 	auto x = graph.add_import(bt, "x");
 
-	auto c = jive::ctl::match(1, {{0, 0}}, 1, 2, x);
+	auto c = match(1, {{0, 0}}, 1, 2, x);
 
 	auto gamma = jive::gamma_node::create(c, 2);
 
