@@ -14,12 +14,10 @@
 #include <jive/types/float/flttype.h>
 
 namespace jive {
-namespace base {
+
 // explicit instantiation
-template class domain_const_op<
-	flt::type, flt::value_repr, flt::format_value, flt::type_of_value
->;
-}
+template class domain_const_op<flt::type, flt::value_repr, flt::format_value, flt::type_of_value>;
+
 }
 
 jive::output *

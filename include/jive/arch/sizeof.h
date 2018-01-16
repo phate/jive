@@ -14,7 +14,7 @@
 
 namespace jive {
 
-class sizeof_op final : public base::nullary_op {
+class sizeof_op final : public nullary_op {
 public:
 	virtual
 	~sizeof_op() noexcept;

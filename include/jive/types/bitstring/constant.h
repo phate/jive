@@ -37,9 +37,7 @@ struct format_value {
 	}
 };
 
-typedef base::domain_const_op<
-	bittype, bitvalue_repr, format_value, type_of_value
-> bitconstant_op;
+typedef domain_const_op<bittype, bitvalue_repr, format_value, type_of_value> bitconstant_op;
 
 inline bitconstant_op
 uint_constant_op(size_t nbits, uint64_t value)
@@ -59,10 +57,8 @@ is_bitconstant_node(const jive::node * node) noexcept
 	return is_opnode<bitconstant_op>(node);
 }
 
-namespace base {
 // declare explicit instantiation
 extern template class domain_const_op<bittype, bitvalue_repr, format_value, type_of_value>;
-}
 
 static inline jive::output *
 create_bitconstant(jive::region * region, const bitvalue_repr & vr)

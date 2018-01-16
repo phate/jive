@@ -257,7 +257,7 @@ private:
 
 /* immediate operator */
 
-class immediate_op final : public base::nullary_op {
+class immediate_op final : public nullary_op {
 public:
 	virtual
 	~immediate_op() noexcept;

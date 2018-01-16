@@ -29,18 +29,14 @@ struct format_value {
 	}
 };
 
-typedef base::domain_const_op<
-	type, value_repr, format_value, type_of_value
-> constant_op;
+typedef domain_const_op<type, value_repr, format_value, type_of_value> constant_op;
 
 }
 
-namespace base {
 // declare explicit instantiation
 extern template class domain_const_op<
-	flt::type, flt::value_repr, flt::format_value, flt::type_of_value
+	type, flt::value_repr, flt::format_value, flt::type_of_value
 >;
-}
 }
 
 jive::output *

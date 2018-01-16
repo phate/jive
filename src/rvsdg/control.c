@@ -15,12 +15,8 @@
 #include <jive/rvsdg/region.h>
 
 namespace jive {
-namespace base {
 // explicit instantiation
-template class domain_const_op<
-	ctl::type, ctl::value_repr, ctl::format_value, ctl::type_of_value
->;
-}
+template class domain_const_op<ctl::type, ctl::value_repr, ctl::format_value, ctl::type_of_value>;
 
 namespace ctl {
 

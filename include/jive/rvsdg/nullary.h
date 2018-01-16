@@ -15,8 +15,6 @@ namespace jive {
 
 class output;
 
-namespace base {
-
 /**
 	\brief Nullary operator (operator taking no formal arguments)
 */
@@ -124,7 +122,6 @@ private:
 	jive::port result_;
 };
 
-}
 }
 
 #endif

@@ -175,7 +175,7 @@ namespace jive {
 
 /* empty unify operator */
 
-class empty_unify_op final : public base::nullary_op {
+class empty_unify_op final : public nullary_op {
 public:
 	virtual
 	~empty_unify_op() noexcept;

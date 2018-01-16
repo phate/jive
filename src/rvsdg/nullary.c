@@ -10,7 +10,6 @@
 #include <jive/rvsdg/region.h>
 
 namespace jive {
-namespace base {
 
 class nullary_normal_form final : public simple_normal_form {
 public:
@@ -49,11 +48,8 @@ nullary_op::argument(size_t index) const noexcept
 }
 
 }
-}
 
-/* node class */
-
-/* node class inheritable methods */
+namespace {
 
 jive::node_normal_form *
 jive_nullary_operation_get_default_normal_form_(
@@ -61,15 +57,14 @@ jive_nullary_operation_get_default_normal_form_(
 	jive::node_normal_form * parent,
 	jive::graph * graph)
 {
-	jive::node_normal_form * nf = new jive::base::nullary_normal_form(
-		operator_class, parent, graph);
-	
-	return nf;
+	return new jive::nullary_normal_form(operator_class, parent, graph);
 }
 
 static void  __attribute__((constructor))
 register_node_normal_form(void)
 {
 	jive::node_normal_form::register_factory(
-		typeid(jive::base::nullary_op), jive_nullary_operation_get_default_normal_form_);
+		typeid(jive::nullary_op), jive_nullary_operation_get_default_normal_form_);
+}
+
 }

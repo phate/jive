@@ -222,7 +222,7 @@ private:
 	std::unique_ptr<jive::type> element_type_;
 };
 
-class label_to_address_op : public base::nullary_op {
+class label_to_address_op : public nullary_op {
 public:
 	virtual
 	~label_to_address_op() noexcept;
@@ -255,7 +255,7 @@ private:
 	const jive::label * label_;
 };
 
-class label_to_bitstring_op : public base::nullary_op {
+class label_to_bitstring_op : public nullary_op {
 public:
 	virtual
 	~label_to_bitstring_op() noexcept;
@@ -264,7 +264,7 @@ public:
 	label_to_bitstring_op(
 		const jive::label * label,
 		size_t nbits) noexcept
-	: base::nullary_op()
+	: nullary_op()
 	, result_(bittype(nbits))
 	, label_(label)
 	{}
@@ -350,9 +350,7 @@ struct format_value {
 	}
 };
 
-typedef base::domain_const_op<
-	addrtype, value_repr, format_value, type_of_value
-> constant_op;
+typedef domain_const_op<addrtype, value_repr, format_value, type_of_value> constant_op;
 
 output *
 constant(jive::graph * graph, const value_repr & vr);

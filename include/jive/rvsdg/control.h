@@ -36,9 +36,7 @@ struct format_value {
 	}
 };
 
-typedef base::domain_const_op<
-	type, value_repr, format_value, type_of_value
-> constant_op;
+typedef domain_const_op<type, value_repr, format_value, type_of_value> constant_op;
 
 class match_op final : public jive::unary_op {
 	typedef std::unordered_map<uint64_t,uint64_t>::const_iterator const_iterator;
@@ -163,12 +161,10 @@ to_ctlconstant_op(const jive::operation & op) noexcept
 	return *static_cast<const ctl::constant_op*>(&op);
 }
 
-namespace base {
 // declare explicit instantiation
 extern template class domain_const_op<
 	ctl::type, ctl::value_repr, ctl::format_value, ctl::type_of_value
 >;
-}
 
 }
 

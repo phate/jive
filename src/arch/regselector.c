@@ -315,8 +315,7 @@ jive_regselector_pull_node(jive::register_selector * self, jive::node * node)
 	for (n = 0; n < node->ninputs(); n++) {
 		auto input = dynamic_cast<jive::simple_input*>(node->input(n));
 		if (input->origin()->region() != root_region
-		&& !dynamic_cast<const jive::base::nullary_op*>(
-			&input->origin()->node()->operation()))
+		&& !dynamic_cast<const jive::nullary_op*>(&input->origin()->node()->operation()))
 			continue;
 		auto port = jive_negotiator_map_input(self, input);
 		if (!port)
