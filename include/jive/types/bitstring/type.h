@@ -7,6 +7,7 @@
 #ifndef JIVE_TYPES_BITSTRING_TYPE_H
 #define JIVE_TYPES_BITSTRING_TYPE_H
 
+#include <jive/common.h>
 #include <jive/rvsdg/type.h>
 
 namespace jive {
@@ -19,9 +20,12 @@ public:
 	~bittype() noexcept;
 
 	inline constexpr
-	bittype(size_t nbits) noexcept
-		: nbits_(nbits)
-	{}
+	bittype(size_t nbits)
+	: nbits_(nbits)
+	{
+		if (nbits == 0)
+			throw compiler_error("Number of bits must be greater than zero.");
+	}
 
 	inline size_t
 	nbits() const noexcept
