@@ -3,8 +3,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_BACKEND_I386_INSTRMATCH_H
-#define JIVE_BACKEND_I386_INSTRMATCH_H
+#ifndef JIVE_BACKEND_I386_INSTRUCTIONMATCH_H
+#define JIVE_BACKEND_I386_INSTRUCTIONMATCH_H
 
 #include <jive/arch/regselector.h>
 

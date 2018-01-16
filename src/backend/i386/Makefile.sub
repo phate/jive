@@ -1,7 +1,7 @@
 LIBJIVE_I386_SRC = \
 	call.c \
 	classifier.c \
-	instrmatch.c \
+	instructionmatch.c \
 	instructionset.c \
 	registerset.c \
 	relocation.c \

@@ -4,8 +4,6 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/backend/i386/instrmatch.h>
-
 #include <jive/arch/address.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/load.h>
@@ -14,6 +12,7 @@
 #include <jive/arch/subroutine.h>
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/backend/i386/classifier.h>
+#include <jive/backend/i386/instructionmatch.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/rvsdg/control.h>
@@ -61,7 +60,7 @@ regvalue_to_immediate(const jive::output * regvalue)
 	if (lbop) {
 		return jive::immediate(0, lbop->label());
 	}
-	
+
 	JIVE_ASSERT(false);
 }
 
@@ -73,7 +72,7 @@ convert_bitbinary(
 {
 	auto arg1 = node->input(0)->origin();
 	auto arg2 = node->input(1)->origin();
-	
+
 	bool second_is_immediate = false;
 	if (is_commutative(regreg_icls) && is_gpr_immediate(arg1)) {
 		swap(&arg1, &arg2);
@@ -81,9 +80,9 @@ convert_bitbinary(
 	} else if (is_gpr_immediate(arg2)) {
 		second_is_immediate = true;
 	}
-	
+
 	jive::node * instr;
-	
+
 	if (second_is_immediate) {
 		auto imm = regvalue_to_immediate(arg2);
 		auto tmp = jive::immediate_op::create(node->region(), imm);
@@ -91,7 +90,7 @@ convert_bitbinary(
 	} else {
 		instr = jive::create_instruction(node->region(), regreg_icls, {arg1, arg2});
 	}
-	
+
 	node->output(0)->replace(instr->output(0));
 }
 
@@ -100,7 +99,7 @@ convert_divmod(jive::node * node, bool sign, size_t index)
 {
 	auto arg1 = node->input(0)->origin();
 	auto arg2 = node->input(1)->origin();
-	
+
 	jive::output * ext;
 	const jive::instruction * icls;
 	if (sign) {
@@ -108,7 +107,7 @@ convert_divmod(jive::node * node, bool sign, size_t index)
 		auto i = jive::immediate_op::create(node->region(), imm);
 		auto tmp = jive::create_instruction(node->region(),
 			&jive::i386::instr_int_ashr_immediate::instance(), {arg1, i});
-		
+
 		ext = tmp->output(0);
 		icls = &jive::i386::instr_int_sdiv::instance();
 	} else {
@@ -116,7 +115,7 @@ convert_divmod(jive::node * node, bool sign, size_t index)
 		auto i = jive::immediate_op::create(node->region(), imm);
 		auto tmp = jive::create_instruction(node->region(),
 			&jive::i386::instr_int_load_imm::instance(), {i});
-		
+
 		ext = tmp->output(0);
 		icls = &jive::i386::instr_int_udiv::instance();
 	}
@@ -278,7 +277,7 @@ convert_bitcmp(
 
 	auto arg1 = node->input(0)->origin();
 	auto arg2 = node->input(1)->origin();
-	
+
 	bool second_is_immediate = is_gpr_immediate(arg2);
 	if (!second_is_immediate) {
 		bool first_is_immediate = is_gpr_immediate(arg1);
@@ -290,9 +289,9 @@ convert_bitcmp(
 			second_is_immediate = first_is_immediate;
 		}
 	}
-	
+
 	jive::node * cmp_instr;
-	
+
 	if (second_is_immediate) {
 		auto imm = regvalue_to_immediate(arg2);
 		auto tmp = jive::immediate_op::create(node->region(), imm);
