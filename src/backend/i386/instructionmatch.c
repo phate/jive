@@ -55,11 +55,8 @@ regvalue_to_immediate(const jive::output * regvalue)
 		return bcop->value().to_uint();
 	}
 
-	auto lbop = dynamic_cast<const jive::address::label_to_bitstring_op *>(
-		&value->node()->operation());
-	if (lbop) {
-		return jive::immediate(0, lbop->label());
-	}
+	auto lbop = dynamic_cast<const jive::label_to_bitstring_op*>(&value->node()->operation());
+	if (lbop) return jive::immediate(0, lbop->label());
 
 	JIVE_ASSERT(false);
 }

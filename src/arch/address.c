@@ -17,7 +17,6 @@
 /* memberof */
 
 namespace jive {
-namespace address {
 
 memberof_op::~memberof_op() noexcept
 {
@@ -90,7 +89,6 @@ memberof_op::copy() const
 }
 
 }
-}
 
 
 jive::output *
@@ -99,14 +97,13 @@ jive_memberof(
 	const jive::rcddeclaration * dcl,
 	size_t index)
 {
-	jive::address::memberof_op op(dcl, index);
+	jive::memberof_op op(dcl, index);
 	return jive::create_normalized(address->region(), op, {address})[0];
 }
 
 /* containerof */
 
 namespace jive {
-namespace address {
 
 containerof_op::~containerof_op() noexcept
 {
@@ -177,7 +174,6 @@ containerof_op::copy() const
 }
 
 }
-}
 
 jive::output *
 jive_containerof(
@@ -185,14 +181,13 @@ jive_containerof(
 	const jive::rcddeclaration * dcl,
 	size_t index)
 {
-	jive::address::containerof_op op(dcl, index);
+	jive::containerof_op op(dcl, index);
 	return jive::create_normalized(address->region(), op, {address})[0];
 }
 
 /* arraysubscript */
 
 namespace jive {
-namespace address {
 
 arraysubscript_op::~arraysubscript_op()
 {
@@ -267,7 +262,6 @@ arraysubscript_op::copy() const
 }
 
 }
-}
 
 
 jive::output *
@@ -276,17 +270,13 @@ jive_arraysubscript(
 	const jive::valuetype * element_type,
 	jive::output * index)
 {
-	jive::address::arraysubscript_op op(
-		*element_type,
-		dynamic_cast<const jive::bittype &>(index->type()));
-
+	jive::arraysubscript_op op(*element_type, dynamic_cast<const jive::bittype &>(index->type()));
 	return jive::create_normalized(address->region(), op, {address, index})[0];
 }
 
 /* arrayindex */
 
 namespace jive {
-namespace address {
 
 arrayindex_op::~arrayindex_op() noexcept
 {
@@ -358,7 +348,6 @@ arrayindex_op::copy() const
 }
 
 }
-}
 
 jive::output *
 jive_arrayindex(
@@ -366,14 +355,13 @@ jive_arrayindex(
 	const jive::valuetype * element_type,
 	const jive::bittype * difference_type)
 {
-	jive::address::arrayindex_op op(*element_type, difference_type->nbits());
+	jive::arrayindex_op op(*element_type, difference_type->nbits());
 	return jive::create_normalized(addr1->region(), op, {addr1, addr2})[0];
 }
 
 /* label_to_address node */
 
 namespace jive {
-namespace address {
 
 label_to_address_op::~label_to_address_op() noexcept
 {
@@ -408,20 +396,18 @@ label_to_address_op::copy() const
 }
 
 }
-}
 
 
 jive::output *
 jive_label_to_address_create(jive::region * region, const jive::label * label)
 {
-	jive::address::label_to_address_op op(label);
+	jive::label_to_address_op op(label);
 	return jive::create_normalized(region, op, {})[0];
 }
 
 /* label_to_bitstring_node */
 
 namespace jive {
-namespace address {
 
 label_to_bitstring_op::~label_to_bitstring_op() noexcept
 {
@@ -458,17 +444,16 @@ label_to_bitstring_op::copy() const
 jive::output *
 constant(jive::graph * graph, const value_repr & vr)
 {
-	constant_op op(vr);
+	addrconstant_op op(vr);
 	return jive::create_normalized(graph->root(), op, {})[0];
 }
 
-}
 }
 
 
 jive::output *
 jive_label_to_bitstring_create(jive::region * region, const jive::label * label, size_t nbits)
 {
-	jive::address::label_to_bitstring_op op(label, nbits);
+	jive::label_to_bitstring_op op(label, nbits);
 	return jive::create_normalized(region, op, {})[0];
 }

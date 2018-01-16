@@ -33,10 +33,8 @@ static int test_main(void)
 	auto o0 = jive_label_to_address_create(graph.root(), &foobar);
 	auto o1 = jive_label_to_address_create(graph.root(), &bla);
 
-	const jive::address::label_to_address_op * attrs0;
-	const jive::address::label_to_address_op * attrs1;
-	attrs0 = dynamic_cast<const jive::address::label_to_address_op*>(&o0->node()->operation());
-	attrs1 = dynamic_cast<const jive::address::label_to_address_op*>(&o1->node()->operation());
+	auto attrs0 = dynamic_cast<const label_to_address_op*>(&o0->node()->operation());
+	auto attrs1 = dynamic_cast<const label_to_address_op*>(&o1->node()->operation());
 
 	assert(attrs0->label() == &foobar);
 	assert(attrs1->label() == &bla);
@@ -47,12 +45,9 @@ static int test_main(void)
 	auto o3 = jive_label_to_bitstring_create(graph.root(), &bla, 32);
 	auto o4 = jive_label_to_bitstring_create(graph.root(), &foobar, 16);
 
-	const jive::address::label_to_bitstring_op * attrs2;
-	const jive::address::label_to_bitstring_op * attrs3;
-	const jive::address::label_to_bitstring_op * attrs4;
-	attrs2 = dynamic_cast<const jive::address::label_to_bitstring_op*>(&o2->node()->operation());
-	attrs3 = dynamic_cast<const jive::address::label_to_bitstring_op*>(&o3->node()->operation());
-	attrs4 = dynamic_cast<const jive::address::label_to_bitstring_op*>(&o4->node()->operation());
+	auto attrs2 = dynamic_cast<const label_to_bitstring_op*>(&o2->node()->operation());
+	auto attrs3 = dynamic_cast<const label_to_bitstring_op*>(&o3->node()->operation());
+	auto attrs4 = dynamic_cast<const label_to_bitstring_op*>(&o4->node()->operation());
 
 	assert(attrs2->label() == &foobar);
 	assert(attrs3->label() == &bla);

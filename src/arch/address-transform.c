@@ -154,8 +154,8 @@ transform_store(jive::node * node, memlayout_mapper & mapper)
 static void
 transform_label_to_address(jive::node * node, memlayout_mapper & mapper)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const address::label_to_address_op*>(&node->operation()));
-	auto op = static_cast<const address::label_to_address_op*>(&node->operation());
+	JIVE_DEBUG_ASSERT(dynamic_cast<const label_to_address_op*>(&node->operation()));
+	auto op = static_cast<const label_to_address_op*>(&node->operation());
 	size_t nbits = mapper.map_address().size()*8;
 
 	auto label_o = jive_label_to_bitstring_create(node->graph()->root(), op->label(), nbits);
@@ -210,8 +210,8 @@ transform_call(jive::node * node, memlayout_mapper & mapper)
 static void
 transform_memberof(jive::node * node, memlayout_mapper & mapper)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const address::memberof_op*>(&node->operation()));
-	auto op = static_cast<const address::memberof_op*>(&node->operation());
+	JIVE_DEBUG_ASSERT(dynamic_cast<const memberof_op*>(&node->operation()));
+	auto op = static_cast<const memberof_op*>(&node->operation());
 	size_t nbits = mapper.map_address().size()*8;
 
 	size_t elem_offset = mapper.map_record(op->record_decl()).element(op->index()).offset();
@@ -228,8 +228,8 @@ transform_memberof(jive::node * node, memlayout_mapper & mapper)
 static void
 transform_containerof(jive::node * node, memlayout_mapper & mapper)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const address::containerof_op*>(&node->operation()));
-	auto op = static_cast<const address::containerof_op*>(&node->operation());
+	JIVE_DEBUG_ASSERT(dynamic_cast<const containerof_op*>(&node->operation()));
+	auto op = static_cast<const containerof_op*>(&node->operation());
 	size_t nbits = mapper.map_address().size()*8;
 
 	size_t elem_offset = mapper.map_record(op->record_decl()).element(op->index()).offset();
@@ -246,8 +246,8 @@ transform_containerof(jive::node * node, memlayout_mapper & mapper)
 static void
 transform_arraysubscript(jive::node * node, memlayout_mapper & mapper)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const address::arraysubscript_op*>(&node->operation()));
-	auto op = static_cast<const address::arraysubscript_op*>(&node->operation());
+	JIVE_DEBUG_ASSERT(dynamic_cast<const arraysubscript_op*>(&node->operation()));
+	auto op = static_cast<const arraysubscript_op*>(&node->operation());
 	size_t nbits = mapper.map_address().size()*8;
 
 	size_t elem_type_size = mapper.map_value_type(op->element_type()).size();
@@ -266,8 +266,8 @@ transform_arraysubscript(jive::node * node, memlayout_mapper & mapper)
 static void
 transform_arrayindex(jive::node * node, memlayout_mapper & mapper)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const address::arrayindex_op*>(&node->operation()));
-	auto op = static_cast<const address::arrayindex_op*>(&node->operation());
+	JIVE_DEBUG_ASSERT(dynamic_cast<const arrayindex_op*>(&node->operation()));
+	auto op = static_cast<const arrayindex_op*>(&node->operation());
 	size_t nbits = mapper.map_address().size()*8;
 
 	size_t elem_type_size = mapper.map_value_type(op->element_type()).size();
@@ -313,11 +313,11 @@ void
 transform_address(jive::node * node, memlayout_mapper & mapper)
 {
 	static std::unordered_map<std::type_index, void(*)(jive::node*, memlayout_mapper&)> map({
-	  {std::type_index(typeid(address::memberof_op)), transform_memberof}
-	, {std::type_index(typeid(address::containerof_op)), transform_containerof}
-	, {std::type_index(typeid(address::arrayindex_op)), transform_arrayindex}
-	, {std::type_index(typeid(address::arraysubscript_op)), transform_arraysubscript}
-	, {std::type_index(typeid(address::label_to_address_op)), transform_label_to_address}
+	  {std::type_index(typeid(memberof_op)), transform_memberof}
+	, {std::type_index(typeid(containerof_op)), transform_containerof}
+	, {std::type_index(typeid(arrayindex_op)), transform_arrayindex}
+	, {std::type_index(typeid(arraysubscript_op)), transform_arraysubscript}
+	, {std::type_index(typeid(label_to_address_op)), transform_label_to_address}
 	, {std::type_index(typeid(bitload_op)), transform_load}
 	, {std::type_index(typeid(addrload_op)), transform_load}
 	, {std::type_index(typeid(bitstore_op)), transform_store}

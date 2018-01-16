@@ -17,14 +17,12 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/types/record.h>
 
-/* "memberof" operator: given an address that is the start of a record
-in memory, compute address of specified member of record */
-
 namespace jive {
 
 class label;
 
-namespace address {
+/* "memberof" operator: given an address that is the start of a record
+in memory, compute address of specified member of record */
 
 class memberof_op : public jive::unary_op {
 public:
@@ -336,26 +334,27 @@ private:
 	uint64_t address_;
 };
 
-struct type_of_value {
-	addrtype operator()(const value_repr & vr) const
+struct addrtype_of_value {
+	addrtype
+	operator()(const value_repr & vr) const
 	{
 		return jive::addrtype();
 	}
 };
 
-struct format_value {
-	std::string operator()(const value_repr & vr) const
+struct addrformat_value {
+	std::string
+	operator()(const value_repr & vr) const
 	{
 		return vr.debug_string();
 	}
 };
 
-typedef domain_const_op<addrtype, value_repr, format_value, type_of_value> constant_op;
+typedef domain_const_op<addrtype, value_repr, addrformat_value, addrtype_of_value> addrconstant_op;
 
 output *
 constant(jive::graph * graph, const value_repr & vr);
 
-}
 }
 
 jive::output *
