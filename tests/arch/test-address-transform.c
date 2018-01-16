@@ -45,7 +45,7 @@ test_address_transform(void)
 
 	jive_linker_symbol write_symbol;
 	jive::external_label write_label("write", &write_symbol);
-	auto label = jive_label_to_address_create(graph.root(), &write_label);
+	auto label = lbl2addr_op::create(graph.root(), &write_label);
 	auto call = addrcall_op::create(label, {memberof, containerof}, {&at, &at}, nullptr);
 
 	auto constant = create_bitconstant(graph.root(), 64, 1);

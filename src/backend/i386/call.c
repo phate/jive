@@ -31,7 +31,7 @@ jive_i386_call_node_substitute(
 
 	const jive::instruction * icls;
 	auto & addrop = node->input(0)->origin()->node()->operation();
-	if (auto op = dynamic_cast<const jive::label_to_address_op*>(&addrop)) {
+	if (auto op = dynamic_cast<const jive::lbl2addr_op*>(&addrop)) {
 		icls = &jive::i386::instr_call::instance();
 		jive::immediate imm(0, op->label());
 		operands.push_back(jive::immediate_op::create(region, imm));

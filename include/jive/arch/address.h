@@ -220,16 +220,17 @@ private:
 	std::unique_ptr<jive::type> element_type_;
 };
 
-class label_to_address_op : public nullary_op {
+/* lbl2addr operation */
+
+class lbl2addr_op final : public nullary_op {
 public:
 	virtual
-	~label_to_address_op() noexcept;
+	~lbl2addr_op() noexcept;
 
 	inline constexpr
-	label_to_address_op(const jive::label * label) noexcept
-		: label_(label)
-	{
-	}
+	lbl2addr_op(const jive::label * label) noexcept
+	: label_(label)
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -249,9 +250,30 @@ public:
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	static inline jive::output *
+	create(jive::region * region, const jive::label * lbl)
+	{
+		lbl2addr_op op(lbl);
+		return jive::create_normalized(region, op, {})[0];
+	}
+
 private:
 	const jive::label * label_;
 };
+
+static inline bool
+is_lbl2addr_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const jive::lbl2addr_op*>(&op) != nullptr;
+}
+
+static inline bool
+is_lbl2addr_node(const jive::node * node) noexcept
+{
+	return is_opnode<lbl2addr_op>(node);
+}
+
+/* label to bistring operation */
 
 class label_to_bitstring_op : public nullary_op {
 public:
@@ -387,11 +409,6 @@ jive::output *
 jive_arrayindex(jive::output * addr1, jive::output * addr2,
 	const jive::valuetype * element_type,
 	const jive::bittype * difference_type);
-
-/* label_to_address node */
-
-jive::output *
-jive_label_to_address_create(jive::region * region, const jive::label * label);
 
 /* label_to_bitstring node */
 

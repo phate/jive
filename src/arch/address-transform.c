@@ -152,10 +152,10 @@ transform_store(jive::node * node, memlayout_mapper & mapper)
 }
 
 static void
-transform_label_to_address(jive::node * node, memlayout_mapper & mapper)
+transform_lbl2addr(jive::node * node, memlayout_mapper & mapper)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const label_to_address_op*>(&node->operation()));
-	auto op = static_cast<const label_to_address_op*>(&node->operation());
+	JIVE_DEBUG_ASSERT(is_lbl2addr_node(node));
+	auto op = static_cast<const lbl2addr_op*>(&node->operation());
 	size_t nbits = mapper.map_address().size()*8;
 
 	auto label_o = jive_label_to_bitstring_create(node->graph()->root(), op->label(), nbits);
@@ -317,7 +317,7 @@ transform_address(jive::node * node, memlayout_mapper & mapper)
 	, {std::type_index(typeid(containerof_op)), transform_containerof}
 	, {std::type_index(typeid(arrayindex_op)), transform_arrayindex}
 	, {std::type_index(typeid(arraysubscript_op)), transform_arraysubscript}
-	, {std::type_index(typeid(label_to_address_op)), transform_label_to_address}
+	, {std::type_index(typeid(lbl2addr_op)), transform_lbl2addr}
 	, {std::type_index(typeid(bitload_op)), transform_load}
 	, {std::type_index(typeid(addrload_op)), transform_load}
 	, {std::type_index(typeid(bitstore_op)), transform_store}

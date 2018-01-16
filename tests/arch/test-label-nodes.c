@@ -30,11 +30,11 @@ static int test_main(void)
 	jive::external_label bla("bla", &bla_symbol);
 	jive::external_label foobar("foobar", &foobar_symbol);
 
-	auto o0 = jive_label_to_address_create(graph.root(), &foobar);
-	auto o1 = jive_label_to_address_create(graph.root(), &bla);
+	auto o0 = lbl2addr_op::create(graph.root(), &foobar);
+	auto o1 = lbl2addr_op::create(graph.root(), &bla);
 
-	auto attrs0 = dynamic_cast<const label_to_address_op*>(&o0->node()->operation());
-	auto attrs1 = dynamic_cast<const label_to_address_op*>(&o1->node()->operation());
+	auto attrs0 = dynamic_cast<const lbl2addr_op*>(&o0->node()->operation());
+	auto attrs1 = dynamic_cast<const lbl2addr_op*>(&o1->node()->operation());
 
 	assert(attrs0->label() == &foobar);
 	assert(attrs1->label() == &bla);

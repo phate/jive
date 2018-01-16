@@ -359,24 +359,22 @@ jive_arrayindex(
 	return jive::create_normalized(addr1->region(), op, {addr1, addr2})[0];
 }
 
-/* label_to_address node */
+/* lbl2addr operation */
 
 namespace jive {
 
-label_to_address_op::~label_to_address_op() noexcept
-{
-}
+lbl2addr_op::~lbl2addr_op() noexcept
+{}
 
 bool
-label_to_address_op::operator==(const operation & other) const noexcept
+lbl2addr_op::operator==(const operation & other) const noexcept
 {
-	const label_to_address_op * op =
-		dynamic_cast<const label_to_address_op *>(&other);
+	auto op = dynamic_cast<const lbl2addr_op*>(&other);
 	return op && op->label() == label();
 }
 
 const jive::port &
-label_to_address_op::result(size_t index) const noexcept
+lbl2addr_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
 	static const jive::port p(addrtype::instance());
@@ -384,25 +382,17 @@ label_to_address_op::result(size_t index) const noexcept
 }
 
 std::string
-label_to_address_op::debug_string() const
+lbl2addr_op::debug_string() const
 {
-	return detail::strfmt("addrof:label", label());
+	return detail::strfmt("LBL2ADDR: ", label());
 }
 
 std::unique_ptr<jive::operation>
-label_to_address_op::copy() const
+lbl2addr_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new label_to_address_op(*this));
+	return std::unique_ptr<jive::operation>(new lbl2addr_op(*this));
 }
 
-}
-
-
-jive::output *
-jive_label_to_address_create(jive::region * region, const jive::label * label)
-{
-	jive::label_to_address_op op(label);
-	return jive::create_normalized(region, op, {})[0];
 }
 
 /* label_to_bitstring_node */
