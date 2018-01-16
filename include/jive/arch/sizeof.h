@@ -11,6 +11,7 @@
 
 #include <jive/rvsdg/node.h>
 #include <jive/rvsdg/nullary.h>
+#include <jive/types/bitstring.h>
 
 namespace jive {
 
@@ -21,23 +22,24 @@ public:
 
 	inline explicit
 	sizeof_op(const jive::valuetype & type)
-	: type_(type.copy())
+	/* FIXME: either need a "universal" integer type,
+	or some way to specify the representation type for the
+	sizeof operator */
+	: nullary_op(bittype(32))
+	, type_(type.copy())
 	{}
 
 	inline
 	sizeof_op(const sizeof_op & other)
-		: type_(other.type().copy())
-	{
-	}
+	: nullary_op(other)
+	, type_(other.type().copy())
+	{}
 
 	inline
 	sizeof_op(sizeof_op && other) = default;
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;

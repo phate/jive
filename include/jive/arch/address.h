@@ -217,16 +217,14 @@ public:
 	virtual
 	~lbl2addr_op() noexcept;
 
-	inline constexpr
+	inline
 	lbl2addr_op(const jive::label * label) noexcept
-	: label_(label)
+	: nullary_op(addrtype::instance())
+	, label_(label)
 	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
@@ -274,16 +272,12 @@ public:
 	lbl2bit_op(
 		const jive::label * label,
 		size_t nbits) noexcept
-	: nullary_op()
-	, result_(bittype(nbits))
+	: nullary_op(bittype(nbits))
 	, label_(label)
 	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
@@ -297,7 +291,7 @@ public:
 	size_t
 	nbits() const noexcept
 	{
-		return static_cast<const bittype*>(&result_.type())->nbits();
+		return static_cast<const bittype*>(&result(0).type())->nbits();
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -311,7 +305,6 @@ public:
 	}
 
 private:
-	jive::port result_;
 	const jive::label * label_;
 };
 

@@ -40,16 +40,7 @@ bool
 immediate_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const immediate_op*>(&other);
-	return op && (op->value() == value());
-}
-
-const jive::port &
-immediate_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	static const immtype it;
-	static const jive::port p(it);
-	return p;
+	return op && op->value() == value();
 }
 
 std::string

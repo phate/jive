@@ -23,14 +23,28 @@ public:
 	virtual
 	~nullary_op() noexcept;
 
-	virtual size_t
-	narguments() const noexcept override;
+	inline
+	nullary_op(const jive::port & dstport)
+	: dstport_(dstport)
+	{}
 
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	narguments() const noexcept override final;
+
+	virtual size_t
+	nresults() const noexcept override final;
+
+	virtual const jive::port &
+	result(size_t index) const noexcept override final;
+
+private:
 	virtual const port &
-	argument(size_t index) const noexcept override;
+	argument(size_t index) const noexcept override final;
 
-	virtual size_t
-	nresults() const noexcept override;
+	jive::port dstport_;
 };
 
 template<typename Type, typename ValueRepr>
@@ -64,22 +78,13 @@ public:
 
 	virtual
 	~domain_const_op() noexcept
-	{
-	}
+	{}
 
 	inline
 	domain_const_op(const value_repr & value)
-		: value_(value)
-		, result_({TypeOfValue()(value_)})
-	{
-	}
-
-	inline
-	domain_const_op(value_repr && value) noexcept
-		: value_(std::move(value))
-		, result_({TypeOfValue()(value_)})
-	{
-	}
+	: nullary_op(TypeOfValue()(value))
+	, value_(value)
+	{}
 
 	inline
 	domain_const_op(const domain_const_op & other) = default;
@@ -90,20 +95,16 @@ public:
 	virtual bool
 	operator==(const operation & other) const noexcept override
 	{
-		auto op = dynamic_cast<const domain_const_op *>(&other);
-		return op && op->result_ == result_ && op->value_ == value_;
+		auto op = dynamic_cast<const domain_const_op*>(&other);
+		return op
+		    && op->value_ == value_
+		    && nullary_op::operator==(other);
 	}
 
 	virtual std::string
 	debug_string() const override
 	{
 		return FormatValue()(value_);
-	}
-
-	virtual const port &
-	result(size_t index) const noexcept override
-	{
-		return result_;
 	}
 
 	inline const value_repr &
@@ -119,7 +120,6 @@ public:
 
 private:
 	value_repr value_;
-	jive::port result_;
 };
 
 }

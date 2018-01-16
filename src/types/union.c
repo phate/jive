@@ -210,24 +210,10 @@ namespace jive {
 empty_unify_op::~empty_unify_op() noexcept
 {}
 
-bool
-empty_unify_op::operator==(const operation & other) const noexcept
-{
-	auto op = dynamic_cast<const empty_unify_op *>(&other);
-	return op && op->port_ == port_;
-}
-
 std::string
 empty_unify_op::debug_string() const
 {
 	return "UNIFY";
-}
-
-const jive::port &
-empty_unify_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return port_;
 }
 
 std::unique_ptr<jive::operation>

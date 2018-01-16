@@ -262,16 +262,14 @@ public:
 	virtual
 	~immediate_op() noexcept;
 
-	inline constexpr
+	inline
 	immediate_op(const jive::immediate & value) noexcept
-	: value_(value)
+	: nullary_op(immtype())
+	, value_(value)
 	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
-
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;

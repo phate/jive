@@ -341,15 +341,9 @@ bool
 lbl2addr_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const lbl2addr_op*>(&other);
-	return op && op->label() == label();
-}
-
-const jive::port &
-lbl2addr_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	static const jive::port p(addrtype::instance());
-	return p;
+	return op
+	    && op->label() == label()
+	    && nullary_op::operator==(other);
 }
 
 std::string
@@ -373,14 +367,9 @@ bool
 lbl2bit_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const lbl2bit_op*>(&other);
-	return op && op->label() == label() && op->result_ == result_;
-}
-
-const jive::port &
-lbl2bit_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	return result_;
+	return op
+	    && op->label() == label()
+	    && nullary_op::operator==(other);
 }
 
 std::string

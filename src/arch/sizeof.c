@@ -14,26 +14,15 @@
 namespace jive {
 
 sizeof_op::~sizeof_op() noexcept
-{
-}
+{}
 
 bool
 sizeof_op::operator==(const operation & other) const noexcept
 {
-	const sizeof_op * op =
-		dynamic_cast<const sizeof_op *>(&other);
-	return op && op->type() == type();
-}
-
-const jive::port &
-sizeof_op::result(size_t index) const noexcept
-{
-	JIVE_DEBUG_ASSERT(index < nresults());
-	/* FIXME: either need a "universal" integer type,
-	or some way to specify the representation type for the
-	sizeof operator */
-	static const jive::port port(jive::bittype(32));
-	return port;
+	auto op = dynamic_cast<const sizeof_op*>(&other);
+	return op
+	    && op->type() == type()
+	    && nullary_op::operator==(other);
 }
 
 std::string

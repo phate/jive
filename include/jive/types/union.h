@@ -174,29 +174,20 @@ public:
 	inline
 	empty_unify_op(
 		const jive::unndeclaration * declaration) noexcept
-	: port_(jive::unntype(declaration))
+	: nullary_op(jive::unntype(declaration))
 	{}
 
 	inline const jive::unndeclaration *
 	declaration() const noexcept
 	{
-		return static_cast<const jive::unntype*>(&port_.type())->declaration();
+		return static_cast<const jive::unntype*>(&result(0).type())->declaration();
 	}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
 
 	virtual std::string
 	debug_string() const override;
 
-	virtual const jive::port &
-	result(size_t index) const noexcept override;
-
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
-
-private:
-	jive::port port_;
 };
 
 }
