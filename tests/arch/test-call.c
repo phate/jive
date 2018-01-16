@@ -38,8 +38,8 @@ static int test_main(void)
 
 	jive::view(graph.root(), stdout);
 
-	jive::memlayout_mapper_simple mapper(4);
-	jive_node_address_transform(call[0]->node(), &mapper);
+	memlayout_mapper_simple mapper(4);
+	transform_address(call[0]->node(), mapper);
 	graph.prune();
 
 	jive::view(graph.root(), stdout);

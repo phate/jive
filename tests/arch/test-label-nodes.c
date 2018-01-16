@@ -70,10 +70,9 @@ static int test_main(void)
 
 	jive::view(graph.root(), stderr);
 
-	jive::memlayout_mapper_simple mapper(4);
-
-	jive_node_address_transform(o0->node(), &mapper);
-	jive_node_address_transform(o1->node(), &mapper);
+	memlayout_mapper_simple mapper(4);
+	transform_address(o0->node(), mapper);
+	transform_address(o1->node(), mapper);
 
 	graph.prune();
 	jive::view(graph.root(), stderr);

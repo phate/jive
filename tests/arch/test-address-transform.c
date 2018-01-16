@@ -65,8 +65,8 @@ test_address_transform(void)
 
 	jive::view(graph.root(), stdout);
 
-	jive::memlayout_mapper_simple mapper(8);
-	jive_graph_address_transform(&graph, &mapper);
+	memlayout_mapper_simple mapper(8);
+	transform_address(&graph, mapper);
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
@@ -127,6 +127,8 @@ JIVE_UNIT_TEST_REGISTER("arch/address-transform/test-address-transform-nodes",
 static int
 test_apply_transform(void)
 {
+	using namespace jive;
+
 	jive::graph graph;
 
 	jive::addrtype addrtype;
@@ -140,8 +142,8 @@ test_apply_transform(void)
 
 	jive::view(graph.root(), stdout);
 
-	jive::memlayout_mapper_simple mapper(4);
-	jive_node_address_transform(results[0]->node(), &mapper);
+	memlayout_mapper_simple mapper(4);
+	transform_address(results[0]->node(), mapper);
 
 	jive::view(graph.root(), stdout);
 
@@ -189,8 +191,8 @@ test_containerof_transform(void)
 
 	jive::view(graph.root(), stdout);
 
-	jive::memlayout_mapper_simple mapper(4);
-	jive_graph_address_transform(&graph, &mapper);
+	memlayout_mapper_simple mapper(4);
+	transform_address(&graph, mapper);
 
 	graph.normalize();
 	graph.prune();
@@ -265,8 +267,8 @@ test_memberof_transform(void)
 
 	jive::view(graph.root(), stdout);
 
-	jive::memlayout_mapper_simple mapper(4);
-	jive_graph_address_transform(&graph, &mapper);
+	memlayout_mapper_simple mapper(4);
+	transform_address(&graph, mapper);
 
 	graph.normalize();
 	graph.prune();

@@ -173,16 +173,16 @@ is_bit2addr_node(const jive::node * node) noexcept
 	return is_opnode<bit2addr_op>(node);
 }
 
-class memlayout_mapper;
-
-}
-
 /* reductions */
 
-void
-jive_node_address_transform(jive::node * node, jive::memlayout_mapper * mapper);
+class memlayout_mapper;
 
 void
-jive_graph_address_transform(jive::graph * graph, jive::memlayout_mapper * mapper);
+transform_address(jive::node * node, memlayout_mapper & mapper);
+
+void
+transform_address(jive::graph * graph, memlayout_mapper & mapper);
+
+}
 
 #endif

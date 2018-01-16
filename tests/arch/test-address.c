@@ -65,8 +65,6 @@ static int test_main(void)
 	
 	auto diff2 = jive_arrayindex(top->output(0), top->output(1), &bits32, &bits32);
 
-	jive::memlayout_mapper_simple mapper(4);
-
 	auto memberof = jive_memberof(cont3, dcl, 1);
 	auto arraysub = jive_arraysubscript(top->output(0), &bits32, one);
 
@@ -74,10 +72,11 @@ static int test_main(void)
 		{addrtype, addrtype, bits32}, {memberof, arraysub, diff2}, {addrtype});
 	graph.add_export(bottom->output(0), "dummy");
 
-	jive_node_address_transform(cont3->node(), &mapper);
-	jive_node_address_transform(memberof->node(), &mapper);
-	jive_node_address_transform(diff2->node(), &mapper);
-	jive_node_address_transform(arraysub->node(), &mapper);
+	memlayout_mapper_simple mapper(4);
+	transform_address(cont3->node(), mapper);
+	transform_address(memberof->node(), mapper);
+	transform_address(diff2->node(), mapper);
+	transform_address(arraysub->node(), mapper);
 
 	graph.prune();
 	jive::view(graph.root(), stdout);
