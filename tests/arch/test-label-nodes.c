@@ -41,13 +41,13 @@ static int test_main(void)
 	
 	assert(o0->node()->operation() != *attrs1);
 	
-	auto o2 = jive_label_to_bitstring_create(graph.root(), &foobar, 32);
-	auto o3 = jive_label_to_bitstring_create(graph.root(), &bla, 32);
-	auto o4 = jive_label_to_bitstring_create(graph.root(), &foobar, 16);
+	auto o2 = lbl2bit_op::create(graph.root(), 32, &foobar);
+	auto o3 = lbl2bit_op::create(graph.root(), 32, &bla);
+	auto o4 = lbl2bit_op::create(graph.root(), 16, &foobar);
 
-	auto attrs2 = dynamic_cast<const label_to_bitstring_op*>(&o2->node()->operation());
-	auto attrs3 = dynamic_cast<const label_to_bitstring_op*>(&o3->node()->operation());
-	auto attrs4 = dynamic_cast<const label_to_bitstring_op*>(&o4->node()->operation());
+	auto attrs2 = dynamic_cast<const lbl2bit_op*>(&o2->node()->operation());
+	auto attrs3 = dynamic_cast<const lbl2bit_op*>(&o3->node()->operation());
+	auto attrs4 = dynamic_cast<const lbl2bit_op*>(&o4->node()->operation());
 
 	assert(attrs2->label() == &foobar);
 	assert(attrs3->label() == &bla);

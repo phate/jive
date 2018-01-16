@@ -158,7 +158,7 @@ transform_lbl2addr(jive::node * node, memlayout_mapper & mapper)
 	auto op = static_cast<const lbl2addr_op*>(&node->operation());
 	size_t nbits = mapper.map_address().size()*8;
 
-	auto label_o = jive_label_to_bitstring_create(node->graph()->root(), op->label(), nbits);
+	auto label_o = lbl2bit_op::create(node->graph()->root(), nbits, op->label());
 	auto addr_o = bit2addr_op::create(label_o, nbits, node->output(0)->type());
 	node->output(0)->replace(addr_o);
 }

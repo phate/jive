@@ -35,7 +35,7 @@ jive_i386_call_node_substitute(
 		icls = &jive::i386::instr_call::instance();
 		jive::immediate imm(0, op->label());
 		operands.push_back(jive::immediate_op::create(region, imm));
-	} else if (auto op = dynamic_cast<const jive::label_to_bitstring_op*>(&addrop)) {
+	} else if (auto op = dynamic_cast<const jive::lbl2bit_op*>(&addrop)) {
 		icls = &jive::i386::instr_call::instance();
 		jive::immediate imm(0, op->label());
 		operands.push_back(jive::immediate_op::create(region, imm));

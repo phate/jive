@@ -275,13 +275,13 @@ is_lbl2addr_node(const jive::node * node) noexcept
 
 /* label to bistring operation */
 
-class label_to_bitstring_op : public nullary_op {
+class lbl2bit_op final : public nullary_op {
 public:
 	virtual
-	~label_to_bitstring_op() noexcept;
+	~lbl2bit_op() noexcept;
 
 	inline
-	label_to_bitstring_op(
+	lbl2bit_op(
 		const jive::label * label,
 		size_t nbits) noexcept
 	: nullary_op()
@@ -313,10 +313,31 @@ public:
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	static inline jive::output *
+	create(jive::region * region, size_t nbits, const jive::label * lbl)
+	{
+		lbl2bit_op op(lbl, nbits);
+		return create_normalized(region, op, {})[0];
+	}
+
 private:
 	jive::port result_;
 	const jive::label * label_;
 };
+
+static inline bool
+is_lbl2bit_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const lbl2bit_op*>(&op) != nullptr;
+}
+
+static inline bool
+is_lbl2bit_node(const jive::node * node) noexcept
+{
+	return is_opnode<lbl2bit_op>(node);
+}
+
+/* address value representation */
 
 class value_repr final {
 public:
@@ -409,10 +430,5 @@ jive::output *
 jive_arrayindex(jive::output * addr1, jive::output * addr2,
 	const jive::valuetype * element_type,
 	const jive::bittype * difference_type);
-
-/* label_to_bitstring node */
-
-jive::output *
-jive_label_to_bitstring_create(jive::region * region, const jive::label * label, size_t nbits);
 
 #endif

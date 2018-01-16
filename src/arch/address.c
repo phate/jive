@@ -393,40 +393,35 @@ lbl2addr_op::copy() const
 	return std::unique_ptr<jive::operation>(new lbl2addr_op(*this));
 }
 
-}
+/* lbl2bit operation */
 
-/* label_to_bitstring_node */
-
-namespace jive {
-
-label_to_bitstring_op::~label_to_bitstring_op() noexcept
-{
-}
+lbl2bit_op::~lbl2bit_op() noexcept
+{}
 
 bool
-label_to_bitstring_op::operator==(const operation & other) const noexcept
+lbl2bit_op::operator==(const operation & other) const noexcept
 {
-	auto op = dynamic_cast<const label_to_bitstring_op*>(&other);
+	auto op = dynamic_cast<const lbl2bit_op*>(&other);
 	return op && op->label() == label() && op->result_ == result_;
 }
 
 const jive::port &
-label_to_bitstring_op::result(size_t index) const noexcept
+lbl2bit_op::result(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < nresults());
 	return result_;
 }
 
 std::string
-label_to_bitstring_op::debug_string() const
+lbl2bit_op::debug_string() const
 {
-	return detail::strfmt("addrof:lable", label());
+	return detail::strfmt("LBL2BIT: ", label());
 }
 
 std::unique_ptr<jive::operation>
-label_to_bitstring_op::copy() const
+lbl2bit_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new label_to_bitstring_op(*this));
+	return std::unique_ptr<jive::operation>(new lbl2bit_op(*this));
 }
 
 /* constant */
@@ -438,12 +433,4 @@ constant(jive::graph * graph, const value_repr & vr)
 	return jive::create_normalized(graph->root(), op, {})[0];
 }
 
-}
-
-
-jive::output *
-jive_label_to_bitstring_create(jive::region * region, const jive::label * label, size_t nbits)
-{
-	jive::label_to_bitstring_op op(label, nbits);
-	return jive::create_normalized(region, op, {})[0];
 }
