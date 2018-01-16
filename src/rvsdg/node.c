@@ -8,7 +8,7 @@
 
 #include <jive/common.h>
 
-#include <jive/rvsdg/controltype.h>
+#include <jive/rvsdg/control.h>
 #include <jive/rvsdg/node-normal-form.h>
 #include <jive/rvsdg/notifiers.h>
 #include <jive/rvsdg/region.h>

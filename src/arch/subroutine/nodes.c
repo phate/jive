@@ -8,7 +8,7 @@
 
 #include <jive/arch/addresstype.h>
 #include <jive/arch/subroutine.h>
-#include <jive/rvsdg/controltype.h>
+#include <jive/rvsdg/control.h>
 #include <jive/rvsdg/simple-node.h>
 
 namespace jive {

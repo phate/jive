@@ -7,7 +7,7 @@
 #ifndef JIVE_RVSDG_GAMMA_H
 #define JIVE_RVSDG_GAMMA_H
 
-#include <jive/rvsdg/controltype.h>
+#include <jive/rvsdg/control.h>
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/structural-node.h>
 #include <jive/rvsdg/structural-normal-form.h>

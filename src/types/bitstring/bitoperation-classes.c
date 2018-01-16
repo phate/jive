@@ -10,7 +10,6 @@
 #include <jive/types/bitstring/constant.h>
 
 #include <jive/rvsdg/control.h>
-#include <jive/rvsdg/controltype.h>
 
 namespace jive {
 

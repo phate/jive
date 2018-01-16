@@ -10,7 +10,6 @@ LIBJIVE_SRC = \
 	src/common.c \
 	src/rvsdg/binary.c \
 	src/rvsdg/control.c \
-	src/rvsdg/controltype.c \
 	src/rvsdg/equivalence.c \
 	src/rvsdg/gamma.c \
 	src/rvsdg/gate.c \

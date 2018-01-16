@@ -11,7 +11,7 @@
 #include <jive/arch/addresstype.h>
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/common.h>
-#include <jive/rvsdg/controltype.h>
+#include <jive/rvsdg/control.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/resource.h>
 #include <jive/rvsdg/simple-node.h>

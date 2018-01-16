@@ -17,7 +17,6 @@
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/rvsdg/control.h>
-#include <jive/rvsdg/controltype.h>
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/traverser.h>
 #include <jive/types/bitstring.h>

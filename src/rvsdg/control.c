@@ -15,10 +15,57 @@
 #include <jive/rvsdg/region.h>
 
 namespace jive {
+
+/* control constant */
+
 // explicit instantiation
 template class domain_const_op<ctl::type, ctl::value_repr, ctl::format_value, ctl::type_of_value>;
 
 namespace ctl {
+
+/* control type */
+
+type::~type() noexcept
+{}
+
+type::type(size_t nalternatives)
+: jive::statetype()
+, nalternatives_(nalternatives)
+{
+	if (nalternatives == 0)
+		throw compiler_error("Alternatives of a control type must be non-zero.");
+}
+
+std::string
+type::debug_string() const
+{
+	return detail::strfmt("ctl(", nalternatives_, ")");
+}
+
+bool
+type::operator==(const jive::type & other) const noexcept
+{
+	const jive::ctl::type * type = dynamic_cast<const jive::ctl::type*>(&other);
+	return type && type->nalternatives_ == nalternatives_;
+}
+
+std::unique_ptr<jive::type>
+type::copy() const
+{
+	return std::unique_ptr<jive::type>(new type(*this));
+}
+
+/* control value representation */
+
+value_repr::value_repr(size_t alternative, size_t nalternatives)
+: alternative_(alternative)
+, nalternatives_(nalternatives)
+{
+	if (alternative >= nalternatives)
+		throw compiler_error("Alternative is bigger than the number of possible alternatives.");
+}
+
+/* match operator */
 
 match_op::~match_op() noexcept
 {}

@@ -11,6 +11,7 @@
 #include <jive/evaluator/eval.h>
 #include <jive/evaluator/literal.h>
 #include <jive/rvsdg.h>
+#include <jive/rvsdg/gamma.h>
 #include <jive/rvsdg/phi.h>
 #include <jive/rvsdg/theta.h>
 #include <jive/types/bitstring.h>

@@ -6,7 +6,7 @@
 #ifndef JIVE_EVALUATOR_LITERAL_H
 #define JIVE_EVALUATOR_LITERAL_H
 
-#include <jive/rvsdg/controltype.h>
+#include <jive/rvsdg/control.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/bitstring/value-representation.h>
 #include <jive/types/function/fcttype.h>
