@@ -28,9 +28,9 @@ memberof_op::operator==(const operation & other) const noexcept
 	auto op = dynamic_cast<const memberof_op *>(&other);
 	return op
 	    && op->record_decl() == record_decl()
-	    && op->index() == index()
-	    && unary_op::operator==(other);
+	    && op->index() == index();
 }
+
 std::string
 memberof_op::debug_string() const
 {
@@ -100,9 +100,9 @@ containerof_op::operator==(const operation & other) const noexcept
 	auto op = dynamic_cast<const containerof_op *>(&other);
 	return op
 	    && op->record_decl() == record_decl()
-	    && op->index() == index()
-	    && unary_op::operator==(other);
+	    && op->index() == index();
 }
+
 std::string
 containerof_op::debug_string() const
 {

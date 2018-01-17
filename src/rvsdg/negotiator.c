@@ -32,10 +32,11 @@ negotiator_split_operation::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const negotiator_split_operation*>(&other);
 	return op
-	    && input_option() == op->input_option()
-	    && output_option() == op->output_option()
-	    && negotiator() == op->negotiator()
-	    && unary_op::operator==(other);
+	    && op->input_option() == input_option()
+	    && op->output_option() == output_option()
+	    && op->negotiator() == negotiator()
+	    && op->argument(0) == argument(0)
+	    && op->result(0) == result(0);
 }
 
 std::string

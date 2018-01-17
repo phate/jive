@@ -88,15 +88,6 @@ unary_normal_form::set_reducible(bool enable)
 unary_op::~unary_op() noexcept
 {}
 
-bool
-unary_op::operator==(const operation & other) const noexcept
-{
-	auto op = dynamic_cast<const unary_op*>(&other);
-	return op
-	    && op->argument(0) == argument(0)
-	    && op->result(0) == result(0);
-}
-
 }
 
 jive::node_normal_form *

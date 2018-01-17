@@ -61,9 +61,6 @@ public:
 	: simple_op({operand}, {result})
 	{}
 
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(const jive::output * arg) const noexcept = 0;
 

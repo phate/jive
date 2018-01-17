@@ -16,6 +16,15 @@ namespace test {
 unary_op::~unary_op() noexcept
 {}
 
+bool
+unary_op::operator==(const jive::operation & other) const noexcept
+{
+	auto op = dynamic_cast<const unary_op*>(&other);
+	return op
+	    && op->argument(0) == argument(0)
+	    && op->result(0) == result(0);
+}
+
 jive_unop_reduction_path_t
 unary_op::can_reduce_operand(const jive::output * operand) const noexcept
 {

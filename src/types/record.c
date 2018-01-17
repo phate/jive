@@ -159,8 +159,8 @@ select_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const select_op*>(&other);
 	return op
-	    && op->index_ == index_
-	    && unary_op::operator==(other);
+	    && op->index() == index()
+	    && op->argument(0) == argument(0);
 }
 
 std::string

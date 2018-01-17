@@ -85,7 +85,8 @@ match_op::operator==(const operation & other) const noexcept
 	return op
 	    && op->default_alternative_ == default_alternative_
 	    && op->mapping_ == mapping_
-			&& unary_op::operator==(other);
+	    && op->nbits() == nbits()
+	    && op->nalternatives() == nalternatives();
 }
 
 jive_unop_reduction_path_t

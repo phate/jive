@@ -391,8 +391,8 @@ addr2bit_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const addr2bit_op*>(&other);
 	return op
-	    && nbits() == op->nbits()
-	    && unary_op::operator==(other);
+	    && op->nbits() == nbits()
+	    && op->original_type() == original_type();
 }
 
 std::string
@@ -461,8 +461,8 @@ bit2addr_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const bit2addr_op*>(&other);
 	return op
-	    && nbits() == op->nbits()
-	    && unary_op::operator==(other);
+	    && op->nbits() == nbits()
+	    && op->original_type() == original_type();
 }
 
 std::string

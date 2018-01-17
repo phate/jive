@@ -25,8 +25,9 @@ bitslice_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const bitslice_op*>(&other);
 	return op
-	    && op->low_ == low_
-	    && unary_op::operator==(other);
+	    && op->low() == low()
+	    && op->high() == high()
+	    && op->argument(0) == argument(0);
 }
 
 std::string

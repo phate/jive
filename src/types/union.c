@@ -92,8 +92,8 @@ choose_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const choose_op*>(&other);
 	return op
-	    && option_ == op->option_
-	    && unary_op::operator==(other);
+	    && op->option() == option()
+	    && op->declaration() == declaration();
 }
 
 std::string
@@ -160,8 +160,8 @@ unify_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const unify_op*>(&other);
 	return op
-	    && option_ == op->option_
-	    && unary_op::operator==(other);
+	    && op->option() == option()
+	    && op->declaration() == declaration();
 }
 
 std::string

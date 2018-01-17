@@ -32,6 +32,9 @@ public:
 	: jive::unary_op(srcport, dstport)
 	{}
 
+	virtual bool
+	operator==(const jive::operation & other) const noexcept override;
+
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
 		const jive::output * operand) const noexcept override;
