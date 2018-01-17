@@ -74,7 +74,7 @@ create_instruction(
 	const std::vector<jive::port> & oports)
 {
 	jive::instruction_op op(icls, iports, oports);
-	return region->add_simple_node(op, operands);
+	return new jive::simple_node(op, region, operands);
 }
 
 static inline jive::node *

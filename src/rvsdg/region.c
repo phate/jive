@@ -180,12 +180,6 @@ region::remove_result(size_t index)
 	results_.pop_back();
 }
 
-jive::simple_node *
-region::add_simple_node(const jive::simple_op & op, const std::vector<jive::output*> & operands)
-{
-	return new jive::simple_node(op, this, operands);
-}
-
 jive::structural_node *
 region::add_structural_node(const jive::structural_op & op, size_t nsubregions)
 {
