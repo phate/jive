@@ -81,13 +81,9 @@ simple_normal_form::normalized_create(
 	if (get_mutable() && get_cse())
 		node = node_cse(region, op, arguments);
 	if (!node)
-		node = new simple_node(op, region, arguments);
+		node = simple_node::create(region, op, arguments);
 
-	std::vector<jive::output*> outputs;
-	for (size_t n = 0; n < node->noutputs(); n++)
-		outputs.push_back(node->output(n));
-
-	return outputs;
+	return outputs(node);
 }
 
 void

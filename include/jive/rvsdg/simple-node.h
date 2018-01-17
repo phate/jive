@@ -24,11 +24,13 @@ public:
 	virtual
 	~simple_node();
 
+private:
 	simple_node(
 		const jive::simple_op & op,
 		jive::region * region,
 		const std::vector<jive::output*> & operands);
 
+public:
 	jive::simple_input *
 	input(size_t index) const noexcept;
 
@@ -43,6 +45,15 @@ public:
 
 	virtual jive::node *
 	copy(jive::region * region, jive::substitution_map & smap) const override;
+
+	static inline jive::simple_node *
+	create(
+		jive::region * region,
+		const jive::simple_op & op,
+		const std::vector<jive::output*> & operands)
+	{
+		return new simple_node(op, region, operands);
+	}
 
 	static inline std::vector<jive::output*>
 	create_normalized(

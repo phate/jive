@@ -58,7 +58,7 @@ public:
 		jive::output * operand,
 		const jive::port & dstport)
 	{
-		return new jive::simple_node(unary_op(srcport, dstport), region, {operand});
+		return simple_node::create(region, unary_op(srcport, dstport), {operand});
 	}
 
 	static inline jive::output *
@@ -120,7 +120,7 @@ simple_node_create(
 	const std::vector<jive::output*> & operands,
 	const std::vector<jive::port> & oports)
 {
-	return new jive::simple_node(simple_op(iports, oports), region, operands);
+	return simple_node::create(region, simple_op(iports, oports), operands);
 }
 
 static inline std::vector<jive::output*>
