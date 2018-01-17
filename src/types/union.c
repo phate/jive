@@ -200,7 +200,7 @@ jive_unify_create(
 	jive::output * const argument)
 {
 	jive::unify_op op(decl, option);
-	return jive::create_normalized(argument->region(), op, {argument})[0];
+	return jive::simple_node::create_normalized(argument->region(), op, {argument})[0];
 }
 
 /* empty unify operation */
@@ -237,5 +237,5 @@ jive_empty_unify_create(
 	const jive::unndeclaration * decl)
 {
 	jive::empty_unify_op op(decl);
-	return jive::create_normalized(region, op, {})[0];
+	return jive::simple_node::create_normalized(region, op, {})[0];
 }

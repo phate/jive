@@ -260,7 +260,7 @@ public:
 		if (!ut) throw jive::type_error("unn", operand->type().debug_string());
 
 		choose_op op(*ut, option);
-		return jive::create_normalized(operand->region(), op, {operand})[0];
+		return simple_node::create_normalized(operand->region(), op, {operand})[0];
 	}
 
 private:

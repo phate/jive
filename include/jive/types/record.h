@@ -197,7 +197,7 @@ public:
 		if (!rt) throw type_error("rcd", operand->type().debug_string());
 
 		select_op op(*rt, index);
-		return jive::create_normalized(operand->region(), op, {operand})[0];
+		return simple_node::create_normalized(operand->region(), op, {operand})[0];
 	}
 
 private:

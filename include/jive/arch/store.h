@@ -106,7 +106,7 @@ public:
 		operands.insert(operands.end(), states.begin(), states.end());
 
 		jive::addrstore_op op(jive::addrtype(), valuetype, states.size());
-		return jive::create_normalized(address->region(), op, operands);
+		return simple_node::create_normalized(address->region(), op, operands);
 	}
 };
 
@@ -155,7 +155,7 @@ public:
 		operands.insert(operands.end(), states.begin(), states.end());
 
 		bitstore_op op(bittype(nbits), valuetype, states.size());
-		return jive::create_normalized(address->region(), op, operands);
+		return simple_node::create_normalized(address->region(), op, operands);
 	}
 };
 

@@ -68,7 +68,7 @@ public:
 	create(jive::output * operand, size_t nbits, const jive::type & type)
 	{
 		addr2bit_op op(nbits, type);
-		return jive::create_normalized(operand->region(), op, {operand})[0];
+		return simple_node::create_normalized(operand->region(), op, {operand})[0];
 	}
 
 private:
@@ -138,7 +138,7 @@ public:
 	create(jive::output * operand, size_t nbits, const jive::type & type)
 	{
 		bit2addr_op op(nbits, type);
-		return jive::create_normalized(operand->region(), op, {operand})[0];
+		return simple_node::create_normalized(operand->region(), op, {operand})[0];
 	}
 
 private:

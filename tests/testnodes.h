@@ -68,7 +68,7 @@ public:
 		const jive::port & dstport)
 	{
 		unary_op op(srcport, dstport);
-		return jive::create_normalized(operand->region(), op, {operand})[0];
+		return simple_node::create_normalized(operand->region(), op, {operand})[0];
 	}
 };
 
@@ -131,7 +131,7 @@ simple_node_normalized_create(
 	const std::vector<jive::port> & oports)
 {
 	jive::test::simple_op op(iports, oports);
-	return jive::create_normalized(r, op, operands);
+	return simple_node::create_normalized(r, op, operands);
 }
 
 /* structural operation */

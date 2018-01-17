@@ -134,7 +134,7 @@ jive_group_create(
 {
 	jive::group_op op(dcl);
 	auto region = arguments[0]->region();
-	return jive::create_normalized(
+	return jive::simple_node::create_normalized(
 		region, op, std::vector<jive::output*>(arguments, arguments + narguments))[0];
 }
 
@@ -144,7 +144,7 @@ jive_empty_group_create(
 	const jive::rcddeclaration * dcl)
 {
 	jive::group_op op(dcl);
-	return jive::create_normalized(graph->root(), op, {})[0];
+	return jive::simple_node::create_normalized(graph->root(), op, {})[0];
 }
 
 namespace jive {

@@ -289,7 +289,7 @@ public:
 		const jive::immediate & value)
 	{
 		jive::immediate_op op(value);
-		return jive::create_normalized(region, op, {})[0];
+		return simple_node::create_normalized(region, op, {})[0];
 	}
 
 private:

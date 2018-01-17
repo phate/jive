@@ -57,7 +57,7 @@ create_apply(jive::output * function, const std::vector<jive::output*> & argumen
 	std::vector<jive::output*> operands({function});
 	operands.insert(operands.end(), arguments.begin(), arguments.end());
 
-	return create_normalized(function->region(), op, operands);
+	return simple_node::create_normalized(function->region(), op, operands);
 }
 
 }

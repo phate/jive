@@ -24,5 +24,5 @@ jive::output *
 jive_fltconstant(jive::region * region, jive::flt::value_repr value)
 {
 	jive::flt::constant_op op(value);
-	return jive::create_normalized(region, op, {})[0];
+	return jive::simple_node::create_normalized(region, op, {})[0];
 }

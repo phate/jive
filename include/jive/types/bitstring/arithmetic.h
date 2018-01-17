@@ -40,7 +40,7 @@ public: \
 	static inline jive::output * \
 	create(size_t nbits, jive::output * op) \
 	{ \
-		return create_normalized(op->region(), NAME ## _op(nbits), {op})[0]; \
+		return simple_node::create_normalized(op->region(), NAME ## _op(nbits), {op})[0]; \
 	} \
 }; \
 \
@@ -84,7 +84,7 @@ public: \
 	static inline jive::output * \
 	create(size_t nbits, jive::output * op1, jive::output * op2) \
 	{ \
-		return create_normalized(op1->region(), NAME ## _op(nbits), {op1, op2})[0]; \
+		return simple_node::create_normalized(op1->region(), NAME ## _op(nbits), {op1, op2})[0]; \
 	} \
 }; \
 \

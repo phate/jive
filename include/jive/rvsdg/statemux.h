@@ -106,7 +106,7 @@ create_state_mux(
 
 	auto region = operands.front()->region();
 	jive::mux_op op(*st, operands.size(), nresults);
-	return jive::create_normalized(region, op, operands);
+	return simple_node::create_normalized(region, op, operands);
 }
 
 static inline jive::output *

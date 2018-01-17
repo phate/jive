@@ -27,7 +27,7 @@ jive_bitconcat(const std::vector<jive::output*> & operands)
 
 	auto region = operands[0]->region();
 	jive::bitconcat_op op(std::move(types));
-	return jive::create_normalized(region, op, {operands.begin(), operands.end()})[0];
+	return jive::simple_node::create_normalized(region, op, {operands.begin(), operands.end()})[0];
 }
 
 namespace jive {
@@ -129,7 +129,7 @@ public:
 		
 		if (args != new_args) {
 			bitconcat_op op(types_from_arguments(new_args));
-			replace(node, create_normalized(node->region(), op, new_args));
+			replace(node, simple_node::create_normalized(node->region(), op, new_args));
 			remove(node);
 			return false;
 		}

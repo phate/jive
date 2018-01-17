@@ -77,7 +77,7 @@ public:
 			operand->region()->graph()->mark_denormalized();
 
 		split_op op(srcrescls, dstrescls);
-		return create_normalized(operand->region(), op, {operand})[0];
+		return simple_node::create_normalized(operand->region(), op, {operand})[0];
 	}
 };
 

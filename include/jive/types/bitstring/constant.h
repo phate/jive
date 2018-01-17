@@ -63,7 +63,7 @@ extern template class domain_const_op<bittype, bitvalue_repr, format_value, type
 static inline jive::output *
 create_bitconstant(jive::region * region, const bitvalue_repr & vr)
 {
-	return create_normalized(region, bitconstant_op(vr), {})[0];
+	return simple_node::create_normalized(region, bitconstant_op(vr), {})[0];
 }
 
 static inline jive::output *

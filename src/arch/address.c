@@ -83,7 +83,7 @@ jive_memberof(
 	size_t index)
 {
 	jive::memberof_op op(dcl, index);
-	return jive::create_normalized(address->region(), op, {address})[0];
+	return jive::simple_node::create_normalized(address->region(), op, {address})[0];
 }
 
 /* containerof */
@@ -153,7 +153,7 @@ jive_containerof(
 	size_t index)
 {
 	jive::containerof_op op(dcl, index);
-	return jive::create_normalized(address->region(), op, {address})[0];
+	return jive::simple_node::create_normalized(address->region(), op, {address})[0];
 }
 
 /* arraysubscript */
@@ -195,7 +195,7 @@ jive_arraysubscript(
 	jive::output * index)
 {
 	jive::arraysubscript_op op(*element_type, dynamic_cast<const jive::bittype &>(index->type()));
-	return jive::create_normalized(address->region(), op, {address, index})[0];
+	return jive::simple_node::create_normalized(address->region(), op, {address, index})[0];
 }
 
 /* arrayindex */
@@ -236,7 +236,7 @@ jive_arrayindex(
 	const jive::bittype * difference_type)
 {
 	jive::arrayindex_op op(*element_type, difference_type->nbits());
-	return jive::create_normalized(addr1->region(), op, {addr1, addr2})[0];
+	return jive::simple_node::create_normalized(addr1->region(), op, {addr1, addr2})[0];
 }
 
 /* lbl2addr operation */
@@ -297,7 +297,7 @@ jive::output *
 constant(jive::graph * graph, const value_repr & vr)
 {
 	addrconstant_op op(vr);
-	return jive::create_normalized(graph->root(), op, {})[0];
+	return jive::simple_node::create_normalized(graph->root(), op, {})[0];
 }
 
 }

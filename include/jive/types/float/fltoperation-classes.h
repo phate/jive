@@ -114,7 +114,7 @@ public:
 	static jive::output *
 	normalized_create(jive::output * arg)
 	{
-		return jive::create_normalized(arg->region(), make_unop(), {arg})[0];
+		return simple_node::create_normalized(arg->region(), make_unop(), {arg})[0];
 	}
 
 	virtual value_repr
@@ -156,7 +156,7 @@ public:
 	static jive::output *
 	normalized_create(jive::output * arg1, jive::output * arg2)
 	{
-		return jive::create_normalized(arg1->region(), make_binop(), {arg1, arg2})[0];
+		return simple_node::create_normalized(arg1->region(), make_binop(), {arg1, arg2})[0];
 	}
 
 	virtual enum jive::binary_op::flags
@@ -207,7 +207,7 @@ public:
 	normalized_create(jive::output * arg1, jive::output * arg2)
 	{
 		make_cmpop op;
-		return jive::create_normalized(arg1->region(), make_cmpop(), {arg1, arg2})[0];
+		return simple_node::create_normalized(arg1->region(), make_cmpop(), {arg1, arg2})[0];
 	}
 
 	virtual enum jive::binary_op::flags

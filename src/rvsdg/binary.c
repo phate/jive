@@ -127,7 +127,7 @@ binary_normal_form::normalize_node(jive::node * node, const binary_op & op) cons
 
 		JIVE_DEBUG_ASSERT(new_args.size() >= 2);
 		const auto & new_op = tmp_op ? *tmp_op : static_cast<const simple_op&>(op);
-		replace(node, create_normalized(node->region(), new_op, new_args));
+		replace(node, simple_node::create_normalized(node->region(), new_op, new_args));
 		remove(node);
 		return false;
 	}

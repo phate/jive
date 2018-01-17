@@ -41,7 +41,7 @@ jive::output *
 jive_sizeof_create(jive::region * region, const jive::valuetype * type)
 {
 	jive::sizeof_op op(*type);
-	return jive::create_normalized(region, op, {})[0];
+	return jive::simple_node::create_normalized(region, op, {})[0];
 }
 
 /* sizeof reduce */

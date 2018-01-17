@@ -134,16 +134,4 @@ simple_node::copy(jive::region * region, jive::substitution_map & smap) const
 	return node;
 }
 
-
-std::vector<jive::output*>
-create_normalized(
-	jive::region * region,
-	const jive::simple_op & op,
-	const std::vector<jive::output*> & arguments)
-{
-	auto graph = region->graph();
-	auto nf = static_cast<simple_normal_form*>(graph->node_normal_form(typeid(op)));
-	return nf->normalized_create(region, op, arguments);
-}
-
 }

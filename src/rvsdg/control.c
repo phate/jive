@@ -136,7 +136,7 @@ match(
 	jive::output * operand)
 {
 	match_op op(nbits, mapping, default_alternative, nalternatives);
-	return jive::create_normalized(operand->region(), op, {operand})[0];
+	return simple_node::create_normalized(operand->region(), op, {operand})[0];
 }
 
 }
@@ -145,5 +145,5 @@ jive::output *
 jive_control_constant(jive::region * region, size_t nalternatives, size_t alternative)
 {
 	jive::ctlconstant_op op({alternative, nalternatives});
-	return jive::create_normalized(region, op, {})[0];
+	return jive::simple_node::create_normalized(region, op, {})[0];
 }

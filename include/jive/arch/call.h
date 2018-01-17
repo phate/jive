@@ -119,7 +119,7 @@ public:
 		}
 
 		addrcall_op op(argumenttypes, resulttypes, callconv);
-		return jive::create_normalized(address->region(), op, operands);
+		return simple_node::create_normalized(address->region(), op, operands);
 	}
 
 	virtual std::unique_ptr<operation>
@@ -176,7 +176,7 @@ public:
 		}
 
 		bitcall_op op(nbits, argumenttypes, resulttypes, callconv);
-		return jive::create_normalized(address->region(), op, operands);
+		return simple_node::create_normalized(address->region(), op, operands);
 	}
 
 	virtual std::unique_ptr<operation>

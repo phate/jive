@@ -6,7 +6,10 @@
 #ifndef JIVE_RVSDG_SIMPLE_NODE_H
 #define JIVE_RVSDG_SIMPLE_NODE_H
 
+#include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/node.h>
+#include <jive/rvsdg/region.h>
+#include <jive/rvsdg/simple-normal-form.h>
 
 namespace jive {
 
@@ -40,13 +43,17 @@ public:
 
 	virtual jive::node *
 	copy(jive::region * region, jive::substitution_map & smap) const override;
-};
 
-std::vector<jive::output*>
-create_normalized(
-	jive::region * region,
-	const jive::simple_op & op,
-	const std::vector<jive::output*> & arguments);
+	static inline std::vector<jive::output*>
+	create_normalized(
+		jive::region * region,
+		const jive::simple_op & op,
+		const std::vector<jive::output*> & operands)
+	{
+		auto nf = static_cast<simple_normal_form*>(region->graph()->node_normal_form(typeid(op)));
+		return nf->normalized_create(region, op, operands);
+	}
+};
 
 /* inputs */
 

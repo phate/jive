@@ -234,7 +234,7 @@ public:
 	create(jive::region * region, const jive::label * lbl)
 	{
 		lbl2addr_op op(lbl);
-		return jive::create_normalized(region, op, {})[0];
+		return simple_node::create_normalized(region, op, {})[0];
 	}
 
 private:
@@ -293,7 +293,7 @@ public:
 	create(jive::region * region, size_t nbits, const jive::label * lbl)
 	{
 		lbl2bit_op op(lbl, nbits);
-		return create_normalized(region, op, {})[0];
+		return simple_node::create_normalized(region, op, {})[0];
 	}
 
 private:
