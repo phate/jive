@@ -20,9 +20,7 @@ bool
 sizeof_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const sizeof_op*>(&other);
-	return op
-	    && op->type() == type()
-	    && nullary_op::operator==(other);
+	return op && op->type() == type();
 }
 
 std::string

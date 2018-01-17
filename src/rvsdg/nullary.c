@@ -32,13 +32,6 @@ public:
 nullary_op::~nullary_op() noexcept
 {}
 
-bool
-nullary_op::operator==(const jive::operation & other) const noexcept
-{
-	auto op = dynamic_cast<const nullary_op*>(&other);
-	return op && op->result(0) == result(0);
-}
-
 }
 
 namespace {

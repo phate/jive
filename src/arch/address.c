@@ -250,9 +250,7 @@ bool
 lbl2addr_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const lbl2addr_op*>(&other);
-	return op
-	    && op->label() == label()
-	    && nullary_op::operator==(other);
+	return op && op->label() == label();
 }
 
 std::string
@@ -278,7 +276,7 @@ lbl2bit_op::operator==(const operation & other) const noexcept
 	auto op = dynamic_cast<const lbl2bit_op*>(&other);
 	return op
 	    && op->label() == label()
-	    && nullary_op::operator==(other);
+	    && op->nbits() == nbits();
 }
 
 std::string

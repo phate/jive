@@ -210,6 +210,13 @@ namespace jive {
 empty_unify_op::~empty_unify_op() noexcept
 {}
 
+bool
+empty_unify_op::operator==(const jive::operation & other) const noexcept
+{
+	auto op = dynamic_cast<const empty_unify_op*>(&other);
+	return op && op->declaration() == declaration();
+}
+
 std::string
 empty_unify_op::debug_string() const
 {

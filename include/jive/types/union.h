@@ -177,6 +177,9 @@ public:
 	: nullary_op(jive::unntype(declaration))
 	{}
 
+	virtual bool
+	operator==(const jive::operation & other) const noexcept override;
+
 	inline const jive::unndeclaration *
 	declaration() const noexcept
 	{

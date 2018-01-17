@@ -27,9 +27,6 @@ public:
 	nullary_op(const jive::port & result)
 	: simple_op({}, {result})
 	{}
-
-	virtual bool
-	operator==(const operation & other) const noexcept override;
 };
 
 template<typename Type, typename ValueRepr>
@@ -81,9 +78,7 @@ public:
 	operator==(const operation & other) const noexcept override
 	{
 		auto op = dynamic_cast<const domain_const_op*>(&other);
-		return op
-		    && op->value_ == value_
-		    && nullary_op::operator==(other);
+		return op && op->value_ == value_;
 	}
 
 	virtual std::string
