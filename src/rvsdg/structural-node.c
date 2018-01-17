@@ -138,7 +138,7 @@ jive::structural_node *
 structural_node::copy(jive::region * region, jive::substitution_map & smap) const
 {
 	graph()->mark_denormalized();
-	auto node = region->add_structural_node(*static_cast<const structural_op*>(&operation()), 0);
+	auto node = new structural_node(*static_cast<const structural_op*>(&operation()), region, 0);
 
 	/* copy inputs */
 	for (size_t n = 0; n < ninputs(); n++) {

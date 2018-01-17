@@ -146,7 +146,7 @@ jive_dataobj_internal(
 	for (const auto & item : data_items)
 		types.emplace_back(item->type().copy());
 
-	auto node = parent->add_structural_node(jive::dataobj_op(std::move(types)), 1);
+	auto node = new jive::structural_node(jive::dataobj_op(std::move(types)), parent, 1);
 	for (const auto & item : data_items)
 		node->add_input(item->type(), item);
 

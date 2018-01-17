@@ -180,12 +180,6 @@ region::remove_result(size_t index)
 	results_.pop_back();
 }
 
-jive::structural_node *
-region::add_structural_node(const jive::structural_op & op, size_t nsubregions)
-{
-	return new jive::structural_node(op, this, nsubregions);
-}
-
 void
 region::remove_node(jive::node * node)
 {

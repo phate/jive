@@ -215,9 +215,6 @@ public:
 		return nodes.size();
 	}
 
-	jive::structural_node *
-	add_structural_node(const jive::structural_op & op, size_t nsubregions);
-
 	void
 	remove_node(jive::node * node);
 

@@ -13,6 +13,7 @@
 #include <jive/rvsdg/node.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/simple-node.h>
+#include <jive/rvsdg/structural-node.h>
 #include <jive/rvsdg/unary.h>
 
 namespace jive {
@@ -150,7 +151,7 @@ public:
 static inline jive::structural_node *
 structural_node_create(jive::region * parent, size_t nsubregions)
 {
-	return parent->add_structural_node(jive::test::structural_op(), nsubregions);
+	return new jive::structural_node(structural_op(), parent, nsubregions);
 }
 
 }}

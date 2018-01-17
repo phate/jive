@@ -67,7 +67,7 @@ public:
 		if (node_)
 			node_->subregion(0);
 
-		node_ = parent->add_structural_node(jive::phi_op(), 1);
+		node_ = new jive::structural_node(phi_op(), parent, 1);
 		return node_->subregion(0);
 	}
 
