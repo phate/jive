@@ -118,9 +118,6 @@ public:
 	: simple_op(operands, {result})
 	{}
 
-	virtual bool
-	operator==(const jive::operation & other) const noexcept;
-
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
 		const jive::output * op1,

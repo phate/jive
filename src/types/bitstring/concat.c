@@ -249,6 +249,21 @@ bitconcat_op::to_ports(const std::vector<bittype> & types)
 bitconcat_op::~bitconcat_op() noexcept
 {}
 
+bool
+bitconcat_op::operator==(const jive::operation & other) const noexcept
+{
+	auto op = dynamic_cast<const jive::bitconcat_op*>(&other);
+	if (!op || op->narguments() != narguments())
+		return false;
+
+	for (size_t n = 0; n < narguments(); n++) {
+		if (op->argument(n) != argument(n))
+			return false;
+	}
+
+	return true;
+}
+
 jive_binop_reduction_path_t
 bitconcat_op::can_reduce_operand_pair(
 	const jive::output * arg1,
