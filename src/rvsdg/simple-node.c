@@ -87,8 +87,8 @@ simple_node::~simple_node()
 }
 
 simple_node::simple_node(
-	const jive::simple_op & op,
 	jive::region * region,
+	const jive::simple_op & op,
 	const std::vector<jive::output*> & operands)
 	: node(op.copy(), region)
 {
@@ -111,7 +111,7 @@ simple_node::simple_node(
 jive::node *
 simple_node::copy(jive::region * region, const std::vector<jive::output*> & operands) const
 {
-	auto node = new simple_node(*static_cast<const simple_op*>(&operation()), region, operands);
+	auto node = create(region, *static_cast<const simple_op*>(&operation()), operands);
 	graph()->mark_denormalized();
 	return node;
 }

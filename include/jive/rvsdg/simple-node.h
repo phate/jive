@@ -26,8 +26,8 @@ public:
 
 private:
 	simple_node(
-		const jive::simple_op & op,
 		jive::region * region,
+		const jive::simple_op & op,
 		const std::vector<jive::output*> & operands);
 
 public:
@@ -52,7 +52,7 @@ public:
 		const jive::simple_op & op,
 		const std::vector<jive::output*> & operands)
 	{
-		return new simple_node(op, region, operands);
+		return new simple_node(region, op, operands);
 	}
 
 	static inline std::vector<jive::output*>
