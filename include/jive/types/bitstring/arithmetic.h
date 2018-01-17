@@ -36,13 +36,13 @@ public: \
 \
 	virtual std::unique_ptr<bitunary_op> \
 	create(size_t nbits) const override; \
-}; \
 \
-static inline jive::output * \
-create_##NAME(size_t nbits, jive::output * op) \
-{ \
-	return create_normalized(op->region(), NAME ## _op(nbits), {op})[0]; \
-} \
+	static inline jive::output * \
+	create(size_t nbits, jive::output * op) \
+	{ \
+		return create_normalized(op->region(), NAME ## _op(nbits), {op})[0]; \
+	} \
+}; \
 \
 static inline bool \
 is_ ## NAME ## _node(const jive::node * node) noexcept \
@@ -80,13 +80,13 @@ public: \
 \
 	virtual std::unique_ptr<bitbinary_op> \
 	create(size_t nbits) const override; \
-}; \
 \
-static inline jive::output * \
-create_##NAME(size_t nbits, jive::output * op1, jive::output * op2) \
-{ \
-	return create_normalized(op1->region(), NAME ## _op(nbits), {op1, op2})[0]; \
-} \
+	static inline jive::output * \
+	create(size_t nbits, jive::output * op1, jive::output * op2) \
+	{ \
+		return create_normalized(op1->region(), NAME ## _op(nbits), {op1, op2})[0]; \
+	} \
+}; \
 \
 static inline bool \
 is_ ## NAME ## _node(const jive::node * node) noexcept \

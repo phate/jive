@@ -31,8 +31,8 @@ static int types_bitstring_arithmetic_test_bitand(void)
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 
-	auto and0 = create_bitand(32, s0, s1);
-	auto and1 = create_bitand(32, c0, c1);
+	auto and0 = bitand_op::create(32, s0, s1);
+	auto and1 = bitand_op::create(32, c0, c1);
 
 	graph.add_export(and0, "dummy");
 	graph.add_export(and1, "dummy");
@@ -63,11 +63,11 @@ static int types_bitstring_arithmetic_test_bitashr(void)
 	auto c2 = create_bitconstant(graph.root(), 32, 2);
 	auto c3 = create_bitconstant(graph.root(), 32, 32);
 
-	auto ashr0 = create_bitashr(32, s0, s1);
-	auto ashr1 = create_bitashr(32, c0, c2);
-	auto ashr2 = create_bitashr(32, c0, c3);
-	auto ashr3 = create_bitashr(32, c1, c2);
-	auto ashr4 = create_bitashr(32, c1, c3);
+	auto ashr0 = bitashr_op::create(32, s0, s1);
+	auto ashr1 = bitashr_op::create(32, c0, c2);
+	auto ashr2 = bitashr_op::create(32, c0, c3);
+	auto ashr3 = bitashr_op::create(32, c1, c2);
+	auto ashr4 = bitashr_op::create(32, c1, c3);
 
 	graph.add_export(ashr0, "dummy");
 	graph.add_export(ashr1, "dummy");
@@ -99,7 +99,7 @@ static int types_bitstring_arithmetic_test_bitdifference(void)
 	auto s0 = graph.add_import(bittype(32), "s0");
 	auto s1 = graph.add_import(bittype(32), "s1");
 
-	auto diff = create_bitsub(32, s0, s1);
+	auto diff = bitsub_op::create(32, s0, s1);
 
 	graph.add_export(diff, "dummy");
 
@@ -124,9 +124,9 @@ static int types_bitstring_arithmetic_test_bitnegate(void)
 	auto s0 = graph.add_import(bittype(32), "s0");
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 
-	auto neg0 = create_bitneg(32, s0);
-	auto neg1 = create_bitneg(32, c0);
-	auto neg2 = create_bitneg(32, neg1);
+	auto neg0 = bitneg_op::create(32, s0);
+	auto neg1 = bitneg_op::create(32, c0);
+	auto neg2 = bitneg_op::create(32, neg1);
 
 	graph.add_export(neg0, "dummy");
 	graph.add_export(neg1, "dummy");
@@ -154,9 +154,9 @@ static int types_bitstring_arithmetic_test_bitnot(void)
 	auto s0 = graph.add_import(bittype(32), "s0");
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 
-	auto not0 = create_bitnot(32, s0);
-	auto not1 = create_bitnot(32, c0);
-	auto not2 = create_bitnot(32, not1);
+	auto not0 = bitnot_op::create(32, s0);
+	auto not1 = bitnot_op::create(32, c0);
+	auto not2 = bitnot_op::create(32, not1);
 
 	graph.add_export(not0, "dummy");
 	graph.add_export(not1, "dummy");
@@ -187,8 +187,8 @@ static int types_bitstring_arithmetic_test_bitor(void)
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 
-	auto or0 = create_bitor(32, s0, s1);
-	auto or1 = create_bitor(32, c0, c1);
+	auto or0 = bitor_op::create(32, s0, s1);
+	auto or1 = bitor_op::create(32, c0, c1);
 
 	graph.add_export(or0, "dummy");
 	graph.add_export(or1, "dummy");
@@ -217,8 +217,8 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 
-	auto product0 = create_bitmul(32, s0, s1);
-	auto product1 = create_bitmul(32, c0, c1);
+	auto product0 = bitmul_op::create(32, s0, s1);
+	auto product1 = bitmul_op::create(32, c0, c1);
 
 	graph.add_export(product0, "dummy");
 	graph.add_export(product1, "dummy");
@@ -245,7 +245,7 @@ static int types_bitstring_arithmetic_test_bitshiproduct(void)
 	auto s0 = graph.add_import(bittype(32), "s0");
 	auto s1 = graph.add_import(bittype(32), "s1");
 
-	auto shiproduct = create_bitsmulh(32, s0, s1);
+	auto shiproduct = bitsmulh_op::create(32, s0, s1);
 
 	graph.add_export(shiproduct, "dummy");
 
@@ -274,9 +274,9 @@ static int types_bitstring_arithmetic_test_bitshl(void)
 	auto c1 = create_bitconstant(graph.root(), 32, 2);
 	auto c2 = create_bitconstant(graph.root(), 32, 32);
 
-	auto shl0 = create_bitshl(32, s0, s1);
-	auto shl1 = create_bitshl(32, c0, c1);
-	auto shl2 = create_bitshl(32, c0, c2);
+	auto shl0 = bitshl_op::create(32, s0, s1);
+	auto shl1 = bitshl_op::create(32, c0, c1);
+	auto shl2 = bitshl_op::create(32, c0, c2);
 
 	graph.add_export(shl0, "dummy");
 	graph.add_export(shl1, "dummy");
@@ -308,9 +308,9 @@ static int types_bitstring_arithmetic_test_bitshr(void)
 	auto c1 = create_bitconstant(graph.root(), 32, 2);
 	auto c2 = create_bitconstant(graph.root(), 32, 32);
 
-	auto shr0 = create_bitshr(32, s0, s1);
-	auto shr1 = create_bitshr(32, c0, c1);
-	auto shr2 = create_bitshr(32, c0, c2);
+	auto shr0 = bitshr_op::create(32, s0, s1);
+	auto shr1 = bitshr_op::create(32, c0, c1);
+	auto shr2 = bitshr_op::create(32, c0, c2);
 
 	graph.add_export(shr0, "dummy");
 	graph.add_export(shr1, "dummy");
@@ -341,8 +341,8 @@ static int types_bitstring_arithmetic_test_bitsmod(void)
 	auto c0 = create_bitconstant(graph.root(), 32, -7);
 	auto c1 = create_bitconstant(graph.root(), 32, 3);
 
-	auto smod0 = create_bitsmod(32, s0, s1);
-	auto smod1 = create_bitsmod(32, c0, c1);
+	auto smod0 = bitsmod_op::create(32, s0, s1);
+	auto smod1 = bitsmod_op::create(32, c0, c1);
 
 	graph.add_export(smod0, "dummy");
 	graph.add_export(smod1, "dummy");
@@ -372,8 +372,8 @@ static int types_bitstring_arithmetic_test_bitsquotient(void)
 	auto c0 = create_bitconstant(graph.root(), 32, 7);
 	auto c1 = create_bitconstant(graph.root(), 32, -3);
 
-	auto squot0 = create_bitsdiv(32, s0, s1);
-	auto squot1 = create_bitsdiv(32, c0, c1);
+	auto squot0 = bitsdiv_op::create(32, s0, s1);
+	auto squot1 = bitsdiv_op::create(32, c0, c1);
 
 	graph.add_export(squot0, "dummy");
 	graph.add_export(squot1, "dummy");
@@ -403,8 +403,8 @@ static int types_bitstring_arithmetic_test_bitsum(void)
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 
-	auto sum0 = create_bitadd(32, s0, s1);
-	auto sum1 = create_bitadd(32, c0, c1);
+	auto sum0 = bitadd_op::create(32, s0, s1);
+	auto sum1 = bitadd_op::create(32, c0, c1);
 
 	graph.add_export(sum0, "dummy");
 	graph.add_export(sum1, "dummy");
@@ -431,7 +431,7 @@ static int types_bitstring_arithmetic_test_bituhiproduct(void)
 	auto s0 = graph.add_import(bittype(32), "s0");
 	auto s1 = graph.add_import(bittype(32), "s1");
 
-	auto uhiproduct = create_bitumulh(32, s0, s1);
+	auto uhiproduct = bitumulh_op::create(32, s0, s1);
 
 	graph.add_export(uhiproduct, "dummy");
 
@@ -459,8 +459,8 @@ static int types_bitstring_arithmetic_test_bitumod(void)
 	auto c0 = create_bitconstant(graph.root(), 32, 7);
 	auto c1 = create_bitconstant(graph.root(), 32, 3);
 
-	auto umod0 = create_bitumod(32, s0, s1);
-	auto umod1 = create_bitumod(32, c0, c1);
+	auto umod0 = bitumod_op::create(32, s0, s1);
+	auto umod1 = bitumod_op::create(32, c0, c1);
 
 	graph.add_export(umod0, "dummy");
 	graph.add_export(umod1, "dummy");
@@ -490,8 +490,8 @@ static int types_bitstring_arithmetic_test_bituquotient(void)
 	auto c0 = create_bitconstant(graph.root(), 32, 7);
 	auto c1 = create_bitconstant(graph.root(), 32, 3);
 
-	auto uquot0 = create_bitudiv(32, s0, s1);
-	auto uquot1 = create_bitudiv(32, c0, c1);
+	auto uquot0 = bitudiv_op::create(32, s0, s1);
+	auto uquot1 = bitudiv_op::create(32, c0, c1);
 
 	graph.add_export(uquot0, "dummy");
 	graph.add_export(uquot1, "dummy");
@@ -521,8 +521,8 @@ static int types_bitstring_arithmetic_test_bitxor(void)
 	auto c0 = create_bitconstant(graph.root(), 32, 3);
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 
-	auto xor0 = create_bitxor(32, s0, s1);
-	auto xor1 = create_bitxor(32, c0, c1);
+	auto xor0 = bitxor_op::create(32, s0, s1);
+	auto xor1 = bitxor_op::create(32, c0, c1);
 
 	graph.add_export(xor0, "dummy");
 	graph.add_export(xor1, "dummy");
@@ -565,10 +565,10 @@ static int types_bitstring_comparison_test_bitequal(void)
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant_undefined(graph.root(), 32);
 
-	auto equal0 = create_biteq(32, s0, s1);
-	auto equal1 = create_biteq(32, c0, c0);
-	auto equal2 = create_biteq(32, c0, c1);
-	auto equal3 = create_biteq(32, c0, c2);
+	auto equal0 = biteq_op::create(32, s0, s1);
+	auto equal1 = biteq_op::create(32, c0, c0);
+	auto equal2 = biteq_op::create(32, c0, c1);
+	auto equal3 = biteq_op::create(32, c0, c2);
 
 	graph.add_export(equal0, "dummy");
 	graph.add_export(equal1, "dummy");
@@ -601,10 +601,10 @@ static int types_bitstring_comparison_test_bitnotequal(void)
 	auto c1 = create_bitconstant(graph.root(), 32, 5);
 	auto c2 = create_bitconstant_undefined(graph.root(), 32);
 
-	auto nequal0 = create_bitne(32, s0, s1);
-	auto nequal1 = create_bitne(32, c0, c0);
-	auto nequal2 = create_bitne(32, c0, c1);
-	auto nequal3 = create_bitne(32, c0, c2);
+	auto nequal0 = bitne_op::create(32, s0, s1);
+	auto nequal1 = bitne_op::create(32, c0, c0);
+	auto nequal2 = bitne_op::create(32, c0, c1);
+	auto nequal3 = bitne_op::create(32, c0, c2);
 
 	graph.add_export(nequal0, "dummy");
 	graph.add_export(nequal1, "dummy");
@@ -638,11 +638,11 @@ static int types_bitstring_comparison_test_bitsgreater(void)
 	auto c2 = create_bitconstant(graph.root(), 32, 0x7fffffffL);
 	auto c3 = create_bitconstant(graph.root(), 32, (-0x7fffffffL-1));
 
-	auto sgreater0 = create_bitsgt(32, s0, s1);
-	auto sgreater1 = create_bitsgt(32, c0, c1);
-	auto sgreater2 = create_bitsgt(32, c1, c0);
-	auto sgreater3 = create_bitsgt(32, s0, c2);
-	auto sgreater4 = create_bitsgt(32, c3, s1);
+	auto sgreater0 = bitsgt_op::create(32, s0, s1);
+	auto sgreater1 = bitsgt_op::create(32, c0, c1);
+	auto sgreater2 = bitsgt_op::create(32, c1, c0);
+	auto sgreater3 = bitsgt_op::create(32, s0, c2);
+	auto sgreater4 = bitsgt_op::create(32, c3, s1);
 
 	graph.add_export(sgreater0, "dummy");
 	graph.add_export(sgreater1, "dummy");
@@ -678,12 +678,12 @@ static int types_bitstring_comparison_test_bitsgreatereq(void)
 	auto c2 = create_bitconstant(graph.root(), 32, 0x7fffffffL);
 	auto c3 = create_bitconstant(graph.root(), 32, (-0x7fffffffL-1));
 
-	auto sgreatereq0 = create_bitsge(32, s0, s1);
-	auto sgreatereq1 = create_bitsge(32, c0, c1);
-	auto sgreatereq2 = create_bitsge(32, c1, c0);
-	auto sgreatereq3 = create_bitsge(32, c0, c0);
-	auto sgreatereq4 = create_bitsge(32, c2, s0);
-	auto sgreatereq5 = create_bitsge(32, s1, c3);
+	auto sgreatereq0 = bitsge_op::create(32, s0, s1);
+	auto sgreatereq1 = bitsge_op::create(32, c0, c1);
+	auto sgreatereq2 = bitsge_op::create(32, c1, c0);
+	auto sgreatereq3 = bitsge_op::create(32, c0, c0);
+	auto sgreatereq4 = bitsge_op::create(32, c2, s0);
+	auto sgreatereq5 = bitsge_op::create(32, s1, c3);
 
 	graph.add_export(sgreatereq0, "dummy");
 	graph.add_export(sgreatereq1, "dummy");
@@ -721,11 +721,11 @@ static int types_bitstring_comparison_test_bitsless(void)
 	auto c2 = create_bitconstant(graph.root(), 32, 0x7fffffffL);
 	auto c3 = create_bitconstant(graph.root(), 32, (-0x7fffffffL-1));
 
-	auto sless0 = create_bitslt(32, s0, s1);
-	auto sless1 = create_bitslt(32, c0, c1);
-	auto sless2 = create_bitslt(32, c1, c0);
-	auto sless3 = create_bitslt(32, c2, s0);
-	auto sless4 = create_bitslt(32, s1, c3);
+	auto sless0 = bitslt_op::create(32, s0, s1);
+	auto sless1 = bitslt_op::create(32, c0, c1);
+	auto sless2 = bitslt_op::create(32, c1, c0);
+	auto sless3 = bitslt_op::create(32, c2, s0);
+	auto sless4 = bitslt_op::create(32, s1, c3);
 
 	graph.add_export(sless0, "dummy");
 	graph.add_export(sless1, "dummy");
@@ -761,12 +761,12 @@ static int types_bitstring_comparison_test_bitslesseq(void)
 	auto c2 = create_bitconstant(graph.root(), 32, 0x7fffffffL);
 	auto c3 = create_bitconstant(graph.root(), 32, (-0x7fffffffL-1));
 
-	auto slesseq0 = create_bitsle(32, s0, s1);
-	auto slesseq1 = create_bitsle(32, c0, c1);
-	auto slesseq2 = create_bitsle(32, c0, c0);
-	auto slesseq3 = create_bitsle(32, c1, c0);
-	auto slesseq4 = create_bitsle(32, s0, c2);
-	auto slesseq5 = create_bitsle(32, c3, s1);
+	auto slesseq0 = bitsle_op::create(32, s0, s1);
+	auto slesseq1 = bitsle_op::create(32, c0, c1);
+	auto slesseq2 = bitsle_op::create(32, c0, c0);
+	auto slesseq3 = bitsle_op::create(32, c1, c0);
+	auto slesseq4 = bitsle_op::create(32, s0, c2);
+	auto slesseq5 = bitsle_op::create(32, c3, s1);
 
 	graph.add_export(slesseq0, "dummy");
 	graph.add_export(slesseq1, "dummy");
@@ -804,11 +804,11 @@ static int types_bitstring_comparison_test_bitugreater(void)
 	auto c2 = create_bitconstant(graph.root(), 32, (0xffffffffUL));
 	auto c3 = create_bitconstant(graph.root(), 32, 0);
 
-	auto ugreater0 = create_bitugt(32, s0, s1);
-	auto ugreater1 = create_bitugt(32, c0, c1);
-	auto ugreater2 = create_bitugt(32, c1, c0);
-	auto ugreater3 = create_bitugt(32, s0, c2);
-	auto ugreater4 = create_bitugt(32, c3, s1);
+	auto ugreater0 = bitugt_op::create(32, s0, s1);
+	auto ugreater1 = bitugt_op::create(32, c0, c1);
+	auto ugreater2 = bitugt_op::create(32, c1, c0);
+	auto ugreater3 = bitugt_op::create(32, s0, c2);
+	auto ugreater4 = bitugt_op::create(32, c3, s1);
 
 	graph.add_export(ugreater0, "dummy");
 	graph.add_export(ugreater1, "dummy");
@@ -844,12 +844,12 @@ static int types_bitstring_comparison_test_bitugreatereq(void)
 	auto c2 = create_bitconstant(graph.root(), 32, (0xffffffffUL));
 	auto c3 = create_bitconstant(graph.root(), 32, 0);
 
-	auto ugreatereq0 = create_bituge(32, s0, s1);
-	auto ugreatereq1 = create_bituge(32, c0, c1);
-	auto ugreatereq2 = create_bituge(32, c1, c0);
-	auto ugreatereq3 = create_bituge(32, c0, c0);
-	auto ugreatereq4 = create_bituge(32, c2, s0);
-	auto ugreatereq5 = create_bituge(32, s1, c3);
+	auto ugreatereq0 = bituge_op::create(32, s0, s1);
+	auto ugreatereq1 = bituge_op::create(32, c0, c1);
+	auto ugreatereq2 = bituge_op::create(32, c1, c0);
+	auto ugreatereq3 = bituge_op::create(32, c0, c0);
+	auto ugreatereq4 = bituge_op::create(32, c2, s0);
+	auto ugreatereq5 = bituge_op::create(32, s1, c3);
 
 	graph.add_export(ugreatereq0, "dummy");
 	graph.add_export(ugreatereq1, "dummy");
@@ -887,11 +887,11 @@ static int types_bitstring_comparison_test_bituless(void)
 	auto c2 = create_bitconstant(graph.root(), 32, (0xffffffffUL));
 	auto c3 = create_bitconstant(graph.root(), 32, 0);
 
-	auto uless0 = create_bitult(32, s0, s1);
-	auto uless1 = create_bitult(32, c0, c1);
-	auto uless2 = create_bitult(32, c1, c0);
-	auto uless3 = create_bitult(32, c2, s0);
-	auto uless4 = create_bitult(32, s1, c3);
+	auto uless0 = bitult_op::create(32, s0, s1);
+	auto uless1 = bitult_op::create(32, c0, c1);
+	auto uless2 = bitult_op::create(32, c1, c0);
+	auto uless3 = bitult_op::create(32, c2, s0);
+	auto uless4 = bitult_op::create(32, s1, c3);
 
 	graph.add_export(uless0, "dummy");
 	graph.add_export(uless1, "dummy");
@@ -927,12 +927,12 @@ static int types_bitstring_comparison_test_bitulesseq(void)
 	auto c2 = create_bitconstant(graph.root(), 32, (0xffffffffUL));
 	auto c3 = create_bitconstant(graph.root(), 32, 0);
 
-	auto ulesseq0 = create_bitule(32, s0, s1);
-	auto ulesseq1 = create_bitule(32, c0, c1);
-	auto ulesseq2 = create_bitule(32, c0, c0);
-	auto ulesseq3 = create_bitule(32, c1, c0);
-	auto ulesseq4 = create_bitule(32, s0, c2);
-	auto ulesseq5 = create_bitule(32, c3, s1);
+	auto ulesseq0 = bitule_op::create(32, s0, s1);
+	auto ulesseq1 = bitule_op::create(32, c0, c1);
+	auto ulesseq2 = bitule_op::create(32, c0, c0);
+	auto ulesseq3 = bitule_op::create(32, c1, c0);
+	auto ulesseq4 = bitule_op::create(32, s0, c2);
+	auto ulesseq5 = bitule_op::create(32, c3, s1);
 
 	graph.add_export(ulesseq0, "dummy");
 	graph.add_export(ulesseq1, "dummy");
@@ -1020,11 +1020,11 @@ static int types_bitstring_test_normalize(void)
 	assert(sum_nf);
 	sum_nf->set_mutable(false);
 
-	auto sum0 = create_bitadd(32, imp, c0);
+	auto sum0 = bitadd_op::create(32, imp, c0);
 	assert(sum0->node()->operation() == bitadd_op(32));
 	assert(sum0->node()->ninputs() == 2);
 
-	auto sum1 = create_bitadd(32, sum0, c1);
+	auto sum1 = bitadd_op::create(32, sum0, c1);
 	assert(sum1->node()->operation() == bitadd_op(32));
 	assert(sum1->node()->ninputs() == 2);
 
@@ -1068,14 +1068,14 @@ static int types_bitstring_test_reduction(void)
 	auto a = create_bitconstant(graph.root(), "1100");
 	auto b = create_bitconstant(graph.root(), "1010");
 
-	assert_constant(create_bitand(4, a, b), 4, "1000");
-	assert_constant(create_bitor(4, a, b), 4, "1110");
-	assert_constant(create_bitxor(4, a, b), 4, "0110");
-	assert_constant(create_bitadd(4, a, b), 4, "0001");
-	assert_constant(create_bitmul(4, a, b), 4, "1111");
+	assert_constant(bitand_op::create(4, a, b), 4, "1000");
+	assert_constant(bitor_op::create(4, a, b), 4, "1110");
+	assert_constant(bitxor_op::create(4, a, b), 4, "0110");
+	assert_constant(bitadd_op::create(4, a, b), 4, "0001");
+	assert_constant(bitmul_op::create(4, a, b), 4, "1111");
 	assert_constant(jive_bitconcat({a, b}), 8, "11001010");
-	assert_constant(create_bitneg(4, a), 4, "1011");
-	assert_constant(create_bitneg(4, b), 4, "1101");
+	assert_constant(bitneg_op::create(4, a), 4, "1011");
+	assert_constant(bitneg_op::create(4, b), 4, "1101");
 	
 	graph.prune();
 	

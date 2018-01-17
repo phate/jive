@@ -219,7 +219,7 @@ transform_memberof(jive::node * node, memlayout_mapper & mapper)
 	auto offset = create_bitconstant(node->region(), nbits, elem_offset);
 	auto address = addr2bit_op::create(node->input(0)->origin(), nbits,
 		node->input(0)->origin()->type());
-	auto sum = create_bitadd(nbits, address, offset);
+	auto sum = bitadd_op::create(nbits, address, offset);
 	auto off_address = bit2addr_op::create(sum, nbits, node->output(0)->type());
 
 	node->output(0)->replace(off_address);
@@ -237,7 +237,7 @@ transform_containerof(jive::node * node, memlayout_mapper & mapper)
 	auto offset = create_bitconstant(node->region(), nbits, elem_offset);
 	auto address = addr2bit_op::create(node->input(0)->origin(), nbits,
 		node->input(0)->origin()->type());
-	auto sum = create_bitsub(nbits, address, offset);
+	auto sum = bitsub_op::create(nbits, address, offset);
 	auto off_address = bit2addr_op::create(sum, nbits, node->output(0)->type());
 
 	node->output(0)->replace(off_address);
@@ -256,8 +256,8 @@ transform_arraysubscript(jive::node * node, memlayout_mapper & mapper)
 	auto address = addr2bit_op::create(node->input(0)->origin(), nbits,
 		node->input(0)->origin()->type());
 	auto elem_size = create_bitconstant(node->region(), nbits, elem_type_size);
-	auto offset = create_bitmul(nbits, elem_size, index);
-	auto sum = create_bitadd(nbits, address, offset);
+	auto offset = bitmul_op::create(nbits, elem_size, index);
+	auto sum = bitadd_op::create(nbits, address, offset);
 	auto off_address = bit2addr_op::create(sum, nbits, node->output(0)->type());
 	
 	node->output(0)->replace(off_address);
@@ -276,8 +276,8 @@ transform_arrayindex(jive::node * node, memlayout_mapper & mapper)
 	auto address2 = addr2bit_op::create(node->input(1)->origin(), nbits,
 		node->input(1)->origin()->type());
 	auto elem_size = create_bitconstant(node->region(), nbits, elem_type_size);
-	auto diff = create_bitsub(nbits, address1, address2);
-	auto div = create_bitsdiv(nbits, diff, elem_size);
+	auto diff = bitsub_op::create(nbits, address1, address2);
+	auto div = bitsdiv_op::create(nbits, diff, elem_size);
 
 	node->output(0)->replace(div);
 }

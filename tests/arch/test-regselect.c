@@ -36,10 +36,10 @@ static int test_main(void)
 	
 	auto lit = create_bitconstant(subroutine.region, 32, 42);
 	auto sym = subroutine.node->subregion(0)->add_argument(nullptr, bittype(32));
-	auto bitnot = create_bitnot(32, sym);
-	auto sum1 = create_bitadd(32, arg1, lit);
-	auto sum2 = create_bitadd(32, lit, bitnot);
-	auto res = create_bitudiv(32, sum1, sum2);
+	auto bitnot = bitnot_op::create(32, sym);
+	auto sum1 = bitadd_op::create(32, arg1, lit);
+	auto sum2 = bitadd_op::create(32, lit, bitnot);
+	auto res = bitudiv_op::create(32, sum1, sum2);
 	jive_subroutine_simple_set_result(subroutine, 0, dynamic_cast<jive::simple_output*>(res));
 	
 	graph.add_export(jive_subroutine_end(subroutine)->output(0), "dummy");

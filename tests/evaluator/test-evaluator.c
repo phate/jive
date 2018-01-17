@@ -52,13 +52,13 @@ fib(size_t n)
 	auto lv_k = theta->add_loopvar(k);
 	auto lv_n = theta->add_loopvar(n);
 
-	auto t = jive::create_bitadd(32, lv_i->argument(), lv_j->argument());
+	auto t = jive::bitadd_op::create(32, lv_i->argument(), lv_j->argument());
 
 	auto one = create_bitconstant(theta->subregion(), 32, 1);
 
-	auto new_k = jive::create_bitadd(32, one, lv_k->argument());
+	auto new_k = jive::bitadd_op::create(32, one, lv_k->argument());
 
-	auto cmp = jive::create_bitule(32, new_k, lv_n->argument());
+	auto cmp = bitule_op::create(32, new_k, lv_n->argument());
 	auto predicate = match(1, {{0,0}}, 1, 2, cmp);
 
 	lv_k->result()->divert_origin(new_k);
@@ -67,7 +67,7 @@ fib(size_t n)
 	lv_n->result()->divert_origin(lv_n->argument());
 	theta->set_predicate(predicate);
 
-	cmp = jive::create_bitule(32, k, n);
+	cmp = bitule_op::create(32, k, n);
 	predicate = match(1, {{0,0}}, 1, 2, cmp);
 
 	auto gamma = jive::gamma_node::create(predicate, 2);
@@ -143,6 +143,8 @@ unsigned int fib(unsigned int n){
      return fib(n - 1) + fib(n - 2);
  }
 */
+	using namespace jive;
+
 	jive::bittype bits32(32);
 	std::vector<const jive::type*> args({&bits32});
 	std::vector<const jive::type*> res({&bits32});
@@ -160,15 +162,15 @@ unsigned int fib(unsigned int n){
 	auto one = create_bitconstant(lb.subregion(), 32, 1);
 	auto two = create_bitconstant(lb.subregion(), 32, 2);
 
-	auto tmp = jive::create_bitsub(32, n, one);
+	auto tmp = jive::bitsub_op::create(32, n, one);
 	tmp = jive::fct::create_apply(dep, {tmp})[0];
 
-	auto tmp2 = jive::create_bitsub(32, n, two);
+	auto tmp2 = jive::bitsub_op::create(32, n, two);
 	tmp2 = jive::fct::create_apply(dep, {tmp2})[0];
 
-	auto result = jive::create_bitadd(32, tmp, tmp2);
+	auto result = bitadd_op::create(32, tmp, tmp2);
 
-	auto cmp = jive::create_bitult(32, n, two);
+	auto cmp = bitult_op::create(32, n, two);
 	auto predicate = match(1, {{0,0}}, 1, 2, cmp);
 
 	auto gamma = jive::gamma_node::create(predicate, 2);
@@ -245,7 +247,7 @@ test_loadstore(jive::graph * graph)
 	auto value = jive::bitload_op::create(address, 64, bits4, {state});
 
 	auto three = create_bitconstant(lb.subregion(), 4, 3);
-	value = create_bitadd(4, value, three);
+	value = jive::bitadd_op::create(4, value, three);
 
 	state = jive::bitstore_op::create(address, value, 64, bits4, {state})[0];
 
@@ -278,7 +280,7 @@ test_external_function()
 	jive::lambda_builder lb;
 	auto arguments = lb.begin_lambda(graph.root(), {{&bits64}, {&bits64}});
 	auto v = lb.add_dependency(i);
-	auto sum = jive::create_bitadd(64, arguments[0], v);
+	auto sum = jive::bitadd_op::create(64, arguments[0], v);
 	auto lambda = lb.end_lambda({sum});
 
 	graph.add_export(lambda->output(0), "test");

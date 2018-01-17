@@ -33,7 +33,7 @@ function_test_build_lambda(void)
 	auto arguments = lb.begin_lambda(graph.root(), {{&bt32, &bt32}, {&bt32}});
 	lb.add_dependency(x);
 
-	auto sum = create_bitadd(32, arguments[0], arguments[1]);
+	auto sum = bitadd_op::create(32, arguments[0], arguments[1]);
 
 	auto f1 = lb.end_lambda({sum});
 	auto f2 = static_cast<jive::structural_node*>(f1)->copy(graph.root(), {x});
