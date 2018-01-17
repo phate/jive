@@ -116,7 +116,7 @@ theta_node::copy(jive::region * region, jive::substitution_map & smap) const
 
 	/* redirect loop variables */
 	for (auto olv = begin(), nlv = theta->begin(); olv != end(); olv++, nlv++) {
-		(*nlv)->result()->divert_origin(rmap.lookup((*olv)->result()->origin()));
+		(*nlv)->result()->divert_to(rmap.lookup((*olv)->result()->origin()));
 		smap.insert(olv.output(), nlv.output());
 	}
 

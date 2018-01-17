@@ -332,7 +332,7 @@ jive_regselector_pull_node(jive::register_selector * self, jive::node * node)
 		}
 		
 		jive_negotiator_port_divert(port, reg_port->connection);
-		input->divert_origin(regvalue);
+		input->divert_to(regvalue);
 		jive_negotiator_fully_specialize(self);
 	}
 }

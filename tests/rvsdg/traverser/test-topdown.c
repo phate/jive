@@ -156,9 +156,9 @@ test_mutable_traverse()
 			seen_n2 = seen_n2 || (tmp == n2);
 			seen_n3 = seen_n3 || (tmp == n3);
 			if (n3->input(0)->origin() == n1->output(0))
-				n3->input(0)->divert_origin(n2->output(0));
+				n3->input(0)->divert_to(n2->output(0));
 			else
-				n3->input(0)->divert_origin(n1->output(0));
+				n3->input(0)->divert_to(n1->output(0));
 		}
 
 		assert(seen_n1);

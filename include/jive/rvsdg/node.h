@@ -77,7 +77,7 @@ public:
 	}
 
 	void
-	divert_origin(jive::output * new_origin);
+	divert_to(jive::output * new_origin);
 
 	inline const jive::type &
 	type() const noexcept
@@ -166,7 +166,7 @@ public:
 			return;
 
 		while (users_.size())
-			(*users_.begin())->divert_origin(new_origin);
+			(*users_.begin())->divert_to(new_origin);
 	}
 
 	inline user_iterator

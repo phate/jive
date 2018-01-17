@@ -61,10 +61,10 @@ fib(size_t n)
 	auto cmp = bitule_op::create(32, new_k, lv_n->argument());
 	auto predicate = match(1, {{0,0}}, 1, 2, cmp);
 
-	lv_k->result()->divert_origin(new_k);
-	lv_i->result()->divert_origin(lv_j->argument());
-	lv_j->result()->divert_origin(t);
-	lv_n->result()->divert_origin(lv_n->argument());
+	lv_k->result()->divert_to(new_k);
+	lv_i->result()->divert_to(lv_j->argument());
+	lv_j->result()->divert_to(t);
+	lv_n->result()->divert_to(lv_n->argument());
 	theta->set_predicate(predicate);
 
 	cmp = bitule_op::create(32, k, n);

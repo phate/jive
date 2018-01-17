@@ -128,7 +128,7 @@ public:
 	set_predicate(jive::output * p)
 	{
 		auto node = predicate()->origin()->node();
-		predicate()->divert_origin(p);
+		predicate()->divert_to(p);
 		if (node && !node->has_users())
 			remove(node);
 	}

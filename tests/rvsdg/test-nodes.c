@@ -104,7 +104,7 @@ test_node_depth()
 
 	jive::view(graph.root(), stdout);
 
-	bin->input(0)->divert_origin(x);
+	bin->input(0)->divert_to(x);
 	assert(bin->depth() == 0);
 
 }

@@ -28,8 +28,8 @@ test_main()
 	auto lv2 = theta->add_loopvar(imp2);
 	auto lv3 = theta->add_loopvar(imp3);
 
-	lv2->result()->divert_origin(lv3->argument());
-	lv3->result()->divert_origin(lv3->argument());
+	lv2->result()->divert_to(lv3->argument());
+	lv3->result()->divert_to(lv3->argument());
 	theta->set_predicate(lv1->argument());
 
 	graph.add_export(theta->output(0), "exp");
