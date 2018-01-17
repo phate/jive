@@ -160,7 +160,7 @@ public:
 	}
 
 	inline void
-	replace(jive::output * new_origin)
+	divert_users(jive::output * new_origin)
 	{
 		if (this == new_origin)
 			return;
@@ -410,14 +410,14 @@ outputs(const jive::node * node)
 }
 
 static inline void
-replace(
+divert_users(
 	jive::node * node,
 	const std::vector<jive::output*> & outputs)
 {
 	JIVE_DEBUG_ASSERT(node->noutputs() == outputs.size());
 
 	for (size_t n = 0; n < outputs.size(); n++)
-		node->output(n)->replace(outputs[n]);
+		node->output(n)->divert_users(outputs[n]);
 }
 
 template <class T> static inline bool

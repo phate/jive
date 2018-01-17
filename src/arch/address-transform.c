@@ -110,7 +110,7 @@ transform_load(jive::node * node, memlayout_mapper & mapper)
 	if (output_is_address)
 		load = bit2addr_op::create(load, nbits, node->output(0)->type());
 	
-	node->output(0)->replace(load);
+	node->output(0)->divert_users(load);
 }
 
 static void
@@ -147,8 +147,7 @@ transform_store(jive::node * node, memlayout_mapper & mapper)
 
 	auto ostates = bitstore_op::create(address, value, nbits, *datatype, states);
 
-	for (size_t n = 0; n < nstates; ++n)
-		node->output(n)->replace(ostates[n]);
+	divert_users(node, ostates);
 }
 
 static void
@@ -160,7 +159,7 @@ transform_lbl2addr(jive::node * node, memlayout_mapper & mapper)
 
 	auto label_o = lbl2bit_op::create(node->graph()->root(), nbits, op->label());
 	auto addr_o = bit2addr_op::create(label_o, nbits, node->output(0)->type());
-	node->output(0)->replace(addr_o);
+	node->output(0)->divert_users(addr_o);
 }
 
 static void
@@ -203,7 +202,7 @@ transform_call(jive::node * node, memlayout_mapper & mapper)
 		auto output = call[i];
 		if(dynamic_cast<const jive::addrtype*>(&node->output(i)->type()))
 			output = bit2addr_op::create(output, nbits, node->output(i)->type());
-		node->output(i)->replace(output);
+		node->output(i)->divert_users(output);
 	}
 }
 
@@ -222,7 +221,7 @@ transform_memberof(jive::node * node, memlayout_mapper & mapper)
 	auto sum = bitadd_op::create(nbits, address, offset);
 	auto off_address = bit2addr_op::create(sum, nbits, node->output(0)->type());
 
-	node->output(0)->replace(off_address);
+	node->output(0)->divert_users(off_address);
 }
 
 static void
@@ -240,7 +239,7 @@ transform_containerof(jive::node * node, memlayout_mapper & mapper)
 	auto sum = bitsub_op::create(nbits, address, offset);
 	auto off_address = bit2addr_op::create(sum, nbits, node->output(0)->type());
 
-	node->output(0)->replace(off_address);
+	node->output(0)->divert_users(off_address);
 }
 
 static void
@@ -260,7 +259,7 @@ transform_arraysubscript(jive::node * node, memlayout_mapper & mapper)
 	auto sum = bitadd_op::create(nbits, address, offset);
 	auto off_address = bit2addr_op::create(sum, nbits, node->output(0)->type());
 	
-	node->output(0)->replace(off_address);
+	node->output(0)->divert_users(off_address);
 }
 
 static void
@@ -279,7 +278,7 @@ transform_arrayindex(jive::node * node, memlayout_mapper & mapper)
 	auto diff = bitsub_op::create(nbits, address1, address2);
 	auto div = bitsdiv_op::create(nbits, diff, elem_size);
 
-	node->output(0)->replace(div);
+	node->output(0)->divert_users(div);
 }
 
 static void
@@ -305,7 +304,7 @@ transform_apply(jive::node * node, memlayout_mapper & mapper)
 	for (size_t n = 0; n < results.size(); n++) {
 		auto original = node->output(n);
 		auto substitute = bit2addr_op::create(results[n], nbits, original->type());
-		original->replace(substitute);
+		original->divert_users(substitute);
 	}
 }
 

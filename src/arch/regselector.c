@@ -282,7 +282,7 @@ jive_regselector_pull_node(jive::register_selector * self, jive::node * node)
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(self,
 				dynamic_cast<jive::simple_output*>(node->output(0))));
-			node->output(0)->replace(subst);
+			node->output(0)->divert_users(subst);
 			
 			if (!jive_negotiator_map_output(self, subst))
 				self->annotate_node(subst->node());
@@ -302,7 +302,7 @@ jive_regselector_pull_node(jive::register_selector * self, jive::node * node)
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(self,
 				dynamic_cast<jive::simple_output*>(node->output(0))));
-			node->output(0)->replace(subst);
+			node->output(0)->divert_users(subst);
 			
 			if (!jive_negotiator_map_output(self, subst))
 				self->annotate_node(subst->node());

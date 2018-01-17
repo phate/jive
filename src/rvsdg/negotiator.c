@@ -730,7 +730,7 @@ jive_negotiator_remove_split_nodes(jive::negotiator * self)
 			dynamic_cast<jive::simple_output*>(node->output(0)));
 		jive_negotiator_port_destroy(input_port);
 		jive_negotiator_port_destroy(output_port);
-		node->output(0)->replace(node->input(0)->origin());
+		node->output(0)->divert_users(node->input(0)->origin());
 		node->region()->remove_node(node);
 	}
 }

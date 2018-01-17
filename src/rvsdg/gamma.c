@@ -42,7 +42,7 @@ perform_predicate_reduction(jive::gamma_node * gamma)
 	gamma->subregion(alternative)->copy(gamma->region(), smap, false, false);
 
 	for (auto it = gamma->begin_exitvar(); it != gamma->end_exitvar(); it++)
-		it->replace(smap.lookup(it->result(alternative)->origin()));
+		it->divert_users(smap.lookup(it->result(alternative)->origin()));
 
 	remove(gamma);
 }
@@ -64,7 +64,7 @@ perform_invariant_reduction(jive::gamma_node * gamma)
 		}
 
 		if (n == it->nresults()) {
-			it->replace(argument->input()->origin());
+			it->divert_users(argument->input()->origin());
 			was_normalized = false;
 		}
 	}
@@ -135,7 +135,7 @@ perform_control_constant_reduction(std::unordered_set<jive::structural_output*> 
 		auto nalt = new_mapping.size()+1;
 		auto origin = match->input(0)->origin();
 		auto m = jive::match(match_op.nbits(), new_mapping, defalt, nalt, origin);
-		xv->replace(m);
+		xv->divert_users(m);
 	}
 }
 

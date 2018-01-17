@@ -88,7 +88,7 @@ convert_bitbinary(
 		instr = jive::create_instruction(node->region(), regreg_icls, {arg1, arg2});
 	}
 
-	node->output(0)->replace(instr->output(0));
+	node->output(0)->divert_users(instr->output(0));
 }
 
 static void
@@ -118,7 +118,7 @@ convert_divmod(jive::node * node, bool sign, size_t index)
 	}
 
 	auto instr = jive::create_instruction(node->region(), icls, {ext, arg1, arg2});
-	node->output(0)->replace(instr->output(index));
+	node->output(0)->divert_users(instr->output(index));
 }
 
 static void
@@ -131,7 +131,7 @@ convert_complex_bitbinary(
 	auto arg2 = node->input(1)->origin();
 
 	auto instr = jive::create_instruction(node->region(), icls, {arg1, arg2});
-	node->output(0)->replace(instr->output(result_index));
+	node->output(0)->divert_users(instr->output(result_index));
 }
 
 static const jive::detail::typeinfo_map<
@@ -303,7 +303,7 @@ convert_bitcmp(
 	auto tmp = jive::immediate_op::create(node->region(), imm);
 	auto jump_instr = jive::create_instruction(node->region(), jump_icls,
 		{cmp_instr->output(0), tmp}, {}, {jive::boolean});
-	node_->output(0)->replace(jump_instr->output(0));
+	node_->output(0)->divert_users(jump_instr->output(0));
 }
 
 static const jive::detail::typeinfo_map<
@@ -407,7 +407,7 @@ match_gpr_bitunary(jive::node * node)
 	if (i != bitunary_map.end()) {
 		auto icls = i->second;
 		auto instr = jive::create_instruction(node->region(), icls, {node->input(0)->origin()});
-		node->output(0)->replace(instr->output(0));
+		node->output(0)->divert_users(instr->output(0));
 	} else {
 		throw std::logic_error("Unknown operator");
 	}
@@ -423,7 +423,7 @@ match_gpr_immediate(jive::node * node)
 	auto instr = jive::create_instruction(node->region(),
 		&jive::i386::instr_int_load_imm::instance(), {tmp});
 
-	node->output(0)->replace(instr->output(0));
+	node->output(0)->divert_users(instr->output(0));
 }
 
 typedef enum {
@@ -475,9 +475,7 @@ match_gpr_load(jive::node * node)
 	auto instr = jive::create_instruction(node->region(),
 		&jive::i386::instr_int_load32_disp::instance(), operands, iports, oports);
 
-	node->output(0)->replace(instr->output(0));
-	for (size_t n = 1; n < node->noutputs(); n++)
-		node->output(n)->replace(instr->output(n));
+	divert_users(node, outputs(instr));
 }
 
 static void
@@ -506,8 +504,7 @@ match_gpr_store(jive::node * node)
 	auto instr = jive::create_instruction(node->region(),
 		&jive::i386::instr_int_store32_disp::instance(), operands, iports, oports);
 
-	for (size_t n = 0; n < node->noutputs(); n++)
-		node->output(n)->replace(instr->output(n));
+	divert_users(node, outputs(instr));
 }
 
 static void

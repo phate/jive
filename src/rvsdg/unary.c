@@ -40,8 +40,8 @@ unary_normal_form::normalize_node(jive::node * node) const
 		auto tmp = node->input(0)->origin();
 		jive_unop_reduction_path_t reduction = op.can_reduce_operand(tmp);
 		if (reduction != jive_unop_reduction_none) {
-			node->output(0)->replace(op.reduce_operand(reduction, tmp));
-			node->region()->remove_node(node);
+			divert_users(node, {op.reduce_operand(reduction, tmp)});
+			remove(node);
 			return false;
 		}
 	}

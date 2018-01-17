@@ -121,15 +121,15 @@ public:
 				concat_reduce_arg_pair);
 
 			if (new_args.size() == 1) {
-				node->output(0)->replace(new_args[0]);
-				node->region()->remove_node(node);
+				divert_users(node, new_args);
+				remove(node);
 				return false;
 			}
 		}
 		
 		if (args != new_args) {
 			bitconcat_op op(types_from_arguments(new_args));
-			replace(node, simple_node::create_normalized(node->region(), op, new_args));
+			divert_users(node, simple_node::create_normalized(node->region(), op, new_args));
 			remove(node);
 			return false;
 		}

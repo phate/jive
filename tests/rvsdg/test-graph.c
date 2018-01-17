@@ -100,7 +100,7 @@ test_prune_replace(void)
 
 	auto n4 = jive::test::simple_node_create(region, {type}, {n1->output(0)}, {type});
 
-	n2->output(0)->replace(n4->output(0));
+	n2->output(0)->divert_users(n4->output(0));
 	assert(n2->output(0)->nusers() == 0);
 
 	graph.prune();

@@ -75,11 +75,11 @@ substitute_call(jive::node * node)
 	JIVE_DEBUG_ASSERT(op->nresults() <= 1);
 	if (op->nresults() == 1) {
 		/* FIXME: assumes  int32 */
-		node->output(0)->replace(call->output(0));
+		node->output(0)->divert_users(call->output(0));
 	}
 
 	for (size_t n = 4; n < node->noutputs(); n++)
-		node->output(n)->replace(call->output(n));
+		node->output(n)->divert_users(call->output(n));
 
 	return call;
 }
