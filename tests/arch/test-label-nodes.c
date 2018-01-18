@@ -56,12 +56,11 @@ static int test_main(void)
 	assert(o2->node()->operation() != *attrs4);
 	assert(o2->node()->operation() != *attrs3);
 	
-	jive::addrtype addr;
-	bittype bits32(32);
-	bittype bits16(16);
-	auto bottom = jive::test::simple_node_create(graph.root(),
-		{addr, addr, bits32, bits32, bits16}, {o0, o1, o2, o3, o4}, {addr});
-	graph.add_export(bottom->output(0), "dummy");
+	graph.add_export(o0, "");
+	graph.add_export(o1, "");
+	graph.add_export(o2, "");
+	graph.add_export(o3, "");
+	graph.add_export(o4, "");
 
 	jive::view(graph.root(), stderr);
 
@@ -74,6 +73,5 @@ static int test_main(void)
 
 	return 0;
 }
-
 
 JIVE_UNIT_TEST_REGISTER("arch/test-label-nodes", test_main)

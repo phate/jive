@@ -30,22 +30,25 @@ region_contains_node(const jive::region * region, const jive::node * n)
 static int
 test_recursive_prune()
 {
+	using namespace jive;
+
+	test::valuetype t;
+
 	jive::graph graph;
-	jive::test::valuetype t;
 	auto imp = graph.add_import(t, "i");
 
-	auto n1 = jive::test::simple_node_create(graph.root(), {t}, {imp}, {t});
-	auto n2 = jive::test::simple_node_create(graph.root(), {t}, {imp}, {t});
+	auto n1 = test::simple_node_create(graph.root(), {t}, {imp}, {t});
+	auto n2 = test::simple_node_create(graph.root(), {t}, {imp}, {t});
 
-	auto n3 = jive::test::structural_node_create(graph.root(), 1);
+	auto n3 = test::structural_node_create(graph.root(), 1);
 	n3->add_input(t, imp);
 	auto a1 = n3->subregion(0)->add_argument(nullptr, t);
-	auto n4 = jive::test::simple_node_create(n3->subregion(0), {t}, {a1}, {t});
-	auto n5 = jive::test::simple_node_create(n3->subregion(0), {t}, {a1}, {t});
+	auto n4 = test::simple_node_create(n3->subregion(0), {t}, {a1}, {t});
+	auto n5 = test::simple_node_create(n3->subregion(0), {t}, {a1}, {t});
 	n3->subregion(0)->add_result(n4->output(0), nullptr, t);
 	auto o1 = n3->add_output(t);
 
-	auto n6 = jive::test::structural_node_create(n3->subregion(0), 1);
+	auto n6 = test::structural_node_create(n3->subregion(0), 1);
 
 	graph.add_export(n2->output(0), "n2");
 	graph.add_export(o1, "n3");
@@ -87,25 +90,26 @@ JIVE_UNIT_TEST_REGISTER("rvsdg/test-empty_graph_pruning", test_empty_graph_pruni
 static int
 test_prune_replace(void)
 {
-	jive::graph graph;
+	using namespace jive;
 
-	jive::region * region = graph.root();
-	jive::test::valuetype type;
-	auto n1 = jive::test::simple_node_create(region, {}, {}, {type});
-	auto n2 = jive::test::simple_node_create(region, {type}, {n1->output(0)}, {type});
-	auto n3 = jive::test::simple_node_create(region, {type}, {n2->output(0)}, {type});
+	test::valuetype type;
+
+	jive::graph graph;
+	auto n1 = test::simple_node_create(graph.root(), {}, {}, {type});
+	auto n2 = test::simple_node_create(graph.root(), {type}, {n1->output(0)}, {type});
+	auto n3 = test::simple_node_create(graph.root(), {type}, {n2->output(0)}, {type});
 
 	graph.add_export(n2->output(0), "n2");
 	graph.add_export(n3->output(0), "n3");
 
-	auto n4 = jive::test::simple_node_create(region, {type}, {n1->output(0)}, {type});
+	auto n4 = test::simple_node_create(graph.root(), {type}, {n1->output(0)}, {type});
 
 	n2->output(0)->divert_users(n4->output(0));
 	assert(n2->output(0)->nusers() == 0);
 
 	graph.prune();
 
-	assert(!region_contains_node(region, n2));
+	assert(!region_contains_node(graph.root(), n2));
 
 	return 0;
 }
@@ -115,16 +119,17 @@ JIVE_UNIT_TEST_REGISTER("rvsdg/test-prune-replace", test_prune_replace)
 static int
 test_graph(void)
 {
+	using namespace jive;
+
+	test::valuetype type;
+
 	jive::graph graph;
 	
-	jive::region * region = graph.root();
-	
-	jive::test::valuetype type;
-	auto n1 = jive::test::simple_node_create(region, {}, {}, {type});
+	auto n1 = test::simple_node_create(graph.root(), {}, {}, {type});
 	assert(n1);
 	assert(n1->depth() == 0);
 
-	auto n2 = jive::test::simple_node_create(region, {type}, {n1->output(0)}, {});
+	auto n2 = test::simple_node_create(graph.root(), {type}, {n1->output(0)}, {});
 	assert(n2);
 	assert(n2->depth() == 1);
 	

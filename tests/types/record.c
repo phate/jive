@@ -23,25 +23,23 @@ static int _test_rcdgroup(void)
 
 	jive::graph graph;
 	
-	bittype bits8(8);
-	bittype bits16(16);
-	bittype bits32(32);
-	auto dcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32});
+	auto dcl = rcddeclaration::create(&graph, {&bit8, &bit16, &bit32});
 	jive::rcdtype rcdtype(dcl);
 
 	auto edcl = rcddeclaration::create(&graph);
 	jive::rcdtype rcdtype_empty(edcl);
 
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits8, bits16, bits32});
-	jive::output * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
+	auto i0 = graph.add_import(bit8, "");
+	auto i1 = graph.add_import(bit16, "");
+	auto i2 = graph.add_import(bit32, "");
+
+	jive::output * tmparray1[] = {i0, i1, i2};
 
 	auto g0 = jive_group_create(dcl, 3, tmparray1);
 	auto g1 = jive_empty_group_create(&graph, edcl);
 
-	auto bottom = jive::test::simple_node_create(graph.root(), {rcdtype, rcdtype_empty}, {g0, g1},
-		{bits8});
-
-	graph.add_export(bottom->output(0), "dummy");
+	graph.add_export(g0, "");
+	graph.add_export(g1, "");
 
 	graph.normalize();
 	graph.prune();
@@ -61,18 +59,15 @@ static int _test_rcdselect()
 
 	jive::graph graph;
 
-	jive::addrtype addrtype;
-	bittype bits8(8);
-	bittype bits16(16);
-	bittype bits32(32);
-	auto dcl = rcddeclaration::create(&graph, {&bits8, &bits16, &bits32});
+	addrtype at;
+	auto dcl = rcddeclaration::create(&graph, {&bit8, &bit16, &bit32});
 	jive::rcdtype rcdtype(dcl);
 
-	auto a1 = graph.root()->add_argument(nullptr, bits8);
-	auto a2 = graph.root()->add_argument(nullptr, bits16);
-	auto a3 = graph.root()->add_argument(nullptr, bits32);
+	auto a1 = graph.root()->add_argument(nullptr, bit8);
+	auto a2 = graph.root()->add_argument(nullptr, bit16);
+	auto a3 = graph.root()->add_argument(nullptr, bit32);
 	auto a4 = graph.root()->add_argument(nullptr, rcdtype);
-	auto a5 = graph.root()->add_argument(nullptr, addrtype);
+	auto a5 = graph.root()->add_argument(nullptr, at);
 
 	std::vector<jive::output*> args({a1, a2, a3});
 	auto g0 = jive_group_create(dcl, 3, &args[0]);

@@ -18,7 +18,9 @@
 static void
 test_mux_mux_reduction()
 {
-	jive::test::statetype st;
+	using namespace jive;
+
+	test::statetype st;
 
 	jive::graph graph;
 	auto nf = graph.node_normal_form(typeid(jive::mux_op));
@@ -56,7 +58,9 @@ test_mux_mux_reduction()
 static void
 test_multiple_origin_reduction()
 {
-	jive::test::statetype st;
+	using namespace jive;
+
+	test::statetype st;
 
 	jive::graph graph;
 	auto nf = graph.node_normal_form(typeid(jive::mux_op));
@@ -68,14 +72,14 @@ test_multiple_origin_reduction()
 	auto mux1 = jive::create_state_merge(st, {x, x});
 	auto ex = graph.add_export(mux1, "m");
 
-	jive::view(graph.root(), stdout);
+	view(graph.root(), stdout);
 
 	mnf->set_mutable(true);
 	mnf->set_multiple_origin_reducible(true);
 	graph.normalize();
 	graph.prune();
 
-	jive::view(graph.root(), stdout);
+	view(graph.root(), stdout);
 
 	assert(ex->origin()->node()->ninputs() == 1);
 }

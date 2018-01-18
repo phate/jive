@@ -26,7 +26,8 @@ types_float_arithmetic_test_fltdifference(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltdifference", types_float_arithmetic_test_fltdifference)
+JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltdifference",
+	types_float_arithmetic_test_fltdifference)
 
 static int
 types_float_arithmetic_test_fltnegate(void)
@@ -45,8 +46,8 @@ types_float_arithmetic_test_fltnegate(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltnegate", types_float_arithmetic_test_fltnegate)
-
+JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltnegate",
+	types_float_arithmetic_test_fltnegate)
 
 static int types_float_arithmetic_test_fltproduct(void)
 {
@@ -65,7 +66,8 @@ static int types_float_arithmetic_test_fltproduct(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltproduct", types_float_arithmetic_test_fltproduct)
+JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltproduct",
+	types_float_arithmetic_test_fltproduct)
 
 static int types_float_arithmetic_test_fltquotient(void)
 {
@@ -84,7 +86,8 @@ static int types_float_arithmetic_test_fltquotient(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltquotient", types_float_arithmetic_test_fltquotient)
+JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltquotient",
+	types_float_arithmetic_test_fltquotient)
 
 static int types_float_arithmetic_test_fltsum(void)
 {
@@ -103,7 +106,8 @@ static int types_float_arithmetic_test_fltsum(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltsum", types_float_arithmetic_test_fltsum)
+JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltsum",
+	types_float_arithmetic_test_fltsum)
 
 static int types_float_comparison_test_fltequal(void)
 {
@@ -122,7 +126,8 @@ static int types_float_comparison_test_fltequal(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltequal", types_float_comparison_test_fltequal)
+JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltequal",
+	types_float_comparison_test_fltequal)
 
 static int types_float_comparison_test_fltgreater(void)
 {
@@ -141,7 +146,8 @@ static int types_float_comparison_test_fltgreater(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltgreater", types_float_comparison_test_fltgreater)
+JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltgreater",
+	types_float_comparison_test_fltgreater)
 
 static int types_float_comparison_test_fltgreatereq(void)
 {
@@ -160,7 +166,8 @@ static int types_float_comparison_test_fltgreatereq(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltgreatereq", types_float_comparison_test_fltgreatereq)
+JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltgreatereq",
+	types_float_comparison_test_fltgreatereq)
 
 static int types_float_comparison_test_fltless(void)
 {
@@ -179,7 +186,8 @@ static int types_float_comparison_test_fltless(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltless", types_float_comparison_test_fltless)
+JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltless",
+	types_float_comparison_test_fltless)
 
 static int types_float_comparison_test_fltlesseq(void)
 {
@@ -198,7 +206,8 @@ static int types_float_comparison_test_fltlesseq(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltlesseq", types_float_comparison_test_fltlesseq)
+JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltlesseq",
+	types_float_comparison_test_fltlesseq)
 
 static int
 types_float_comparison_test_fltnotequal(void)
@@ -218,7 +227,8 @@ types_float_comparison_test_fltnotequal(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltnotequal", types_float_comparison_test_fltnotequal)
+JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltnotequal",
+	types_float_comparison_test_fltnotequal)
 
 static int
 types_float_test_fltconstant(void)

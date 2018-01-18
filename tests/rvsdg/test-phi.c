@@ -19,13 +19,15 @@
 
 static int test_main()
 {
+	using namespace jive;
+
 	jive::graph graph;
 
-	jive::test::valuetype vtype;
-	jive::fct::type f0type({&vtype}, {});
-	jive::fct::type f1type({&vtype}, {&vtype});
+	test::valuetype vtype;
+	fct::type f0type({&vtype}, {});
+	fct::type f1type({&vtype}, {&vtype});
 
-	jive::phi_builder pb;
+	phi_builder pb;
 	pb.begin_phi(graph.root());
 	auto rv1 = pb.add_recvar(f0type);
 	auto rv2 = pb.add_recvar(f0type);

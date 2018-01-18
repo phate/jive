@@ -14,22 +14,25 @@
 static int
 test_main()
 {
-	jive::test::valuetype t;
+	using namespace jive;
+
+	test::valuetype t;
+
 	jive::graph graph;
 	auto i = graph.add_import(t, "i");
 
-	auto o1 = jive::test::simple_node_create(graph.root(), {}, {}, {t})->output(0);
-	auto o2 = jive::test::simple_node_create(graph.root(), {t}, {i}, {t})->output(0);
+	auto o1 = test::simple_node_create(graph.root(), {}, {}, {t})->output(0);
+	auto o2 = test::simple_node_create(graph.root(), {t}, {i}, {t})->output(0);
 
 	auto e1 = graph.add_export(o1, "o1");
 	auto e2 = graph.add_export(o2, "o2");
 
 	auto nf = dynamic_cast<jive::simple_normal_form*>(graph.node_normal_form(
-		typeid(jive::test::simple_op)));
+		typeid(test::simple_op)));
 	nf->set_mutable(false);
 
-	auto o3 = jive::test::simple_node_normalized_create(graph.root(), {}, {}, {t})[0];
-	auto o4 = jive::test::simple_node_normalized_create(graph.root(), {t}, {i}, {t})[0];
+	auto o3 = test::simple_node_normalized_create(graph.root(), {}, {}, {t})[0];
+	auto o4 = test::simple_node_normalized_create(graph.root(), {t}, {i}, {t})[0];
 
 	auto e3 = graph.add_export(o3, "o3");
 	auto e4 = graph.add_export(o4, "o4");
@@ -39,15 +42,15 @@ test_main()
 	assert(e1->origin() == e3->origin());
 	assert(e2->origin() == e4->origin());
 
-	auto o5 = jive::test::simple_node_normalized_create(graph.root(), {}, {}, {t})[0];
+	auto o5 = test::simple_node_normalized_create(graph.root(), {}, {}, {t})[0];
 	assert(o5 == e1->origin());
 
-	auto o6 = jive::test::simple_node_normalized_create(graph.root(), {t}, {i}, {t})[0];
+	auto o6 = test::simple_node_normalized_create(graph.root(), {t}, {i}, {t})[0];
 	assert(o6 == e2->origin());
 
 	nf->set_cse(false);
 
-	auto o7 = jive::test::simple_node_normalized_create(graph.root(), {}, {}, {t})[0];
+	auto o7 = test::simple_node_normalized_create(graph.root(), {}, {}, {t})[0];
 	assert(o7 != e1->origin());
 
 	graph.normalize();

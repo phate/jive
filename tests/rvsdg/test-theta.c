@@ -16,7 +16,7 @@ test_main()
 	using namespace jive;
 
 	jive::graph graph;
-	jive::test::valuetype t;
+	test::valuetype t;
 
 	auto imp1 = graph.add_import(boolean, "imp1");
 	auto imp2 = graph.add_import(t, "imp2");

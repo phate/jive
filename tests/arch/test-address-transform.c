@@ -28,15 +28,16 @@ test_address_transform(void)
 {
 	using namespace jive;
 
+	memtype mt;
+	addrtype at;
+
 	jive::graph graph;
+	auto i0 = graph.add_import(bit64, "");
+	auto i1 = graph.add_import(bit64, "");
+	auto i2 = graph.add_import(mt, "");
 
-	jive::memtype mem;
-	jive::addrtype at;
-	bittype bits64(64);
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {bits64, bits64, mem});
-
-	auto address0 = bit2addr_op::create(top->output(0), 64, at);
-	auto address1 = bit2addr_op::create(top->output(1), 64, at);
+	auto address0 = bit2addr_op::create(i0, 64, at);
+	auto address1 = bit2addr_op::create(i1, 64, at);
 
 	auto dcl = rcddeclaration::create(&graph, {&at, &at});
 
@@ -51,17 +52,15 @@ test_address_transform(void)
 	auto constant = create_bitconstant(graph.root(), 64, 1);
 	auto arraysub = jive_arraysubscript(call[0], &at, constant);
 
-	auto arrayindex = jive_arrayindex(call[0], call[1], &at, &bits64);
+	auto arrayindex = jive_arrayindex(call[0], call[1], &at, &bit64);
 
-	auto state = top->output(2);
-	auto load = addrload_op::create(arraysub, at, {top->output(2)});
-	auto store = addrstore_op::create(arraysub, arrayindex, bits64, {state})[0]->node();
+	auto load = addrload_op::create(arraysub, at, {i2});
+	auto store = addrstore_op::create(arraysub, arrayindex, bit64, {i2})[0]->node();
 
 	auto o_addr = addr2bit_op::create(load, 64, load->type());
 
-	auto bottom = jive::test::simple_node_create(graph.root(),
-		{bits64, mem}, {o_addr, store->output(0)}, {bits64});
-	graph.add_export(bottom->output(0), "dummy");
+	graph.add_export(o_addr, "");
+	graph.add_export(store->output(0), "");
 
 	jive::view(graph.root(), stdout);
 
@@ -81,20 +80,18 @@ test_address_transform_nodes(void)
 {
 	using namespace jive;
 
-	jive::graph graph;
+	addrtype at;
 
-	jive::addrtype addrtype;
-	bittype bits32(32);
-	bittype bits64(64);
-	auto i0 = graph.add_import(addrtype, "i0");
-	auto i1 = graph.add_import(bits32, "i1");
-	auto i2 = graph.add_import(bits64, "i2");
+	jive::graph graph;
+	auto i0 = graph.add_import(at, "i0");
+	auto i1 = graph.add_import(bit32, "i1");
+	auto i2 = graph.add_import(bit64, "i2");
 
 	auto b0 = addr2bit_op::create(i0, 32, i0->type());
-	auto a0 = bit2addr_op::create(b0, 32, addrtype);
+	auto a0 = bit2addr_op::create(b0, 32, at);
 
-	auto a1 = bit2addr_op::create(i1, 32, addrtype);
-	auto b1 = addr2bit_op::create(a1, 32, addrtype);
+	auto a1 = bit2addr_op::create(i1, 32, at);
+	auto b1 = addr2bit_op::create(a1, 32, at);
 
 	auto x0 = graph.add_export(a0, "x0");
 	auto x1 = graph.add_export(b1, "x1");
@@ -102,16 +99,16 @@ test_address_transform_nodes(void)
 	assert(x0->origin() == i0);
 	assert(x1->origin() == i1);
 
-	auto b2 = bit2addr_op::create(i1, 32, addrtype);
-	auto b3 = bit2addr_op::create(i1, 32, addrtype);
+	auto b2 = bit2addr_op::create(i1, 32, at);
+	auto b3 = bit2addr_op::create(i1, 32, at);
 	auto a2 = addr2bit_op::create(i0, 32, i0->type());
 	auto a3 = addr2bit_op::create(i0, 32, i0->type());
 
 	assert(a2->node()->operation() == a3->node()->operation());
 	assert(b2->node()->operation() == b3->node()->operation());
 
-	auto b4 = bit2addr_op::create(i2, 64, addrtype);
-	auto a4 = addr2bit_op::create(i0, 64, addrtype);
+	auto b4 = bit2addr_op::create(i2, 64, at);
+	auto a4 = addr2bit_op::create(i0, 64, at);
 
 	assert(a2->node()->operation() != a4->node()->operation());
 	assert(b2->node()->operation() != b4->node()->operation());
@@ -129,16 +126,16 @@ test_apply_transform(void)
 {
 	using namespace jive;
 
+	addrtype at;
+	fct::type ft({&at}, {&at});
+
 	jive::graph graph;
+	auto i0 = graph.add_import(ft, "");
+	auto i1 = graph.add_import(at, "");
 
-	jive::addrtype addrtype;
-	jive::fct::type fcttype({&addrtype}, {&addrtype});
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {fcttype, addrtype});
+	auto results = jive::fct::create_apply(i0, {i1});
 
-	auto results = jive::fct::create_apply(top->output(0), {top->output(1)});
-
-	auto bottom = jive::test::simple_node_create(graph.root(), {addrtype}, {results.begin(),
-		results.end()}, {});
+	auto x0 = graph.add_export(results[0], "");
 
 	jive::view(graph.root(), stdout);
 
@@ -147,7 +144,7 @@ test_apply_transform(void)
 
 	jive::view(graph.root(), stdout);
 
-	assert(is_bit2addr_node(bottom->input(0)->origin()->node()));
+	assert(is_bit2addr_node(x0->origin()->node()));
 
 	return 0;
 }

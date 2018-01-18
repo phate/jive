@@ -26,51 +26,53 @@ static int test_main(void)
 
 	jive::graph graph;
 
-	jive::addrtype addr;
-	bittype bits4(4);
-	bittype bits8(8);
-	bittype bits18(18);
-	bittype bits32(32);
-	auto rcddcl = rcddeclaration::create(&graph, {&bits4, &bits8, &bits18});
-	auto unndcl = unndeclaration::create(&graph, {&bits4, &bits8, &bits18});
+	addrtype at;
+	bittype bit4(4);
+	bittype bit18(18);
+	auto rcddcl = rcddeclaration::create(&graph, {&bit4, &bit8, &bit18});
+	auto unndcl = unndeclaration::create(&graph, {&bit4, &bit8, &bit18});
 
 	rcdtype record_t(rcddcl);
 	unntype union_t(unndcl);
 
-	auto s0 = jive_sizeof_create(graph.root(), &bits4);
-	auto s1 = jive_sizeof_create(graph.root(), &bits8);
-	auto s2 = jive_sizeof_create(graph.root(), &bits8);
-	auto s3 = jive_sizeof_create(graph.root(), &bits18);
-	auto s4 = jive_sizeof_create(graph.root(), &bits32);
-	auto s5 = jive_sizeof_create(graph.root(), &addr);
+	auto s0 = jive_sizeof_create(graph.root(), &bit4);
+	auto s1 = jive_sizeof_create(graph.root(), &bit8);
+	auto s2 = jive_sizeof_create(graph.root(), &bit8);
+	auto s3 = jive_sizeof_create(graph.root(), &bit18);
+	auto s4 = jive_sizeof_create(graph.root(), &bit32);
+	auto s5 = jive_sizeof_create(graph.root(), &at);
 	auto s6 = jive_sizeof_create(graph.root(), &record_t);
 	auto s7 = jive_sizeof_create(graph.root(), &union_t);
 
 	assert(s1->node()->operation() == s2->node()->operation());
 	assert(s0->node()->operation() != s3->node()->operation());
 
-	auto bottom = jive::test::simple_node_create(graph.root(),
-		std::vector<jive::port>(8, bits32), {s0, s1, s2, s3, s4, s5, s6, s7}, {bits32});
-	graph.add_export(bottom->output(0), "dummy");
+	auto x0 = graph.add_export(s0, "");
+	auto x1 = graph.add_export(s1, "");
+	auto x2 = graph.add_export(s2, "");
+	auto x3 = graph.add_export(s3, "");
+	auto x4 = graph.add_export(s4, "");
+	auto x5 = graph.add_export(s5, "");
+	auto x6 = graph.add_export(s6, "");
+	auto x7 = graph.add_export(s7, "");
 
 	jive::view(graph.root(), stdout);
 
-	jive::memlayout_mapper_simple layout_mapper(4);
-	for (jive::node * node : jive::topdown_traverser(graph.root())) {
-		if (dynamic_cast<const jive::sizeof_op *>(&node->operation())) {
+	memlayout_mapper_simple layout_mapper(4);
+	for (auto node : jive::topdown_traverser(graph.root())) {
+		if (dynamic_cast<const jive::sizeof_op*>(&node->operation()))
 			jive_sizeof_node_reduce(node, &layout_mapper);
-		}
 	}
 	graph.prune();
 
-	assert(bottom->input(0)->origin()->node()->operation() == uint_constant_op(32, 1));
-	assert(bottom->input(1)->origin()->node()->operation() == uint_constant_op(32, 1));
-	assert(bottom->input(2)->origin()->node()->operation() == uint_constant_op(32, 1));
-	assert(bottom->input(3)->origin()->node()->operation() == uint_constant_op(32, 4));
-	assert(bottom->input(4)->origin()->node()->operation() == uint_constant_op(32, 4));
-	assert(bottom->input(5)->origin()->node()->operation() == uint_constant_op(32, 4));
-	assert(bottom->input(6)->origin()->node()->operation() == uint_constant_op(32, 8));
-	assert(bottom->input(7)->origin()->node()->operation() == uint_constant_op(32, 4));
+	assert(x0->origin()->node()->operation() == uint_constant_op(32, 1));
+	assert(x1->origin()->node()->operation() == uint_constant_op(32, 1));
+	assert(x2->origin()->node()->operation() == uint_constant_op(32, 1));
+	assert(x3->origin()->node()->operation() == uint_constant_op(32, 4));
+	assert(x4->origin()->node()->operation() == uint_constant_op(32, 4));
+	assert(x5->origin()->node()->operation() == uint_constant_op(32, 4));
+	assert(x6->origin()->node()->operation() == uint_constant_op(32, 8));
+	assert(x7->origin()->node()->operation() == uint_constant_op(32, 4));
 	
 	jive::view(graph.root(), stdout);
 

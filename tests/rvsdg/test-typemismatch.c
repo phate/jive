@@ -16,17 +16,18 @@
 
 static int test_main(void)
 {
+	using namespace jive;
+
 	jive::graph graph;
 	
-	jive::region * region = graph.root();
-	jive::test::statetype type;
-	jive::test::valuetype value_type;
+	test::statetype type;
+	test::valuetype value_type;
 
-	auto n1 = jive::test::simple_node_create(region, {}, {}, {type});
+	auto n1 = test::simple_node_create(graph.root(), {}, {}, {type});
 
 	bool error_handler_called = false;
 	try {
-		jive::test::simple_node_create(region, {value_type}, {n1->output(0)}, {});
+		test::simple_node_create(graph.root(), {value_type}, {n1->output(0)}, {});
 	} catch (jive::type_error e) {
 		error_handler_called = true;
 	}

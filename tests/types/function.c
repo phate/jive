@@ -24,13 +24,11 @@ function_test_build_lambda(void)
 {
 	using namespace jive;
 
-	bittype bt32(32);
-
 	jive::graph graph;
-	auto x = graph.add_import(bt32, "x");
+	auto x = graph.add_import(bit32, "x");
 
 	jive::lambda_builder lb;
-	auto arguments = lb.begin_lambda(graph.root(), {{&bt32, &bt32}, {&bt32}});
+	auto arguments = lb.begin_lambda(graph.root(), {{&bit32, &bit32}, {&bit32}});
 	lb.add_dependency(x);
 
 	auto sum = bitadd_op::create(32, arguments[0], arguments[1]);
@@ -40,7 +38,7 @@ function_test_build_lambda(void)
 
 	jive::view(graph.root(), stderr);
 	
-	assert(f1->output(0)->type() == jive::fct::type({&bt32, &bt32}, {&bt32}));
+	assert(f1->output(0)->type() == fct::type({&bit32, &bit32}, {&bit32}));
 	assert(dynamic_cast<const jive::lambda_node*>(f2));
 	
 	return 0;
@@ -54,14 +52,13 @@ static int function_test_call(void)
 
 	jive::graph graph;
 
-	bittype btype(8);
-	jive::fct::type ftype({&btype}, {&btype}) ;
+	fct::type ftype({&bit8}, {&bit8}) ;
 
 	auto constant = create_bitconstant(graph.root(), "00001111");
 	auto func = graph.add_import(ftype, "sin");
 	auto ret = jive::fct::create_apply(func, {constant})[0];
 
-	assert(ret->type() == btype);
+	assert(ret->type() == bit8);
 
 	jive::view(graph.root(), stderr) ;
 
@@ -74,12 +71,10 @@ static int function_test_equals(void)
 {
 	using namespace jive;
 
-	bittype btype0(8);
-	bittype btype1(8);
-	jive::fct::type type0({&btype0}, {&btype0});
-	jive::fct::type type1({&btype0}, {&btype1});
-	jive::fct::type type2({&btype0}, {&btype1, &btype1});
-	jive::fct::type type3({&btype0, &btype0}, {&btype0});
+	fct::type type0({&bit8}, {&bit8});
+	fct::type type1({&bit8}, {&bit8});
+	fct::type type2({&bit8}, {&bit8, &bit8});
+	fct::type type3({&bit8, &bit8}, {&bit8});
 
 	assert(type0 == type0);
 	assert(type0 == type1);

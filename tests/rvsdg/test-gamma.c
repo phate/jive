@@ -19,27 +19,25 @@ test_gamma(void)
 {
 	using namespace jive;
 
+	bittype bit2(2);
+
 	jive::graph graph;
-
-	bittype bits2(2);
-	bittype bits32(32);
-
-	auto cmp = graph.add_import(bits2, "");
-	auto v0 = graph.add_import(bits32, "");
-	auto v1 = graph.add_import(bits32, "");
-	auto v2 = graph.add_import(bits32, "");
+	auto cmp = graph.add_import(bit2, "");
+	auto v0 = graph.add_import(bit32, "");
+	auto v1 = graph.add_import(bit32, "");
+	auto v2 = graph.add_import(bit32, "");
 
 	auto pred = match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 
-	auto gamma = jive::gamma_node::create(pred, 3);
+	auto gamma = gamma_node::create(pred, 3);
 	auto ev0 = gamma->add_entryvar(v0);
 	auto ev1 = gamma->add_entryvar(v1);
 	auto ev2 = gamma->add_entryvar(v2);
 	gamma->add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
 
 	graph.add_export(gamma->output(0), "dummy");
-	auto gamma2 = static_cast<jive::structural_node*>(gamma)->copy(graph.root(), {pred, v0, v1, v2});
-	jive::view(graph.root(), stdout);
+	auto gamma2 = static_cast<structural_node*>(gamma)->copy(graph.root(), {pred, v0, v1, v2});
+	view(graph.root(), stdout);
 
 	assert(gamma && gamma->operation() == jive::gamma_op(3));
 	assert(dynamic_cast<const jive::gamma_node*>(gamma2));
@@ -51,18 +49,17 @@ test_predicate_reduction(void)
 	using namespace jive;
 
 	jive::graph graph;
-	jive::gamma_op::normal_form(&graph)->set_predicate_reduction(true);
+	gamma_op::normal_form(&graph)->set_predicate_reduction(true);
 
 	bittype bits2(2);
-	bittype bits32(32);
 
-	auto v0 = graph.add_import(bits32, "");
-	auto v1 = graph.add_import(bits32, "");
-	auto v2 = graph.add_import(bits32, "");
+	auto v0 = graph.add_import(bit32, "");
+	auto v1 = graph.add_import(bit32, "");
+	auto v2 = graph.add_import(bit32, "");
 
 	auto pred = jive_control_constant(graph.root(), 3, 1);
 
-	auto gamma = jive::gamma_node::create(pred, 3);
+	auto gamma = gamma_node::create(pred, 3);
 	auto ev0 = gamma->add_entryvar(v0);
 	auto ev1 = gamma->add_entryvar(v1);
 	auto ev2 = gamma->add_entryvar(v2);
@@ -83,10 +80,10 @@ test_invariant_reduction(void)
 {
 	using namespace jive;
 
-	jive::graph graph;
-	jive::gamma_op::normal_form(&graph)->set_invariant_reduction(true);
+	test::valuetype vtype;
 
-	jive::test::valuetype vtype;
+	jive::graph graph;
+	gamma_op::normal_form(&graph)->set_invariant_reduction(true);
 
 	auto pred = graph.add_import(boolean, "");
 	auto v = graph.add_import(vtype, "");
@@ -110,16 +107,14 @@ test_control_constant_reduction()
 {
 	using namespace jive;
 
-	bittype bt(1);
-
 	jive::graph graph;
-	jive::gamma_op::normal_form(&graph)->set_control_constant_reduction(true);
+	gamma_op::normal_form(&graph)->set_control_constant_reduction(true);
 
-	auto x = graph.add_import(bt, "x");
+	auto x = graph.add_import(bit1, "x");
 
 	auto c = match(1, {{0, 0}}, 1, 2, x);
 
-	auto gamma = jive::gamma_node::create(c, 2);
+	auto gamma = gamma_node::create(c, 2);
 
 	auto t = jive_control_true(gamma->subregion(0));
 	auto f = jive_control_false(gamma->subregion(1));
@@ -133,8 +128,8 @@ test_control_constant_reduction()
 	jive::view(graph.root(), stdout);
 
 	auto match = ex->origin()->node();
-	assert(match && jive::is_match_op(match->operation()));
-	auto & match_op = jive::to_match_op(match->operation());
+	assert(match && is_match_op(match->operation()));
+	auto & match_op = to_match_op(match->operation());
 	assert(match_op.default_alternative() == 0);
 }
 

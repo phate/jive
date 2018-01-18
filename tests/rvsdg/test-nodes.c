@@ -15,14 +15,16 @@
 static void
 test_node_copy(void)
 {
-	jive::test::statetype stype;
-	jive::test::valuetype vtype;
+	using namespace jive;
+
+	test::statetype stype;
+	test::valuetype vtype;
 
 	jive::graph graph;
 	auto s = graph.add_import(stype, "");
 	auto v = graph.add_import(vtype, "");
 
-	auto n1 = jive::test::structural_node_create(graph.root(), 3);
+	auto n1 = test::structural_node_create(graph.root(), 3);
 	auto i1 = n1->add_input(stype, s);
 	auto i2 = n1->add_input(vtype, v);
 	auto o1 = n1->add_output(stype);
@@ -31,8 +33,8 @@ test_node_copy(void)
 	auto a1 = n1->subregion(0)->add_argument(i1, stype);
 	auto a2 = n1->subregion(0)->add_argument(i2, vtype);
 
-	auto n2 = jive::test::simple_node_create(n1->subregion(0), {stype}, {a1}, {stype});
-	auto n3 = jive::test::simple_node_create(n1->subregion(0), {vtype}, {a2}, {vtype});
+	auto n2 = test::simple_node_create(n1->subregion(0), {stype}, {a1}, {stype});
+	auto n3 = test::simple_node_create(n1->subregion(0), {vtype}, {a2}, {vtype});
 
 	n1->subregion(0)->add_result(n2->output(0), o1, stype);
 	n1->subregion(0)->add_result(n3->output(0), o2, vtype);
@@ -40,7 +42,7 @@ test_node_copy(void)
 	jive::view(graph.root(), stdout);
 
 	/* copy first into second region with arguments and results */
-	jive::substitution_map smap;
+	substitution_map smap;
 	smap.insert(i1, i1); smap.insert(i2, i2);
 	smap.insert(o1, o1); smap.insert(o2, o2);
 	n1->subregion(0)->copy(n1->subregion(1), smap, true, true);
