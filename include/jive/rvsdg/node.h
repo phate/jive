@@ -214,6 +214,15 @@ public:
 	virtual std::string
 	debug_string() const;
 
+	inline void
+	replace(const jive::port & port)
+	{
+		if (port_.type() != port.type())
+			throw type_error(port_.type().debug_string(), port.type().debug_string());
+
+		port_ = port;
+	}
+
 private:
 	void
 	remove_user(jive::input * user);
