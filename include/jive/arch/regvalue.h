@@ -7,12 +7,12 @@
 #ifndef JIVE_ARCH_REGVALUE_H
 #define JIVE_ARCH_REGVALUE_H
 
-#include <stdint.h>
-
 #include <jive/arch/registers.h>
-#include <jive/rvsdg/node.h>
+#include <jive/rvsdg/simple-node.h>
 
 namespace jive {
+
+class register_class;
 
 class regvalue_op final : public simple_op {
 public:
@@ -38,6 +38,13 @@ public:
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
+
+	static inline jive::output *
+	create(jive::output * value, const register_class * regcls)
+	{
+		regvalue_op op(regcls);
+		return simple_node::create_normalized(value->region(), op, {value})[0];
+	}
 };
 
 static inline bool
@@ -53,17 +60,5 @@ is_regvalue_node(const jive::node * node) noexcept
 }
 
 }
-
-/**
-	\brief Create register constant
-	\param value Value to be represented
-	\param regcls Register class
-	\returns Bitstring value representing constant, constrained to register class
-	
-	Convenience function that either creates a new constant or
-	returns the output handle of an existing constant.
-*/
-jive::output *
-jive_regvalue(jive::output * value, const jive::register_class * regcls);
 
 #endif

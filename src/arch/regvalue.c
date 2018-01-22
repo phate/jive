@@ -39,10 +39,3 @@ regvalue_op::copy() const
 }
 
 }
-
-jive::output *
-jive_regvalue(jive::output * value, const jive::register_class * regcls)
-{
-	jive::regvalue_op op(regcls);
-	return jive::simple_node::create_normalized(value->region(), op, {value})[0];
-}
