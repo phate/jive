@@ -66,6 +66,12 @@ public:
 	}
 };
 
+static inline bool
+is_simple_node(const jive::node * node) noexcept
+{
+	return dynamic_cast<const jive::simple_node*>(node) != nullptr;
+}
+
 /* inputs */
 
 class simple_input final : public input {
