@@ -271,7 +271,7 @@ static operation_map opmap({
 	{std::type_index(typeid(jive::bitugt_op)), compute_bitcompare_op},
 	{std::type_index(typeid(jive::bitsge_op)), compute_bitcompare_op},
 	{std::type_index(typeid(jive::bituge_op)), compute_bitcompare_op},
-	{std::type_index(typeid(jive::load_op)), compute_bitload_op},
+	{std::type_index(typeid(jive::bitload_op)), compute_bitload_op},
 	{std::type_index(typeid(jive::store_op)), compute_bitstore_op},
 	{std::type_index(typeid(jive::ctlconstant_op)), compute_ctlconstant_op},
 	{std::type_index(typeid(jive::match_op)), compute_match_op}

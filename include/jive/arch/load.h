@@ -79,12 +79,6 @@ public:
 	virtual bool
 	operator==(const operation & other) const noexcept override final;
 
-	virtual std::string
-	debug_string() const override final;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override final;
-
 	static inline jive::load_normal_form *
 	normal_form(jive::graph * graph) noexcept
 	{
@@ -128,6 +122,12 @@ public:
 	{
 		return *static_cast<const addrtype*>(&load_op::addresstype());
 	}
+
+	virtual std::string
+	debug_string() const override;
+
+	std::unique_ptr<operation>
+	copy() const override;
 
 	static inline jive::output *
 	create(
@@ -175,6 +175,12 @@ public:
 	{
 		return *static_cast<const bittype*>(&load_op::addresstype());
 	}
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 
 	static inline jive::output *
 	create(

@@ -152,18 +152,6 @@ load_op::operator==(const operation & other) const noexcept
 	    && op->narguments() == narguments();
 }
 
-std::string
-load_op::debug_string() const
-{
-	return "LOAD";
-}
-
-std::unique_ptr<jive::operation>
-load_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new load_op(*this));
-}
-
 std::vector<jive::port>
 load_op::create_operands(const jive::valuetype & address, size_t nstates)
 {
@@ -179,9 +167,33 @@ load_op::create_operands(const jive::valuetype & address, size_t nstates)
 addrload_op::~addrload_op()
 {}
 
+std::string
+addrload_op::debug_string() const
+{
+	return "ADDRLOAD";
+}
+
+std::unique_ptr<operation>
+addrload_op::copy() const
+{
+	return std::unique_ptr<operation>(new addrload_op(*this));
+}
+
 /* bitstring load operator */
 
 bitload_op::~bitload_op()
 {}
+
+std::string
+bitload_op::debug_string() const
+{
+	return "BITLOAD";
+}
+
+std::unique_ptr<operation>
+bitload_op::copy() const
+{
+	return std::unique_ptr<operation>(new bitload_op(*this));
+}
 
 }
