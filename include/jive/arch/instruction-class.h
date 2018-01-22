@@ -187,6 +187,9 @@ public:
 		return flags_;
 	}
 
+	bool
+	is_commutative() const noexcept;
+
 	inline const size_t
 	nimmediates() const noexcept
 	{
@@ -275,6 +278,14 @@ static inline constexpr enum instruction::flags
 operator&(enum instruction::flags a, enum instruction::flags b)
 {
 	return static_cast<enum instruction::flags>(static_cast<int>(a) & static_cast<int>(b));
+}
+
+/* instruction methods */
+
+inline bool
+instruction::is_commutative() const noexcept
+{
+	return static_cast<int>(flags() & flags::commutative);
 }
 
 }
