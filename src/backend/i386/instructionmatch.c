@@ -24,24 +24,12 @@
 namespace jive {
 namespace i386 {
 
-static inline bool
-is_gpr_immediate(jive::output * arg)
-{
-	return arg->node() && dynamic_cast<const jive::regvalue_op *>(&arg->node()->operation());
-}
-
 static void
 swap(jive::output ** arg1, jive::output ** arg2)
 {
 	auto tmp = *arg1;
 	*arg1 = *arg2;
 	*arg2 = tmp;
-}
-
-static inline bool
-is_commutative(const jive::instruction * i)
-{
-	return static_cast<int>(i->flags() & jive::instruction::flags::commutative);
 }
 
 static jive::immediate
@@ -62,17 +50,17 @@ regvalue_to_immediate(const jive::node * node)
 static void
 convert_bitbinary(
 	jive::simple_node * node,
-	const jive::instruction * regreg_icls,
-	const jive::instruction * regimm_icls)
+	const jive::instruction * regreg,
+	const jive::instruction * regimm)
 {
 	auto arg1 = node->input(0)->origin();
 	auto arg2 = node->input(1)->origin();
 
 	bool second_is_immediate = false;
-	if (is_commutative(regreg_icls) && is_gpr_immediate(arg1)) {
+	if (regreg->is_commutative() && is_regvalue_node(arg1->node())) {
 		swap(&arg1, &arg2);
 		second_is_immediate = true;
-	} else if (is_gpr_immediate(arg2)) {
+	} else if (is_regvalue_node(arg2->node())) {
 		second_is_immediate = true;
 	}
 
@@ -81,9 +69,9 @@ convert_bitbinary(
 	if (second_is_immediate) {
 		auto imm = regvalue_to_immediate(arg2->node());
 		auto tmp = jive::immediate_op::create(node->region(), imm);
-		instr = jive::create_instruction(node->region(), regimm_icls, {arg1, tmp});
+		instr = jive::create_instruction(node->region(), regimm, {arg1, tmp});
 	} else {
-		instr = jive::create_instruction(node->region(), regreg_icls, {arg1, arg2});
+		instr = jive::create_instruction(node->region(), regreg, {arg1, arg2});
 	}
 
 	node->output(0)->divert_users(instr->output(0));
@@ -145,9 +133,9 @@ convert_bitcmp(
 	auto arg1 = node->input(0)->origin();
 	auto arg2 = node->input(1)->origin();
 
-	bool second_is_immediate = is_gpr_immediate(arg2);
+	bool second_is_immediate = is_regvalue_node(arg2->node());
 	if (!second_is_immediate) {
-		bool first_is_immediate = is_gpr_immediate(arg1);
+		bool first_is_immediate = is_regvalue_node(arg1->node());
 		if (first_is_immediate) {
 			auto tmp = arg1;
 			arg1 = arg2;
