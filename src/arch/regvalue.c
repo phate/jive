@@ -16,20 +16,21 @@
 namespace jive {
 
 regvalue_op::~regvalue_op() noexcept
-{
-}
+{}
 
 bool
-regvalue_op::operator==(const operation & other) const noexcept
+regvalue_op::operator==(const jive::operation & other) const noexcept
 {
-	auto op = dynamic_cast<const regvalue_op *>(&other);
-	return op && op->argument(0) == argument(0);
+	auto op = dynamic_cast<const regvalue_op*>(&other);
+	return op
+	    && op->regcls() == regcls()
+	    && op->operation() == operation();
 }
 
 std::string
 regvalue_op::debug_string() const
 {
-	return regcls()->name();
+	return detail::strfmt(operation().debug_string(), ":", regcls()->name());
 }
 
 std::unique_ptr<jive::operation>

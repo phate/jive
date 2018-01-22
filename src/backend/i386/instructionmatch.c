@@ -48,16 +48,15 @@ static jive::immediate
 regvalue_to_immediate(const jive::node * node)
 {
 	JIVE_DEBUG_ASSERT(is_regvalue_node(node));
-	auto value = dynamic_cast<jive::simple_output*>(node->input(0)->origin());
+	auto rvop = static_cast<const jive::regvalue_op*>(&node->operation());
 
-	if (auto bcop = dynamic_cast<const jive::bitconstant_op *>(&value->node()->operation())) {
-		return bcop->value().to_uint();
-	}
+	if (auto op = dynamic_cast<const bitconstant_op*>(&rvop->operation()))
+		return op->value().to_uint();
 
-	auto lbop = dynamic_cast<const jive::lbl2bit_op*>(&value->node()->operation());
-	if (lbop) return jive::immediate(0, lbop->label());
+	if (auto op = dynamic_cast<const lbl2bit_op*>(&rvop->operation()))
+		return jive::immediate(0, op->label());
 
-	JIVE_ASSERT(false);
+	JIVE_ASSERT(0 && "Cannot handle nullary operator.");
 }
 
 static void

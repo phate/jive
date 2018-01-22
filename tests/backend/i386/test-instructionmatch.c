@@ -156,8 +156,7 @@ test_regvalue()
 
 	jive::graph graph;
 
-	auto c = create_bitconstant(graph.root(), 32, 4);
-	auto rv = regvalue_op::create(c, &i386::gpr_regcls);
+	auto rv = regvalue_op::create(graph.root(), uint_constant_op(32, 4), &i386::gpr_regcls);
 
 	auto x0 = graph.add_export(rv, "");
 
