@@ -53,6 +53,8 @@ ctltype::copy() const
 	return std::unique_ptr<jive::type>(new ctltype(*this));
 }
 
+const ctltype ctl2(2);
+
 /* control value representation */
 
 ctlvalue_repr::ctlvalue_repr(size_t alternative, size_t nalternatives)

@@ -171,7 +171,7 @@ public:
 		auto ptgate = subroutine.builder_state->passthroughs[6].gate;
 		auto ptoperand = subroutine.builder_state->passthroughs[6].output;
 		auto ret_instr = create_instruction(subroutine.region, &jive::i386::instr_ret::instance(),
-			{ptoperand}, {ptgate}, {jive::boolean});
+			{ptoperand}, {ptgate}, {jive::ctl2});
 		return dynamic_cast<jive::simple_output*>(ret_instr->output(0));
 	}
 };

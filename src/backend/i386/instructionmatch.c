@@ -160,7 +160,7 @@ convert_bitcmp(
 	jive::immediate imm(0);
 	auto tmp = jive::immediate_op::create(node->region(), imm);
 	auto jump_instr = jive::create_instruction(node->region(), jump_icls,
-		{cmp_instr->output(0), tmp}, {}, {jive::boolean});
+		{cmp_instr->output(0), tmp}, {}, {jive::ctl2});
 	node_->output(0)->divert_users(jump_instr->output(0));
 }
 

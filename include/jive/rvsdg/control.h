@@ -203,7 +203,7 @@ match(
 	size_t nalternatives,
 	jive::output * operand);
 
-const ctltype boolean(2);
+extern const ctltype ctl2;
 
 // declare explicit instantiation
 extern template class domain_const_op<ctltype, ctlvalue_repr, ctlformat_value, ctltype_of_value>;

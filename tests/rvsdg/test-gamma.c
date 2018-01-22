@@ -85,7 +85,7 @@ test_invariant_reduction(void)
 	jive::graph graph;
 	gamma_op::normal_form(&graph)->set_invariant_reduction(true);
 
-	auto pred = graph.add_import(boolean, "");
+	auto pred = graph.add_import(ctl2, "");
 	auto v = graph.add_import(vtype, "");
 
 	auto gamma = jive::gamma_node::create(pred, 2);
