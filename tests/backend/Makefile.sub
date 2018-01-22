@@ -1,0 +1,1 @@
+include tests/backend/i386/Makefile.sub

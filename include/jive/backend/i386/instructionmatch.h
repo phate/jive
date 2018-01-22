@@ -12,7 +12,7 @@ namespace jive {
 namespace i386 {
 
 void
-match_instructions(jive::graph * graph, const jive::register_selector * regselector);
+match_instructions(jive::graph * graph);
 
 }}
 

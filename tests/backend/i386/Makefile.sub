@@ -1,0 +1,2 @@
+TESTS += \
+	backend/i386/test-instructionmatch \
