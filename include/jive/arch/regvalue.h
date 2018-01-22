@@ -40,6 +40,18 @@ public:
 	copy() const override;
 };
 
+static inline bool
+is_regvalue_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const regvalue_op*>(&op) != nullptr;
+}
+
+static inline bool
+is_regvalue_node(const jive::node * node) noexcept
+{
+	return is_opnode<regvalue_op>(node);
+}
+
 }
 
 /**
