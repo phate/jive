@@ -51,6 +51,16 @@ public:
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	static inline std::vector<jive::output*>
+	create(
+		jive::region * region,
+		const instruction * i,
+		const std::vector<jive::output*> & operands)
+	{
+		instruction_op op(i, {}, {});
+		return simple_node::create_normalized(region, op , operands);
+	}
+
 private:
 	static std::vector<jive::port>
 	create_operands(
