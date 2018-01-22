@@ -296,6 +296,18 @@ private:
 	jive::immediate value_;
 };
 
+static inline bool
+is_immediate_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const jive::immediate_op*>(&op);
+}
+
+static inline bool
+is_immediate_node(const jive::node * node) noexcept
+{
+	return is_opnode<immediate_op>(node);
+}
+
 }
 
 #endif
