@@ -204,7 +204,7 @@ is_bitload_op(const jive::operation & op) noexcept
 }
 
 static inline bool
-is_bitload_op(const jive::node * node) noexcept
+is_bitload_node(const jive::node * node) noexcept
 {
 	return is_opnode<bitload_op>(node);
 }
