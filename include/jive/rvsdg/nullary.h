@@ -10,6 +10,7 @@
 #include <jive/common.h>
 #include <jive/rvsdg/node-normal-form.h>
 #include <jive/rvsdg/node.h>
+#include <jive/rvsdg/simple-node.h>
 
 namespace jive {
 
@@ -96,6 +97,15 @@ public:
 	virtual std::unique_ptr<jive::operation> copy() const override
 	{
 		return std::unique_ptr<jive::operation>(new domain_const_op(*this));
+	}
+
+	static inline jive::output *
+	create(
+		jive::region * region,
+		const value_repr & vr)
+	{
+		domain_const_op op(vr);
+		return simple_node::create_normalized(region, op, {})[0];
 	}
 
 private:
