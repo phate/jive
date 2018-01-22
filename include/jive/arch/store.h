@@ -172,7 +172,7 @@ is_bitstore_op(const jive::operation & op) noexcept
 }
 
 static inline bool
-is_bitstore_op(const jive::node * node) noexcept
+is_bitstore_node(const jive::node * node) noexcept
 {
 	return is_opnode<bitstore_op>(node);
 }
