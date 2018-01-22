@@ -7,10 +7,7 @@
 #ifndef JIVE_ARCH_REGSELECTOR_H
 #define JIVE_ARCH_REGSELECTOR_H
 
-#include <stdint.h>
-
 #include <jive/arch/registers.h>
-#include <jive/rvsdg/negotiator.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/float/arithmetic.h>
 #include <jive/types/float/fltoperation-classes.h>
@@ -76,46 +73,6 @@ public:
 	classes() const noexcept = 0;
 };
 
-class register_selector : public negotiator {
-public:
-	virtual
-	~register_selector();
-
-	register_selector(
-		jive::graph * graph,
-		const register_classifier * _classifier);
-
-	register_selector(const register_selector &) = delete;
-
-	register_selector(register_selector &&) = delete;
-
-	register_selector &
-	operator=(const register_selector &) = delete;
-
-	register_selector &
-	operator=(register_selector &&) = delete;
-
-	virtual jive_negotiator_option *
-	create_option() const override;
-
-	virtual bool
-	store_default_option(jive_negotiator_option * dst, const jive::gate * gate) const override;
-
-	virtual void
-	annotate_node_proper(jive::node * node) override;
-
-	const register_classifier * classifier;
-};
-
 }
-
-void
-jive_regselector_process(jive::register_selector * self);
-
-const jive::register_class *
-jive_regselector_map_output(const jive::register_selector * self, jive::simple_output * output);
-
-const jive::register_class *
-jive_regselector_map_input(const jive::register_selector * self, jive::simple_input * input);
 
 #endif
