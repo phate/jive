@@ -65,6 +65,18 @@ private:
 	const jive::instruction * icls_;
 };
 
+static inline bool
+is_instruction_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const instruction_op*>(&op);
+}
+
+static inline bool
+is_instruction_node(const jive::node * node) noexcept
+{
+	return is_opnode<instruction_op>(node);
+}
+
 static inline jive::node *
 create_instruction(
 	jive::region * region,
