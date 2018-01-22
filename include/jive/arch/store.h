@@ -36,9 +36,6 @@ public:
 	virtual bool
 	operator==(const operation & other) const noexcept override final;
 
-	virtual std::string
-	debug_string() const override final;
-
 	inline const jive::valuetype &
 	addresstype() const noexcept
 	{
@@ -50,9 +47,6 @@ public:
 	{
 		return *static_cast<const jive::valuetype*>(&argument(1).type());
 	}
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override final;
 
 private:
 	static std::vector<jive::port>
@@ -94,6 +88,12 @@ public:
 	{
 		return *static_cast<const addrtype*>(&store_op::addresstype());
 	}
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<operation>
+	copy() const override;
 
 	static inline std::vector<jive::output*>
 	create(
@@ -142,6 +142,12 @@ public:
 	{
 		return *static_cast<const bittype*>(&store_op::addresstype());
 	}
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<operation>
+	copy() const override;
 
 	static inline std::vector<jive::output*>
 	create(

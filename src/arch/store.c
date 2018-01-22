@@ -29,18 +29,6 @@ store_op::operator==(const operation & other) const noexcept
 	    && op->nresults() == nresults();
 }
 
-std::string
-store_op::debug_string() const
-{
-	return "STORE";
-}
-
-std::unique_ptr<jive::operation>
-store_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new store_op(*this));
-}
-
 std::vector<jive::port>
 store_op::create_operands(
 	const jive::valuetype & address,
@@ -60,9 +48,33 @@ store_op::create_operands(
 addrstore_op::~addrstore_op()
 {}
 
+std::string
+addrstore_op::debug_string() const
+{
+	return "ADDRSTORE";
+}
+
+std::unique_ptr<operation>
+addrstore_op::copy() const
+{
+	return std::unique_ptr<operation>(new addrstore_op(*this));
+}
+
 /* bitstring store operator */
 
 bitstore_op::~bitstore_op()
 {}
+
+std::string
+bitstore_op::debug_string() const
+{
+	return "BITSTORE";
+}
+
+std::unique_ptr<operation>
+bitstore_op::copy() const
+{
+	return std::unique_ptr<operation>(new bitstore_op(*this));
+}
 
 }
