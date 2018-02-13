@@ -149,6 +149,18 @@ private:
 	const rcddeclaration * dcl_;
 };
 
+static inline bool
+is_containerof_op(const operation & op) noexcept
+{
+	return dynamic_cast<const containerof_op*>(&op) != nullptr;
+}
+
+static inline bool
+is_containerof_node(const jive::node * node) noexcept
+{
+	return is_opnode<containerof_op>(node);
+}
+
 /* "arraysubscript" operator: given an address that points to an element of
 an array, compute address of element offset by specified distance */
 
