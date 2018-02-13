@@ -183,21 +183,7 @@ arrayindex_op::copy() const
 	return std::unique_ptr<jive::operation>(new arrayindex_op(*this));
 }
 
-}
-
-jive::output *
-jive_arrayindex(
-	jive::output * addr1, jive::output * addr2,
-	const jive::valuetype * element_type,
-	const jive::bittype * difference_type)
-{
-	jive::arrayindex_op op(*element_type, difference_type->nbits());
-	return jive::simple_node::create_normalized(addr1->region(), op, {addr1, addr2})[0];
-}
-
 /* lbl2addr operation */
-
-namespace jive {
 
 lbl2addr_op::~lbl2addr_op() noexcept
 {}

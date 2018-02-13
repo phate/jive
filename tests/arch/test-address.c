@@ -60,10 +60,10 @@ static int test_main(void)
 	jive::view(graph.root(), stdout);
 	//assert(tmp == a0);
 	
-	jive_arrayindex(a1, a0, &bit32, &bit32);
+	arrayindex_op::create(a1, a0, bit32, bit32);
 	//assert(diff == one);
 	
-	auto diff2 = jive_arrayindex(i0, i1, &bit32, &bit32);
+	auto diff2 = arrayindex_op::create(i0, i1, bit32, bit32);
 
 	auto memberof = memberof_op::create(cont3, dcl, 1);
 	auto arraysub = arraysubscript_op::create(i0, bit32, one);

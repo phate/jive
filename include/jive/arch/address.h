@@ -197,6 +197,10 @@ private:
 	std::unique_ptr<jive::type> element_type_;
 };
 
+/* "arrayindex" operator: given two addresses that each point to an
+element of an array and the array element type, compute the
+difference of their indices */
+
 class arrayindex_op : public simple_op {
 public:
 	virtual
@@ -236,6 +240,17 @@ public:
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
+
+	static inline jive::output *
+	create(
+		jive::output * address1,
+		jive::output * address2,
+		const valuetype & element_type,
+		const bittype & difference_type)
+	{
+		arrayindex_op op(element_type, difference_type.nbits());
+		return simple_node::create_normalized(address1->region(), op, {address1, address2})[0];
+	}
 
 private:
 	std::unique_ptr<jive::type> element_type_;
@@ -413,14 +428,5 @@ output *
 constant(jive::graph * graph, const value_repr & vr);
 
 }
-
-/* "arrayindex" operator: given two addresses that each point to an
-element of an array and the array element type, compute the
-difference of their indices */
-
-jive::output *
-jive_arrayindex(jive::output * addr1, jive::output * addr2,
-	const jive::valuetype * element_type,
-	const jive::bittype * difference_type);
 
 #endif

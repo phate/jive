@@ -52,7 +52,7 @@ test_address_transform(void)
 	auto constant = create_bitconstant(graph.root(), 64, 1);
 	auto arraysub = arraysubscript_op::create(call[0], at, constant);
 
-	auto arrayindex = jive_arrayindex(call[0], call[1], &at, &bit64);
+	auto arrayindex = arrayindex_op::create(call[0], call[1], at, bit64);
 
 	auto load = addrload_op::create(arraysub, at, {i2});
 	auto store = addrstore_op::create(arraysub, arrayindex, bit64, {i2})[0]->node();
