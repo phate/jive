@@ -64,6 +64,16 @@ public:
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	static inline jive::output *
+	create(
+		jive::output * address,
+		const rcddeclaration * dcl,
+		size_t index)
+	{
+		memberof_op op(dcl, index);
+		return simple_node::create_normalized(address->region(), op, {address})[0];
+	}
+
 private:
 	size_t index_;
 	const jive::rcddeclaration * dcl_;
@@ -374,12 +384,6 @@ output *
 constant(jive::graph * graph, const value_repr & vr);
 
 }
-
-jive::output *
-jive_memberof(
-	jive::output * address,
-	const jive::rcddeclaration * dcl,
-	size_t index);
 
 /* "containerof" operator: given an address that is the start of a record
 member in memory, compute address of containing record */

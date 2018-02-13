@@ -29,16 +29,16 @@ static int test_main(void)
 	auto i0 = graph.add_import(at, "");
 	auto i1 = graph.add_import(at, "");
 
-	auto memb1 = jive_memberof(i0, dcl, 0);
-	auto memb2 = jive_memberof(i0, dcl, 1);
+	auto memb1 = memberof_op::create(i0, dcl, 0);
+	auto memb2 = memberof_op::create(i0, dcl, 1);
 	
 	auto cont1 = jive_containerof(memb1, dcl, 0);
 	auto cont2 = jive_containerof(memb2, dcl, 0);
 	
 	auto cont3 = jive_containerof(i1, dcl, 0);
 	
-	auto memb3 = jive_memberof(cont3, dcl, 0);
-	auto memb4 = jive_memberof(cont3, dcl, 1);
+	auto memb3 = memberof_op::create(cont3, dcl, 0);
+	auto memb4 = memberof_op::create(cont3, dcl, 1);
 	
 	jive::view(graph.root(), stdout);
 	
@@ -65,7 +65,7 @@ static int test_main(void)
 	
 	auto diff2 = jive_arrayindex(i0, i1, &bit32, &bit32);
 
-	auto memberof = jive_memberof(cont3, dcl, 1);
+	auto memberof = memberof_op::create(cont3, dcl, 1);
 	auto arraysub = jive_arraysubscript(i0, &bit32, one);
 
 	graph.add_export(memberof, "");

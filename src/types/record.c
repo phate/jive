@@ -205,7 +205,7 @@ select_op::reduce_operand(
 		for (size_t n = 0; n < nstates; n++)
 			states.push_back(arg->node()->input(n+1)->origin());
 
-		auto element_address = jive_memberof(address, decl, index());
+		auto element_address = memberof_op::create(address, decl, index());
 		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
 			return addrload_op::create(element_address, decl->element(index()), states);
 		} else {

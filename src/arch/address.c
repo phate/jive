@@ -73,22 +73,7 @@ memberof_op::copy() const
 	return std::unique_ptr<jive::operation>(new memberof_op(*this));
 }
 
-}
-
-
-jive::output *
-jive_memberof(
-	jive::output * address,
-	const jive::rcddeclaration * dcl,
-	size_t index)
-{
-	jive::memberof_op op(dcl, index);
-	return jive::simple_node::create_normalized(address->region(), op, {address})[0];
-}
-
 /* containerof */
-
-namespace jive {
 
 containerof_op::~containerof_op() noexcept
 {
