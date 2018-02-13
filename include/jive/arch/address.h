@@ -292,6 +292,18 @@ private:
 	std::unique_ptr<jive::type> element_type_;
 };
 
+static inline bool
+is_arrayindex_op(const operation & op) noexcept
+{
+	return dynamic_cast<const arrayindex_op*>(&op) != nullptr;
+}
+
+static inline bool
+is_arrayindex_node(const jive::node * node) noexcept
+{
+	return is_opnode<arrayindex_op>(node);
+}
+
 /* lbl2addr operation */
 
 class lbl2addr_op final : public nullary_op {
