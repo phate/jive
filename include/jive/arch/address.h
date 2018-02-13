@@ -221,6 +221,18 @@ private:
 	std::unique_ptr<jive::type> element_type_;
 };
 
+static inline bool
+is_arraysubscript_op(const operation & op) noexcept
+{
+	return dynamic_cast<const arraysubscript_op*>(&op) != nullptr;
+}
+
+static inline bool
+is_arraysubscript_node(const jive::node * node) noexcept
+{
+	return is_opnode<arraysubscript_op>(node);
+}
+
 /* "arrayindex" operator: given two addresses that each point to an
 element of an array and the array element type, compute the
 difference of their indices */
