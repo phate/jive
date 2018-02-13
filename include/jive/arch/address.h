@@ -79,6 +79,18 @@ private:
 	const jive::rcddeclaration * dcl_;
 };
 
+static inline bool
+is_memberof_op(const operation & op) noexcept
+{
+	return dynamic_cast<const memberof_op*>(&op) != nullptr;
+}
+
+static inline bool
+is_memberof_node(const jive::node * node) noexcept
+{
+	return is_opnode<memberof_op>(node);
+}
+
 /* "containerof" operator: given an address that is the start of a record
 member in memory, compute address of containing record */
 
