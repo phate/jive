@@ -42,7 +42,7 @@ test_address_transform(void)
 	auto dcl = rcddeclaration::create(&graph, {&at, &at});
 
 	auto memberof = memberof_op::create(address0, dcl, 0);
-	auto containerof = jive_containerof(address1, dcl, 1);
+	auto containerof = containerof_op::create(address1, dcl, 1);
 
 	jive_linker_symbol write_symbol;
 	jive::external_label write_label("write", &write_symbol);
@@ -172,10 +172,10 @@ test_containerof_transform(void)
 	auto address2 = bit2addr_op::create(top->output(2), 32, addrtype);
 	auto address3 = bit2addr_op::create(top->output(3), 32, addrtype);
 
-	auto container0 = jive_containerof(address0, dcl, 0);
-	auto container1 = jive_containerof(address1, dcl, 1);
-	auto container2 = jive_containerof(address2, dcl, 2);
-	auto container3 = jive_containerof(address3, dcl, 3);
+	auto container0 = containerof_op::create(address0, dcl, 0);
+	auto container1 = containerof_op::create(address1, dcl, 1);
+	auto container2 = containerof_op::create(address2, dcl, 2);
+	auto container3 = containerof_op::create(address3, dcl, 3);
 
 	auto offset0 = addr2bit_op::create(container0, 32, container0->type());
 	auto offset1 = addr2bit_op::create(container1, 32, container1->type());

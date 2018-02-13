@@ -32,10 +32,10 @@ static int test_main(void)
 	auto memb1 = memberof_op::create(i0, dcl, 0);
 	auto memb2 = memberof_op::create(i0, dcl, 1);
 	
-	auto cont1 = jive_containerof(memb1, dcl, 0);
-	auto cont2 = jive_containerof(memb2, dcl, 0);
+	auto cont1 = containerof_op::create(memb1, dcl, 0);
+	auto cont2 = containerof_op::create(memb2, dcl, 0);
 	
-	auto cont3 = jive_containerof(i1, dcl, 0);
+	auto cont3 = containerof_op::create(i1, dcl, 0);
 	
 	auto memb3 = memberof_op::create(cont3, dcl, 0);
 	auto memb4 = memberof_op::create(cont3, dcl, 1);

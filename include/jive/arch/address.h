@@ -79,6 +79,9 @@ private:
 	const jive::rcddeclaration * dcl_;
 };
 
+/* "containerof" operator: given an address that is the start of a record
+member in memory, compute address of containing record */
+
 class containerof_op : public jive::unary_op {
 public:
 	virtual ~containerof_op() noexcept;
@@ -118,6 +121,16 @@ public:
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
+
+	static inline jive::output *
+	create(
+		jive::output * address,
+		const rcddeclaration * dcl,
+		size_t index)
+	{
+		containerof_op op(dcl, index);
+		return simple_node::create_normalized(address->region(), op, {address})[0];
+	}
 
 private:
 	size_t index_;
@@ -384,15 +397,6 @@ output *
 constant(jive::graph * graph, const value_repr & vr);
 
 }
-
-/* "containerof" operator: given an address that is the start of a record
-member in memory, compute address of containing record */
-
-jive::output *
-jive_containerof(
-	jive::output * address,
-	const jive::rcddeclaration * dcl,
-	size_t index);
 
 /* "arraysubscript" operator: given an address that points to an element of
 an array, compute address of element offset by specified distance */
