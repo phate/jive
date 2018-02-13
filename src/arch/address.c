@@ -156,22 +156,7 @@ arraysubscript_op::copy() const
 	return std::unique_ptr<jive::operation>(new arraysubscript_op(*this));
 }
 
-}
-
-
-jive::output *
-jive_arraysubscript(
-	jive::output * address,
-	const jive::valuetype * element_type,
-	jive::output * index)
-{
-	jive::arraysubscript_op op(*element_type, dynamic_cast<const jive::bittype &>(index->type()));
-	return jive::simple_node::create_normalized(address->region(), op, {address, index})[0];
-}
-
 /* arrayindex */
-
-namespace jive {
 
 arrayindex_op::~arrayindex_op() noexcept
 {

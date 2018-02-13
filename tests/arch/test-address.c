@@ -52,11 +52,11 @@ static int test_main(void)
 	auto one = create_bitconstant(graph.root(), "10000000000000000000000000000000");
 	auto minus_one = create_bitconstant(graph.root(), "11111111111111111111111111111111");
 	
-	auto a0 = jive_arraysubscript(i0, &bit32, zero);
+	auto a0 = arraysubscript_op::create(i0, bit32, zero);
 	//assert(a0 == top->outputs[0]);
-	auto a1 = jive_arraysubscript(i0, &bit32, one);
+	auto a1 = arraysubscript_op::create(i0, bit32, one);
 	assert(a1 != i0);
-	jive_arraysubscript(a1, &bit32, minus_one);
+	arraysubscript_op::create(a1, bit32, minus_one);
 	jive::view(graph.root(), stdout);
 	//assert(tmp == a0);
 	
@@ -66,7 +66,7 @@ static int test_main(void)
 	auto diff2 = jive_arrayindex(i0, i1, &bit32, &bit32);
 
 	auto memberof = memberof_op::create(cont3, dcl, 1);
-	auto arraysub = jive_arraysubscript(i0, &bit32, one);
+	auto arraysub = arraysubscript_op::create(i0, bit32, one);
 
 	graph.add_export(memberof, "");
 	graph.add_export(arraysub, "");

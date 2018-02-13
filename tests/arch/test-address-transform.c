@@ -50,7 +50,7 @@ test_address_transform(void)
 	auto call = addrcall_op::create(label, {memberof, containerof}, {&at, &at}, nullptr);
 
 	auto constant = create_bitconstant(graph.root(), 64, 1);
-	auto arraysub = jive_arraysubscript(call[0], &at, constant);
+	auto arraysub = arraysubscript_op::create(call[0], at, constant);
 
 	auto arrayindex = jive_arrayindex(call[0], call[1], &at, &bit64);
 

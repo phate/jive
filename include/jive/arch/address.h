@@ -137,6 +137,9 @@ private:
 	const rcddeclaration * dcl_;
 };
 
+/* "arraysubscript" operator: given an address that points to an element of
+an array, compute address of element offset by specified distance */
+
 class arraysubscript_op : public simple_op {
 public:
 	virtual
@@ -176,6 +179,19 @@ public:
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
+
+	static inline jive::output *
+	create(
+		jive::output * address,
+		const valuetype & element_type,
+		jive::output * index)
+	{
+		auto bt = dynamic_cast<const bittype*>(&index->type());
+		if (!bt) throw type_error("bittype", index->type().debug_string());
+
+		arraysubscript_op op(element_type, *bt);
+		return simple_node::create_normalized(address->region(), op, {address, index})[0];
+	}
 
 private:
 	std::unique_ptr<jive::type> element_type_;
@@ -397,13 +413,6 @@ output *
 constant(jive::graph * graph, const value_repr & vr);
 
 }
-
-/* "arraysubscript" operator: given an address that points to an element of
-an array, compute address of element offset by specified distance */
-
-jive::output *
-jive_arraysubscript(jive::output * address, const jive::valuetype * element_type,
-	jive::output * index);
 
 /* "arrayindex" operator: given two addresses that each point to an
 element of an array and the array element type, compute the
