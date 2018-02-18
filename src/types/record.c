@@ -207,7 +207,7 @@ select_op::reduce_operand(
 
 		auto element_address = memberof_op::create(address, decl, index());
 		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
-			return addrload_op::create(element_address, decl->element(index()), states);
+			return addrload_op::create(element_address, states);
 		} else {
 			return bitload_op::create(element_address, nbits, decl->element(index()), states);
 		}

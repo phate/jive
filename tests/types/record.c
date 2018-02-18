@@ -69,7 +69,7 @@ static int _test_rcdselect()
 
 	std::vector<jive::output*> args({a1, a2, a3});
 	auto g0 = jive_group_create(dcl, 3, &args[0]);
-	auto load = addrload_op::create(a5, rcdtype, {});
+	auto load = addrload_op::create(a5, {});
 
 	auto s0 = select_op::create(a4, 1);
 	auto s1 = select_op::create(g0, 1);

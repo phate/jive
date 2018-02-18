@@ -112,9 +112,8 @@ public:
 	inline
 	addrload_op(
 		const jive::addrtype & address,
-		const jive::valuetype & value,
 		size_t nstates)
-	: load_op(address, value, nstates)
+	: load_op(address, address.type(), nstates)
 	{}
 
 	inline const jive::addrtype &
@@ -132,13 +131,15 @@ public:
 	static inline jive::output *
 	create(
 		jive::output * address,
-		const jive::valuetype & valuetype,
 		const std::vector<jive::output*> & states)
 	{
+		auto at = dynamic_cast<const addrtype*>(&address->type());
+		if (!at) throw type_error("address", address->type().debug_string());
+
 		std::vector<jive::output*> operands(1, address);
 		operands.insert(operands.end(), states.begin(), states.end());
 
-		addrload_op op(addrtype(valuetype), valuetype, states.size());
+		addrload_op op(*at, states.size());
 		return simple_node::create_normalized(address->region(), op, operands)[0];
 	}
 };
