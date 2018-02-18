@@ -23,27 +23,22 @@ static int test_unnchoose(void)
 
 	jive::graph graph;
 
-	addrtype at;
 	auto dcl = unndeclaration::create(&graph, {&bit8, &bit16, &bit32});
 	jive::unntype unntype(dcl);
 
 	auto i0 = graph.add_import(bit8, "");
 	auto i1 = graph.add_import(unntype, "");
 	auto i2 = graph.add_import(unntype, "");
-	auto i3 = graph.add_import(at, "");
 
 	auto u0 = jive_unify_create(dcl, 0, i0);
-	auto load = addrload_op::create(i3, unntype, {});
 
 	auto c0 = choose_op::create(i1, 1);
 	auto c1 = choose_op::create(u0, 0);
 	auto c2 = choose_op::create(i2, 1);
-	auto c3 = choose_op::create(load, 0);
 
 	graph.add_export(c0, "");
 	auto x1 = graph.add_export(c1, "");
 	graph.add_export(c2, "");
-	auto x3 = graph.add_export(c3, "");
 
 	graph.normalize();
 	graph.prune();
@@ -52,7 +47,6 @@ static int test_unnchoose(void)
 
 	assert(x1->origin() == i0);
 	assert(c0->node()->operation() == c2->node()->operation());
-	assert(dynamic_cast<const jive::load_op *>(&x3->origin()->node()->operation()));
 
 	return 0;
 }

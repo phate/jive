@@ -9,8 +9,6 @@
 #include <jive/types/bitstring.h>
 #include <jive/types/union.h>
 
-static constexpr jive_unop_reduction_path_t jive_choose_reduction_load = 128;
-
 namespace {
 
 typedef std::unordered_set<std::unique_ptr<jive::unndeclaration>> declarationset;
@@ -109,9 +107,6 @@ choose_op::can_reduce_operand(
 	if (arg->node() && dynamic_cast<const unify_op*>(&arg->node()->operation()))
 		return jive_unop_reduction_inverse;
 
-	if (arg->node() && dynamic_cast<const load_op*>(&arg->node()->operation()))
-		return jive_choose_reduction_load;
-
 	return jive_unop_reduction_none;
 }
 
@@ -120,26 +115,8 @@ choose_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
-	if (path == jive_unop_reduction_inverse) {
+	if (path == jive_unop_reduction_inverse)
 		return arg->node()->input(0)->origin();
-	}
-
-	if (path == jive_choose_reduction_load) {
-		auto address = arg->node()->input(0)->origin();
-		auto dcl = static_cast<const jive::unntype*>(&arg->node()->output(0)->type())->declaration();
-
-		size_t nstates = arg->node()->ninputs()-1;
-		std::vector<jive::output*> states;
-		for (size_t n = 0; n < nstates; n++)
-			states.push_back(arg->node()->input(n+1)->origin());
-
-		if (dynamic_cast<const jive::addrtype*>(&address->type())) {
-			return addrload_op::create(address, dcl->option(option()), states);
-		} else {
-			size_t nbits = static_cast<const bittype*>(&address->type())->nbits();
-			return bitload_op::create(address, nbits, dcl->option(option()), states);
-		}
-	}
 
 	return nullptr;
 }
