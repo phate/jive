@@ -65,7 +65,7 @@ is_matching_store_op(const jive::load_op & l_op, const jive::operation & op)
 static bool is_matching_store_node(
 	const jive::load_op & l_op, const jive::output * address,
 	const jive::node * node) {
-	return
+	return node &&
 		is_matching_store_op(l_op, node->operation()) &&
 		node->input(0)->origin() == address;
 }
