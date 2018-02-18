@@ -131,27 +131,33 @@ public:
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	static inline jive::output *
+	create(
+		jive::graph * graph,
+		const rcddeclaration * dcl)
+	{
+		group_op op(dcl);
+		return simple_node::create_normalized(graph->root(), op, {})[0];
+	}
+
+	static inline jive::output *
+	create(
+		const rcddeclaration * dcl,
+		const std::vector<jive::output*> & operands)
+	{
+		if (operands.empty())
+			throw compiler_error("Expected more than one operand.");
+
+		group_op op(dcl);
+		return simple_node::create_normalized(operands[0]->region(), op, operands)[0];
+	}
+
 private:
 	static std::vector<jive::port>
 	create_operands(const rcddeclaration * dcl);
 };
 
-}
-
-jive::output *
-jive_group_create(
-	const jive::rcddeclaration * dcl,
-	size_t narguments,
-	jive::output * const * arguments);
-
-jive::output *
-jive_empty_group_create(
-	jive::graph * graph,
-	const jive::rcddeclaration * dcl);
-
 /* select operator */
-
-namespace jive {
 
 class select_op final : public jive::unary_op {
 public:

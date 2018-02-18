@@ -44,8 +44,7 @@ static int test_main(void)
 
 	auto states0 = addrstore_op::create(i0, i4, {i1});
 
-	jive::output * tmparray1[] = {i2, i3, i4};
-	auto group = jive_group_create(rcddcl, 3, tmparray1);
+	auto group = group_op::create(rcddcl, {i2, i3, i4});
 	auto states1 = addrstore_op::create(i7, group, {i1, i5});
 
 	auto unify = jive_unify_create(unndcl, 2, i4);

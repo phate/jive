@@ -124,31 +124,6 @@ group_op::create_operands(const rcddeclaration * dcl)
 	return operands;
 }
 
-}
-
-jive::output *
-jive_group_create(
-	const jive::rcddeclaration * dcl,
-	size_t narguments,
-	jive::output * const * arguments)
-{
-	jive::group_op op(dcl);
-	auto region = arguments[0]->region();
-	return jive::simple_node::create_normalized(
-		region, op, std::vector<jive::output*>(arguments, arguments + narguments))[0];
-}
-
-jive::output *
-jive_empty_group_create(
-	jive::graph * graph,
-	const jive::rcddeclaration * dcl)
-{
-	jive::group_op op(dcl);
-	return jive::simple_node::create_normalized(graph->root(), op, {})[0];
-}
-
-namespace jive {
-
 /* select operator */
 
 select_op::~select_op() noexcept
