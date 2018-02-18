@@ -25,7 +25,7 @@ test_memberof()
 	jive::graph graph;
 	auto dcl = rcddeclaration::create(&graph, {&bit32, &bit32});
 
-	auto i0 = graph.add_import(addrtype::instance(), "");
+	auto i0 = graph.add_import(addrtype(rcdtype(dcl)), "");
 
 	auto m1 = memberof_op::create(i0, dcl, 0);
 	auto m2 = memberof_op::create(i0, dcl, 0);
@@ -66,11 +66,12 @@ test_containerof()
 	jive::graph graph;
 	auto dcl = rcddeclaration::create(&graph, {&bit32, &bit32});
 
-	auto i0 = graph.add_import(addrtype::instance(), "");
+	auto i0 = graph.add_import(addrtype(bit32), "");
+	auto i1 = graph.add_import(addrtype(bit32), "");
 
 	auto c1 = containerof_op::create(i0, dcl, 0);
 	auto c2 = containerof_op::create(i0, dcl, 0);
-	auto c3 = containerof_op::create(i0, dcl, 1);
+	auto c3 = containerof_op::create(i1, dcl, 1);
 
 	auto m1 = memberof_op::create(c1, dcl, 0);
 
@@ -106,7 +107,7 @@ test_arraysubscript()
 
 	jive::graph graph;
 
-	auto i0 = graph.add_import(addrtype::instance(), "");
+	auto i0 = graph.add_import(addrtype(bit32), "");
 	auto i1 = graph.add_import(bit32, "");
 
 	auto as1 = arraysubscript_op::create(i0, bit32, i1);
@@ -137,8 +138,8 @@ test_arrayindex()
 
 	jive::graph graph;
 
-	auto i0 = graph.add_import(addrtype::instance(), "");
-	auto i1 = graph.add_import(addrtype::instance(), "");
+	auto i0 = graph.add_import(addrtype(bit32), "");
+	auto i1 = graph.add_import(addrtype(bit32), "");
 
 	auto ai1 = arrayindex_op::create(i0, i1, bit32, bit32);
 

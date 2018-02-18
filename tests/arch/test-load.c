@@ -22,31 +22,26 @@ static int test_main()
 	using namespace jive;
 
 	jive::graph graph;
+	auto i0 = graph.add_import(addrtype(bit32), "");
+	auto i1 = graph.add_import(addrtype(bit32), "");
+	auto i2 = graph.add_import(memtype(), "");
+	auto i3 = graph.add_import(bit32, "");
 
-	jive::memtype memtype;
-	jive::addrtype addrtype;
-	bittype bits32(32);
-	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {addrtype, addrtype, memtype,
-		bits32});
+	auto load0 = addrload_op::create(i0, bit32, {i2});
 
-	auto state = top->output(2);
-	auto load0 = addrload_op::create(top->output(0), bits32, {top->output(2)});
+	auto states = addrstore_op::create(i1, i3, bit32, {i2});
+	auto load1 = addrload_op::create(i1, bit32, {states[0]});
+	assert(load1 == i3);
 
-	state = top->output(2);
-	auto states = addrstore_op::create(top->output(1), top->output(3), bits32, {state});
-	auto load1 = addrload_op::create(top->output(1), bits32, {states[0]});
-	assert(load1 == top->output(3));
-
-	auto bottom = jive::test::simple_node_create(graph.root(), {bits32, bits32}, {load0, load1},
-		{addrtype});
-	graph.add_export(bottom->output(0), "dummy");
+	graph.add_export(load0, "");
+	auto ex1 = graph.add_export(load1, "");
 
 	graph.normalize();
 	graph.prune();
 
 	jive::view(graph.root(), stderr);
 
-	assert(bottom->input(1)->origin()->node() == top);
+	assert(ex1->origin() == i3);
 
 	return 0;
 }

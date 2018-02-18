@@ -58,16 +58,14 @@ static int _test_rcdselect()
 	using namespace jive;
 
 	jive::graph graph;
-
-	addrtype at;
 	auto dcl = rcddeclaration::create(&graph, {&bit8, &bit16, &bit32});
 	jive::rcdtype rcdtype(dcl);
 
-	auto a1 = graph.root()->add_argument(nullptr, bit8);
-	auto a2 = graph.root()->add_argument(nullptr, bit16);
-	auto a3 = graph.root()->add_argument(nullptr, bit32);
-	auto a4 = graph.root()->add_argument(nullptr, rcdtype);
-	auto a5 = graph.root()->add_argument(nullptr, at);
+	auto a1 = graph.add_import(bit8, "");
+	auto a2 = graph.add_import(bit16, "");
+	auto a3 = graph.add_import(bit32, "");
+	auto a4 = graph.add_import(rcdtype, "");
+	auto a5 = graph.add_import(addrtype(rcdtype), "");
 
 	std::vector<jive::output*> args({a1, a2, a3});
 	auto g0 = jive_group_create(dcl, 3, &args[0]);

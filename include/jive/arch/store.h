@@ -105,7 +105,7 @@ public:
 		std::vector<jive::output*> operands({address, value});
 		operands.insert(operands.end(), states.begin(), states.end());
 
-		jive::addrstore_op op(jive::addrtype(), valuetype, states.size());
+		addrstore_op op(addrtype(valuetype), valuetype, states.size());
 		return simple_node::create_normalized(address->region(), op, operands);
 	}
 };

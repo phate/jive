@@ -15,14 +15,47 @@ namespace jive {
 
 class addrtype final : public jive::valuetype {
 public:
-	virtual ~addrtype() noexcept;
+	virtual
+	~addrtype() noexcept;
 
-	inline constexpr
-	addrtype() noexcept
-	: jive::valuetype()
+	inline
+	addrtype(const valuetype & type) noexcept
+	: valuetype()
+	, type_(std::move(type.copy()))
 	{}
 
-	virtual std::string debug_string() const override;
+	inline
+	addrtype(const addrtype & other) noexcept
+	: valuetype(other)
+	, type_(std::move(other.type_->copy()))
+	{}
+
+	inline
+	addrtype(addrtype && other) noexcept
+	: valuetype(other)
+	, type_(std::move(other.type_))
+	{}
+
+	addrtype &
+	operator=(const addrtype & other) noexcept
+	{
+		if (this != &other)
+			type_ = std::move(other.type_->copy());
+
+		return *this;
+	}
+
+	addrtype &
+	operator=(addrtype && other) noexcept
+	{
+		if (this != &other)
+			type_ = std::move(other.type_);
+
+		return *this;
+	}
+
+	virtual std::string
+	debug_string() const override;
 
 	virtual bool
 	operator==(const jive::type & other) const noexcept override;
@@ -30,14 +63,14 @@ public:
 	virtual std::unique_ptr<jive::type>
 	copy() const override;
 
-	inline static const addrtype &
-	instance()
+	inline const valuetype &
+	type() const noexcept
 	{
-		return instance_;
+		return *static_cast<const valuetype*>(type_.get());
 	}
 
 private:
-	static const addrtype instance_;
+	std::unique_ptr<jive::type> type_;
 };
 
 class memtype final : public jive::statetype {

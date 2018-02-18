@@ -23,9 +23,6 @@ static int test_main(void)
 	using namespace jive;
 
 	jive::graph graph;
-
-	memtype mt;
-	addrtype at;
 	auto rcddcl = rcddeclaration::create(&graph, {&bit8, &bit16, &bit32});
 	auto unndcl = unndeclaration::create(&graph, {&bit8, &bit16, &bit32});
 	auto eunndcl = unndeclaration::create(&graph);
@@ -34,28 +31,31 @@ static int test_main(void)
 	jive::unntype unntype(unndcl);
 	jive::unntype eunntype(eunndcl);
 
-	auto i0 = graph.add_import(at, "");
-	auto i1 = graph.add_import(mt, "");
+	auto i0 = graph.add_import(addrtype(bit32), "");
+	auto i1 = graph.add_import(memtype(), "");
 	auto i2 = graph.add_import(bit8, "");
 	auto i3 = graph.add_import(bit16, "");
 	auto i4 = graph.add_import(bit32, "");
-	auto i5 = graph.add_import(mt, "");
-	auto i6 = graph.add_import(at, "");
+	auto i5 = graph.add_import(memtype(), "");
+	auto i6 = graph.add_import(addrtype(bit32), "");
+	auto i7 = graph.add_import(addrtype(rcdtype), "");
+	auto i8 = graph.add_import(addrtype(unntype), "");
+	auto i9 = graph.add_import(addrtype(eunntype), "");
 
 	auto states0 = addrstore_op::create(i0, i4, bit32, {i1});
 
 	jive::output * tmparray1[] = {i2, i3, i4};
 	auto group = jive_group_create(rcddcl, 3, tmparray1);
-	auto states1 = addrstore_op::create(i0, group, rcdtype, {i1, i5});
+	auto states1 = addrstore_op::create(i7, group, rcdtype, {i1, i5});
 
 	auto unify = jive_unify_create(unndcl, 2, i4);
-	auto states2 = addrstore_op::create(i0, unify, unntype, {i1});
+	auto states2 = addrstore_op::create(i8, unify, unntype, {i1});
 
 	auto states3 = addrstore_op::create(i6, i4, bit32, {i1});
 	auto states4 = addrstore_op::create(i0, i4, bit32, {states3});
 
 	unify = jive_empty_unify_create(graph.root(), eunndcl);
-	auto states5 = addrstore_op::create(i0, unify, eunntype, {i1});
+	auto states5 = addrstore_op::create(i9, unify, eunntype, {i1});
 
 	graph.add_export(states0[0], "");
 	graph.add_export(states1[0], "");

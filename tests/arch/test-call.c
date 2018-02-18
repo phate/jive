@@ -13,6 +13,7 @@
 #include <jive/arch/call.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/types/bitstring.h>
+#include <jive/types/function.h>
 #include <jive/view.h>
 
 #include "testnodes.h"
@@ -21,10 +22,10 @@ static int test_main(void)
 {
 	using namespace jive;
 
-	jive::addrtype at;
+	jive::addrtype at(bit16);
 
 	jive::graph graph;
-	auto i0 = graph.add_import(at, "");
+	auto i0 = graph.add_import(addrtype(fct::type({&bit16, &at}, {&bit16, &at, &at})), "");
 	auto i1 = graph.add_import(bit16, "");
 	auto i2 = graph.add_import(at, "");
 

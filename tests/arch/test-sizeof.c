@@ -26,9 +26,9 @@ static int test_main(void)
 
 	jive::graph graph;
 
-	addrtype at;
 	bittype bit4(4);
 	bittype bit18(18);
+	addrtype at(bit32);
 	auto rcddcl = rcddeclaration::create(&graph, {&bit4, &bit8, &bit18});
 	auto unndcl = unndeclaration::create(&graph, {&bit4, &bit8, &bit18});
 

@@ -150,7 +150,8 @@ jive_dataobj_internal(
 	for (const auto & item : data_items)
 		node->add_input(item->type(), item);
 
-	return node->add_output(jive::addrtype::instance());
+	/* FIXME: the type is not correct */
+	return node->add_output(jive::addrtype(jive::bit32));
 }
 
 jive::output *

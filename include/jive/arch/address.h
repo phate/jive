@@ -32,7 +32,7 @@ public:
 	memberof_op(
 		const jive::rcddeclaration * dcl,
 		size_t index)
-	: unary_op(addrtype::instance(), addrtype::instance())
+	: unary_op(addrtype(rcdtype(dcl)), addrtype(dcl->element(index)))
 	, index_(index)
 	, dcl_(dcl)
 	{}
@@ -102,7 +102,7 @@ public:
 	containerof_op(
 		const jive::rcddeclaration * dcl,
 		size_t index)
-	: unary_op(addrtype::instance(), addrtype::instance())
+	: unary_op(addrtype(dcl->element(index)), addrtype(rcdtype(dcl)))
 	, index_(index)
 	, dcl_(dcl)
 	{}
@@ -173,7 +173,7 @@ public:
 	arraysubscript_op(
 		const jive::valuetype & element_type,
 		const bittype & index_type)
-	: simple_op({addrtype::instance(), index_type}, {addrtype::instance()})
+	: simple_op({addrtype(element_type), index_type}, {addrtype(element_type)})
 	, element_type_(std::move(element_type.copy()))
 	{}
 
@@ -246,7 +246,7 @@ public:
 	arrayindex_op(
 		const valuetype & element_type,
 		const bittype & index_type)
-	: simple_op({addrtype::instance(), addrtype::instance()}, {index_type})
+	: simple_op({addrtype(element_type), addrtype(element_type)}, {index_type})
 	, element_type_(element_type.copy())
 	{}
 
@@ -313,7 +313,8 @@ public:
 
 	inline
 	lbl2addr_op(const jive::label * label) noexcept
-	: nullary_op(addrtype::instance())
+	/* FIXME: we don't have a label type */
+	: nullary_op(addrtype(bit32))
 	, label_(label)
 	{}
 
@@ -458,7 +459,8 @@ struct addrtype_of_value {
 	addrtype
 	operator()(const value_repr & vr) const
 	{
-		return jive::addrtype();
+		/* FIXME: introduce type */
+		return addrtype(bit64);
 	}
 };
 

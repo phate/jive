@@ -12,6 +12,7 @@
 #include <jive/rvsdg/node.h>
 #include <jive/rvsdg/simple-node.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/types/function/fcttype.h>
 
 namespace jive {
 	class type;
@@ -95,7 +96,7 @@ public:
 		const std::vector<const jive::type*> & arguments,
 		const std::vector<const jive::type*> & results,
 		const jive_calling_convention * callconv)
-	: call_op(jive::addrtype(), arguments, results, callconv)
+	: call_op(addrtype(fct::type(arguments, results)), arguments, results, callconv)
 	{}
 
 	inline const jive::addrtype &
