@@ -78,9 +78,8 @@ public:
 	inline
 	addrstore_op(
 		const jive::addrtype & address,
-		const jive::valuetype & value,
 		size_t nstates)
-	: store_op(address, value, nstates)
+	: store_op(address, address.type(), nstates)
 	{}
 
 	inline const jive::addrtype &
@@ -99,13 +98,15 @@ public:
 	create(
 		jive::output * address,
 		jive::output * value,
-		const jive::valuetype & valuetype,
 		const std::vector<jive::output*> & states)
 	{
+		auto at = dynamic_cast<const addrtype*>(&address->type());
+		if (!at) throw type_error("address", address->type().debug_string());
+
 		std::vector<jive::output*> operands({address, value});
 		operands.insert(operands.end(), states.begin(), states.end());
 
-		addrstore_op op(addrtype(valuetype), valuetype, states.size());
+		addrstore_op op(*at, states.size());
 		return simple_node::create_normalized(address->region(), op, operands);
 	}
 };

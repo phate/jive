@@ -29,7 +29,7 @@ static int test_main()
 
 	auto load0 = addrload_op::create(i0, {i2});
 
-	auto states = addrstore_op::create(i1, i3, bit32, {i2});
+	auto states = addrstore_op::create(i1, i3, {i2});
 	auto load1 = addrload_op::create(i1, {states[0]});
 	assert(load1 == i3);
 
