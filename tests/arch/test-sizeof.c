@@ -29,10 +29,10 @@ static int test_main(void)
 	bittype bit4(4);
 	bittype bit18(18);
 	addrtype at(bit32);
-	auto rcddcl = rcddeclaration::create(&graph, {&bit4, &bit8, &bit18});
+	auto rcddcl = rcddeclaration::create({&bit4, &bit8, &bit18});
 	auto unndcl = unndeclaration::create(&graph, {&bit4, &bit8, &bit18});
 
-	rcdtype record_t(rcddcl);
+	rcdtype record_t(rcddcl.get());
 	unntype union_t(unndcl);
 
 	auto s0 = jive_sizeof_create(graph.root(), &bit4);

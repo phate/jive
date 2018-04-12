@@ -23,15 +23,15 @@ test_memberof()
 	using namespace jive;
 
 	jive::graph graph;
-	auto dcl = rcddeclaration::create(&graph, {&bit32, &bit32});
+	auto dcl = rcddeclaration::create({&bit32, &bit32});
 
-	auto i0 = graph.add_import(addrtype(rcdtype(dcl)), "");
+	auto i0 = graph.add_import(addrtype(rcdtype(dcl.get())), "");
 
-	auto m1 = memberof_op::create(i0, dcl, 0);
-	auto m2 = memberof_op::create(i0, dcl, 0);
-	auto m3 = memberof_op::create(i0, dcl, 1);
+	auto m1 = memberof_op::create(i0, dcl.get(), 0);
+	auto m2 = memberof_op::create(i0, dcl.get(), 0);
+	auto m3 = memberof_op::create(i0, dcl.get(), 1);
 
-	auto c1 = containerof_op::create(m1, dcl, 0);
+	auto c1 = containerof_op::create(m1, dcl.get(), 0);
 
 	auto ex0 = graph.add_export(c1, "");
 	auto ex1 = graph.add_export(m2, "");
@@ -64,16 +64,16 @@ test_containerof()
 	using namespace jive;
 
 	jive::graph graph;
-	auto dcl = rcddeclaration::create(&graph, {&bit32, &bit32});
+	auto dcl = rcddeclaration::create({&bit32, &bit32});
 
 	auto i0 = graph.add_import(addrtype(bit32), "");
 	auto i1 = graph.add_import(addrtype(bit32), "");
 
-	auto c1 = containerof_op::create(i0, dcl, 0);
-	auto c2 = containerof_op::create(i0, dcl, 0);
-	auto c3 = containerof_op::create(i1, dcl, 1);
+	auto c1 = containerof_op::create(i0, dcl.get(), 0);
+	auto c2 = containerof_op::create(i0, dcl.get(), 0);
+	auto c3 = containerof_op::create(i1, dcl.get(), 1);
 
-	auto m1 = memberof_op::create(c1, dcl, 0);
+	auto m1 = memberof_op::create(c1, dcl.get(), 0);
 
 	auto ex0 = graph.add_export(m1, "");
 	auto ex1 = graph.add_export(c2, "");

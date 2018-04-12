@@ -51,15 +51,16 @@ public:
 		types_.push_back(type.copy());
 	}
 
-	static rcddeclaration *
-	create(const jive::graph * graph);
-
-	static inline rcddeclaration *
-	create(
-		const jive::graph * graph,
-		const std::vector<const valuetype*> & types)
+	static inline std::unique_ptr<rcddeclaration>
+	create()
 	{
-		auto dcl = create(graph);
+		return std::unique_ptr<rcddeclaration>(new rcddeclaration());
+	}
+
+	static inline std::unique_ptr<rcddeclaration>
+	create(const std::vector<const valuetype*> & types)
+	{
+		auto dcl = create();
 		for (const auto & type : types)
 			dcl->append(*type);
 

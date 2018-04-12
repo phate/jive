@@ -29,7 +29,6 @@ graph::~graph()
 	while (gates.first())
 		delete gates.first();
 
-	unregister_rcddeclarations(this);
 	unregister_unndeclarations(this);
 }
 

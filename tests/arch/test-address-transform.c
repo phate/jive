@@ -110,17 +110,17 @@ test_containerof_transform(void)
 	auto i2 = graph.add_import(bit32, "");
 	auto i3 = graph.add_import(bit32, "");
 
-	auto dcl = rcddeclaration::create(&graph, {&bit8, &bit16, &bit32, &bit32});
+	auto dcl = rcddeclaration::create({&bit8, &bit16, &bit32, &bit32});
 
 	auto address0 = bit2addr_op::create(i0, 32, addrtype(bit8));
 	auto address1 = bit2addr_op::create(i1, 32, addrtype(bit16));
 	auto address2 = bit2addr_op::create(i2, 32, addrtype(bit32));
 	auto address3 = bit2addr_op::create(i3, 32, addrtype(bit32));
 
-	auto container0 = containerof_op::create(address0, dcl, 0);
-	auto container1 = containerof_op::create(address1, dcl, 1);
-	auto container2 = containerof_op::create(address2, dcl, 2);
-	auto container3 = containerof_op::create(address3, dcl, 3);
+	auto container0 = containerof_op::create(address0, dcl.get(), 0);
+	auto container1 = containerof_op::create(address1, dcl.get(), 1);
+	auto container2 = containerof_op::create(address2, dcl.get(), 2);
+	auto container3 = containerof_op::create(address3, dcl.get(), 3);
 
 	auto offset0 = addr2bit_op::create(container0, 32, container0->type());
 	auto offset1 = addr2bit_op::create(container1, 32, container1->type());
@@ -184,14 +184,14 @@ test_memberof_transform(void)
 	jive::graph graph;
 	auto i0 = graph.add_import(bit32, "");
 
-	auto dcl = rcddeclaration::create(&graph, {&bit8, &bit16, &bit32, &bit32});
+	auto dcl = rcddeclaration::create({&bit8, &bit16, &bit32, &bit32});
 
-	auto address = bit2addr_op::create(i0, 32, addrtype(rcdtype(dcl)));
+	auto address = bit2addr_op::create(i0, 32, addrtype(rcdtype(dcl.get())));
 
-	auto member0 = memberof_op::create(address, dcl, 0);
-	auto member1 = memberof_op::create(address, dcl, 1);
-	auto member2 = memberof_op::create(address, dcl, 2);
-	auto member3 = memberof_op::create(address, dcl, 3);
+	auto member0 = memberof_op::create(address, dcl.get(), 0);
+	auto member1 = memberof_op::create(address, dcl.get(), 1);
+	auto member2 = memberof_op::create(address, dcl.get(), 2);
+	auto member3 = memberof_op::create(address, dcl.get(), 3);
 
 	auto offset0 = addr2bit_op::create(member0, 32, member0->type());
 	auto offset1 = addr2bit_op::create(member1, 32, member1->type());

@@ -23,11 +23,11 @@ static int test_main(void)
 	using namespace jive;
 
 	jive::graph graph;
-	auto rcddcl = rcddeclaration::create(&graph, {&bit8, &bit16, &bit32});
+	auto rcddcl = rcddeclaration::create({&bit8, &bit16, &bit32});
 	auto unndcl = unndeclaration::create(&graph, {&bit8, &bit16, &bit32});
 	auto eunndcl = unndeclaration::create(&graph);
 
-	jive::rcdtype rcdtype(rcddcl);
+	jive::rcdtype rcdtype(rcddcl.get());
 	jive::unntype unntype(unndcl);
 	jive::unntype eunntype(eunndcl);
 
@@ -44,7 +44,7 @@ static int test_main(void)
 
 	auto states0 = addrstore_op::create(i0, i4, {i1});
 
-	auto group = group_op::create(rcddcl, {i2, i3, i4});
+	auto group = group_op::create(rcddcl.get(), {i2, i3, i4});
 	auto states1 = addrstore_op::create(i7, group, {i1, i5});
 
 	auto unify = jive_unify_create(unndcl, 2, i4);

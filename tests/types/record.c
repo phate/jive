@@ -23,18 +23,18 @@ static int _test_rcdgroup(void)
 
 	jive::graph graph;
 	
-	auto dcl = rcddeclaration::create(&graph, {&bit8, &bit16, &bit32});
-	jive::rcdtype rcdtype(dcl);
+	auto dcl = rcddeclaration::create({&bit8, &bit16, &bit32});
+	jive::rcdtype rcdtype(dcl.get());
 
-	auto edcl = rcddeclaration::create(&graph);
-	jive::rcdtype rcdtype_empty(edcl);
+	auto edcl = rcddeclaration::create();
+	jive::rcdtype rcdtype_empty(edcl.get());
 
 	auto i0 = graph.add_import(bit8, "");
 	auto i1 = graph.add_import(bit16, "");
 	auto i2 = graph.add_import(bit32, "");
 
-	auto g0 = group_op::create(dcl, {i0, i1, i2});
-	auto g1 = group_op::create(&graph, edcl);
+	auto g0 = group_op::create(dcl.get(), {i0, i1, i2});
+	auto g1 = group_op::create(&graph, edcl.get());
 
 	graph.add_export(g0, "");
 	graph.add_export(g1, "");
@@ -56,8 +56,8 @@ static int _test_rcdselect()
 	using namespace jive;
 
 	jive::graph graph;
-	auto dcl = rcddeclaration::create(&graph, {&bit8, &bit16, &bit32});
-	jive::rcdtype rcdtype(dcl);
+	auto dcl = rcddeclaration::create({&bit8, &bit16, &bit32});
+	jive::rcdtype rcdtype(dcl.get());
 
 	auto a1 = graph.add_import(bit8, "");
 	auto a2 = graph.add_import(bit16, "");
@@ -66,7 +66,7 @@ static int _test_rcdselect()
 	auto a5 = graph.add_import(addrtype(rcdtype), "");
 
 	std::vector<jive::output*> args({a1, a2, a3});
-	auto g0 = group_op::create(dcl, {a1, a2, a3});
+	auto g0 = group_op::create(dcl.get(), {a1, a2, a3});
 	auto load = addrload_op::create(a5, {});
 
 	auto s0 = select_op::create(a4, 1);
