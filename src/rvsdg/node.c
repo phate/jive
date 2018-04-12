@@ -63,6 +63,38 @@ input::debug_string() const
 void
 input::divert_to(jive::output * new_origin)
 {
+	std::function<void(jive::input*)> recompute_depth = [&](jive::input * input)
+	{
+		JIVE_DEBUG_ASSERT(input->node());
+		auto producer = input->origin()->node();
+		auto node = input->node();
+
+		size_t new_depth = 0;
+		if (!producer) {
+			for (size_t n = 0; n < node->ninputs(); n++) {
+				auto producer = node->input(n)->origin()->node();
+				new_depth = std::max(new_depth, producer ? producer->depth()+1 : 0);
+			}
+			if (new_depth == node->depth())
+				return;
+		} else {
+			new_depth = producer->depth()+1;
+			if (new_depth <= node->depth())
+				return;
+		}
+
+		size_t old_depth = node->depth();
+		node->depth_ = new_depth;
+		on_node_depth_change(node, old_depth);
+
+		for (size_t n = 0; n < node->noutputs(); n++) {
+			for (auto user : *(node->output(n))) {
+				if (user->node())
+					recompute_depth(user);
+			}
+		}
+	};
+
 	if (origin() == new_origin)
 		return;
 
@@ -77,7 +109,7 @@ input::divert_to(jive::output * new_origin)
 	this->origin_ = new_origin;
 	new_origin->add_user(this);
 
-	if (node()) node()->recompute_depth(this);
+	if (node()) recompute_depth(this);
 	region()->graph()->mark_denormalized();
 	on_input_change(this, old_origin, new_origin);
 }
@@ -182,8 +214,30 @@ node::~node()
 void
 node::add_input(std::unique_ptr<jive::input> input)
 {
-	if (ninputs() == 0)
+	std::function<void(jive::input*)> recompute_depth = [&](jive::input * input)
+	{
+		auto producer = input->origin()->node();
+
+		size_t new_depth = producer ? producer->depth()+1 : 0;
+		if (new_depth <= depth())
+			return;
+
+		size_t old_depth = depth();
+		depth_ = new_depth;
+		on_node_depth_change(this, old_depth);
+
+		for (size_t n = 0; n < noutputs(); n++) {
+			for (auto user : *output(n)) {
+				if (user->node())
+					recompute_depth(user);
+			}
+		}
+	};
+
+	if (ninputs() == 0) {
+		JIVE_DEBUG_ASSERT(depth() == 0);
 		region()->top_nodes.erase(this);
+	}
 
 	inputs_.push_back(std::move(input));
 	recompute_depth(inputs_.back().get());
@@ -194,14 +248,50 @@ node::remove_input(size_t index)
 {
 	JIVE_DEBUG_ASSERT(index < ninputs());
 
+	std::function<void(jive::input*)> recompute_depth = [&](jive::input * input)
+	{
+		if (input->origin()->node()) {
+			auto pdepth = input->origin()->node()->depth();
+			JIVE_DEBUG_ASSERT(pdepth < depth());
+			if (depth()-1 != pdepth)
+				return;
+		}
+
+		size_t new_depth = 0;
+		for (size_t n = 0; n < ninputs(); n++) {
+			if (input == this->input(n))
+				continue;
+
+			auto producer = this->input(n)->origin()->node();
+			new_depth = std::max(new_depth, producer ? producer->depth()+1 : 0);
+		}
+		JIVE_DEBUG_ASSERT(new_depth <= depth());
+		if (new_depth == depth())
+			return;
+
+		size_t old_depth = depth();
+		depth_ = new_depth;
+		on_node_depth_change(this, old_depth);
+
+		for (size_t n = 0; n < noutputs(); n++) {
+			for (auto user : *output(n)) {
+				if (user->node())
+					recompute_depth(user);
+			}
+		}
+	};
+
+	recompute_depth(input(index));
 	for (size_t n = index; n < ninputs()-1; n++) {
 		inputs_[n] = std::move(inputs_[n+1]);
 		inputs_[n]->index_ = n;
 	}
 	inputs_.pop_back();
 
-	if (ninputs() == 0)
+	if (ninputs() == 0) {
+		JIVE_DEBUG_ASSERT(depth() == 0);
 		region()->top_nodes.push_back(this);
+	}
 }
 
 void
@@ -214,39 +304,6 @@ node::remove_output(size_t index)
 		outputs_[n]->index_ = n;
 	}
 	outputs_.pop_back();
-}
-
-void
-node::recompute_depth(jive::input * input)
-{
-	if (input->node() != this)
-		return;
-
-	size_t new_depth = 0;
-	auto node = input->origin()->node();
-	if (node == nullptr) {
-		for (size_t n = 0; n < ninputs(); n++) {
-			auto producer = this->input(n)->origin()->node();
-			new_depth = std::max(new_depth, producer ? producer->depth()+1 : 0);
-		}
-		if (new_depth == depth())
-			return;
-	} else {
-		new_depth = node->depth()+1;
-		if (new_depth <= depth())
-			return;
-	}
-
-	size_t old_depth = depth_;
-	depth_ = new_depth;
-	on_node_depth_change(this, old_depth);
-
-	for (size_t n = 0; n < noutputs(); n++) {
-		for (auto user : *output(n)) {
-			if (user->node())
-				user->node()->recompute_depth(user);
-		}
-	}
 }
 
 jive::node *

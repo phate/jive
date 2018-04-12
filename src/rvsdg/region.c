@@ -197,8 +197,10 @@ region::copy(
 
 	/* order nodes top-down */
 	std::vector<std::vector<const jive::node*>> context(nnodes());
-	for (const auto & node : nodes)
+	for (const auto & node : nodes) {
+		JIVE_DEBUG_ASSERT(node.depth() < context.size());
 		context[node.depth()].push_back(&node);
+	}
 
 	/* copy arguments */
 	if (copy_arguments) {

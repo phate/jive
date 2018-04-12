@@ -237,6 +237,7 @@ private:
 };
 
 class node {
+	friend jive::input;
 public:
 	virtual
 	~node();
@@ -367,9 +368,6 @@ public:
 	{
 		return depth_;
 	}
-
-	void
-	recompute_depth(jive::input * input);
 
 private:
 	jive::detail::intrusive_list_anchor<
