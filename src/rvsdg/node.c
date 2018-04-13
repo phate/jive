@@ -168,15 +168,14 @@ node::node(std::unique_ptr<jive::operation> op, jive::region * region)
 
 node::~node()
 {
-	while (ninputs())
-		remove_input(ninputs()-1);
+	outputs_.clear();
+	region()->bottom_nodes.erase(this);
 
-	while(noutputs())
-		remove_output(noutputs()-1);
+	if (ninputs() == 0)
+		region()->top_nodes.erase(this);
+	inputs_.clear();
 
 	region()->nodes.erase(this);
-	region()->top_nodes.erase(this);
-	region()->bottom_nodes.erase(this);
 }
 
 void
