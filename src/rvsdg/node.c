@@ -256,7 +256,6 @@ node::recompute_depth() noexcept
 	depth_ = new_depth;
 	on_node_depth_change(this, old_depth);
 
-	std::vector<jive::node*> c;
 	for (size_t n = 0; n < noutputs(); n++) {
 		for (auto user : *(output(n))) {
 			if (user->node())

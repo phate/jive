@@ -237,7 +237,6 @@ private:
 };
 
 class node {
-	friend jive::input;
 public:
 	virtual
 	~node();
