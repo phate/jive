@@ -63,28 +63,6 @@ input::debug_string() const
 void
 input::divert_to(jive::output * new_origin)
 {
-	std::function<void(jive::node*)> recompute_depth = [&](jive::node * node)
-	{
-		size_t new_depth = 0;
-		for (size_t n = 0; n < node->ninputs(); n++) {
-			auto producer = node->input(n)->origin()->node();
-			new_depth = std::max(new_depth, producer ? producer->depth()+1 : 0);
-		}
-		if (new_depth == node->depth())
-			return;
-
-		size_t old_depth = node->depth();
-		node->depth_ = new_depth;
-		on_node_depth_change(node, old_depth);
-
-		for (size_t n = 0; n < node->noutputs(); n++) {
-			for (auto user : *(node->output(n))) {
-				if (user->node())
-					recompute_depth(user->node());
-			}
-		}
-	};
-
 	if (origin() == new_origin)
 		return;
 
@@ -99,7 +77,7 @@ input::divert_to(jive::output * new_origin)
 	this->origin_ = new_origin;
 	new_origin->add_user(this);
 
-	if (node()) recompute_depth(node());
+	if (node()) node()->recompute_depth();
 	region()->graph()->mark_denormalized();
 	on_input_change(this, old_origin, new_origin);
 }
@@ -204,80 +182,42 @@ node::~node()
 void
 node::add_input(std::unique_ptr<jive::input> input)
 {
-	std::function<void(jive::input*)> recompute_depth = [&](jive::input * input)
-	{
-		auto producer = input->origin()->node();
-
-		size_t new_depth = producer ? producer->depth()+1 : 0;
-		if (new_depth <= depth())
-			return;
-
-		size_t old_depth = depth();
-		depth_ = new_depth;
-		on_node_depth_change(this, old_depth);
-
-		for (size_t n = 0; n < noutputs(); n++) {
-			for (auto user : *output(n)) {
-				if (user->node())
-					recompute_depth(user);
-			}
-		}
-	};
-
 	if (ninputs() == 0) {
 		JIVE_DEBUG_ASSERT(depth() == 0);
 		region()->top_nodes.erase(this);
 	}
 
 	inputs_.push_back(std::move(input));
-	recompute_depth(inputs_.back().get());
+
+	auto producer = inputs_.back().get()->origin()->node();
+	auto new_depth = producer ? producer->depth()+1 : 0;
+	if (new_depth > depth())
+		recompute_depth();
 }
 
 void
 node::remove_input(size_t index)
 {
 	JIVE_DEBUG_ASSERT(index < ninputs());
+	auto producer = input(index)->origin()->node();
 
-	std::function<void(jive::input*)> recompute_depth = [&](jive::input * input)
-	{
-		if (input->origin()->node()) {
-			auto pdepth = input->origin()->node()->depth();
-			JIVE_DEBUG_ASSERT(pdepth < depth());
-			if (depth()-1 != pdepth)
-				return;
-		}
-
-		size_t new_depth = 0;
-		for (size_t n = 0; n < ninputs(); n++) {
-			if (input == this->input(n))
-				continue;
-
-			auto producer = this->input(n)->origin()->node();
-			new_depth = std::max(new_depth, producer ? producer->depth()+1 : 0);
-		}
-		JIVE_DEBUG_ASSERT(new_depth <= depth());
-		if (new_depth == depth())
-			return;
-
-		size_t old_depth = depth();
-		depth_ = new_depth;
-		on_node_depth_change(this, old_depth);
-
-		for (size_t n = 0; n < noutputs(); n++) {
-			for (auto user : *output(n)) {
-				if (user->node())
-					recompute_depth(user);
-			}
-		}
-	};
-
-	recompute_depth(input(index));
+	/* remove input */
 	for (size_t n = index; n < ninputs()-1; n++) {
 		inputs_[n] = std::move(inputs_[n+1]);
 		inputs_[n]->index_ = n;
 	}
 	inputs_.pop_back();
 
+	/* recompute depth */
+	if (producer) {
+		auto pdepth = producer->depth();
+		JIVE_DEBUG_ASSERT(pdepth < depth());
+		if (pdepth != depth()-1)
+			return;
+	}
+	recompute_depth();
+
+	/* add to region's top nodes */
 	if (ninputs() == 0) {
 		JIVE_DEBUG_ASSERT(depth() == 0);
 		region()->top_nodes.push_back(this);
@@ -294,6 +234,36 @@ node::remove_output(size_t index)
 		outputs_[n]->index_ = n;
 	}
 	outputs_.pop_back();
+}
+
+void
+node::recompute_depth() noexcept
+{
+	/*
+		FIXME: This function is inefficient, as it can visit the
+		node's successors multiple times. Optimally, we would like
+		to visit the node's successors in top down order to ensure
+		that each node is only visited once.
+	*/
+	size_t new_depth = 0;
+	for (size_t n = 0; n < ninputs(); n++) {
+		auto producer = input(n)->origin()->node();
+		new_depth = std::max(new_depth, producer ? producer->depth()+1 : 0);
+	}
+	if (new_depth == depth())
+		return;
+
+	size_t old_depth = depth();
+	depth_ = new_depth;
+	on_node_depth_change(this, old_depth);
+
+	std::vector<jive::node*> c;
+	for (size_t n = 0; n < noutputs(); n++) {
+		for (auto user : *(output(n))) {
+			if (user->node())
+				user->node()->recompute_depth();
+		}
+	}
 }
 
 jive::node *

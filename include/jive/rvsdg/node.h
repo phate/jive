@@ -311,6 +311,9 @@ public:
 		return outputs_[index].get();
 	}
 
+	inline void
+	recompute_depth() noexcept;
+
 protected:
 	void
 	add_input(std::unique_ptr<jive::input> input);
