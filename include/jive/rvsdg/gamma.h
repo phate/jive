@@ -245,6 +245,7 @@ public:
 	inline size_t
 	nentryvars() const noexcept
 	{
+		JIVE_DEBUG_ASSERT(node::ninputs() != 0);
 		return node::ninputs()-1;
 	}
 
@@ -263,6 +264,9 @@ public:
 	inline gamma_node::entryvar_iterator
 	begin_entryvar() const
 	{
+		if (nentryvars() == 0)
+			return entryvar_iterator(nullptr);
+
 		return entryvar_iterator(entryvar(0));
 	}
 
@@ -275,6 +279,9 @@ public:
 	inline gamma_node::exitvar_iterator
 	begin_exitvar() const
 	{
+		if (nexitvars() == 0)
+			return exitvar_iterator(nullptr);
+
 		return exitvar_iterator(exitvar(0));
 	}
 

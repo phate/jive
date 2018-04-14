@@ -26,6 +26,7 @@ test_gamma(void)
 	auto v0 = graph.add_import(bit32, "");
 	auto v1 = graph.add_import(bit32, "");
 	auto v2 = graph.add_import(bit32, "");
+	auto v3 = graph.add_import(ctl2, "");
 
 	auto pred = match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 
@@ -36,11 +37,20 @@ test_gamma(void)
 	gamma->add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
 
 	graph.add_export(gamma->output(0), "dummy");
-	auto gamma2 = static_cast<structural_node*>(gamma)->copy(graph.root(), {pred, v0, v1, v2});
-	view(graph.root(), stdout);
 
 	assert(gamma && gamma->operation() == jive::gamma_op(3));
-	assert(dynamic_cast<const jive::gamma_node*>(gamma2));
+
+	/* test gamma copy */
+
+	auto gamma2 = static_cast<structural_node*>(gamma)->copy(graph.root(), {pred, v0, v1, v2});
+	view(graph.root(), stdout);
+	assert(is<gamma_op>(gamma2));
+
+	/* test entry and exit variable iterators */
+
+	auto gamma3 = gamma_node::create(v3, 2);
+	assert(gamma3->begin_entryvar() == gamma3->end_entryvar());
+	assert(gamma3->begin_exitvar() == gamma3->end_exitvar());
 }
 
 static void
