@@ -145,6 +145,15 @@ public:
 	normal_form(jive::graph * graph) noexcept;
 };
 
+template <class T> static inline bool
+is(const jive::operation & operation) noexcept
+{
+	static_assert(std::is_base_of<jive::operation, T>::value,
+		"Template parameter T must be derived from jive::operation.");
+
+	return dynamic_cast<const T*>(&operation) != nullptr;
+}
+
 /* simple operation */
 
 class simple_op : public operation {
