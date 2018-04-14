@@ -97,7 +97,12 @@ is_control_constant_reducible(jive::gamma_node * gamma)
 
 		size_t n;
 		for (n = 0; n < it->nresults(); n++) {
-			if (!is_ctlconstant_op(it->result(n)->origin()->node()->operation()))
+			auto node = it->result(n)->origin()->node();
+			if (!is<ctlconstant_op>(node))
+				break;
+
+			auto op = static_cast<const jive::ctlconstant_op*>(&node->operation());
+			if (op->value().nalternatives() != 2)
 				break;
 		}
 		if (n == it->nresults())

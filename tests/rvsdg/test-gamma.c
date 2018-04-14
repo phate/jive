@@ -119,18 +119,25 @@ test_control_constant_reduction()
 	auto t = jive_control_true(gamma->subregion(0));
 	auto f = jive_control_false(gamma->subregion(1));
 
-	gamma->add_exitvar({t, f});
+	auto n0 = jive_control_constant(gamma->subregion(0), 3, 0);
+	auto n1 = jive_control_constant(gamma->subregion(1), 3, 1);
 
-	auto ex = graph.add_export(gamma->output(0), "c");
+	auto xv1 = gamma->add_exitvar({t, f});
+	auto xv2 = gamma->add_exitvar({n0, n1});
+
+	auto ex1 = graph.add_export(xv1, "");
+	auto ex2 = graph.add_export(xv2, "");
 
 	jive::view(graph.root(), stdout);
 	graph.normalize();
 	jive::view(graph.root(), stdout);
 
-	auto match = ex->origin()->node();
+	auto match = ex1->origin()->node();
 	assert(match && is_match_op(match->operation()));
 	auto & match_op = to_match_op(match->operation());
 	assert(match_op.default_alternative() == 0);
+
+	assert(ex2->origin()->node() == gamma);
 }
 
 static int
