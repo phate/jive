@@ -160,11 +160,11 @@ template <class T> static inline bool
 contains(const jive::region * region, bool recursive)
 {
 	for (const auto & node : region->nodes) {
-		if (is_opnode<T>(node))
+		if (is<T>(&node))
 			return true;
 
 
-		auto structnode = dynamic_cast<const jive::structural_node*>(node);
+		auto structnode = dynamic_cast<const jive::structural_node*>(&node);
 		if (recursive && structnode) {
 			for (size_t n = 0; n < structnode->nsubregions(); n++)
 				return contains<T>(structnode->subregion(n), recursive);
