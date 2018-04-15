@@ -305,7 +305,7 @@ flattened_binary_op::operator==(const operation & other) const noexcept
 {
 	auto op = dynamic_cast<const flattened_binary_op*>(&other);
 	return op
-	    && *op->op_ == *op
+	    && op->bin_operation() == bin_operation()
 	    && op->narguments() == narguments();
 }
 
