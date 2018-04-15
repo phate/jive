@@ -1,6 +1,7 @@
 include tests/rvsdg/traverser/Makefile.sub
 
 TESTS+=\
+	rvsdg/test-binary \
 	rvsdg/test-cse \
 	rvsdg/test-gamma \
 	rvsdg/test-graph \

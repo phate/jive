@@ -9,6 +9,10 @@
 #include <jive/rvsdg/reduction-helpers.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/simple-node.h>
+#include <jive/rvsdg/structural-node.h>
+#include <jive/rvsdg/traverser.h>
+
+#include <deque>
 
 namespace jive {
 
@@ -323,14 +327,98 @@ flattened_binary_op::copy() const
 		new flattened_binary_op(std::move(copied_op), narguments()));
 }
 
-std::vector<jive::port>
-flattened_binary_op::create_operands(const binary_op & op)
-{
-	std::vector<jive::port> operands;
-	for (size_t n = 0; n < op.narguments(); n++)
-		operands.push_back(op.argument(n));
+/*
+	FIXME: The reduce_parallel and reduce_linear functions only differ in where they add
+	the new output to the working list. Unify both functions.
+*/
 
-	return operands;
+static jive::output *
+reduce_parallel(
+	const binary_op & op,
+	const std::vector<jive::output*> & operands)
+{
+	JIVE_DEBUG_ASSERT(operands.size() > 1);
+	auto region = operands.front()->region();
+	JIVE_DEBUG_ASSERT(binary_op::normal_form(region->graph())->get_flatten() == false);
+
+	std::deque<jive::output*> worklist(operands.begin(), operands.end());
+	while (worklist.size() > 1) {
+		auto op1 = worklist.front();
+		worklist.pop_front();
+		auto op2 = worklist.front();
+		worklist.pop_front();
+
+		auto output = simple_node::create_normalized(region, op, {op1, op2})[0];
+		worklist.push_back(output);
+	}
+
+	JIVE_DEBUG_ASSERT(worklist.size() == 1);
+	return worklist.front();
+}
+
+static jive::output *
+reduce_linear(
+	const binary_op & op,
+	const std::vector<jive::output*> & operands)
+{
+	JIVE_DEBUG_ASSERT(operands.size() > 1);
+	auto region = operands.front()->region();
+	JIVE_DEBUG_ASSERT(binary_op::normal_form(region->graph())->get_flatten() == false);
+
+	std::deque<jive::output*> worklist(operands.begin(), operands.end());
+	while (worklist.size() > 1) {
+		auto op1 = worklist.front();
+		worklist.pop_front();
+		auto op2 = worklist.front();
+		worklist.pop_front();
+
+		auto output = simple_node::create_normalized(region, op, {op1, op2})[0];
+		worklist.push_front(output);
+	}
+
+	JIVE_DEBUG_ASSERT(worklist.size() == 1);
+	return worklist.front();
+}
+
+jive::output *
+flattened_binary_op::reduce(
+	const flattened_binary_op::reduction & reduction,
+	const std::vector<jive::output*> & operands) const
+{
+	JIVE_DEBUG_ASSERT(operands.size() > 1);
+	auto graph = operands[0]->region()->graph();
+
+	static std::unordered_map<
+		flattened_binary_op::reduction,
+		std::function<jive::output*(const binary_op&, const std::vector<jive::output*>&)>
+	> map({
+	  {reduction::linear, reduce_linear}
+	, {reduction::parallel, reduce_parallel}
+	});
+
+	binary_op::normal_form(graph)->set_flatten(false);
+	JIVE_DEBUG_ASSERT(map.find(reduction) != map.end());
+	return map[reduction](bin_operation(), operands);
+}
+
+void
+flattened_binary_op::reduce(
+	jive::region * region,
+	const flattened_binary_op::reduction & reduction)
+{
+	for (auto & node : topdown_traverser(region)) {
+		if (is<flattened_binary_op>(node)) {
+			auto op = static_cast<const flattened_binary_op*>(&node->operation());
+			auto output = op->reduce(reduction, operands(node));
+			node->output(0)->divert_users(output);
+			remove(node);
+		} else if (auto structnode = dynamic_cast<const structural_node*>(node)) {
+			for (size_t n = 0; n < structnode->nsubregions(); n++)
+				reduce(structnode->subregion(n), reduction);
+		}
+	}
+
+	JIVE_DEBUG_ASSERT(!contains<flattened_binary_op>(region, true));
 }
 
 }

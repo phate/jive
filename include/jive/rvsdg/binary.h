@@ -147,6 +147,8 @@ public:
 
 class flattened_binary_op final : public simple_op {
 public:
+	enum class reduction {linear, parallel};
+
 	virtual ~flattened_binary_op() noexcept;
 
 	inline
@@ -191,10 +193,25 @@ public:
 			graph->node_normal_form(typeid(flattened_binary_op)));
 	}
 
-private:
-	static std::vector<jive::port>
-	create_operands(const binary_op & op);
+	jive::output *
+	reduce(
+		const flattened_binary_op::reduction & reduction,
+		const std::vector<jive::output*> & operands) const;
 
+	static void
+	reduce(
+		jive::region * region,
+		const flattened_binary_op::reduction & reduction);
+
+	static inline void
+	reduce(
+		jive::graph * graph,
+		const flattened_binary_op::reduction & reduction)
+	{
+		reduce(graph->root(), reduction);
+	}
+
+private:
 	std::unique_ptr<binary_op> op_;
 };
 
