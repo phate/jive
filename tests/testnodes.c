@@ -51,6 +51,55 @@ unary_op::copy() const
 	return std::unique_ptr<jive::operation>(new unary_op(*this));
 }
 
+/* binary operation */
+
+binary_op::~binary_op() noexcept
+{}
+
+bool
+binary_op::operator==(const jive::operation & other) const noexcept
+{
+	auto op = dynamic_cast<const binary_op*>(&other);
+	return op
+	    && op->argument(0) == argument(0)
+	    && op->result(0) == result(0);
+}
+
+jive_binop_reduction_path_t
+binary_op::can_reduce_operand_pair(
+	const jive::output * op1,
+	const jive::output * op2) const noexcept
+{
+	return jive_binop_reduction_none;
+}
+
+jive::output *
+binary_op::reduce_operand_pair(
+	jive_binop_reduction_path_t path,
+	jive::output * op1,
+	jive::output * op2) const
+{
+	return nullptr;
+}
+
+enum jive::binary_op::flags
+binary_op::flags() const noexcept
+{
+	return flags_;
+}
+
+std::string
+binary_op::debug_string() const
+{
+	return "BINARY_TEST_OP";
+}
+
+std::unique_ptr<jive::operation>
+binary_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new binary_op(*this));
+}
+
 /* simple operation */
 
 simple_op::~simple_op() noexcept {}

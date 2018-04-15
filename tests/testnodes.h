@@ -10,6 +10,7 @@
 #include <memory>
 #include <vector>
 
+#include <jive/rvsdg/binary.h>
 #include <jive/rvsdg/node.h>
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/simple-node.h>
@@ -83,6 +84,71 @@ is_unary_node(const jive::node * node) noexcept
 {
 	return is_opnode<unary_op>(node);
 }
+
+/* binary operation */
+
+class binary_op final : public jive::binary_op {
+public:
+	virtual
+	~binary_op() noexcept;
+
+	inline
+	binary_op(
+		const jive::port & srcport,
+		const jive::port & dstport,
+		const enum jive::binary_op::flags & flags) noexcept
+	: jive::binary_op({srcport, srcport}, {dstport})
+	, flags_(flags)
+	{}
+
+	virtual bool
+	operator==(const jive::operation & other) const noexcept override;
+
+	virtual jive_binop_reduction_path_t
+	can_reduce_operand_pair(
+		const jive::output * op1,
+		const jive::output * op2) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand_pair(
+		jive_unop_reduction_path_t path,
+		jive::output * op1,
+		jive::output * op2) const override;
+
+	virtual enum jive::binary_op::flags
+	flags() const noexcept override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
+	static inline jive::node *
+	create(
+		const jive::port & srcport,
+		const jive::port & dstport,
+		jive::output * op1,
+		jive::output * op2)
+	{
+		binary_op op(srcport, dstport, jive::binary_op::flags::none);
+		return simple_node::create(op1->region(), op, {op1, op2});
+	}
+
+	static inline jive::output *
+	create_normalized(
+		const jive::port & srcport,
+		const jive::port & dstport,
+		jive::output * op1,
+		jive::output * op2)
+	{
+		binary_op op(srcport, dstport, jive::binary_op::flags::none);
+		return simple_node::create_normalized(op1->region(), op, {op1, op2})[0];
+	}
+
+private:
+	enum jive::binary_op::flags flags_;
+};
 
 /* simple operation */
 
