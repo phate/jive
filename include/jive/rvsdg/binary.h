@@ -153,17 +153,21 @@ public:
 	flattened_binary_op(
 		std::unique_ptr<binary_op> op,
 		size_t narguments) noexcept
-	: simple_op(create_operands(*op), {op->result(0)})
+	: simple_op(std::vector<jive::port>(narguments, op->argument(0)), {op->result(0)})
 	, op_(std::move(op))
-	{}
+	{
+		JIVE_DEBUG_ASSERT(op_->is_associative());
+	}
 
 	inline
 	flattened_binary_op(
 		const binary_op & op,
 		size_t narguments)
-	: simple_op(create_operands(op), {op.result(0)})
+	: simple_op(std::vector<jive::port>(narguments, op.argument(0)), {op.result(0)})
 	, op_(std::unique_ptr<binary_op>(static_cast<binary_op*>(op.copy().release())))
-	{}
+	{
+		JIVE_DEBUG_ASSERT(op_->is_associative());
+	}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
