@@ -180,6 +180,13 @@ public:
 		return *op_;
 	}
 
+	static jive::flattened_binary_normal_form *
+	normal_form(jive::graph * graph) noexcept
+	{
+		return static_cast<flattened_binary_normal_form*>(
+			graph->node_normal_form(typeid(flattened_binary_op)));
+	}
+
 private:
 	static std::vector<jive::port>
 	create_operands(const binary_op & op);
