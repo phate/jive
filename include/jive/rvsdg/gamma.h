@@ -103,18 +103,6 @@ private:
 	size_t nalternatives_;
 };
 
-static inline bool
-is_gamma_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const jive::gamma_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_gamma_node(const jive::node * node) noexcept
-{
-	return is<gamma_op>(node);
-}
-
 /* gamma node */
 
 class gamma_input;
