@@ -84,9 +84,9 @@ static int _test_rcdselect()
 
 	jive::view(graph.root(), stderr);
 
-	assert(is_select_node(s0->node()));
+	assert(is<select_op>(s0->node()));
 	assert(s1 == a2);
-	assert(is_select_node(s2->node()));
+	assert(is<select_op>(s2->node()));
 	assert(!dynamic_cast<const load_op*>(&s3->node()->input(0)->origin()->node()->operation()));
 
 	return 0;

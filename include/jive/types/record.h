@@ -211,18 +211,6 @@ private:
 	size_t index_;
 };
 
-static inline bool
-is_select_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const select_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_select_node(const jive::node * node) noexcept
-{
-	return is<select_op>(node);
-}
-
 }
 
 #endif
