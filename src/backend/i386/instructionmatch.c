@@ -248,7 +248,7 @@ convert_bitstore_gpr(jive::node * node)
 static void
 match_bitbinary(jive::simple_node * node)
 {
-	JIVE_DEBUG_ASSERT(is_bitbinary_node(node));
+	JIVE_DEBUG_ASSERT(is<bitbinary_op>(node));
 	JIVE_DEBUG_ASSERT(node->ninputs() == 2);
 	auto & op = node->operation();
 
@@ -348,7 +348,7 @@ match_bitbinary(jive::simple_node * node)
 static void
 match_bitunary(jive::simple_node * node)
 {
-	JIVE_DEBUG_ASSERT(is_bitunary_node(node));
+	JIVE_DEBUG_ASSERT(is<bitunary_op>(node));
 	auto & op = node->operation();
 
 	static std::unordered_map<std::type_index, const instruction*> map({
@@ -371,7 +371,7 @@ match_bitcompare(jive::simple_node * node)
 {
 	JIVE_DEBUG_ASSERT(is<match_op>(node));
 	auto compare = node->input(0)->origin()->node();
-	JIVE_DEBUG_ASSERT(is_bitcompare_node(node->input(0)->origin()->node()));
+	JIVE_DEBUG_ASSERT(is<bitcompare_op>(node->input(0)->origin()->node()));
 	auto & op = compare->operation();
 
 	using namespace jive::i386;
@@ -474,13 +474,13 @@ match_bitstore(jive::simple_node * node)
 static void
 match_node(jive::simple_node * node)
 {
-	if (is_bitunary_node(node))
+	if (is<bitunary_op>(node))
 		return match_bitunary(node);
 
-	if (is_bitbinary_node(node))
+	if (is<bitbinary_op>(node))
 		return match_bitbinary(node);
 
-	if (is<match_op>(node) && is_bitcompare_node(node->input(0)->origin()->node()))
+	if (is<match_op>(node) && is<bitcompare_op>(node->input(0)->origin()->node()))
 		return match_bitcompare(node);
 
 	if (is_regvalue_node(node))

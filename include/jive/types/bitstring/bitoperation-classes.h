@@ -50,18 +50,6 @@ public:
 	create(size_t nbits) const = 0;
 };
 
-static inline bool
-is_bitunary_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const bitunary_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_bitunary_node(const jive::node * node) noexcept
-{
-	return is<bitunary_op>(node);
-}
-
 /* Represents a binary operation (possibly normalized n-ary if associative)
  * on a bitstring of a specific width, produces another bitstring of the
  * same width. */
@@ -101,18 +89,6 @@ public:
 		return *static_cast<const bittype*>(&result(0).type());
 	}
 };
-
-static inline bool
-is_bitbinary_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const jive::bitbinary_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_bitbinary_node(const jive::node * node) noexcept
-{
-	return is<bitbinary_op>(node);
-}
 
 enum class compare_result {
 	undecidable,
@@ -155,18 +131,6 @@ public:
 		return *static_cast<const bittype*>(&argument(0).type());
 	}
 };
-
-static inline bool
-is_bitcompare_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const bitcompare_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_bitcompare_node(const jive::node * node) noexcept
-{
-	return is<bitcompare_op>(node);
-}
 
 }
 
