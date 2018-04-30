@@ -79,7 +79,7 @@ convert_address_to_bitstring_type(
 static void
 transform_load(jive::node * node, memlayout_mapper & mapper)
 {
-	JIVE_DEBUG_ASSERT(is_load_node(node));
+	JIVE_DEBUG_ASSERT(is<load_op>(node));
 	auto op = static_cast<const jive::load_op*>(&node->operation());
 	size_t nbits = mapper.map_address().size()*8;
 

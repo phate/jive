@@ -452,7 +452,7 @@ match_regvalue(jive::simple_node * node)
 static void
 match_bitload(jive::simple_node * node)
 {
-	JIVE_DEBUG_ASSERT(is_bitload_node(node));
+	JIVE_DEBUG_ASSERT(is<bitload_op>(node));
 
 	if (node->output(0)->port().rescls() == &gpr_regcls)
 		return convert_bitload_gpr(node);
@@ -486,7 +486,7 @@ match_node(jive::simple_node * node)
 	if (is_regvalue_node(node))
 		return match_regvalue(node);
 
-	if (is_bitload_node(node))
+	if (is<bitload_op>(node))
 		return match_bitload(node);
 
 	if (is_bitstore_node(node))

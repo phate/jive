@@ -90,18 +90,6 @@ private:
 	create_operands(const jive::valuetype & address, size_t nstates);
 };
 
-static inline bool
-is_load_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const jive::load_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_load_node(const jive::node * node) noexcept
-{
-	return is<load_op>(node);
-}
-
 /* address load operator */
 
 class addrload_op final : public load_op {
@@ -144,18 +132,6 @@ public:
 	}
 };
 
-static inline bool
-is_addrload_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const jive::addrload_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_addrload_node(const jive::node * node) noexcept
-{
-	return is<addrload_op>(node);
-}
-
 /* bitstring load operator */
 
 class bitload_op final : public load_op {
@@ -197,18 +173,6 @@ public:
 		return simple_node::create_normalized(address->region(), op, operands)[0];
 	}
 };
-
-static inline bool
-is_bitload_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const jive::bitload_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_bitload_node(const jive::node * node) noexcept
-{
-	return is<bitload_op>(node);
-}
 
 }
 

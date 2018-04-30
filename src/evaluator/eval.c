@@ -160,7 +160,7 @@ compute_bitload_op(
 	const std::vector<std::unique_ptr<const literal>> & operands)
 {
 	JIVE_DEBUG_ASSERT(operands.size() > 1);
-	JIVE_DEBUG_ASSERT(is_load_op(operation));
+	JIVE_DEBUG_ASSERT(is<load_op>(operation));
 	JIVE_DEBUG_ASSERT(dynamic_cast<const bitliteral*>(operands[0].get()));
 
 	auto op = static_cast<const bitload_op*>(&operation);
