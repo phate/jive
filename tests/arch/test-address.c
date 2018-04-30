@@ -40,8 +40,8 @@ test_memberof()
 	view(graph, stdout);
 
 	assert(ex0->origin() == i0);
-	assert(is_memberof_node(ex1->origin()->node()));
-	assert(is_memberof_node(ex2->origin()->node()));
+	assert(is<memberof_op>(ex1->origin()->node()));
+	assert(is<memberof_op>(ex2->origin()->node()));
 
 	memlayout_mapper_simple mapper(4);
 	transform_address(ex1->origin()->node(), mapper);
@@ -82,8 +82,8 @@ test_containerof()
 	view(graph, stdout);
 
 	assert(ex0->origin() == i0);
-	assert(is_containerof_node(ex1->origin()->node()));
-	assert(is_containerof_node(ex2->origin()->node()));
+	assert(is<containerof_op>(ex1->origin()->node()));
+	assert(is<containerof_op>(ex2->origin()->node()));
 
 	memlayout_mapper_simple mapper(4);
 	transform_address(ex1->origin()->node(), mapper);
@@ -116,7 +116,7 @@ test_arraysubscript()
 
 	view(graph, stdout);
 
-	assert(is_arraysubscript_node(ex0->origin()->node()));
+	assert(is<arraysubscript_op>(ex0->origin()->node()));
 
 	memlayout_mapper_simple mapper(4);
 	transform_address(ex0->origin()->node(), mapper);
@@ -147,7 +147,7 @@ test_arrayindex()
 
 	view(graph, stdout);
 
-	assert(is_arrayindex_node(ex0->origin()->node()));
+	assert(is<arrayindex_op>(ex0->origin()->node()));
 
 	memlayout_mapper_simple mapper(4);
 	transform_address(ex0->origin()->node(), mapper);

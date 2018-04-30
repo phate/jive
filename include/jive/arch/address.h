@@ -79,18 +79,6 @@ private:
 	const jive::rcddeclaration * dcl_;
 };
 
-static inline bool
-is_memberof_op(const operation & op) noexcept
-{
-	return dynamic_cast<const memberof_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_memberof_node(const jive::node * node) noexcept
-{
-	return is<memberof_op>(node);
-}
-
 /* "containerof" operator: given an address that is the start of a record
 member in memory, compute address of containing record */
 
@@ -148,18 +136,6 @@ private:
 	size_t index_;
 	const rcddeclaration * dcl_;
 };
-
-static inline bool
-is_containerof_op(const operation & op) noexcept
-{
-	return dynamic_cast<const containerof_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_containerof_node(const jive::node * node) noexcept
-{
-	return is<containerof_op>(node);
-}
 
 /* "arraysubscript" operator: given an address that points to an element of
 an array, compute address of element offset by specified distance */
@@ -221,18 +197,6 @@ private:
 	std::unique_ptr<jive::type> element_type_;
 };
 
-static inline bool
-is_arraysubscript_op(const operation & op) noexcept
-{
-	return dynamic_cast<const arraysubscript_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_arraysubscript_node(const jive::node * node) noexcept
-{
-	return is<arraysubscript_op>(node);
-}
-
 /* "arrayindex" operator: given two addresses that each point to an
 element of an array and the array element type, compute the
 difference of their indices */
@@ -292,18 +256,6 @@ private:
 	std::unique_ptr<jive::type> element_type_;
 };
 
-static inline bool
-is_arrayindex_op(const operation & op) noexcept
-{
-	return dynamic_cast<const arrayindex_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_arrayindex_node(const jive::node * node) noexcept
-{
-	return is<arrayindex_op>(node);
-}
-
 /* lbl2addr operation */
 
 class lbl2addr_op final : public nullary_op {
@@ -343,18 +295,6 @@ public:
 private:
 	const jive::label * label_;
 };
-
-static inline bool
-is_lbl2addr_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const jive::lbl2addr_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_lbl2addr_node(const jive::node * node) noexcept
-{
-	return is<lbl2addr_op>(node);
-}
 
 /* label to bistring operation */
 
@@ -402,18 +342,6 @@ public:
 private:
 	const jive::label * label_;
 };
-
-static inline bool
-is_lbl2bit_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const lbl2bit_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_lbl2bit_node(const jive::node * node) noexcept
-{
-	return is<lbl2bit_op>(node);
-}
 
 /* address value representation */
 

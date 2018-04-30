@@ -153,7 +153,7 @@ transform_store(jive::node * node, memlayout_mapper & mapper)
 static void
 transform_lbl2addr(jive::node * node, memlayout_mapper & mapper)
 {
-	JIVE_DEBUG_ASSERT(is_lbl2addr_node(node));
+	JIVE_DEBUG_ASSERT(is<lbl2addr_op>(node));
 	auto op = static_cast<const lbl2addr_op*>(&node->operation());
 	size_t nbits = mapper.map_address().size()*8;
 
