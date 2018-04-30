@@ -22,7 +22,7 @@ jive_binop_reduction_path_t
 bitunary_op::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
-	if (is_bitconstant_node(producer(arg)))
+	if (is<bitconstant_op>(producer(arg)))
 		return jive_unop_reduction_constant;
 
 	return jive_unop_reduction_none;
@@ -51,7 +51,7 @@ bitbinary_op::can_reduce_operand_pair(
 	const jive::output * arg1,
 	const jive::output * arg2) const noexcept
 {
-	if (is_bitconstant_node(producer(arg1)) && is_bitconstant_node(producer(arg2)))
+	if (is<bitconstant_op>(producer(arg1)) && is<bitconstant_op>(producer(arg2)))
 		return jive_binop_reduction_constants;
 
 	return jive_binop_reduction_none;

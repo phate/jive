@@ -43,12 +43,6 @@ public: \
 		return simple_node::create_normalized(op->region(), NAME ## _op(nbits), {op})[0]; \
 	} \
 }; \
-\
-static inline bool \
-is_ ## NAME ## _node(const jive::node * node) noexcept \
-{ \
-	return is<NAME ## _op>(node); \
-} \
 
 #define DECLARE_BITBINARY_OPERATION(NAME) \
 class NAME ## _op final : public bitbinary_op { \
@@ -87,12 +81,6 @@ public: \
 		return simple_node::create_normalized(op1->region(), NAME ## _op(nbits), {op1, op2})[0]; \
 	} \
 }; \
-\
-static inline bool \
-is_ ## NAME ## _node(const jive::node * node) noexcept \
-{ \
-	return is<NAME ## _op>(node); \
-} \
 
 DECLARE_BITUNARY_OPERATION(bitneg)
 DECLARE_BITUNARY_OPERATION(bitnot)

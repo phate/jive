@@ -51,12 +51,6 @@ int_constant_op(size_t nbits, int64_t value)
 	return bitconstant_op(bitvalue_repr(nbits, value));
 }
 
-static inline bool
-is_bitconstant_node(const jive::node * node) noexcept
-{
-	return is<bitconstant_op>(node);
-}
-
 // declare explicit instantiation
 extern template class domain_const_op<bittype, bitvalue_repr, format_value, type_of_value>;
 

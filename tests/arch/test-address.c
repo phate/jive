@@ -155,7 +155,7 @@ test_arrayindex()
 	graph.prune();
 	view(graph, stdout);
 
-	assert(is_bitsdiv_node(ex0->origin()->node()));
+	assert(is<bitsdiv_op>(ex0->origin()->node()));
 
 	return 0;
 }

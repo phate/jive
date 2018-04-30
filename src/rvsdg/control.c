@@ -94,7 +94,7 @@ match_op::operator==(const operation & other) const noexcept
 jive_unop_reduction_path_t
 match_op::can_reduce_operand(const jive::output * arg) const noexcept
 {
-	if (is_bitconstant_node(producer(arg)))
+	if (is<bitconstant_op>(producer(arg)))
 		return jive_unop_reduction_constant;
 
 	return jive_unop_reduction_none;
