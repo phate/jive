@@ -47,7 +47,7 @@ public: \
 static inline bool \
 is_ ## NAME ## _node(const jive::node * node) noexcept \
 { \
-	return is_opnode<NAME ## _op>(node); \
+	return is<NAME ## _op>(node); \
 } \
 
 #define DECLARE_BITBINARY_OPERATION(NAME) \
@@ -91,7 +91,7 @@ public: \
 static inline bool \
 is_ ## NAME ## _node(const jive::node * node) noexcept \
 { \
-	return is_opnode<NAME ## _op>(node); \
+	return is<NAME ## _op>(node); \
 } \
 
 DECLARE_BITUNARY_OPERATION(bitneg)

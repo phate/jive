@@ -82,7 +82,7 @@ is_unary_op(const jive::operation & op) noexcept
 static inline bool
 is_unary_node(const jive::node * node) noexcept
 {
-	return is_opnode<unary_op>(node);
+	return is<unary_op>(node);
 }
 
 /* binary operation */

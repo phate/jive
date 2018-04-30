@@ -104,7 +104,7 @@ is_regvalue_op(const jive::operation & op) noexcept
 static inline bool
 is_regvalue_node(const jive::node * node) noexcept
 {
-	return is_opnode<regvalue_op>(node);
+	return is<regvalue_op>(node);
 }
 
 }

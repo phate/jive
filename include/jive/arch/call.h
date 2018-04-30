@@ -81,7 +81,7 @@ is_call_op(const jive::operation & op) noexcept
 static inline bool
 is_call_node(const jive::node * node) noexcept
 {
-	return is_opnode<call_op>(node);
+	return is<call_op>(node);
 }
 
 /* address call operation */
@@ -136,7 +136,7 @@ is_addrcall_op(const jive::operation & op) noexcept
 static inline bool
 is_addrcall_node(const jive::node * node) noexcept
 {
-	return is_opnode<addrcall_op>(node);
+	return is<addrcall_op>(node);
 }
 
 /* bitstring call operation */
@@ -193,7 +193,7 @@ is_bitcall_op(const jive::operation & op) noexcept
 static inline bool
 is_bitcall_node(const jive::node * node) noexcept
 {
-	return is_opnode<bitcall_op>(node);
+	return is<bitcall_op>(node);
 }
 
 }

@@ -59,7 +59,7 @@ is_bitunary_op(const jive::operation & op) noexcept
 static inline bool
 is_bitunary_node(const jive::node * node) noexcept
 {
-	return is_opnode<bitunary_op>(node);
+	return is<bitunary_op>(node);
 }
 
 /* Represents a binary operation (possibly normalized n-ary if associative)
@@ -111,7 +111,7 @@ is_bitbinary_op(const jive::operation & op) noexcept
 static inline bool
 is_bitbinary_node(const jive::node * node) noexcept
 {
-	return is_opnode<bitbinary_op>(node);
+	return is<bitbinary_op>(node);
 }
 
 enum class compare_result {
@@ -165,7 +165,7 @@ is_bitcompare_op(const jive::operation & op) noexcept
 static inline bool
 is_bitcompare_node(const jive::node * node) noexcept
 {
-	return is_opnode<bitcompare_op>(node);
+	return is<bitcompare_op>(node);
 }
 
 }

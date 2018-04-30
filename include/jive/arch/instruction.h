@@ -84,7 +84,7 @@ is_instruction_op(const jive::operation & op) noexcept
 static inline bool
 is_instruction_node(const jive::node * node) noexcept
 {
-	return is_opnode<instruction_op>(node);
+	return is<instruction_op>(node);
 }
 
 static inline jive::node *

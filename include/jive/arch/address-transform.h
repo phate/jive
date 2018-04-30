@@ -84,7 +84,7 @@ is_addr2bit_op(const jive::operation & op) noexcept
 static inline bool
 is_addr2bit_node(const jive::node * node) noexcept
 {
-	return is_opnode<addr2bit_op>(node);
+	return is<addr2bit_op>(node);
 }
 
 /* bit2addr operator */
@@ -154,7 +154,7 @@ is_bit2addr_op(const jive::operation & op) noexcept
 static inline bool
 is_bit2addr_node(const jive::node * node) noexcept
 {
-	return is_opnode<bit2addr_op>(node);
+	return is<bit2addr_op>(node);
 }
 
 /* reductions */

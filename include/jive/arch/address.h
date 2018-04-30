@@ -88,7 +88,7 @@ is_memberof_op(const operation & op) noexcept
 static inline bool
 is_memberof_node(const jive::node * node) noexcept
 {
-	return is_opnode<memberof_op>(node);
+	return is<memberof_op>(node);
 }
 
 /* "containerof" operator: given an address that is the start of a record
@@ -158,7 +158,7 @@ is_containerof_op(const operation & op) noexcept
 static inline bool
 is_containerof_node(const jive::node * node) noexcept
 {
-	return is_opnode<containerof_op>(node);
+	return is<containerof_op>(node);
 }
 
 /* "arraysubscript" operator: given an address that points to an element of
@@ -230,7 +230,7 @@ is_arraysubscript_op(const operation & op) noexcept
 static inline bool
 is_arraysubscript_node(const jive::node * node) noexcept
 {
-	return is_opnode<arraysubscript_op>(node);
+	return is<arraysubscript_op>(node);
 }
 
 /* "arrayindex" operator: given two addresses that each point to an
@@ -301,7 +301,7 @@ is_arrayindex_op(const operation & op) noexcept
 static inline bool
 is_arrayindex_node(const jive::node * node) noexcept
 {
-	return is_opnode<arrayindex_op>(node);
+	return is<arrayindex_op>(node);
 }
 
 /* lbl2addr operation */
@@ -353,7 +353,7 @@ is_lbl2addr_op(const jive::operation & op) noexcept
 static inline bool
 is_lbl2addr_node(const jive::node * node) noexcept
 {
-	return is_opnode<lbl2addr_op>(node);
+	return is<lbl2addr_op>(node);
 }
 
 /* label to bistring operation */
@@ -412,7 +412,7 @@ is_lbl2bit_op(const jive::operation & op) noexcept
 static inline bool
 is_lbl2bit_node(const jive::node * node) noexcept
 {
-	return is_opnode<lbl2bit_op>(node);
+	return is<lbl2bit_op>(node);
 }
 
 /* address value representation */

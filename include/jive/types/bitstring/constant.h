@@ -54,7 +54,7 @@ int_constant_op(size_t nbits, int64_t value)
 static inline bool
 is_bitconstant_node(const jive::node * node) noexcept
 {
-	return is_opnode<bitconstant_op>(node);
+	return is<bitconstant_op>(node);
 }
 
 // declare explicit instantiation

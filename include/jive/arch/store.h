@@ -65,7 +65,7 @@ is_store_op(const jive::operation & op)
 static inline bool
 is_store_node(const jive::node * node)
 {
-	return is_opnode<store_op>(node);
+	return is<store_op>(node);
 }
 
 /* address store operator */
@@ -120,7 +120,7 @@ is_addrstore_op(const jive::operation & op) noexcept
 static inline bool
 is_addrstore_node(const jive::node * node) noexcept
 {
-	return is_opnode<addrstore_op>(node);
+	return is<addrstore_op>(node);
 }
 
 /* bitstring store operator */
@@ -175,7 +175,7 @@ is_bitstore_op(const jive::operation & op) noexcept
 static inline bool
 is_bitstore_node(const jive::node * node) noexcept
 {
-	return is_opnode<bitstore_op>(node);
+	return is<bitstore_op>(node);
 }
 
 }

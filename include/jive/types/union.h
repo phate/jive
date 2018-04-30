@@ -276,7 +276,7 @@ is_choose_op(const jive::operation & op) noexcept
 static inline bool
 is_choose_node(const jive::node * node) noexcept
 {
-	return is_opnode<choose_op>(node);
+	return is<choose_op>(node);
 }
 
 }

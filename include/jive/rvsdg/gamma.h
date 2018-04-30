@@ -112,7 +112,7 @@ is_gamma_op(const jive::operation & op) noexcept
 static inline bool
 is_gamma_node(const jive::node * node) noexcept
 {
-	return is_opnode<gamma_op>(node);
+	return is<gamma_op>(node);
 }
 
 /* gamma node */

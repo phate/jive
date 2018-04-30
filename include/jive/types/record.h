@@ -220,7 +220,7 @@ is_select_op(const jive::operation & op) noexcept
 static inline bool
 is_select_node(const jive::node * node) noexcept
 {
-	return is_opnode<select_op>(node);
+	return is<select_op>(node);
 }
 
 }

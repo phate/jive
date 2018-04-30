@@ -438,22 +438,6 @@ divert_users(
 		node->output(n)->divert_users(outputs[n]);
 }
 
-/*
-	FIXME: This function is deprecated. It was replaced with
-	the is<T>() function. Remove it.
-*/
-template <class T> static inline bool
-is_opnode(const jive::node * node) noexcept
-{
-	static_assert(std::is_base_of<jive::operation, T>::value,
-		"Template parameter T must be derived from jive::operation.");
-
-	if (!node)
-		return false;
-
-	return dynamic_cast<const T*>(&node->operation()) != nullptr;
-}
-
 template <class T> static inline bool
 is(const jive::node * node) noexcept
 {

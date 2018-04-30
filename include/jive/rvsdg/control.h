@@ -217,7 +217,7 @@ is_match_op(const jive::operation & op) noexcept
 static inline bool
 is_match_node(const jive::node * node) noexcept
 {
-	return is_opnode<match_op>(node);
+	return is<match_op>(node);
 }
 
 static inline const match_op &

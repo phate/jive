@@ -99,7 +99,7 @@ is_load_op(const jive::operation & op) noexcept
 static inline bool
 is_load_node(const jive::node * node) noexcept
 {
-	return is_opnode<load_op>(node);
+	return is<load_op>(node);
 }
 
 /* address load operator */
@@ -153,7 +153,7 @@ is_addrload_op(const jive::operation & op) noexcept
 static inline bool
 is_addrload_node(const jive::node * node) noexcept
 {
-	return is_opnode<addrload_op>(node);
+	return is<addrload_op>(node);
 }
 
 /* bitstring load operator */
@@ -207,7 +207,7 @@ is_bitload_op(const jive::operation & op) noexcept
 static inline bool
 is_bitload_node(const jive::node * node) noexcept
 {
-	return is_opnode<bitload_op>(node);
+	return is<bitload_op>(node);
 }
 
 }

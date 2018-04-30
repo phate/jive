@@ -53,7 +53,7 @@ public: \
 static inline bool \
 is_ ## NAME ## _node(const jive::node * node) noexcept \
 { \
-	return is_opnode<NAME ## _op>(node); \
+	return is<NAME ## _op>(node); \
 } \
 
 DECLARE_BITCOMPARISON_OPERATION(biteq)
