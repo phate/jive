@@ -228,7 +228,7 @@ compute_match_op(
 {
 	JIVE_DEBUG_ASSERT(operands.size() == 1);
 	JIVE_DEBUG_ASSERT(dynamic_cast<const bitliteral*>(operands[0].get()));
-	JIVE_DEBUG_ASSERT(is_match_op(operation));
+	JIVE_DEBUG_ASSERT(is<match_op>(operation));
 
 	auto op = static_cast<const match_op*>(&operation);
 	const bitliteral * cmp = static_cast<const bitliteral*>(operands[0].get());

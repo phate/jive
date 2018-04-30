@@ -126,7 +126,7 @@ convert_bitcmp(
 	const jive::instruction * jump_icls,
 	const jive::instruction * inv_jump_icls)
 {
-	JIVE_DEBUG_ASSERT(is_match_node(node_));
+	JIVE_DEBUG_ASSERT(is<match_op>(node_));
 
 	auto node = node_->input(0)->origin()->node();
 
@@ -369,7 +369,7 @@ match_bitunary(jive::simple_node * node)
 static void
 match_bitcompare(jive::simple_node * node)
 {
-	JIVE_DEBUG_ASSERT(is_match_node(node));
+	JIVE_DEBUG_ASSERT(is<match_op>(node));
 	auto compare = node->input(0)->origin()->node();
 	JIVE_DEBUG_ASSERT(is_bitcompare_node(node->input(0)->origin()->node()));
 	auto & op = compare->operation();
@@ -480,7 +480,7 @@ match_node(jive::simple_node * node)
 	if (is_bitbinary_node(node))
 		return match_bitbinary(node);
 
-	if (is_match_node(node) && is_bitcompare_node(node->input(0)->origin()->node()))
+	if (is<match_op>(node) && is_bitcompare_node(node->input(0)->origin()->node()))
 		return match_bitcompare(node);
 
 	if (is_regvalue_node(node))

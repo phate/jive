@@ -77,7 +77,7 @@ is_control_constant_reducible(jive::gamma_node * gamma)
 {
 	/* check gamma predicate */
 	auto match = gamma->predicate()->origin()->node();
-	if (!is_match_node(match))
+	if (!is<match_op>(match))
 		return {};
 
 	/* check number of alternatives */

@@ -143,7 +143,7 @@ test_control_constant_reduction()
 	jive::view(graph.root(), stdout);
 
 	auto match = ex1->origin()->node();
-	assert(match && is_match_op(match->operation()));
+	assert(match && is<match_op>(match->operation()));
 	auto & match_op = to_match_op(match->operation());
 	assert(match_op.default_alternative() == 0);
 

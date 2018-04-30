@@ -208,22 +208,10 @@ extern const ctltype ctl2;
 // declare explicit instantiation
 extern template class domain_const_op<ctltype, ctlvalue_repr, ctlformat_value, ctltype_of_value>;
 
-static inline bool
-is_match_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const match_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_match_node(const jive::node * node) noexcept
-{
-	return is<match_op>(node);
-}
-
 static inline const match_op &
 to_match_op(const jive::operation & op) noexcept
 {
-	JIVE_DEBUG_ASSERT(is_match_op(op));
+	JIVE_DEBUG_ASSERT(is<match_op>(op));
 	return *static_cast<const match_op*>(&op);
 }
 
