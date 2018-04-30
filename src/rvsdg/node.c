@@ -276,7 +276,7 @@ producer(const jive::output * output) noexcept
 	if (!argument->input())
 		return nullptr;
 
-	if (is_theta_node(argument->region()->node())
+	if (is<theta_op>(argument->region()->node())
 	&& (argument->region()->result(argument->index()+1)->origin() != argument))
 		return nullptr;
 

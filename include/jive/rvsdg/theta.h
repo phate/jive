@@ -26,12 +26,6 @@ public:
 	copy() const override;
 };
 
-static inline bool
-is_theta_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const jive::theta_op*>(&op) != nullptr;
-}
-
 /* theta node */
 
 class theta_input;
@@ -167,12 +161,6 @@ public:
 	virtual jive::theta_node *
 	copy(jive::region * region, jive::substitution_map & smap) const override;
 };
-
-static inline bool
-is_theta_node(const jive::node * node) noexcept
-{
-	return dynamic_cast<const jive::theta_node*>(node);
-}
 
 /* theta input */
 
