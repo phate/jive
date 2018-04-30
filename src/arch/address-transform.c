@@ -116,7 +116,7 @@ transform_load(jive::node * node, memlayout_mapper & mapper)
 static void
 transform_store(jive::node * node, memlayout_mapper & mapper)
 {
-	JIVE_DEBUG_ASSERT(is_store_node(node));
+	JIVE_DEBUG_ASSERT(is<store_op>(node));
 	auto op = static_cast<const jive::store_op*>(&node->operation());
 	size_t nbits = mapper.map_address().size()*8;
 

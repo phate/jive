@@ -56,18 +56,6 @@ private:
 		size_t nstates);
 };
 
-static inline bool
-is_store_op(const jive::operation & op)
-{
-	return dynamic_cast<const jive::store_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_store_node(const jive::node * node)
-{
-	return is<store_op>(node);
-}
-
 /* address store operator */
 
 class addrstore_op final : public store_op {
@@ -111,18 +99,6 @@ public:
 	}
 };
 
-static inline bool
-is_addrstore_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const jive::addrstore_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_addrstore_node(const jive::node * node) noexcept
-{
-	return is<addrstore_op>(node);
-}
-
 /* bitstring store operator */
 
 class bitstore_op final : public store_op {
@@ -165,18 +141,6 @@ public:
 		return simple_node::create_normalized(address->region(), op, operands);
 	}
 };
-
-static inline bool
-is_bitstore_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const jive::bitstore_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_bitstore_node(const jive::node * node) noexcept
-{
-	return is<bitstore_op>(node);
-}
 
 }
 
