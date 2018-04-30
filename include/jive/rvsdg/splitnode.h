@@ -81,18 +81,6 @@ public:
 	}
 };
 
-static inline bool
-is_split_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const jive::split_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_split_node(const jive::node * node) noexcept
-{
-	return is<split_op>(node);
-}
-
 }
 
 #endif
