@@ -75,18 +75,6 @@ private:
 	size_t nbits_;
 };
 
-static inline bool
-is_addr2bit_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const jive::addr2bit_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_addr2bit_node(const jive::node * node) noexcept
-{
-	return is<addr2bit_op>(node);
-}
-
 /* bit2addr operator */
 
 class bit2addr_op final : public jive::unary_op {
@@ -144,18 +132,6 @@ public:
 private:
 	size_t nbits_;
 };
-
-static inline bool
-is_bit2addr_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const bit2addr_op*>(&op) != nullptr;
-}
-
-static inline bool
-is_bit2addr_node(const jive::node * node) noexcept
-{
-	return is<bit2addr_op>(node);
-}
 
 /* reductions */
 

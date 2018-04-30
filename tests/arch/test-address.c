@@ -50,8 +50,8 @@ test_memberof()
 	graph.prune();
 	view(graph, stdout);
 
-	assert(is_bit2addr_node(ex1->origin()->node()));
-	assert(is_bit2addr_node(ex2->origin()->node()));
+	assert(is<bit2addr_op>(ex1->origin()->node()));
+	assert(is<bit2addr_op>(ex2->origin()->node()));
 
 	return 0;
 }
@@ -92,8 +92,8 @@ test_containerof()
 	graph.prune();
 	view(graph, stdout);
 
-	assert(is_bit2addr_node(ex1->origin()->node()));
-	assert(is_bit2addr_node(ex2->origin()->node()));
+	assert(is<bit2addr_op>(ex1->origin()->node()));
+	assert(is<bit2addr_op>(ex2->origin()->node()));
 
 	return 0;
 }
@@ -124,7 +124,7 @@ test_arraysubscript()
 	graph.prune();
 	view(graph, stdout);
 
-	assert(is_bit2addr_node(ex0->origin()->node()));
+	assert(is<bit2addr_op>(ex0->origin()->node()));
 
 	return 0;
 }

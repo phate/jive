@@ -92,7 +92,7 @@ test_apply_transform(void)
 
 	jive::view(graph.root(), stdout);
 
-	assert(is_bit2addr_node(x0->origin()->node()));
+	assert(is<bit2addr_op>(x0->origin()->node()));
 
 	return 0;
 }
