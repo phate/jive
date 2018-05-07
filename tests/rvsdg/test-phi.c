@@ -57,10 +57,6 @@ static int test_main()
 
 	jive::view(graph.root(), stderr);
 
-	jive::node * lambda_node2;
-	lambda_node2 = phi->subregion(0)->result(2)->origin()->node();
-	assert(jive_lambda_is_self_recursive(lambda_node2));
-
 	return 0;
 }
 

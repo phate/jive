@@ -73,37 +73,3 @@ lambda_node::copy(jive::region * region, jive::substitution_map & smap) const
 }
 
 }
-
-bool
-jive_lambda_is_self_recursive(const jive::node * self)
-{
-	JIVE_DEBUG_ASSERT(self->noutputs() == 1);
-
-	auto lambda = dynamic_cast<const jive::structural_node*>(self);
-
-	auto phi_region = self->region();
-	auto phi = phi_region->node();
-	if (phi && typeid(phi->operation()) != typeid(jive::phi_op))
-		return false;
-
-	/* find index of lambda output in the phi leave node */
-	size_t index = phi_region->nresults();
-	for (const auto & user : *self->output(0)) {
-		if (dynamic_cast<const jive::result*>(user)) {
-			index = user->index();
-			break;
-		}
-	}
-	if (index == phi_region->nresults())
-		return false;
-
-	/* the lambda is self-recursive if one of its external dependencies originates from the same
-	*  index in the phi enter node
-	*/
-	for (size_t n = 0; n < lambda->ninputs(); n++) {
-		if (lambda->input(n)->origin()->index() == index)
-			return true;
-	}
-
-	return false;
-}

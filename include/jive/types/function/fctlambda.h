@@ -60,9 +60,6 @@ is_lambda_op(const jive::operation & op) noexcept
 
 }
 
-bool
-jive_lambda_is_self_recursive(const jive::node * self);
-
 void
 jive_inline_lambda_apply(jive::node * apply_node);
 
