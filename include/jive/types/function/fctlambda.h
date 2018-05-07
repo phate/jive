@@ -58,13 +58,6 @@ is_lambda_op(const jive::operation & op) noexcept
 	return dynamic_cast<const lambda_op*>(&op) != nullptr;
 }
 
-}
-
-void
-jive_inline_lambda_apply(jive::node * apply_node);
-
-namespace jive {
-
 class argument;
 class lambda_builder;
 
