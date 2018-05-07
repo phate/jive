@@ -4,12 +4,10 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/rvsdg/graph.h>
-#include <jive/rvsdg/node.h>
+#include <jive/rvsdg/substitution.h>
+#include <jive/types/function/fctapply.h>
+#include <jive/types/function/fctlambda.h>
 #include <jive/types/function/fcttype.h>
-
-#include <stdio.h>
-#include <string.h>
 
 namespace jive {
 
@@ -117,6 +115,121 @@ fcttype::operator=(jive::fcttype && rhs)
 	result_types_ = std::move(rhs.result_types_);
 	argument_types_ = std::move(rhs.argument_types_);
 	return *this;
+}
+
+/* apply operator */
+
+apply_op::~apply_op() noexcept
+{
+}
+
+bool
+apply_op::operator==(const operation & other) const noexcept
+{
+	auto op = dynamic_cast<const apply_op*>(&other);
+	if (!op || op->narguments() != narguments() || op->nresults() != nresults())
+		return false;
+
+	for (size_t n = 0; n < narguments(); n++) {
+		if (argument(n) != op->argument(n))
+			return false;
+	}
+
+	for (size_t n = 0; n < nresults(); n++) {
+		if (result(n) != op->result(n))
+			return false;
+	}
+
+	return true;
+}
+
+std::string
+apply_op::debug_string() const
+{
+	return "APPLY";
+}
+
+std::unique_ptr<jive::operation>
+apply_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new apply_op(*this));
+}
+
+std::vector<jive::port>
+apply_op::create_operands(const fcttype & type)
+{
+	std::vector<jive::port> operands({type});
+	for (size_t n = 0; n < type.narguments(); n++)
+		operands.push_back(type.argument_type(n));
+
+	return operands;
+}
+
+std::vector<jive::port>
+apply_op::create_results(const fcttype & type)
+{
+	std::vector<jive::port> results;
+	for (size_t n = 0; n < type.nresults(); n++)
+		results.push_back({type.result_type(n)});
+
+	return results;
+}
+
+/* lambda operator */
+
+lambda_op::~lambda_op() noexcept
+{}
+
+bool
+lambda_op::operator==(const operation & other) const noexcept
+{
+	auto op = dynamic_cast<const lambda_op*>(&other);
+	return op && op->function_type() == function_type();
+}
+
+std::string
+lambda_op::debug_string() const
+{
+	return "LAMBDA";
+}
+
+std::unique_ptr<jive::operation>
+lambda_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new lambda_op(*this));
+}
+
+/* lambda node class */
+
+lambda_node::~lambda_node()
+{}
+
+jive::lambda_node *
+lambda_node::copy(jive::region * region, jive::substitution_map & smap) const
+{
+	jive::lambda_builder lb;
+	auto arguments = lb.begin_lambda(region, function_type());
+
+	/* add dependencies */
+	jive::substitution_map rmap;
+	for (size_t n = 0; n < function_type().narguments(); n++)
+		rmap.insert(subregion()->argument(n), arguments[n]);
+	for (const auto & odv : *this) {
+		auto ndv = lb.add_dependency(smap.lookup(odv->origin()));
+		rmap.insert(dynamic_cast<structural_input*>(odv)->arguments.first(), ndv);
+	}
+
+	/* copy subregion */
+	subregion()->copy(lb.subregion(), rmap, false, false);
+
+	/* collect results */
+	std::vector<jive::output*> results;
+	for (size_t n = 0; n < subregion()->nresults(); n++)
+		results.push_back(rmap.lookup(subregion()->result(n)->origin()));
+
+	auto lambda = lb.end_lambda(results);
+	smap.insert(output(0), lambda->output(0));
+	return lambda;
 }
 
 }
