@@ -12,7 +12,7 @@
 #include <jive/rvsdg/node.h>
 #include <jive/rvsdg/simple-node.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/types/function/fcttype.h>
+#include <jive/types/function.h>
 
 namespace jive {
 	class type;

@@ -4,7 +4,7 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/types/function/fctlambda.h>
+#include <jive/types/function.h>
 #include <jive/rvsdg/gamma.h>
 #include <jive/rvsdg/phi.h>
 #include <jive/rvsdg/region.h>

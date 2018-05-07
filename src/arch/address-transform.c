@@ -20,9 +20,7 @@
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/types/function/fctapply.h>
-#include <jive/types/function/fctlambda.h>
-#include <jive/types/function/fcttype.h>
+#include <jive/types/function.h>
 
 namespace jive {
 

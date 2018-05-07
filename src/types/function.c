@@ -5,9 +5,7 @@
  */
 
 #include <jive/rvsdg/substitution.h>
-#include <jive/types/function/fctapply.h>
-#include <jive/types/function/fctlambda.h>
-#include <jive/types/function/fcttype.h>
+#include <jive/types/function.h>
 
 namespace jive {
 

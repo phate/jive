@@ -12,7 +12,7 @@
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
-#include <jive/types/function/fctlambda.h>
+#include <jive/types/function.h>
 #include <jive/rvsdg.h>
 #include <jive/rvsdg/splitnode.h>
 #include <jive/rvsdg/substitution.h>

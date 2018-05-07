@@ -16,7 +16,7 @@
 #include <jive/types/bitstring.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/value-representation.h>
-#include <jive/types/function/fctlambda.h>
+#include <jive/types/function.h>
 #include <jive/view.h>
 
 static int types_bitstring_arithmetic_test_bitand(void)

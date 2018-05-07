@@ -14,8 +14,7 @@
 #include <jive/common.h>
 #include <jive/rvsdg/graph.h>
 #include <jive/rvsdg/unary.h>
-#include <jive/types/function/fctapply.h>
-#include <jive/types/function/fctlambda.h>
+#include <jive/types/function.h>
 
 namespace jive {
 

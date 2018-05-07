@@ -14,9 +14,6 @@
 #include <jive/rvsdg/phi.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/function.h>
-#include <jive/types/function/fctapply.h>
-#include <jive/types/function/fctlambda.h>
-#include <jive/types/function/fcttype.h>
 #include <jive/view.h>
 
 static int
