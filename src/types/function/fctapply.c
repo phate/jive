@@ -11,7 +11,6 @@
 #include <string.h>
 
 namespace jive {
-namespace fct {
 
 apply_op::~apply_op() noexcept
 {
@@ -50,7 +49,7 @@ apply_op::copy() const
 }
 
 std::vector<jive::port>
-apply_op::create_operands(const fct::type & type)
+apply_op::create_operands(const fcttype & type)
 {
 	std::vector<jive::port> operands({type});
 	for (size_t n = 0; n < type.narguments(); n++)
@@ -60,7 +59,7 @@ apply_op::create_operands(const fct::type & type)
 }
 
 std::vector<jive::port>
-apply_op::create_results(const fct::type & type)
+apply_op::create_results(const fcttype & type)
 {
 	std::vector<jive::port> results;
 	for (size_t n = 0; n < type.nresults(); n++)
@@ -69,5 +68,4 @@ apply_op::create_results(const fct::type & type)
 	return results;
 }
 
-}
 }

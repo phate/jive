@@ -296,7 +296,7 @@ eval_input(const jive::input * input, context & ctx);
 static const std::unique_ptr<const literal>
 eval_apply_node(const jive::node * node, size_t index, context & ctx)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::apply_op*>(&node->operation()));
+	JIVE_DEBUG_ASSERT(jive::is<jive::apply_op>(node));
 	JIVE_DEBUG_ASSERT(index < node->noutputs());
 
 	std::vector<std::unique_ptr<const literal>> arguments;
@@ -320,7 +320,7 @@ eval_apply_node(const jive::node * node, size_t index, context & ctx)
 static const std::unique_ptr<const literal>
 eval_lambda_node(const jive::node * node, size_t index, context & ctx)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_op*>(&node->operation()));
+	JIVE_DEBUG_ASSERT(jive::is<jive::lambda_op>(node));
 	auto lambda = static_cast<const jive::structural_node*>(node);
 	auto region = lambda->subregion(0);
 
@@ -414,8 +414,8 @@ eval_phi_node(const jive::node * node, size_t index, context & ctx)
 
 static eval_map evlmap
 ({
-	{std::type_index(typeid(jive::fct::apply_op)), eval_apply_node},
-	{std::type_index(typeid(jive::fct::lambda_op)), eval_lambda_node},
+	{typeid(jive::apply_op), eval_apply_node},
+	{typeid(jive::lambda_op), eval_lambda_node},
 	{std::type_index(typeid(jive::gamma_op)), eval_gamma_node},
 	{std::type_index(typeid(jive::theta_op)), eval_theta_node},
 	{std::type_index(typeid(jive::phi_op)), eval_phi_node}
@@ -460,7 +460,7 @@ eval_argument(const jive::argument * argument, context & ctx)
 		ctx.push_frame(argument->region());
 		result = eval_input(argument->region()->result(argument->index()), ctx);
 		ctx.pop_frame(argument->region());
-	} else if (typeid(argument->region()->node()->operation()) == typeid(jive::fct::lambda_op)) {
+	} else if (typeid(argument->region()->node()->operation()) == typeid(lambda_op)) {
 		if (argument->input()) {
 			/* it is an external dependency */
 			result = eval_input(argument->input(), ctx);
@@ -517,7 +517,7 @@ eval(
 	context ctx;
 	ctx.push_frame(graph->root());
 
-	auto fcttype = dynamic_cast<const jive::fct::type*>(&port->type());
+	auto fcttype = dynamic_cast<const jive::fcttype*>(&port->type());
 	if (fcttype) {
 		if (fcttype->narguments() != arguments.size())
 			throw compiler_error("Number of arguments does not coincide with function arguments.");

@@ -14,10 +14,7 @@
 #include <jive/rvsdg/phi.h>
 #include <jive/rvsdg/substitution.h>
 
-/* lambda node */
-
 namespace jive {
-namespace fct {
 
 lambda_op::~lambda_op() noexcept
 {
@@ -40,8 +37,6 @@ std::unique_ptr<jive::operation>
 lambda_op::copy() const
 {
 	return std::unique_ptr<jive::operation>(new lambda_op(*this));
-}
-
 }
 
 /* lambda node class */

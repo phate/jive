@@ -25,7 +25,7 @@ static int test_main(void)
 	jive::addrtype at(bit16);
 
 	jive::graph graph;
-	auto i0 = graph.add_import(addrtype(fct::type({&bit16, &at}, {&bit16, &at, &at})), "");
+	auto i0 = graph.add_import(addrtype(fcttype({&bit16, &at}, {&bit16, &at, &at})), "");
 	auto i1 = graph.add_import(bit16, "");
 	auto i2 = graph.add_import(at, "");
 

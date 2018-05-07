@@ -24,8 +24,8 @@ static int test_main()
 	jive::graph graph;
 
 	test::valuetype vtype;
-	fct::type f0type({&vtype}, {});
-	fct::type f1type({&vtype}, {&vtype});
+	fcttype f0type({&vtype}, {});
+	fcttype f1type({&vtype}, {&vtype});
 
 	phi_builder pb;
 	pb.begin_phi(graph.root());
@@ -42,7 +42,7 @@ static int test_main()
 
 	auto arguments = lb.begin_lambda(pb.region(), f1type);
 	auto dep = lb.add_dependency(rv3->value());
-	auto ret = jive::fct::create_apply(dep, {arguments[0]})[0];
+	auto ret = create_apply(dep, {arguments[0]})[0];
 	auto lambda2 = lb.end_lambda({ret})->output(0);
 
 	rv1->set_value(lambda0);

@@ -32,14 +32,14 @@ type_contains_address(const jive::type * type)
 	if (dynamic_cast<const jive::addrtype*>(type))
 		return true;
 
-	const jive::fct::type * fcttype = dynamic_cast<const jive::fct::type*>(type);
-	if (fcttype != NULL) {
+	auto ftype = dynamic_cast<const fcttype*>(type);
+	if (ftype != NULL) {
 		size_t n;
-		for (n = 0; n < fcttype->narguments(); n++)
-			if (type_contains_address(&fcttype->argument_type(n)))
+		for (n = 0; n < ftype->narguments(); n++)
+			if (type_contains_address(&ftype->argument_type(n)))
 				return true;
-		for (n = 0; n < fcttype->nresults(); n++)
-			if (type_contains_address(&fcttype->result_type(n)))
+		for (n = 0; n < ftype->nresults(); n++)
+			if (type_contains_address(&ftype->result_type(n)))
 				return true;
 	}
 
@@ -53,16 +53,16 @@ convert_address_to_bitstring_type(
 {
 	if (dynamic_cast<const jive::addrtype*>(&type)) {
 		return std::unique_ptr<jive::type>(new jive::bittype(nbits));
-	} else  if (auto fcttype = dynamic_cast<const jive::fct::type*>(&type)) {
+	} else  if (auto ftype = dynamic_cast<const fcttype*>(&type)) {
 		std::vector<std::unique_ptr<jive::type>> argument_types;
-		for (size_t n = 0; n < fcttype->narguments(); n++)
-			argument_types.push_back(convert_address_to_bitstring_type(fcttype->argument_type(n), nbits));
+		for (size_t n = 0; n < ftype->narguments(); n++)
+			argument_types.push_back(convert_address_to_bitstring_type(ftype->argument_type(n), nbits));
 
 		std::vector<std::unique_ptr<jive::type>> return_types;
-		for (size_t n = 0; n < fcttype->nresults(); n++)
-			return_types.push_back(convert_address_to_bitstring_type(fcttype->result_type(n), nbits));
+		for (size_t n = 0; n < ftype->nresults(); n++)
+			return_types.push_back(convert_address_to_bitstring_type(ftype->result_type(n), nbits));
 
-		return std::unique_ptr<jive::type>(new jive::fct::type(argument_types, return_types));
+		return std::unique_ptr<jive::type>(new fcttype(argument_types, return_types));
 	}
 
 	if (dynamic_cast<const jive::memtype*>(&type))
@@ -284,7 +284,7 @@ transform_arrayindex(jive::node * node, memlayout_mapper & mapper)
 static void
 transform_apply(jive::node * node, memlayout_mapper & mapper)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::apply_op*>(&node->operation()));
+	JIVE_DEBUG_ASSERT(is<apply_op>(node));
 	size_t nbits = mapper.map_address().size()*8;
 	auto fct = node->input(0);
 
@@ -299,7 +299,7 @@ transform_apply(jive::node * node, memlayout_mapper & mapper)
 	}
 	auto function = addr2bit_op::create(fct->origin(), nbits, fcttype);
 
-	auto results = fct::create_apply(function, arguments);
+	auto results = create_apply(function, arguments);
 
 	for (size_t n = 0; n < results.size(); n++) {
 		auto original = node->output(n);
@@ -323,7 +323,7 @@ transform_address(jive::node * node, memlayout_mapper & mapper)
 	, {std::type_index(typeid(addrstore_op)), transform_store}
 	, {std::type_index(typeid(bitcall_op)), transform_call}
 	, {std::type_index(typeid(addrcall_op)), transform_call}
-	, {std::type_index(typeid(fct::apply_op)), transform_apply}
+	, {typeid(apply_op), transform_apply}
 	});
 
 	if (map.find(typeid(node->operation())) != map.end())

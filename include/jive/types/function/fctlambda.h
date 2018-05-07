@@ -16,7 +16,6 @@
 #include <jive/types/function/fcttype.h>
 
 namespace jive {
-namespace fct {
 
 class lambda_op final : public structural_op {
 public:
@@ -30,7 +29,7 @@ public:
 	lambda_op(lambda_op && other) = default;
 
 	inline
-	lambda_op(jive::fct::type function_type) noexcept
+	lambda_op(jive::fcttype function_type) noexcept
 		: function_type_(std::move(function_type))
 	{}
 
@@ -40,7 +39,7 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const jive::fct::type &
+	inline const jive::fcttype &
 	function_type() const noexcept
 	{
 		return function_type_;
@@ -50,16 +49,15 @@ public:
 	copy() const override;
 
 private:
-	jive::fct::type function_type_;
+	fcttype function_type_;
 };
 
 static inline bool
 is_lambda_op(const jive::operation & op) noexcept
 {
-	return dynamic_cast<const jive::fct::lambda_op*>(&op) != nullptr;
+	return dynamic_cast<const lambda_op*>(&op) != nullptr;
 }
 
-}
 }
 
 bool
@@ -81,8 +79,8 @@ public:
 
 private:
 	inline
-	lambda_node(jive::region * parent, jive::fct::type type)
-	: jive::structural_node(jive::fct::lambda_op(std::move(type)), parent, 1)
+	lambda_node(jive::region * parent, fcttype type)
+	: jive::structural_node(jive::lambda_op(std::move(type)), parent, 1)
 	{}
 
 	class dependency_iterator {
@@ -132,7 +130,7 @@ private:
 	};
 
 	static jive::lambda_node *
-	create(jive::region * parent, jive::fct::type type)
+	create(jive::region * parent, fcttype type)
 	{
 		return new jive::lambda_node(parent, std::move(type));
 	}
@@ -167,10 +165,10 @@ public:
 		return subregion()->add_argument(input, origin->type());
 	}
 
-	inline const jive::fct::type &
+	inline const fcttype &
 	function_type() const noexcept
 	{
-		return static_cast<const jive::fct::lambda_op*>(&operation())->function_type();
+		return static_cast<const lambda_op*>(&operation())->function_type();
 	}
 
 	virtual jive::lambda_node *
@@ -185,7 +183,7 @@ public:
 	{}
 
 	inline std::vector<jive::argument*>
-	begin_lambda(jive::region * parent, jive::fct::type type)
+	begin_lambda(jive::region * parent, fcttype type)
 	{
 		std::vector<jive::argument*> arguments;
 

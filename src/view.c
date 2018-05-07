@@ -302,7 +302,7 @@ type(const jive::node * n)
 	if (dynamic_cast<const jive::theta_op*>(&n->operation()))
 		return "theta";
 
-	if (dynamic_cast<const jive::fct::lambda_op*>(&n->operation()))
+	if (is<lambda_op>(n))
 		return "lambda";
 
 	if (dynamic_cast<const jive::phi_op*>(&n->operation()))

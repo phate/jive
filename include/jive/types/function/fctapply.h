@@ -12,7 +12,6 @@
 #include <jive/types/function/fcttype.h>
 
 namespace jive {
-namespace fct {
 
 class apply_op final : public jive::simple_op {
 public:
@@ -20,7 +19,7 @@ public:
 	~apply_op() noexcept;
 
 	inline
-	apply_op(const fct::type & type)
+	apply_op(const fcttype & type)
 	: simple_op(create_operands(type), create_results(type))
 	{}
 
@@ -30,10 +29,10 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const type &
+	inline const fcttype &
 	function_type() const noexcept
 	{
-		return *static_cast<const jive::fct::type*>(&argument(0).type());
+		return *static_cast<const jive::fcttype*>(&argument(0).type());
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -41,16 +40,16 @@ public:
 
 private:
 	static std::vector<jive::port>
-	create_operands(const fct::type & type);
+	create_operands(const fcttype & type);
 
 	static std::vector<jive::port>
-	create_results(const fct::type & type);
+	create_results(const fcttype & type);
 };
 
 static inline std::vector<jive::output*>
 create_apply(jive::output * function, const std::vector<jive::output*> & arguments)
 {
-	auto ft = dynamic_cast<const type*>(&function->type());
+	auto ft = dynamic_cast<const fcttype*>(&function->type());
 	if (!ft) throw type_error("fct", function->type().debug_string());
 
 	apply_op op(*ft);
@@ -60,7 +59,6 @@ create_apply(jive::output * function, const std::vector<jive::output*> & argumen
 	return simple_node::create_normalized(function->region(), op, operands);
 }
 
-}
 }
 
 #endif

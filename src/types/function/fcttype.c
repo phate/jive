@@ -12,14 +12,13 @@
 #include <string.h>
 
 namespace jive {
-namespace fct {
 
-/* type */
+/* function type */
 
-type::~type() noexcept
+fcttype::~fcttype() noexcept
 {}
 
-type::type(
+fcttype::fcttype(
 	const std::vector<const jive::type*> & argument_types,
 	const std::vector<const jive::type*> & result_types)
 : jive::valuetype()
@@ -31,7 +30,7 @@ type::type(
 		result_types_.push_back(std::unique_ptr<jive::type>(type->copy()));
 }
 
-type::type(
+fcttype::fcttype(
 	const std::vector<std::unique_ptr<jive::type>> & argument_types,
 	const std::vector<std::unique_ptr<jive::type>> & result_types)
 : jive::valuetype()
@@ -43,7 +42,7 @@ type::type(
 		result_types_.push_back(std::unique_ptr<jive::type>(result_types[i]->copy()));
 }
 
-type::type(const jive::fct::type & rhs)
+fcttype::fcttype(const jive::fcttype & rhs)
 : jive::valuetype(rhs)
 {
 	for (size_t i = 0; i < rhs.narguments(); i++)
@@ -53,22 +52,22 @@ type::type(const jive::fct::type & rhs)
 		result_types_.push_back(std::unique_ptr<jive::type>(rhs.result_type(i).copy()));
 }
 
-type::type(jive::fct::type && other)
+fcttype::fcttype(jive::fcttype && other)
 : jive::valuetype(other)
 , result_types_(std::move(other.result_types_))
 , argument_types_(std::move(other.argument_types_))
 {}
 
 std::string
-type::debug_string() const
+fcttype::debug_string() const
 {
 	return "fct";
 }
 
 bool
-type::operator==(const jive::type & _other) const noexcept
+fcttype::operator==(const jive::type & _other) const noexcept
 {
-	auto other = dynamic_cast<const jive::fct::type*>(&_other);
+	auto other = dynamic_cast<const jive::fcttype*>(&_other);
 	if (other == nullptr)
 		return false;
 
@@ -92,13 +91,13 @@ type::operator==(const jive::type & _other) const noexcept
 }
 
 std::unique_ptr<jive::type>
-type::copy() const
+fcttype::copy() const
 {
- return std::unique_ptr<jive::type>(new type(*this));
+ return std::unique_ptr<jive::type>(new fcttype(*this));
 }
 
-jive::fct::type &
-type::operator=(const jive::fct::type & rhs)
+jive::fcttype &
+fcttype::operator=(const jive::fcttype & rhs)
 {
 	result_types_.clear();
 	argument_types_.clear();
@@ -112,13 +111,12 @@ type::operator=(const jive::fct::type & rhs)
 	return *this;
 }
 
-jive::fct::type &
-type::operator=(jive::fct::type && rhs)
+jive::fcttype &
+fcttype::operator=(jive::fcttype && rhs)
 {
 	result_types_ = std::move(rhs.result_types_);
 	argument_types_ = std::move(rhs.argument_types_);
 	return *this;
 }
 
-}
 }

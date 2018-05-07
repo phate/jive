@@ -75,13 +75,13 @@ test_apply_transform(void)
 	using namespace jive;
 
 	addrtype at(bit32);
-	fct::type ft({&at}, {&at});
+	fcttype ft({&at}, {&at});
 
 	jive::graph graph;
 	auto i0 = graph.add_import(ft, "");
 	auto i1 = graph.add_import(at, "");
 
-	auto results = jive::fct::create_apply(i0, {i1});
+	auto results = create_apply(i0, {i1});
 
 	auto x0 = graph.add_export(results[0], "");
 

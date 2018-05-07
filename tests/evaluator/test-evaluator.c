@@ -143,7 +143,7 @@ unsigned int fib(unsigned int n){
 */
 	using namespace jive;
 
-	fct::type ft({&bit32}, {&bit32});
+	fcttype ft({&bit32}, {&bit32});
 
 	phi_builder pb;
 	pb.begin_phi(graph->root());
@@ -158,10 +158,10 @@ unsigned int fib(unsigned int n){
 	auto two = create_bitconstant(lb.subregion(), 32, 2);
 
 	auto tmp = jive::bitsub_op::create(32, n, one);
-	tmp = jive::fct::create_apply(dep, {tmp})[0];
+	tmp = create_apply(dep, {tmp})[0];
 
 	auto tmp2 = jive::bitsub_op::create(32, n, two);
-	tmp2 = jive::fct::create_apply(dep, {tmp2})[0];
+	tmp2 = create_apply(dep, {tmp2})[0];
 
 	auto result = bitadd_op::create(32, tmp, tmp2);
 

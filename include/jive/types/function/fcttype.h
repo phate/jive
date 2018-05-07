@@ -13,30 +13,29 @@
 #include <vector>
 
 namespace jive {
-namespace fct {
 
-class type final : public jive::valuetype {
+class fcttype final : public jive::valuetype {
 public:
 	virtual
-	~type() noexcept;
+	~fcttype() noexcept;
 
-	type(
+	fcttype(
 		const std::vector<const jive::type*> & argument_types,
 		const std::vector<const jive::type*> & result_types);
 
-	type(
+	fcttype(
 		const std::vector<std::unique_ptr<jive::type>> & argument_types,
 		const std::vector<std::unique_ptr<jive::type>> & result_types);
 
-	type(const jive::fct::type & other);
+	fcttype(const fcttype & other);
 
-	type(jive::fct::type && other);
+	fcttype(fcttype && other);
 
-	jive::fct::type &
-	operator=(const jive::fct::type & other);
+	fcttype &
+	operator=(const fcttype & other);
 
-	jive::fct::type &
-	operator=(jive::fct::type && other);
+	fcttype &
+	operator=(fcttype && other);
 
 	inline size_t
 	nresults() const noexcept
@@ -76,7 +75,6 @@ private:
 	std::vector<std::unique_ptr<jive::type>> argument_types_;
 };
 
-}
 }
 
 #endif
