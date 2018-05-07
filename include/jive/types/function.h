@@ -126,7 +126,7 @@ create_apply(jive::output * function, const std::vector<jive::output*> & argumen
 
 /* lambda operator */
 
-class lambda_op final : public structural_op {
+class lambda_op : public structural_op {
 public:
 	virtual
 	~lambda_op() noexcept;
@@ -176,6 +176,11 @@ private:
 	inline
 	lambda_node(jive::region * parent, fcttype type)
 	: jive::structural_node(jive::lambda_op(std::move(type)), parent, 1)
+	{}
+
+	inline
+	lambda_node(jive::region * parent, const lambda_op & op)
+	: structural_node(op, parent, 1)
 	{}
 
 	class dependency_iterator {
@@ -230,6 +235,12 @@ private:
 		return new jive::lambda_node(parent, std::move(type));
 	}
 
+	static jive::lambda_node *
+	create(jive::region * parent, const jive::lambda_op & op)
+	{
+		return new jive::lambda_node(parent, op);
+	}
+
 public:
 	inline jive::region *
 	subregion() const noexcept
@@ -280,7 +291,7 @@ public:
 	{}
 
 	inline std::vector<jive::argument*>
-	begin_lambda(jive::region * parent, fcttype type)
+	begin_lambda(jive::region * parent, const lambda_op & op)
 	{
 		std::vector<jive::argument*> arguments;
 
@@ -293,12 +304,18 @@ public:
 			return arguments;
 		}
 
-		lambda_ = jive::lambda_node::create(parent, std::move(type));
+		lambda_ = jive::lambda_node::create(parent, op);
 		for (size_t n = 0; n < lambda_->function_type().narguments(); n++) {
 			auto & argument_type = lambda_->function_type().argument_type(n);
 			arguments.push_back(lambda_->subregion()->add_argument(nullptr, argument_type));
 		}
 		return arguments;
+	}
+
+	inline std::vector<jive::argument*>
+	begin_lambda(jive::region * parent, fcttype type)
+	{
+		return begin_lambda(parent, lambda_op(std::move(type)));
 	}
 
 	inline jive::region *

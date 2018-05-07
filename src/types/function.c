@@ -206,7 +206,7 @@ jive::lambda_node *
 lambda_node::copy(jive::region * region, jive::substitution_map & smap) const
 {
 	jive::lambda_builder lb;
-	auto arguments = lb.begin_lambda(region, function_type());
+	auto arguments = lb.begin_lambda(region, *static_cast<const lambda_op*>(&operation()));
 
 	/* add dependencies */
 	jive::substitution_map rmap;
