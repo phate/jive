@@ -30,6 +30,14 @@ public:
 
 	type(const jive::fct::type & other);
 
+	type(jive::fct::type && other);
+
+	jive::fct::type &
+	operator=(const jive::fct::type & other);
+
+	jive::fct::type &
+	operator=(jive::fct::type && other);
+
 	inline size_t
 	nresults() const noexcept
 	{
@@ -62,9 +70,6 @@ public:
 
 	virtual std::unique_ptr<jive::type>
 	copy() const override;
-
-	jive::fct::type &
-	operator=(const jive::fct::type & other);
 
 private:
 	std::vector<std::unique_ptr<jive::type>> result_types_;

@@ -53,6 +53,12 @@ type::type(const jive::fct::type & rhs)
 		result_types_.push_back(std::unique_ptr<jive::type>(rhs.result_type(i).copy()));
 }
 
+type::type(jive::fct::type && other)
+: jive::valuetype(other)
+, result_types_(std::move(other.result_types_))
+, argument_types_(std::move(other.argument_types_))
+{}
+
 std::string
 type::debug_string() const
 {
@@ -103,6 +109,14 @@ type::operator=(const jive::fct::type & rhs)
 	for (size_t i = 0; i < rhs.nresults(); i++)
 		result_types_.push_back(std::unique_ptr<jive::type>(rhs.result_type(i).copy()));
 
+	return *this;
+}
+
+jive::fct::type &
+type::operator=(jive::fct::type && rhs)
+{
+	result_types_ = std::move(rhs.result_types_);
+	argument_types_ = std::move(rhs.argument_types_);
 	return *this;
 }
 
