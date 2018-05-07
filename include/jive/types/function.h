@@ -161,12 +161,6 @@ private:
 	fcttype function_type_;
 };
 
-static inline bool
-is_lambda_op(const jive::operation & op) noexcept
-{
-	return dynamic_cast<const lambda_op*>(&op) != nullptr;
-}
-
 /* lambda node */
 
 class argument;
