@@ -138,7 +138,7 @@ simple_op::copy() const
 
 /* structural operation */
 
-structural_op::~structural_op()
+structural_op::~structural_op() noexcept
 {}
 
 std::string

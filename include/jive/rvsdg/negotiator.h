@@ -525,7 +525,7 @@ jive_negotiator_option_gate_default_(const jive::negotiator * self, jive_negotia
 	const jive::gate * gate);
 
 void
-jive_negotiator_process_region_(jive::negotiator * self, struct jive::region * region);
+jive_negotiator_process_region_(jive::negotiator * self, jive::region * region);
 
 void
 jive_negotiator_process(jive::negotiator * self);

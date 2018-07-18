@@ -150,7 +150,7 @@ associative_flatten(std::vector<jive::output*> args, const FlattenTester& flatte
 			++n;
 		}
 	}
-	return std::move(args);
+	return args;
 }
 
 }

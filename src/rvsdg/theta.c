@@ -28,7 +28,7 @@ theta_op::copy() const
 
 /* theta input */
 
-theta_input::~theta_input()
+theta_input::~theta_input() noexcept
 {
 	if (output_)
 		output_->input_ = nullptr;
@@ -42,7 +42,7 @@ theta_input::node() const noexcept
 
 /* theta output */
 
-theta_output::~theta_output()
+theta_output::~theta_output() noexcept
 {
 	if (input_)
 		input_->output_ = nullptr;

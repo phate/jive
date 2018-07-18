@@ -157,7 +157,7 @@ private:
 
 /* tracker */
 
-tracker::~tracker()
+tracker::~tracker() noexcept
 {
 	unregister_tracker(this);
 }

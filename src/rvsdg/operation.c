@@ -22,7 +22,7 @@ port::port(jive::gate * gate)
 {}
 
 port::port(const jive::type & type)
-: port(std::move(type.copy()))
+: port(type.copy())
 {}
 
 port::port(std::unique_ptr<jive::type> type)
@@ -34,7 +34,7 @@ port::port(std::unique_ptr<jive::type> type)
 port::port(const resource_class * rescls)
 : gate_(nullptr)
 , rescls_(rescls)
-, type_(std::move(rescls->type().copy()))
+, type_(rescls->type().copy())
 {}
 
 /* operation */

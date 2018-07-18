@@ -109,7 +109,7 @@ public:
 				[](jive::output * arg) {
 					// FIXME: switch to comparing operator, not just typeid, after
 					// converting "concat" to not be a binary operator anymore
-					return arg->node() && typeid(arg->node()->operation()) == typeid(bitconcat_op);
+					return is<bitconcat_op>(arg->node());
 				});
 		} else {
 			new_args = args;
@@ -152,7 +152,7 @@ public:
 				[](jive::output * arg) {
 					// FIXME: switch to comparing operator, not just typeid, after
 					// converting "concat" to not be a binary operator anymore
-					return arg->node() && typeid(arg->node()->operation()) == typeid(bitconcat_op);
+					return is<bitconcat_op>(arg->node());
 				});
 		} else {
 			new_args = arguments;
@@ -163,7 +163,7 @@ public:
 				std::move(new_args),
 				concat_reduce_arg_pair);
 			if (new_args.size() == 1)
-				return std::move(new_args);
+				return new_args;
 		}
 
 		bitconcat_op new_op(types_from_arguments(new_args));

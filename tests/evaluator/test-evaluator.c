@@ -98,7 +98,7 @@ test_fib_iter(jive::graph * graph)
 
 	/* test fib(0) */
 	bitliteral arg(jive::bitvalue_repr(32, 0));
-	result = std::move(eval(graph, "fib_iter", {&arg})->copy());
+	result = eval(graph, "fib_iter", {&arg})->copy();
 	const fctliteral * fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
 	const bitliteral * fib;
@@ -107,7 +107,7 @@ test_fib_iter(jive::graph * graph)
 
 	/* test fib(1) */
 	arg = bitliteral(jive::bitvalue_repr(32, 1));
-	result = std::move(eval(graph, "fib_iter", {&arg})->copy());
+	result = eval(graph, "fib_iter", {&arg})->copy();
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
 	fib = dynamic_cast<const bitliteral*>(&fctlit->result(0));
@@ -115,7 +115,7 @@ test_fib_iter(jive::graph * graph)
 
 	/* test fib(2) */
 	arg = bitliteral(jive::bitvalue_repr(32, 2));
-	result = std::move(eval(graph, "fib_iter", {&arg})->copy());
+	result = eval(graph, "fib_iter", {&arg})->copy();
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
 	fib = dynamic_cast<const bitliteral*>(&fctlit->result(0));
@@ -123,7 +123,7 @@ test_fib_iter(jive::graph * graph)
 
 	/* test fib(11) */
 	arg = bitliteral(jive::bitvalue_repr(32, 11));
-	result = std::move(eval(graph, "fib_iter", {&arg})->copy());
+	result = eval(graph, "fib_iter", {&arg})->copy();
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
 	fib = dynamic_cast<const bitliteral*>(&fctlit->result(0));
@@ -194,7 +194,7 @@ test_fib_rec(jive::graph * graph)
 
 	/* test fib(0) */
 	bitliteral arg(jive::bitvalue_repr(32, 0));
-	result = std::move(eval(graph, "fib_rec", {&arg})->copy());
+	result = eval(graph, "fib_rec", {&arg})->copy();
 	const fctliteral * fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
 	const bitliteral * fib = dynamic_cast<const bitliteral*>(&fctlit->result(0));
@@ -202,7 +202,7 @@ test_fib_rec(jive::graph * graph)
 
 	/* test fib(1) */
 	arg = bitliteral(jive::bitvalue_repr(32, 1));
-	result = std::move(eval(graph, "fib_rec", {&arg})->copy());
+	result = eval(graph, "fib_rec", {&arg})->copy();
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
 	fib = dynamic_cast<const bitliteral*>(&fctlit->result(0));
@@ -210,7 +210,7 @@ test_fib_rec(jive::graph * graph)
 
 	/* test fib(2) */
 	arg = bitliteral(jive::bitvalue_repr(32, 2));
-	result = std::move(eval(graph, "fib_rec", {&arg})->copy());
+	result = eval(graph, "fib_rec", {&arg})->copy();
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
 	fib = dynamic_cast<const bitliteral*>(&fctlit->result(0));
@@ -218,7 +218,7 @@ test_fib_rec(jive::graph * graph)
 
 	/* test fib(8) */
 	arg = bitliteral(jive::bitvalue_repr(32, 8));
-	result = std::move(eval(graph, "fib_rec", {&arg})->copy());
+	result = eval(graph, "fib_rec", {&arg})->copy();
 	fctlit = dynamic_cast<const fctliteral*>(result.get());
 	assert(fctlit->nresults() == 1);
 	fib = dynamic_cast<const bitliteral*>(&fctlit->result(0));

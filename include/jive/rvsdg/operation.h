@@ -62,7 +62,7 @@ public:
 
 		gate_ = other.gate_;
 		rescls_ = other.rescls_;
-		type_ = std::move(other.type_->copy());
+		type_ = other.type_->copy();
 
 		return *this;
 	}

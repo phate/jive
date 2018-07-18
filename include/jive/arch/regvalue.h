@@ -25,13 +25,13 @@ public:
 		const nullary_op & op,
 		const register_class * regcls) noexcept
 	: nullary_op(regcls)
-	, operation_(std::move(op.copy()))
+	, operation_(op.copy())
 	{}
 
 	inline
 	regvalue_op(const regvalue_op & other)
 	: nullary_op(other)
-	, operation_(std::move(other.operation_->copy()))
+	, operation_(other.operation_->copy())
 	{}
 
 	inline
@@ -46,7 +46,7 @@ public:
 		if (&other == this)
 			return *this;
 
-		operation_ = std::move(other.operation_->copy());
+		operation_ = other.operation_->copy();
 		return *this;
 	}
 

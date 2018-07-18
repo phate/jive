@@ -84,7 +84,7 @@ input::divert_to(jive::output * new_origin)
 
 /* output */
 
-output::~output()
+output::~output() noexcept
 {
 	JIVE_DEBUG_ASSERT(nusers() == 0);
 

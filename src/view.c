@@ -234,12 +234,6 @@ id(const jive::region * region)
 }
 
 static inline std::string
-node_tag(const std::string & id)
-{
-	return "<node id=\"" + id + "\"/>\n";
-}
-
-static inline std::string
 argument_tag(const std::string & id)
 {
 	return "<argument id=\"" + id + "\"/>\n";

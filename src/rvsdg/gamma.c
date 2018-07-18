@@ -260,7 +260,7 @@ gamma_op::operator==(const operation & other) const noexcept
 
 /* gamma input */
 
-gamma_input::~gamma_input()
+gamma_input::~gamma_input() noexcept
 {}
 
 jive::gamma_node *
@@ -271,7 +271,7 @@ gamma_input::node() const noexcept
 
 /* gamma output */
 
-gamma_output::~gamma_output()
+gamma_output::~gamma_output() noexcept
 {}
 
 jive::gamma_node *

@@ -13,7 +13,7 @@ namespace jive {
 
 /* structural input */
 
-structural_input::~structural_input()
+structural_input::~structural_input() noexcept
 {
 	JIVE_DEBUG_ASSERT(arguments.empty());
 
@@ -50,7 +50,7 @@ structural_input::node() const noexcept
 
 /* structural output */
 
-structural_output::~structural_output()
+structural_output::~structural_output() noexcept
 {
 	JIVE_DEBUG_ASSERT(results.empty());
 

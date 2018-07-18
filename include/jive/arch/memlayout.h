@@ -15,6 +15,7 @@
 namespace jive {
 
 class rcddeclaration;
+class unndeclaration;
 class valuetype;
 
 class dataitem_memlayout {
@@ -52,7 +53,7 @@ public:
 	~union_memlayout();
 
 	inline
-	union_memlayout(const struct unndeclaration * decl, size_t size, size_t alignment) noexcept
+	union_memlayout(const unndeclaration * decl, size_t size, size_t alignment) noexcept
 		: dataitem_memlayout(size, alignment)
 		, decl_(decl)
 	{}
@@ -64,7 +65,7 @@ public:
 	}
 
 private:
-	const struct unndeclaration * decl_;
+	const unndeclaration * decl_;
 };
 
 class record_memlayout_element {
@@ -159,7 +160,7 @@ public:
 	map_record(const rcddeclaration * dcl) = 0;
 
 	virtual const union_memlayout &
-	map_union(const struct unndeclaration * decl) = 0;
+	map_union(const unndeclaration * decl) = 0;
 
 	virtual const dataitem_memlayout &
 	map_bitstring(size_t nbits) = 0;

@@ -19,34 +19,34 @@ public:
 	~addrtype() noexcept;
 
 	inline
-	addrtype(const valuetype & type) noexcept
+	addrtype(const valuetype & type)
 	: valuetype()
-	, type_(std::move(type.copy()))
+	, type_(type.copy())
 	{}
 
 	inline
-	addrtype(const addrtype & other) noexcept
+	addrtype(const addrtype & other)
 	: valuetype(other)
-	, type_(std::move(other.type_->copy()))
+	, type_(other.type_->copy())
 	{}
 
 	inline
-	addrtype(addrtype && other) noexcept
+	addrtype(addrtype && other)
 	: valuetype(other)
 	, type_(std::move(other.type_))
 	{}
 
 	addrtype &
-	operator=(const addrtype & other) noexcept
+	operator=(const addrtype & other)
 	{
 		if (this != &other)
-			type_ = std::move(other.type_->copy());
+			type_ = other.type_->copy();
 
 		return *this;
 	}
 
 	addrtype &
-	operator=(addrtype && other) noexcept
+	operator=(addrtype && other)
 	{
 		if (this != &other)
 			type_ = std::move(other.type_);

@@ -28,7 +28,7 @@ public:
 private:
 	addr2bit_op(size_t nbits, const jive::type & type);
 
-	addr2bit_op(addr2bit_op &&) noexcept = default;
+	addr2bit_op(addr2bit_op &&) = default;
 
 	addr2bit_op(const addr2bit_op &) = default;
 

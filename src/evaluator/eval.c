@@ -304,7 +304,7 @@ eval_apply_node(const jive::node * node, size_t index, context & ctx)
 			arguments.emplace_back(eval_input(node->input(n), ctx));
 
 	ctx.push_arguments(arguments);
-	std::unique_ptr<const literal> fct = std::move(eval_input(node->input(0), ctx));
+	auto fct = eval_input(node->input(0), ctx);
 	ctx.pop_arguments();
 
 	const fctliteral * fctv = static_cast<const fctliteral*>(fct.get());
@@ -313,8 +313,7 @@ eval_apply_node(const jive::node * node, size_t index, context & ctx)
 	for (size_t n = 0; n < fctv->nresults(); n++)
 		ctx.insert(node->output(n), &fctv->result(n));
 
-	std::unique_ptr<const literal> result = std::move(fctv->result(index).copy());
-	return result;
+	return fctv->result(index).copy();
 }
 
 static const std::unique_ptr<const literal>
@@ -360,8 +359,7 @@ eval_gamma_node(const jive::node * node, size_t index, context & ctx)
 	for (size_t n = 0; n < node->noutputs(); n++)
 		ctx.insert(node->output(n), results[n].get());
 
-	std::unique_ptr<const literal> result = std::move(results[index]->copy());
-	return result;
+	return results[index]->copy();
 }
 
 static const std::unique_ptr<const literal>
@@ -406,7 +404,7 @@ eval_phi_node(const jive::node * node, size_t index, context & ctx)
 	auto phi_region = phi->subregion(0);
 
 	ctx.push_frame(phi_region);
-	std::unique_ptr<const literal> result = std::move(eval_input(phi_region->result(index), ctx));
+	auto result = eval_input(phi_region->result(index), ctx);
 	ctx.pop_frame(phi_region);
 
 	return result;
@@ -456,11 +454,11 @@ eval_argument(const jive::argument * argument, context & ctx)
 		throw compiler_error("Cannot evaluate external entity.");
 
 	std::unique_ptr<const literal> result;
-	if (typeid(argument->region()->node()->operation()) == typeid(jive::phi_op)) {
+	if (is<phi_op>(argument->region()->node())) {
 		ctx.push_frame(argument->region());
 		result = eval_input(argument->region()->result(argument->index()), ctx);
 		ctx.pop_frame(argument->region());
-	} else if (typeid(argument->region()->node()->operation()) == typeid(lambda_op)) {
+	} else if (is<lambda_op>(argument->region()->node())) {
 		if (argument->input()) {
 			/* it is an external dependency */
 			result = eval_input(argument->input(), ctx);
@@ -469,7 +467,7 @@ eval_argument(const jive::argument * argument, context & ctx)
 			JIVE_DEBUG_ASSERT(!ctx.exists(argument));
 			auto v = ctx.top_arguments()[argument->index()].get();
 			ctx.insert(argument, v);
-			result = std::move(v->copy());
+			result = v->copy();
 		}
 	} else {
 		result = eval_input(argument->input(), ctx);
@@ -531,7 +529,7 @@ eval(
 		ctx.push_arguments(arguments);
 	}
 
-	std::unique_ptr<const literal> result = std::move(eval_input(port, ctx));
+	auto result = eval_input(port, ctx);
 
 	if (fcttype)
 		ctx.pop_arguments();

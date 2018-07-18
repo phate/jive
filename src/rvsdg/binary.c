@@ -269,7 +269,7 @@ bool
 flattened_binary_normal_form::normalize_node(jive::node * node) const
 {
 	const auto & op = static_cast<const flattened_binary_op&>(node->operation());
-	const auto nf = graph()->node_normal_form(typeid(op.bin_operation()));
+	auto nf = graph()->node_normal_form(typeid(op.bin_operation()));
 
 	return static_cast<const binary_normal_form *>(nf)->normalize_node(node, op.bin_operation());
 }

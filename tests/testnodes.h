@@ -167,7 +167,7 @@ public:
 	simple_op(const simple_op &) = default;
 
 	inline
-	simple_op(jive::test::simple_op && other) noexcept = default;
+	simple_op(jive::test::simple_op && other) = default;
 	
 	virtual bool
 	operator==(const operation & other) const noexcept override;

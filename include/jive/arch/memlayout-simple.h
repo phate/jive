@@ -31,7 +31,7 @@ public:
 	map_record(const rcddeclaration * dcl) override;
 
 	virtual const union_memlayout &
-	map_union(const struct unndeclaration * decl) override;
+	map_union(const unndeclaration * decl) override;
 
 	virtual const dataitem_memlayout &
 	map_bitstring(size_t nbits) override;

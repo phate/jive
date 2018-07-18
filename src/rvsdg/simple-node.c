@@ -97,13 +97,13 @@ simple_node::simple_node(
 			operation().narguments(), ", received ", operands.size(), " arguments."));
 
 	for (size_t n = 0; n < operation().narguments(); n++) {
-		node::add_input(std::move(std::unique_ptr<jive::input>(
-			new simple_input(this, n, operands[n], operation().argument(n)))));
+		node::add_input(std::unique_ptr<jive::input>(
+			new simple_input(this, n, operands[n], operation().argument(n))));
 	}
 
 	for (size_t n = 0; n < operation().nresults(); n++)
-		node::add_output(std::move(std::unique_ptr<jive::output>(
-			new simple_output(this, n, operation().result(n)))));
+		node::add_output(std::unique_ptr<jive::output>(
+			new simple_output(this, n, operation().result(n))));
 
 	on_node_create(this);
 }

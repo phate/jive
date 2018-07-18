@@ -150,7 +150,7 @@ public:
 		const jive::valuetype & element_type,
 		const bittype & index_type)
 	: simple_op({addrtype(element_type), index_type}, {addrtype(element_type)})
-	, element_type_(std::move(element_type.copy()))
+	, element_type_(element_type.copy())
 	{}
 
 	inline

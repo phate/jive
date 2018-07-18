@@ -131,9 +131,8 @@ containerof_op::copy() const
 
 /* arraysubscript */
 
-arraysubscript_op::~arraysubscript_op()
-{
-}
+arraysubscript_op::~arraysubscript_op() noexcept
+{}
 
 bool
 arraysubscript_op::operator==(const operation & other) const noexcept

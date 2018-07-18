@@ -68,7 +68,7 @@ fctliteral::fctliteral(
 	for (size_t n = 0; n < results.size(); n++)
 		result_types.emplace_back(results[n]->type().copy());
 
-	type_ = std::move(std::unique_ptr<fcttype>(new fcttype(argument_types, result_types)));
+	type_ = std::make_unique<fcttype>(argument_types, result_types);
 }
 
 fctliteral::fctliteral(
@@ -85,7 +85,7 @@ fctliteral::fctliteral(
 	for (auto result : results)
 		result_types.emplace_back(result->type().copy());
 
-	type_ = std::move(std::unique_ptr<fcttype>(new fcttype(argument_types, result_types)));
+	type_ = std::make_unique<fcttype>(argument_types, result_types);
 }
 
 fctliteral::fctliteral(const fctliteral & other)
@@ -109,7 +109,7 @@ fctliteral::operator=(const fctliteral & other)
 	for (size_t n = 0; n < other.results_.size(); n++)
 		results_.emplace_back(other.results_[n]->copy());
 
-	type_ = std::move(other.type_->copy());
+	type_ = other.type_->copy();
 	return *this;
 }
 
@@ -127,7 +127,7 @@ fctliteral::copy() const
 
 /* memliteral */
 
-memliteral::~memliteral()
+memliteral::~memliteral() noexcept
 {}
 
 const jive::type &

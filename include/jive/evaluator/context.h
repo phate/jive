@@ -46,7 +46,7 @@ public:
 	{
 		JIVE_DEBUG_ASSERT(!exists(output));
 		JIVE_DEBUG_ASSERT(output->type() == v->type());
-		literals_[output] = std::move(v->copy());
+		literals_[output] = v->copy();
 	}
 
 private:
@@ -56,20 +56,20 @@ private:
 class context final {
 public:
 	inline bool
-	has_frames(struct jive::region * region) const noexcept
+	has_frames(jive::region * region) const noexcept
 	{
 		return frames_.find(region) != frames_.end();
 	}
 
 	inline size_t
-	nframes(struct jive::region * region) const noexcept
+	nframes(jive::region * region) const noexcept
 	{
 		JIVE_DEBUG_ASSERT(has_frames(region));
 		return frames_.find(region)->second.size();
 	}
 
 	inline void
-	push_frame(struct jive::region * region)
+	push_frame(jive::region * region)
 	{
 		if (frames_.find(region) == frames_.end())
 			frames_[region] = std::vector<std::unique_ptr<frame>>();
@@ -77,7 +77,7 @@ public:
 	}
 
 	inline void
-	pop_frame(struct jive::region * region)
+	pop_frame(jive::region * region)
 	{
 		JIVE_DEBUG_ASSERT(has_frames(region));
 		JIVE_DEBUG_ASSERT(nframes(region));
@@ -180,7 +180,7 @@ public:
 
 private:
 	std::vector<std::vector<std::unique_ptr<const literal>>> arguments_;
-	std::unordered_map<struct jive::region *, std::vector<std::unique_ptr<frame>>> frames_;
+	std::unordered_map<jive::region*, std::vector<std::unique_ptr<frame>>> frames_;
 };
 
 }

@@ -140,6 +140,10 @@ public:
 		jump_conditional_invertible = (1<<14)
 	};
 
+	virtual
+	~instruction()
+	{}
+
 	inline
 	instruction(
 		const std::string & name,
