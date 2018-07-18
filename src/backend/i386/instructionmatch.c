@@ -497,7 +497,7 @@ static void
 match_region(jive::region * region)
 {
 	for (auto node : bottomup_traverser(region)) {
-		if (is_simple_node(node)) {
+		if (is<simple_op>(node)) {
 			match_node(static_cast<simple_node*>(node));
 			continue;
 		}
