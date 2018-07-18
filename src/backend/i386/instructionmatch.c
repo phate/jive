@@ -502,7 +502,7 @@ match_region(jive::region * region)
 			continue;
 		}
 
-		JIVE_DEBUG_ASSERT(is_structural_node(node));
+		JIVE_DEBUG_ASSERT(is<structural_op>(node));
 		auto snode = static_cast<const jive::structural_node*>(node);
 		for (size_t n = 0; n < snode->nsubregions(); n++)
 			match_region(snode->subregion(n));

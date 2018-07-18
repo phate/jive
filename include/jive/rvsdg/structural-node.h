@@ -74,12 +74,6 @@ private:
 	std::vector<std::unique_ptr<jive::region>> subregions_;
 };
 
-static inline bool
-is_structural_node(const jive::node * node) noexcept
-{
-	return dynamic_cast<const jive::structural_node*>(node) != nullptr;
-}
-
 /* structural input class */
 
 typedef jive::detail::intrusive_list<
