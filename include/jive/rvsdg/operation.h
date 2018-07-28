@@ -27,8 +27,11 @@ class structural_normal_form;
 
 /* port */
 
-class port final {
+class port {
 public:
+	virtual
+	~port();
+
 	port(jive::gate * gate);
 
 	port(const jive::type & type);
@@ -82,13 +85,8 @@ public:
 		return *this;
 	}
 
-	inline bool
-	operator==(const port & other) const noexcept
-	{
-		return gate_ == other.gate_
-		    && rescls_ == other.rescls_
-		    && *type_ == *other.type_;
-	}
+	virtual bool
+	operator==(const port&) const noexcept;
 
 	inline bool
 	operator!=(const port & other) const noexcept
@@ -113,6 +111,9 @@ public:
 	{
 		return *type_;
 	}
+
+	virtual std::unique_ptr<port>
+	copy() const;
 
 private:
 	jive::gate * gate_;

@@ -15,6 +15,9 @@ namespace jive {
 
 /* port */
 
+port::~port()
+{}
+
 port::port(jive::gate * gate)
 : gate_(gate)
 , rescls_(gate->rescls())
@@ -36,6 +39,20 @@ port::port(const resource_class * rescls)
 , rescls_(rescls)
 , type_(rescls->type().copy())
 {}
+
+bool
+port::operator==(const port & other) const noexcept
+{
+	return gate_ == other.gate_
+	    && rescls_ == other.rescls_
+	    && *type_ == *other.type_;
+}
+
+std::unique_ptr<port>
+port::copy() const
+{
+	return std::make_unique<port>(*this);
+}
 
 /* operation */
 
