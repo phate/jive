@@ -19,9 +19,56 @@
 #include <jive/rvsdg/region.h>
 #include <jive/rvsdg/tracker.h>
 
-/* graph */
-
 namespace jive {
+
+/* impport class */
+
+class impport : public port {
+public:
+	virtual
+	~impport();
+
+	impport(
+		const jive::type & type,
+		const std::string & name)
+	: port(type)
+	, name_(name)
+	{}
+
+	impport(const impport & other)
+	: port(other)
+	, name_(other.name_)
+	{}
+
+	impport(impport && other)
+	: port(other)
+	, name_(std::move(other.name_))
+	{}
+
+	impport&
+	operator=(const impport&) = delete;
+
+	impport&
+	operator=(impport&&) = delete;
+
+
+	const std::string &
+	name() const noexcept
+	{
+		return name_;
+	}
+
+	virtual bool
+	operator==(const port&) const noexcept override;
+
+	virtual std::unique_ptr<port>
+	copy() const;
+
+private:
+	std::string name_;
+};
+
+/* graph */
 
 typedef jive::detail::intrusive_list<
 	jive::gate,
@@ -62,8 +109,8 @@ public:
 	inline jive::argument *
 	add_import(const jive::type & type, const std::string & name)
 	{
-		auto gate = gate::create(this, name, type);
-		return root()->add_argument(nullptr, gate);
+		impport ip(type, name);
+		return root()->add_argument(nullptr, ip);
 	}
 
 	inline jive::input *
