@@ -82,7 +82,7 @@ public:
 	inline const jive::type &
 	type() const noexcept
 	{
-		return port_.type();
+		return port_->type();
 	}
 
 	inline jive::region *
@@ -94,7 +94,7 @@ public:
 	inline const jive::port &
 	port() const noexcept
 	{
-		return port_;
+		return *port_;
 	}
 
 	virtual jive::node *
@@ -106,17 +106,17 @@ public:
 	inline void
 	replace(const jive::port & port)
 	{
-		if (port_.type() != port.type())
-			throw type_error(port_.type().debug_string(), port.type().debug_string());
+		if (port_->type() != port.type())
+			throw type_error(port_->type().debug_string(), port.type().debug_string());
 
-		port_ = port;
+		port_ = port.copy();
 	}
 
 private:
 	size_t index_;
-	jive::port port_;
 	jive::output * origin_;
 	jive::region * region_;
+	std::unique_ptr<jive::port> port_;
 };
 
 /* outputs */
@@ -193,7 +193,7 @@ public:
 	inline const jive::type &
 	type() const noexcept
 	{
-		return port_.type();
+		return port_->type();
 	}
 
 	inline jive::region *
@@ -205,7 +205,7 @@ public:
 	inline const jive::port &
 	port() const noexcept
 	{
-		return port_;
+		return *port_;
 	}
 
 	virtual jive::node *
@@ -217,10 +217,10 @@ public:
 	inline void
 	replace(const jive::port & port)
 	{
-		if (port_.type() != port.type())
-			throw type_error(port_.type().debug_string(), port.type().debug_string());
+		if (port_->type() != port.type())
+			throw type_error(port_->type().debug_string(), port.type().debug_string());
 
-		port_ = port;
+		port_ = port.copy();
 	}
 
 private:
@@ -231,8 +231,8 @@ private:
 	add_user(jive::input * user);
 
 	size_t index_;
-	jive::port port_;
 	jive::region * region_;
+	std::unique_ptr<jive::port> port_;
 	std::unordered_set<jive::input*> users_;
 };
 

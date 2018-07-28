@@ -35,9 +35,9 @@ input::input(
 	jive::region * region,
 	const jive::port & port)
 : index_(index)
-, port_(port)
 , origin_(origin)
 , region_(region)
+, port_(port.copy())
 {
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
@@ -97,8 +97,8 @@ output::output(
 	jive::region * region,
 	const jive::port & port)
 : index_(index)
-, port_(port)
 , region_(region)
+, port_(port.copy())
 {
 	if (port.gate())
 		port.gate()->outputs.push_back(this);
