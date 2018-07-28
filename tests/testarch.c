@@ -350,11 +350,14 @@ public:
 		jive_subroutine & subroutine,
 		size_t index) override
 	{
+		JIVE_ASSERT(0);
+		#if 0
 		auto o = subroutine.builder_state->arguments[index].output;
 		if (index >= 2)
-			o = jive::split_op::create(o, o->port().gate()->rescls(), &jive_testarch_regcls_gpr);
+			o = jive::split_op::create(o, o->port().rescls(), &jive_testarch_regcls_gpr);
 
 		return o;
+		#endif
 	}
 
 	virtual void
@@ -363,18 +366,15 @@ public:
 		size_t index,
 		jive::simple_output * value) override
 	{
-		subroutine.builder_state->results[index].output = value;
+		JIVE_ASSERT(0);
+		//subroutine.builder_state->results[index].output = value;
 	}
 	
 	virtual jive::simple_output *
 	finalize(
 		jive_subroutine & subroutine) override
 	{
-		auto & ptgate = subroutine.builder_state->passthroughs[1].gate;
-		auto & ptorigin = subroutine.builder_state->passthroughs[1].output;
-		auto ret_instr = create_instruction(subroutine.region,
-			&jive::testarch::instr_ret::instance(), {ptorigin}, {ptgate}, {jive::ctl2});
-		return dynamic_cast<jive::simple_output*>(ret_instr->output(0));
+		JIVE_ASSERT(0);
 	}
 };
 

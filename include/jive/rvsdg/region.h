@@ -221,7 +221,7 @@ public:
 	/**
 		\brief Copy a region with substitutions
 		\param target Target region to create nodes in
-		\param substitution Operand and gate substitutions
+		\param substitution Operand substitutions
 		\param copy_arguments Copy region arguments
 		\param copy_results Copy region results
 

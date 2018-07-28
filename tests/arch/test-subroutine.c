@@ -14,6 +14,7 @@
 
 static int test_main(void)
 {
+#if 0
 	jive::graph graph;
 	jive_argument_type  tmparray0[] = {
 		jive_argument_long,
@@ -41,7 +42,6 @@ static int test_main(void)
 	
 	jive::view(graph.root(), stdout);
 
-#if 0
 	jive_context * context2 = jive_context_create();
 	// FIXME: copying of subroutine nodes is currently quite broken;
 	// reactivate when repaired

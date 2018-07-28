@@ -35,6 +35,8 @@ subroutine_op::get_passthrough_enter_by_name(
 	const char * name) const noexcept
 {
 	/* FIXME: this function is broken */
+	JIVE_ASSERT(0);
+	#if 0
 	jive::node * enter = nullptr;
 	JIVE_DEBUG_ASSERT(enter);
 	for (size_t n = 0; n < enter->noutputs(); ++n) {
@@ -42,6 +44,7 @@ subroutine_op::get_passthrough_enter_by_name(
 		if (o->port().gate() && name == o->port().gate()->name())
 			return dynamic_cast<simple_output*>(o);
 	}
+	#endif
 	return nullptr;
 }
 
@@ -56,6 +59,8 @@ subroutine_op::get_passthrough_leave_by_name(
 	jive::region * region,
 	const char * name) const noexcept
 {
+	JIVE_ASSERT(0);
+	#if 0
 	/* FIXME: this function is broken */
 	jive::node * leave = nullptr;
 	JIVE_DEBUG_ASSERT(leave);
@@ -64,6 +69,7 @@ subroutine_op::get_passthrough_leave_by_name(
 		if (i->port().gate() && name == i->port().gate()->name())
 			return i;
 	}
+	#endif
 	return nullptr;
 }
 

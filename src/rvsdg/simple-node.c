@@ -19,9 +19,6 @@ namespace jive {
 simple_input::~simple_input() noexcept
 {
 	on_input_destroy(this);
-
-	if (port().gate())
-		port().gate()->clear_interferences();
 }
 
 simple_input::simple_input(
@@ -31,15 +28,7 @@ simple_input::simple_input(
 	const jive::port & port)
 	: input(index, origin, node->region(), port)
 	, node_(node)
-{
-	if (port.gate()) {
-		for (size_t n = 0; n < index; n++) {
-			auto other = dynamic_cast<jive::simple_input*>(node->input(n));
-			if (!other->port().gate()) continue;
-			port.gate()->add_interference(other->port().gate());
-		}
-	}
-}
+{}
 
 jive::simple_node *
 simple_input::node() const noexcept
@@ -55,22 +44,11 @@ simple_output::simple_output(
 	const jive::port & port)
 : output(index, node->region(), port)
 , node_(node)
-{
-	if (port.gate()) {
-		for (size_t n = 0; n < index; n++) {
-			auto other = node->output(n);
-			if (!other->port().gate()) continue;
-			port.gate()->add_interference(other->port().gate());
-		}
-	}
-}
+{}
 
 simple_output::~simple_output() noexcept
 {
 	on_output_destroy(this);
-
-	if (port().gate())
-		port().gate()->clear_interferences();
 }
 
 jive::simple_node *

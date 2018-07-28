@@ -19,7 +19,6 @@
 
 namespace jive {
 
-class gate;
 class resource;
 class resource_class;
 class type;
@@ -203,7 +202,7 @@ private:
 	size_t depth_;
 	std::string name_;
 
-	/** \brief Port and gate type corresponding to this resource */
+	/** \brief Port type corresponding to this resource */
 	const jive::type * type_;
 
 	/** \brief Parent resource class */

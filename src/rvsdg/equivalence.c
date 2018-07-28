@@ -92,9 +92,7 @@ jive_equiv_state_check_node(jive_equiv_state * self, const jive::node * n1, cons
 	if (n1->operation() != n2->operation()) {
 		return false;
 	}
-	
-	/* FIXME: verify gates */
-	
+
 	size_t n = 0;
 	for (n = 0; n < n1->ninputs(); ++n) {
 		auto o1 = n1->input(n)->origin();

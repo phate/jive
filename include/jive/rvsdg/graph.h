@@ -13,7 +13,6 @@
 #include <typeindex>
 
 #include <jive/common.h>
-#include <jive/rvsdg/gate.h>
 #include <jive/rvsdg/node-normal-form.h>
 #include <jive/rvsdg/node.h>
 #include <jive/rvsdg/region.h>
@@ -115,11 +114,6 @@ private:
 
 /* graph */
 
-typedef jive::detail::intrusive_list<
-	jive::gate,
-	jive::gate::graph_gate_accessor
-> graph_gate_list;
-
 class graph {
 public:
 	~graph();
@@ -170,8 +164,6 @@ public:
 	{
 		root()->prune(true);
 	}
-
-	graph_gate_list gates;
 
 private:
 	bool normalized_;

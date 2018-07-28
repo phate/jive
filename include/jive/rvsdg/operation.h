@@ -15,7 +15,6 @@
 
 namespace jive {
 
-class gate;
 class graph;
 class node;
 class node_normal_form;
@@ -32,8 +31,6 @@ public:
 	virtual
 	~port();
 
-	port(jive::gate * gate);
-
 	port(const jive::type & type);
 
 	port(std::unique_ptr<jive::type> type);
@@ -42,18 +39,15 @@ public:
 
 	inline
 	port(const port & other)
-	: gate_(other.gate_)
-	, rescls_(other.rescls_)
+	: rescls_(other.rescls_)
 	, type_(other.type_->copy())
 	{}
 
 	inline
 	port(port && other)
-	: gate_(other.gate_)
-	, rescls_(other.rescls_)
+	: rescls_(other.rescls_)
 	, type_(std::move(other.type_))
 	{
-		other.gate_ = nullptr;
 		other.rescls_ = nullptr;
 	}
 
@@ -63,7 +57,6 @@ public:
 		if (&other == this)
 			return *this;
 
-		gate_ = other.gate_;
 		rescls_ = other.rescls_;
 		type_ = other.type_->copy();
 
@@ -76,10 +69,8 @@ public:
 		if (&other == this)
 			return *this;
 
-		gate_ = other.gate_;
 		rescls_ = other.rescls_;
 		type_ = std::move(other.type_);
-		other.gate_ = nullptr;
 		other.rescls_ = nullptr;
 
 		return *this;
@@ -92,12 +83,6 @@ public:
 	operator!=(const port & other) const noexcept
 	{
 		return !(*this == other);
-	}
-
-	inline jive::gate *
-	gate() const noexcept
-	{
-		return gate_;
 	}
 
 	inline const resource_class *
@@ -116,7 +101,6 @@ public:
 	copy() const;
 
 private:
-	jive::gate * gate_;
 	const resource_class * rescls_;
 	std::unique_ptr<jive::type> type_;
 };

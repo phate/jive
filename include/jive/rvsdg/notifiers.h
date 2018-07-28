@@ -10,7 +10,6 @@
 
 namespace jive {
 
-class gate;
 class input;
 class node;
 class output;
@@ -32,9 +31,6 @@ extern notifier<jive::input*> on_input_destroy;
 
 extern notifier<jive::output*> on_output_create;
 extern notifier<jive::output*> on_output_destroy;
-
-extern notifier<jive::gate*, jive::gate*> on_gate_interference_add;
-extern notifier<jive::gate*, jive::gate*> on_gate_interference_remove;
 
 }
 

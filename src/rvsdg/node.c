@@ -24,9 +24,6 @@ namespace jive {
 input::~input() noexcept
 {
 	origin()->remove_user(this);
-
-	if (port().gate())
-		port().gate()->inputs.erase(this);
 }
 
 input::input(
@@ -45,18 +42,12 @@ input::input(
 	if (port.type() != origin->type())
 		throw jive::type_error(port.type().debug_string(), origin->type().debug_string());
 
-	if (port.gate())
-		port.gate()->inputs.push_back(this);
-
 	origin->add_user(this);
 }
 
 std::string
 input::debug_string() const
 {
-	if (port().gate())
-		return port().gate()->debug_string();
-
 	return detail::strfmt(index());
 }
 
@@ -87,9 +78,6 @@ input::divert_to(jive::output * new_origin)
 output::~output() noexcept
 {
 	JIVE_DEBUG_ASSERT(nusers() == 0);
-
-	if (port().gate())
-		port().gate()->outputs.erase(this);
 }
 
 output::output(
@@ -99,17 +87,11 @@ output::output(
 : index_(index)
 , region_(region)
 , port_(port.copy())
-{
-	if (port.gate())
-		port.gate()->outputs.push_back(this);
-}
+{}
 
 std::string
 output::debug_string() const
 {
-	if (port().gate())
-		return port().gate()->debug_string();
-
 	return detail::strfmt(index());
 }
 

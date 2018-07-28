@@ -24,9 +24,6 @@ argument::~argument() noexcept
 
 	if (input())
 		input()->arguments.erase(this);
-
-	if (port().gate())
-		port().gate()->clear_interferences();
 }
 
 argument::argument(
@@ -39,14 +36,6 @@ argument::argument(
 {
 	if (input)
 		input->arguments.push_back(this);
-
-	if (port.gate()) {
-		for (size_t n = 0; n < index; n++) {
-			auto other = region->argument(n);
-			if (!other->port().gate()) continue;
-			port.gate()->add_interference(other->port().gate());
-		}
-	}
 }
 
 jive::node *
@@ -63,9 +52,6 @@ result::~result() noexcept
 
 	if (output())
 		output()->results.erase(this);
-
-	if (port().gate())
-		port().gate()->clear_interferences();
 }
 
 result::result(
@@ -79,14 +65,6 @@ result::result(
 {
 	if (output)
 		output->results.push_back(this);
-
-	if (port.gate()) {
-		for (size_t n = 0; n < index; n++) {
-			auto other = region->result(n);
-			if (!other->port().gate()) continue;
-			port.gate()->add_interference(other->port().gate());
-		}
-	}
 }
 
 jive::node *
@@ -205,18 +183,8 @@ region::copy(
 	/* copy arguments */
 	if (copy_arguments) {
 		for (size_t n = 0; n < narguments(); n++) {
-			jive::argument * new_argument;
-			if (argument(n)->port().gate()) {
-				auto gate = argument(n)->port().gate();
-				auto new_gate = smap.lookup(gate);
-				if (!new_gate)
-					smap.insert(gate, gate::create(graph(), gate));
-
-				new_argument = target->add_argument(smap.lookup(argument(n)->input()), gate);
-			} else {
-				new_argument = target->add_argument(smap.lookup(argument(n)->input()), argument(n)->type());
-			}
-			smap.insert(argument(n), new_argument);
+			auto narg = target->add_argument(smap.lookup(argument(n)->input()), argument(n)->type());
+			smap.insert(argument(n), narg);
 		}
 	}
 
@@ -235,16 +203,7 @@ region::copy(
 			if (!origin) origin = result(n)->origin();
 
 			auto output = dynamic_cast<jive::structural_output*>(smap.lookup(result(n)->output()));
-			if (result(n)->port().gate()) {
-				auto gate = result(n)->port().gate();
-				auto new_gate = smap.lookup(gate);
-				if (!new_gate)
-					smap.insert(gate, gate::create(graph(), gate));
-
-				target->add_result(origin, output, gate);
-			} else {
-				target->add_result(origin, output, result(n)->type());
-			}
+			target->add_result(origin, output, result(n)->type());
 		}
 	}
 }

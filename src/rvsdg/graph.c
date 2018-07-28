@@ -65,10 +65,6 @@ graph::~graph()
 	JIVE_DEBUG_ASSERT(!has_active_trackers(this));
 
 	delete root_;
-
-	while (gates.first())
-		delete gates.first();
-
 	unregister_unndeclarations(this);
 }
 

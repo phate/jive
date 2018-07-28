@@ -23,7 +23,6 @@ namespace base {
 	class type;
 }
 
-class gate;
 class graph;
 class node_normal_form;
 class output;
@@ -35,16 +34,7 @@ class input {
 	friend jive::node;
 	friend jive::region;
 
-	jive::detail::intrusive_list_anchor<
-		jive::input
-	> gate_input_anchor_;
-
 public:
-	typedef jive::detail::intrusive_list_accessor<
-		jive::input,
-		&jive::input::gate_input_anchor_
-	> gate_input_accessor;
-
 	virtual
 	~input() noexcept;
 
@@ -127,17 +117,7 @@ class output {
 	friend jive::region;
 
 	typedef std::unordered_set<jive::input*>::const_iterator user_iterator;
-
-	jive::detail::intrusive_list_anchor<
-		jive::output
-	> gate_output_anchor_;
-
 public:
-	typedef jive::detail::intrusive_list_accessor<
-		jive::output,
-		&jive::output::gate_output_anchor_
-	> gate_output_accessor;
-
 	virtual
 	~output() noexcept;
 
@@ -349,7 +329,7 @@ public:
 		\brief Copy a node with substitutions
 		\param self Node to be copied
 		\param target Target region to create node in
-		\param substitution Operand and gate substitutions
+		\param substitution Operand substitutions
 		\return Copied node
 
 		Create a new node that is semantically equivalent to an
@@ -453,17 +433,6 @@ producer(const jive::output * output) noexcept;
 bool
 normalize(jive::node * node);
 
-}
-
-static inline jive::output *
-jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
-{
-	for (size_t n = 0; n < self->noutputs(); n++) {
-		if (self->output(n)->port().gate() == gate) {
-			return self->output(n);
-		}
-	}
-	return nullptr;
 }
 
 #endif

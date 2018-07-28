@@ -113,6 +113,8 @@ jive_subroutine_begin(
 	jive::subroutine_machine_signature sig,
 	std::unique_ptr<jive::subroutine_hl_builder_interface> hl_builder)
 {
+	JIVE_ASSERT(0);
+#if 0
 	jive_subroutine sub;
 	sub.hl_builder = std::move(hl_builder);
 	sub.builder_state.reset(new jive::subroutine_builder_state(sig));
@@ -149,11 +151,14 @@ jive_subroutine_begin(
 	}
 
 	return sub;
+#endif
 }
 
 jive::node *
 jive_subroutine_end(jive_subroutine & self)
 {
+	JIVE_ASSERT(0);
+	#if 0
 	auto ctl_return = self.hl_builder->finalize(self);
 	self.region->add_result(ctl_return, nullptr, ctl_return->type());
 
@@ -166,6 +171,7 @@ jive_subroutine_end(jive_subroutine & self)
 	self.node->add_output(jive::memtype::instance());
 
 	return self.node;
+	#endif
 }
 
 jive::output *
@@ -188,11 +194,13 @@ jive_subroutine_simple_set_result(
 jive::output *
 jive_subroutine_simple_get_global_state(const jive_subroutine & self)
 {
-	return self.builder_state->passthroughs[0].output;
+	JIVE_ASSERT(0);
+	//return self.builder_state->passthroughs[0].output;
 }
 
 void
 jive_subroutine_simple_set_global_state(jive_subroutine & self, jive::simple_output * state)
 {
-	self.builder_state->passthroughs[0].output = state;
+	JIVE_ASSERT(0);
+//	self.builder_state->passthroughs[0].output = state;
 }

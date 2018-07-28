@@ -12,7 +12,6 @@ LIBJIVE_SRC = \
 	src/rvsdg/control.c \
 	src/rvsdg/equivalence.c \
 	src/rvsdg/gamma.c \
-	src/rvsdg/gate.c \
 	src/rvsdg/graph.c \
 	src/rvsdg/label.c \
 	src/rvsdg/negotiator.c \

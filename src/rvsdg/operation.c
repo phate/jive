@@ -18,34 +18,24 @@ namespace jive {
 port::~port()
 {}
 
-port::port(jive::gate * gate)
-: gate_(gate)
-, rescls_(gate->rescls())
-, type_(gate->type().copy())
-{}
-
 port::port(const jive::type & type)
 : port(type.copy())
 {}
 
 port::port(std::unique_ptr<jive::type> type)
-: gate_(nullptr)
-, rescls_(&jive_root_resource_class)
+: rescls_(&jive_root_resource_class)
 , type_(std::move(type))
 {}
 
 port::port(const resource_class * rescls)
-: gate_(nullptr)
-, rescls_(rescls)
+: rescls_(rescls)
 , type_(rescls->type().copy())
 {}
 
 bool
 port::operator==(const port & other) const noexcept
 {
-	return gate_ == other.gate_
-	    && rescls_ == other.rescls_
-	    && *type_ == *other.type_;
+	return rescls_ == other.rescls_ && *type_ == *other.type_;
 }
 
 std::unique_ptr<port>

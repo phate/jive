@@ -18,7 +18,6 @@
 struct jive_subroutine;
 
 namespace jive {
-class gate;
 class simple_output;
 class region;
 
@@ -43,6 +42,7 @@ public:
 		jive_subroutine & subroutine) = 0;
 };
 
+#if 0
 class subroutine_builder_state {
 public:
 	struct gated_port {
@@ -63,7 +63,7 @@ public:
 	std::vector<gated_port> passthroughs;
 	std::vector<gated_port> results;
 };
-
+#endif
 }
 
 namespace jive {
@@ -76,7 +76,7 @@ struct jive_subroutine {
 	jive::region * region;
 	jive::structural_node * node;
 	
-	std::unique_ptr<jive::subroutine_builder_state> builder_state;
+	//std::unique_ptr<jive::subroutine_builder_state> builder_state;
 	std::unique_ptr<jive::subroutine_hl_builder_interface> hl_builder;
 	jive::subroutine_machine_signature signature;
 };

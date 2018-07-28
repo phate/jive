@@ -13,7 +13,6 @@
 
 namespace jive {
 
-class gate;
 class output;
 class region;
 class structural_input;
@@ -32,13 +31,6 @@ public:
 	{
 		auto i = region_map_.find(original);
 		return i != region_map_.end() ? i->second : nullptr;
-	}
-
-	inline jive::gate *
-	lookup(const jive::gate * original) const noexcept
-	{
-		auto i = gate_map_.find(original);
-		return i != gate_map_.end() ? i->second : nullptr;
 	}
 
 	inline jive::structural_input *
@@ -61,19 +53,12 @@ public:
 	}
 
 	inline void
-	insert(const jive::gate * original, jive::gate * substitute)
-	{
-		gate_map_[original] = substitute;
-	}
-
-	inline void
 	insert(const jive::structural_input * original, jive::structural_input * substitute)
 	{
 		structinput_map_[original] = substitute;
 	}
 
 private:
-	std::unordered_map<const jive::gate*, jive::gate*> gate_map_;
 	std::unordered_map<const jive::region*, jive::region*> region_map_;
 	std::unordered_map<const jive::output*, jive::output*> output_map_;
 	std::unordered_map<const jive::structural_input*, jive::structural_input*> structinput_map_;

@@ -358,6 +358,7 @@ jive_negotiator_on_node_destroy_(
 	self->split_nodes.erase(node);
 }
 
+#if 0
 static jive_negotiator_constraint *
 jive_negotiator_map_gate(jive::negotiator * self, jive::gate * gate)
 {
@@ -376,7 +377,7 @@ jive_negotiator_annotate_gate(jive::negotiator * self, jive::gate * gate)
 	}
 	return constraint;
 }
-
+#endif
 static jive_negotiator_connection *
 jive_negotiator_create_input_connection(jive::negotiator * self, jive::input * input)
 {
@@ -465,6 +466,8 @@ negotiator::create_option() const
 void
 negotiator::annotate_node(jive::node * node)
 {
+	JIVE_ASSERT(0);
+#if 0
 	for(size_t n = 0; n < node->ninputs(); n++) {
 		auto input = dynamic_cast<jive::simple_input*>(node->input(n));
 		if (!input->port().gate())
@@ -496,6 +499,7 @@ negotiator::annotate_node(jive::node * node)
 	}
 
 	annotate_node_proper(node);
+#endif
 }
 
 bool
@@ -600,6 +604,8 @@ jive_negotiator_annotate_identity_node(
 	jive::node * node,
 	const jive_negotiator_option * option)
 {
+	JIVE_ASSERT(0);
+#if 0
 	/* FIXME: this assumes that all "gates" are at the end of the list
 	-- while plausible, this is not strictly correct */
 	std::vector<jive::simple_input*> inputs;
@@ -625,6 +631,7 @@ jive_negotiator_annotate_identity_node(
 	self->node_map.insert(constraint);
 	
 	return constraint;
+#endif
 }
 
 jive_negotiator_port *

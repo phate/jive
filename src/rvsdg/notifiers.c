@@ -24,7 +24,4 @@ notifier<jive::input*> on_input_destroy;
 notifier<jive::output*> on_output_create;
 notifier<jive::output*> on_output_destroy;
 
-notifier<jive::gate*, jive::gate*> on_gate_interference_add;
-notifier<jive::gate*, jive::gate*> on_gate_interference_remove;
-
 }
