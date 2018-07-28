@@ -38,6 +38,26 @@ impport::copy() const
 	return std::unique_ptr<port>(new impport(*this));
 }
 
+/* expport */
+
+expport::~expport()
+{}
+
+bool
+expport::operator==(const port & other) const noexcept
+{
+	auto p = dynamic_cast<const expport*>(&other);
+	return p
+	    && p->type() == type()
+	    && p->name() == name();
+}
+
+std::unique_ptr<port>
+expport::copy() const
+{
+	return std::unique_ptr<port>(new expport(*this));
+}
+
 /* graph */
 
 graph::~graph()

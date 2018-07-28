@@ -504,7 +504,8 @@ eval(
 	const jive::input * port = nullptr;
 	for (size_t n = 0; n < graph->root()->nresults(); n++) {
 		auto result = graph->root()->result(n);
-		if (result->port().gate()->name() == name) {
+		auto ep = dynamic_cast<const expport*>(&result->port());
+		if (ep && ep->name() == name) {
 			port = result;
 			break;
 		}

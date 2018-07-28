@@ -51,6 +51,51 @@ public:
 	impport&
 	operator=(impport&&) = delete;
 
+	const std::string &
+	name() const noexcept
+	{
+		return name_;
+	}
+
+	virtual bool
+	operator==(const port&) const noexcept override;
+
+	virtual std::unique_ptr<port>
+	copy() const;
+
+private:
+	std::string name_;
+};
+
+/* expport class */
+
+class expport : public port {
+public:
+	virtual
+	~expport();
+
+	expport(
+		const jive::type & type,
+		const std::string & name)
+	: port(type)
+	, name_(name)
+	{}
+
+	expport(const expport & other)
+	: port(other)
+	, name_(other.name_)
+	{}
+
+	expport(expport && other)
+	: port(other)
+	, name_(std::move(other.name_))
+	{}
+
+	expport&
+	operator=(const expport&) = delete;
+
+	expport&
+	operator=(expport&&) = delete;
 
 	const std::string &
 	name() const noexcept
@@ -116,8 +161,8 @@ public:
 	inline jive::input *
 	add_export(jive::output * operand, const std::string & name)
 	{
-		auto gate = gate::create(this, name, operand->type());
-		return root()->add_result(operand, nullptr, gate);
+		expport ep(operand->type(), name);
+		return root()->add_result(operand, nullptr, ep);
 	}
 
 	inline void
