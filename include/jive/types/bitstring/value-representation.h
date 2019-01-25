@@ -161,6 +161,9 @@ private:
 		if (divisor.nbits() != nbits())
 			throw compiler_error("Unequal number of bits.");
 
+		/*
+			FIXME: This should check whether divisor is zero, not whether nbits() is zero.
+		*/
 		if (divisor.nbits() == 0)
 			throw compiler_error("Division by zero.");
 
@@ -191,6 +194,11 @@ private:
 	}
 
 public:
+	/*
+		FIXME
+		1. add move constructor and operator
+		2. add <, <=, >, >= operator for uint64_t and int64_t
+	*/
 	inline bitvalue_repr &
 	operator=(const bitvalue_repr & other)
 	{
