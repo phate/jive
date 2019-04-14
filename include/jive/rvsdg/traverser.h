@@ -50,7 +50,7 @@ public:
 
 	inline value_type & operator*() noexcept { return node_; }
 
-	inline value_type *
+	inline value_type
 	operator->() noexcept
 	{
 		return node_;
