@@ -26,9 +26,9 @@ static int test_unnchoose(void)
 	auto dcl = unndeclaration::create(&graph, {&bit8, &bit16, &bit32});
 	jive::unntype unntype(dcl);
 
-	auto i0 = graph.add_import(bit8, "");
-	auto i1 = graph.add_import(unntype, "");
-	auto i2 = graph.add_import(unntype, "");
+	auto i0 = graph.add_import({bit8, ""});
+	auto i1 = graph.add_import({unntype, ""});
+	auto i2 = graph.add_import({unntype, ""});
 
 	auto u0 = jive_unify_create(dcl, 0, i0);
 
@@ -36,9 +36,9 @@ static int test_unnchoose(void)
 	auto c1 = choose_op::create(u0, 0);
 	auto c2 = choose_op::create(i2, 1);
 
-	graph.add_export(c0, "");
-	auto x1 = graph.add_export(c1, "");
-	graph.add_export(c2, "");
+	graph.add_export(c0, {c0->type(), ""});
+	auto x1 = graph.add_export(c1, {c1->type(), ""});
+	graph.add_export(c2, {c2->type(), ""});
 
 	graph.normalize();
 	graph.prune();
@@ -65,13 +65,13 @@ static int test_unnunify(void)
 	auto edcl = unndeclaration::create(&graph);
 	jive::unntype unntype_empty(edcl);
 
-	auto i0 = graph.add_import(bit8, "");
+	auto i0 = graph.add_import({bit8, ""});
 
 	auto u0 = jive_unify_create(dcl, 0, i0);
 	auto u1 = jive_empty_unify_create(graph.root(), edcl);
 
-	graph.add_export(u0, "");
-	graph.add_export(u1, "");
+	graph.add_export(u0, {u0->type(), ""});
+	graph.add_export(u1, {u1->type(), ""});
 
 	graph.normalize();
 	graph.prune();

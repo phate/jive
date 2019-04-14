@@ -49,7 +49,7 @@ static int test_main()
 	rv3->set_value(lambda2);
 
 	auto phi = pb.end_phi();
-	graph.add_export(phi->output(0), "dummy");
+	graph.add_export(phi->output(0), {phi->output(0)->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();

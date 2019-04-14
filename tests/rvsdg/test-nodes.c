@@ -21,8 +21,8 @@ test_node_copy(void)
 	test::valuetype vtype;
 
 	jive::graph graph;
-	auto s = graph.add_import(stype, "");
-	auto v = graph.add_import(vtype, "");
+	auto s = graph.add_import({stype, ""});
+	auto v = graph.add_import({vtype, ""});
 
 	auto n1 = test::structural_node_create(graph.root(), 3);
 	auto i1 = n1->add_input(stype, s);
@@ -97,13 +97,13 @@ test_node_depth()
 	valuetype vt;
 
 	jive::graph graph;
-	auto x = graph.add_import(vt, "x");
+	auto x = graph.add_import({vt, "x"});
 
 	auto null = simple_node_create(graph.root(), {}, {}, {vt});
 	auto bin = simple_node_create(graph.root(), {vt, vt}, {null->output(0), x}, {vt});
 	auto un = simple_node_create(graph.root(), {vt}, {bin->output(0)}, {vt});
 
-	graph.add_export(un->output(0), "x");
+	graph.add_export(un->output(0), {un->output(0)->type(), "x"});
 
 	jive::view(graph.root(), stdout);
 

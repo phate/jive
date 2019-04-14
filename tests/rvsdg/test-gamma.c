@@ -22,11 +22,11 @@ test_gamma(void)
 	bittype bit2(2);
 
 	jive::graph graph;
-	auto cmp = graph.add_import(bit2, "");
-	auto v0 = graph.add_import(bit32, "");
-	auto v1 = graph.add_import(bit32, "");
-	auto v2 = graph.add_import(bit32, "");
-	auto v3 = graph.add_import(ctl2, "");
+	auto cmp = graph.add_import({bit2, ""});
+	auto v0 = graph.add_import({bit32, ""});
+	auto v1 = graph.add_import({bit32, ""});
+	auto v2 = graph.add_import({bit32, ""});
+	auto v3 = graph.add_import({ctl2, ""});
 
 	auto pred = match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 
@@ -36,7 +36,7 @@ test_gamma(void)
 	auto ev2 = gamma->add_entryvar(v2);
 	gamma->add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
 
-	graph.add_export(gamma->output(0), "dummy");
+	graph.add_export(gamma->output(0), {gamma->output(0)->type(), "dummy"});
 
 	assert(gamma && gamma->operation() == jive::gamma_op(3));
 
@@ -63,9 +63,9 @@ test_predicate_reduction(void)
 
 	bittype bits2(2);
 
-	auto v0 = graph.add_import(bit32, "");
-	auto v1 = graph.add_import(bit32, "");
-	auto v2 = graph.add_import(bit32, "");
+	auto v0 = graph.add_import({bit32, ""});
+	auto v1 = graph.add_import({bit32, ""});
+	auto v2 = graph.add_import({bit32, ""});
 
 	auto pred = jive_control_constant(graph.root(), 3, 1);
 
@@ -75,7 +75,7 @@ test_predicate_reduction(void)
 	auto ev2 = gamma->add_entryvar(v2);
 	gamma->add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
 
-	auto r = graph.add_export(gamma->output(0), "");
+	auto r = graph.add_export(gamma->output(0), {gamma->output(0)->type(), ""});
 
 	graph.normalize();
 //	jive::view(graph.root(), stdout);
@@ -95,14 +95,14 @@ test_invariant_reduction(void)
 	jive::graph graph;
 	gamma_op::normal_form(&graph)->set_invariant_reduction(true);
 
-	auto pred = graph.add_import(ctl2, "");
-	auto v = graph.add_import(vtype, "");
+	auto pred = graph.add_import({ctl2, ""});
+	auto v = graph.add_import({vtype, ""});
 
 	auto gamma = jive::gamma_node::create(pred, 2);
 	auto ev = gamma->add_entryvar(v);
 	gamma->add_exitvar({ev->argument(0), ev->argument(1)});
 
-	auto r = graph.add_export(gamma->output(0), "");
+	auto r = graph.add_export(gamma->output(0), {gamma->output(0)->type(), ""});
 
 	graph.normalize();
 //	jive::view(graph.root(), stdout);
@@ -120,7 +120,7 @@ test_control_constant_reduction()
 	jive::graph graph;
 	gamma_op::normal_form(&graph)->set_control_constant_reduction(true);
 
-	auto x = graph.add_import(bit1, "x");
+	auto x = graph.add_import({bit1, "x"});
 
 	auto c = match(1, {{0, 0}}, 1, 2, x);
 
@@ -135,8 +135,8 @@ test_control_constant_reduction()
 	auto xv1 = gamma->add_exitvar({t, f});
 	auto xv2 = gamma->add_exitvar({n0, n1});
 
-	auto ex1 = graph.add_export(xv1, "");
-	auto ex2 = graph.add_export(xv2, "");
+	auto ex1 = graph.add_export(xv1, {xv1->type(), ""});
+	auto ex2 = graph.add_export(xv2, {xv2->type(), ""});
 
 	jive::view(graph.root(), stdout);
 	graph.normalize();

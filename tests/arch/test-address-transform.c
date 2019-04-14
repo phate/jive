@@ -31,9 +31,9 @@ test_address_transform_nodes(void)
 	addrtype at(bit32);
 
 	jive::graph graph;
-	auto i0 = graph.add_import(at, "i0");
-	auto i1 = graph.add_import(bit32, "i1");
-	auto i2 = graph.add_import(bit64, "i2");
+	auto i0 = graph.add_import({at, "i0"});
+	auto i1 = graph.add_import({bit32, "i1"});
+	auto i2 = graph.add_import({bit64, "i2"});
 
 	auto b0 = addr2bit_op::create(i0, 32, i0->type());
 	auto a0 = bit2addr_op::create(b0, 32, at);
@@ -41,8 +41,8 @@ test_address_transform_nodes(void)
 	auto a1 = bit2addr_op::create(i1, 32, at);
 	auto b1 = addr2bit_op::create(a1, 32, at);
 
-	auto x0 = graph.add_export(a0, "x0");
-	auto x1 = graph.add_export(b1, "x1");
+	auto x0 = graph.add_export(a0, {a0->type(), "x0"});
+	auto x1 = graph.add_export(b1, {b1->type(), "x1"});
 
 	assert(x0->origin() == i0);
 	assert(x1->origin() == i1);
@@ -78,12 +78,12 @@ test_apply_transform(void)
 	fcttype ft({&at}, {&at});
 
 	jive::graph graph;
-	auto i0 = graph.add_import(ft, "");
-	auto i1 = graph.add_import(at, "");
+	auto i0 = graph.add_import({ft, ""});
+	auto i1 = graph.add_import({at, ""});
 
 	auto results = create_apply(i0, {i1});
 
-	auto x0 = graph.add_export(results[0], "");
+	auto x0 = graph.add_export(results[0], {results[0]->type(), ""});
 
 	jive::view(graph.root(), stdout);
 
@@ -105,10 +105,10 @@ test_containerof_transform(void)
 	using namespace jive;
 
 	jive::graph graph;
-	auto i0 = graph.add_import(bit32, "");
-	auto i1 = graph.add_import(bit32, "");
-	auto i2 = graph.add_import(bit32, "");
-	auto i3 = graph.add_import(bit32, "");
+	auto i0 = graph.add_import({bit32, ""});
+	auto i1 = graph.add_import({bit32, ""});
+	auto i2 = graph.add_import({bit32, ""});
+	auto i3 = graph.add_import({bit32, ""});
 
 	auto dcl = rcddeclaration::create({&bit8, &bit16, &bit32, &bit32});
 
@@ -127,10 +127,10 @@ test_containerof_transform(void)
 	auto offset2 = addr2bit_op::create(container2, 32, container2->type());
 	auto offset3 = addr2bit_op::create(container3, 32, container3->type());
 
-	auto ex0 = graph.add_export(offset0, "");
-	auto ex1 = graph.add_export(offset1, "");
-	auto ex2 = graph.add_export(offset2, "");
-	auto ex3 = graph.add_export(offset3, "");
+	auto ex0 = graph.add_export(offset0, {offset0->type(), ""});
+	auto ex1 = graph.add_export(offset1, {offset1->type(), ""});
+	auto ex2 = graph.add_export(offset2, {offset2->type(), ""});
+	auto ex3 = graph.add_export(offset3, {offset3->type(), ""});
 
 	view(graph, stdout);
 
@@ -182,7 +182,7 @@ test_memberof_transform(void)
 	using namespace jive;
 
 	jive::graph graph;
-	auto i0 = graph.add_import(bit32, "");
+	auto i0 = graph.add_import({bit32, ""});
 
 	auto dcl = rcddeclaration::create({&bit8, &bit16, &bit32, &bit32});
 
@@ -198,10 +198,10 @@ test_memberof_transform(void)
 	auto offset2 = addr2bit_op::create(member2, 32, member2->type());
 	auto offset3 = addr2bit_op::create(member3, 32, member3->type());
 
-	auto ex0 = graph.add_export(offset0, "");
-	auto ex1 = graph.add_export(offset1, "");
-	auto ex2 = graph.add_export(offset2, "");
-	auto ex3 = graph.add_export(offset3, "");
+	auto ex0 = graph.add_export(offset0, {offset0->type(), ""});
+	auto ex1 = graph.add_export(offset1, {offset1->type(), ""});
+	auto ex2 = graph.add_export(offset2, {offset2->type(), ""});
+	auto ex3 = graph.add_export(offset3, {offset3->type(), ""});
 
 	view(graph, stdout);
 

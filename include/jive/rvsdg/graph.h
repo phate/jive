@@ -146,17 +146,15 @@ public:
 	node_normal_form(const std::type_info & type) noexcept;
 
 	inline jive::argument *
-	add_import(const jive::type & type, const std::string & name)
+	add_import(const impport & port)
 	{
-		impport ip(type, name);
-		return root()->add_argument(nullptr, ip);
+		return root()->add_argument(nullptr, port);
 	}
 
 	inline jive::input *
-	add_export(jive::output * operand, const std::string & name)
+	add_export(jive::output * operand, const expport & port)
 	{
-		expport ep(operand->type(), name);
-		return root()->add_result(operand, nullptr, ep);
+		return root()->add_result(operand, nullptr, port);
 	}
 
 	inline void

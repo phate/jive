@@ -31,16 +31,16 @@ static int test_main(void)
 	jive::unntype unntype(unndcl);
 	jive::unntype eunntype(eunndcl);
 
-	auto i0 = graph.add_import(addrtype(bit32), "");
-	auto i1 = graph.add_import(memtype(), "");
-	auto i2 = graph.add_import(bit8, "");
-	auto i3 = graph.add_import(bit16, "");
-	auto i4 = graph.add_import(bit32, "");
-	auto i5 = graph.add_import(memtype(), "");
-	auto i6 = graph.add_import(addrtype(bit32), "");
-	auto i7 = graph.add_import(addrtype(rcdtype), "");
-	auto i8 = graph.add_import(addrtype(unntype), "");
-	auto i9 = graph.add_import(addrtype(eunntype), "");
+	auto i0 = graph.add_import({addrtype(bit32), ""});
+	auto i1 = graph.add_import({memtype(), ""});
+	auto i2 = graph.add_import({bit8, ""});
+	auto i3 = graph.add_import({bit16, ""});
+	auto i4 = graph.add_import({bit32, ""});
+	auto i5 = graph.add_import({memtype(), ""});
+	auto i6 = graph.add_import({addrtype(bit32), ""});
+	auto i7 = graph.add_import({addrtype(rcdtype), ""});
+	auto i8 = graph.add_import({addrtype(unntype), ""});
+	auto i9 = graph.add_import({addrtype(eunntype), ""});
 
 	auto states0 = addrstore_op::create(i0, i4, {i1});
 
@@ -56,11 +56,11 @@ static int test_main(void)
 	unify = jive_empty_unify_create(graph.root(), eunndcl);
 	auto states5 = addrstore_op::create(i9, unify, {i1});
 
-	graph.add_export(states0[0], "");
-	graph.add_export(states1[0], "");
-	graph.add_export(states2[0], "");
-	graph.add_export(states4[0], "");
-	graph.add_export(states5[0], "");
+	graph.add_export(states0[0], {states0[0]->type(), ""});
+	graph.add_export(states1[0], {states1[0]->type(), ""});
+	graph.add_export(states2[0], {states2[0]->type(), ""});
+	graph.add_export(states4[0], {states4[0]->type(), ""});
+	graph.add_export(states5[0], {states5[0]->type(), ""});
 
 	graph.normalize();
 	graph.prune();

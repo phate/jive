@@ -28,15 +28,15 @@ test_mux_mux_reduction()
 	mnf->set_mutable(false);
 	mnf->set_mux_mux_reducible(false);
 
-	auto x = graph.add_import(st, "x");
-	auto y = graph.add_import(st, "y");
-	auto z = graph.add_import(st, "z");
+	auto x = graph.add_import({st, "x"});
+	auto y = graph.add_import({st, "y"});
+	auto z = graph.add_import({st, "z"});
 
 	auto mux1 = jive::create_state_merge(st, {x, y});
 	auto mux2 = jive::create_state_split(st, z, 2);
 	auto mux3 = jive::create_state_merge(st, {mux1, mux2[0], mux2[1], z});
 
-	auto ex = graph.add_export(mux3, "m");
+	auto ex = graph.add_export(mux3, {mux3->type(), "m"});
 
 //	jive::view(graph.root(), stdout);
 
@@ -68,9 +68,9 @@ test_multiple_origin_reduction()
 	mnf->set_mutable(false);
 	mnf->set_multiple_origin_reducible(false);
 
-	auto x = graph.add_import(st, "x");
+	auto x = graph.add_import({st, "x"});
 	auto mux1 = jive::create_state_merge(st, {x, x});
-	auto ex = graph.add_export(mux1, "m");
+	auto ex = graph.add_export(mux1, {mux1->type(), "m"});
 
 	view(graph.root(), stdout);
 

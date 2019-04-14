@@ -18,9 +18,9 @@ test_main()
 	jive::graph graph;
 	test::valuetype t;
 
-	auto imp1 = graph.add_import(ctl2, "imp1");
-	auto imp2 = graph.add_import(t, "imp2");
-	auto imp3 = graph.add_import(t, "imp3");
+	auto imp1 = graph.add_import({ctl2, "imp1"});
+	auto imp2 = graph.add_import({t, "imp2"});
+	auto imp3 = graph.add_import({t, "imp3"});
 
 	auto theta = jive::theta_node::create(graph.root());
 
@@ -32,7 +32,7 @@ test_main()
 	lv3->result()->divert_to(lv3->argument());
 	theta->set_predicate(lv1->argument());
 
-	graph.add_export(theta->output(0), "exp");
+	graph.add_export(theta->output(0), {theta->output(0)->type(), "exp"});
 	auto theta2 = static_cast<jive::structural_node*>(theta)->copy(graph.root(), {imp1, imp2, imp3});
 	jive::view(graph.root(), stdout);
 

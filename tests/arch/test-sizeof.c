@@ -47,14 +47,14 @@ static int test_main(void)
 	assert(s1->node()->operation() == s2->node()->operation());
 	assert(s0->node()->operation() != s3->node()->operation());
 
-	auto x0 = graph.add_export(s0, "");
-	auto x1 = graph.add_export(s1, "");
-	auto x2 = graph.add_export(s2, "");
-	auto x3 = graph.add_export(s3, "");
-	auto x4 = graph.add_export(s4, "");
-	auto x5 = graph.add_export(s5, "");
-	auto x6 = graph.add_export(s6, "");
-	auto x7 = graph.add_export(s7, "");
+	auto x0 = graph.add_export(s0, {s0->type(), ""});
+	auto x1 = graph.add_export(s1, {s1->type(), ""});
+	auto x2 = graph.add_export(s2, {s2->type(), ""});
+	auto x3 = graph.add_export(s3, {s3->type(), ""});
+	auto x4 = graph.add_export(s4, {s4->type(), ""});
+	auto x5 = graph.add_export(s5, {s5->type(), ""});
+	auto x6 = graph.add_export(s6, {s6->type(), ""});
+	auto x7 = graph.add_export(s7, {s7->type(), ""});
 
 	jive::view(graph.root(), stdout);
 

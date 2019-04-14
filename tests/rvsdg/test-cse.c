@@ -19,13 +19,13 @@ test_main()
 	test::valuetype t;
 
 	jive::graph graph;
-	auto i = graph.add_import(t, "i");
+	auto i = graph.add_import({t, "i"});
 
 	auto o1 = test::simple_node_create(graph.root(), {}, {}, {t})->output(0);
 	auto o2 = test::simple_node_create(graph.root(), {t}, {i}, {t})->output(0);
 
-	auto e1 = graph.add_export(o1, "o1");
-	auto e2 = graph.add_export(o2, "o2");
+	auto e1 = graph.add_export(o1, {o1->type(), "o1"});
+	auto e2 = graph.add_export(o2, {o2->type(), "o2"});
 
 	auto nf = dynamic_cast<jive::simple_normal_form*>(graph.node_normal_form(
 		typeid(test::simple_op)));
@@ -34,8 +34,8 @@ test_main()
 	auto o3 = test::simple_node_normalized_create(graph.root(), {}, {}, {t})[0];
 	auto o4 = test::simple_node_normalized_create(graph.root(), {t}, {i}, {t})[0];
 
-	auto e3 = graph.add_export(o3, "o3");
-	auto e4 = graph.add_export(o4, "o4");
+	auto e3 = graph.add_export(o3, {o3->type(), "o3"});
+	auto e4 = graph.add_export(o4, {o4->type(), "o4"});
 
 	nf->set_mutable(true);
 	graph.normalize();

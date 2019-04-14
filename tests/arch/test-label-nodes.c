@@ -56,11 +56,11 @@ static int test_main(void)
 	assert(o2->node()->operation() != *attrs4);
 	assert(o2->node()->operation() != *attrs3);
 	
-	graph.add_export(o0, "");
-	graph.add_export(o1, "");
-	graph.add_export(o2, "");
-	graph.add_export(o3, "");
-	graph.add_export(o4, "");
+	graph.add_export(o0, {o0->type(), ""});
+	graph.add_export(o1, {o1->type(), ""});
+	graph.add_export(o2, {o2->type(), ""});
+	graph.add_export(o3, {o3->type(), ""});
+	graph.add_export(o4, {o4->type(), ""});
 
 	jive::view(graph.root(), stderr);
 

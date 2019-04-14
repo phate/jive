@@ -92,7 +92,7 @@ test_fib_iter(jive::graph * graph)
 	using namespace jive::eval;
 
 	auto fib_iter = setup_fib_iter(graph);
-	graph->add_export(fib_iter, "fib_iter");
+	graph->add_export(fib_iter, {fib_iter->type(), "fib_iter"});
 
 	std::unique_ptr<const literal> result;
 
@@ -186,7 +186,7 @@ test_fib_rec(jive::graph * graph)
 	using namespace jive::eval;
 
 	auto fib_rec = setup_fib_rec(graph);
-	graph->add_export(fib_rec, "fib_rec");
+	graph->add_export(fib_rec, {fib_rec->type(), "fib_rec"});
 
 	jive::view(graph->root(), stdout);
 
@@ -248,7 +248,7 @@ test_loadstore(jive::graph * graph)
 
 	auto f = lb.end_lambda({state})->output(0);
 
-	graph->add_export(f, "loadstore");
+	graph->add_export(f, {f->type(), "loadstore"});
 
 	jive::view(graph->root(), stdout);
 
@@ -269,7 +269,7 @@ test_external_function()
 	jive::graph graph;
 	graph.node_normal_form(typeid(jive::operation))->set_mutable(false);
 
-	auto i = graph.add_import(jive::bit64, "v");
+	auto i = graph.add_import({jive::bit64, "v"});
 
 	jive::lambda_builder lb;
 	auto arguments = lb.begin_lambda(graph.root(), {{&jive::bit64}, {&jive::bit64}});
@@ -277,7 +277,7 @@ test_external_function()
 	auto sum = jive::bitadd_op::create(64, arguments[0], v);
 	auto lambda = lb.end_lambda({sum});
 
-	graph.add_export(lambda->output(0), "test");
+	graph.add_export(lambda->output(0), {lambda->output(0)->type(), "test"});
 
 	jive::view(graph.root(), stdout);
 

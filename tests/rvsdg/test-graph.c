@@ -35,7 +35,7 @@ test_recursive_prune()
 	test::valuetype t;
 
 	jive::graph graph;
-	auto imp = graph.add_import(t, "i");
+	auto imp = graph.add_import({t, "i"});
 
 	auto n1 = test::simple_node_create(graph.root(), {t}, {imp}, {t});
 	auto n2 = test::simple_node_create(graph.root(), {t}, {imp}, {t});
@@ -50,8 +50,8 @@ test_recursive_prune()
 
 	auto n6 = test::structural_node_create(n3->subregion(0), 1);
 
-	graph.add_export(n2->output(0), "n2");
-	graph.add_export(o1, "n3");
+	graph.add_export(n2->output(0), {n2->output(0)->type(), "n2"});
+	graph.add_export(o1, {o1->type(), "n3"});
 
 	jive::view(graph.root(), stdout);
 	graph.prune();
@@ -99,8 +99,8 @@ test_prune_replace(void)
 	auto n2 = test::simple_node_create(graph.root(), {type}, {n1->output(0)}, {type});
 	auto n3 = test::simple_node_create(graph.root(), {type}, {n2->output(0)}, {type});
 
-	graph.add_export(n2->output(0), "n2");
-	graph.add_export(n3->output(0), "n3");
+	graph.add_export(n2->output(0), {n2->output(0)->type(), "n2"});
+	graph.add_export(n3->output(0), {n2->output(0)->type(), "n3"});
 
 	auto n4 = test::simple_node_create(graph.root(), {type}, {n1->output(0)}, {type});
 

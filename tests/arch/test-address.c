@@ -25,7 +25,7 @@ test_memberof()
 	jive::graph graph;
 	auto dcl = rcddeclaration::create({&bit32, &bit32});
 
-	auto i0 = graph.add_import(addrtype(rcdtype(dcl.get())), "");
+	auto i0 = graph.add_import({addrtype(rcdtype(dcl.get())), ""});
 
 	auto m1 = memberof_op::create(i0, dcl.get(), 0);
 	auto m2 = memberof_op::create(i0, dcl.get(), 0);
@@ -33,9 +33,9 @@ test_memberof()
 
 	auto c1 = containerof_op::create(m1, dcl.get(), 0);
 
-	auto ex0 = graph.add_export(c1, "");
-	auto ex1 = graph.add_export(m2, "");
-	auto ex2 = graph.add_export(m3, "");
+	auto ex0 = graph.add_export(c1, {c1->type(), ""});
+	auto ex1 = graph.add_export(m2, {m2->type(), ""});
+	auto ex2 = graph.add_export(m3, {m3->type(), ""});
 
 	view(graph, stdout);
 
@@ -66,8 +66,8 @@ test_containerof()
 	jive::graph graph;
 	auto dcl = rcddeclaration::create({&bit32, &bit32});
 
-	auto i0 = graph.add_import(addrtype(bit32), "");
-	auto i1 = graph.add_import(addrtype(bit32), "");
+	auto i0 = graph.add_import({addrtype(bit32), ""});
+	auto i1 = graph.add_import({addrtype(bit32), ""});
 
 	auto c1 = containerof_op::create(i0, dcl.get(), 0);
 	auto c2 = containerof_op::create(i0, dcl.get(), 0);
@@ -75,9 +75,9 @@ test_containerof()
 
 	auto m1 = memberof_op::create(c1, dcl.get(), 0);
 
-	auto ex0 = graph.add_export(m1, "");
-	auto ex1 = graph.add_export(c2, "");
-	auto ex2 = graph.add_export(c3, "");
+	auto ex0 = graph.add_export(m1, {m1->type(), ""});
+	auto ex1 = graph.add_export(c2, {c2->type(), ""});
+	auto ex2 = graph.add_export(c3, {c3->type(), ""});
 
 	view(graph, stdout);
 
@@ -107,12 +107,12 @@ test_arraysubscript()
 
 	jive::graph graph;
 
-	auto i0 = graph.add_import(addrtype(bit32), "");
-	auto i1 = graph.add_import(bit32, "");
+	auto i0 = graph.add_import({addrtype(bit32), ""});
+	auto i1 = graph.add_import({bit32, ""});
 
 	auto as1 = arraysubscript_op::create(i0, bit32, i1);
 
-	auto ex0 = graph.add_export(as1, "");
+	auto ex0 = graph.add_export(as1, {as1->type(), ""});
 
 	view(graph, stdout);
 
@@ -138,12 +138,12 @@ test_arrayindex()
 
 	jive::graph graph;
 
-	auto i0 = graph.add_import(addrtype(bit32), "");
-	auto i1 = graph.add_import(addrtype(bit32), "");
+	auto i0 = graph.add_import({addrtype(bit32), ""});
+	auto i1 = graph.add_import({addrtype(bit32), ""});
 
 	auto ai1 = arrayindex_op::create(i0, i1, bit32, bit32);
 
-	auto ex0 = graph.add_export(ai1, "");
+	auto ex0 = graph.add_export(ai1, {ai1->type(), ""});
 
 	view(graph, stdout);
 

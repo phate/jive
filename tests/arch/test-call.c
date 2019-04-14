@@ -25,16 +25,16 @@ static int test_main(void)
 	jive::addrtype at(bit16);
 
 	jive::graph graph;
-	auto i0 = graph.add_import(addrtype(fcttype({&bit16, &at}, {&bit16, &at, &at})), "");
-	auto i1 = graph.add_import(bit16, "");
-	auto i2 = graph.add_import(at, "");
+	auto i0 = graph.add_import({addrtype(fcttype({&bit16, &at}, {&bit16, &at, &at})), ""});
+	auto i1 = graph.add_import({bit16, ""});
+	auto i2 = graph.add_import({at, ""});
 
 	auto call = addrcall_op::create(i0, {i1, i2}, {&bit16, &at, &at}, nullptr);
 	JIVE_DEBUG_ASSERT(call.size() == 3);
 
-	graph.add_export(call[0], "");
-	graph.add_export(call[1], "");
-	graph.add_export(call[2], "");
+	graph.add_export(call[0], {call[0]->type(), ""});
+	graph.add_export(call[1], {call[1]->type(), ""});
+	graph.add_export(call[2], {call[2]->type(), ""});
 
 	jive::view(graph.root(), stdout);
 

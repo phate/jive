@@ -13,11 +13,11 @@ types_float_arithmetic_test_fltdifference(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.add_import(jive::flt::type(), "s0");
-	auto s1 = graph.add_import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import({jive::flt::type(), "s0"});
+	auto s1 = graph.add_import({jive::flt::type(), "s1"});
 	auto sub = jive_fltdifference(s0, s1);
 
-	graph.add_export(sub, "dummy");
+	graph.add_export(sub, {sub->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();
@@ -34,10 +34,10 @@ types_float_arithmetic_test_fltnegate(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.add_import(jive::flt::type(), "s0");
+	auto s0 = graph.add_import({jive::flt::type(), "s0"});
 	auto neg = jive_fltnegate(s0);
 
-	graph.add_export(neg, "dummy");
+	graph.add_export(neg, {neg->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();
@@ -53,11 +53,11 @@ static int types_float_arithmetic_test_fltproduct(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.add_import(jive::flt::type(), "s0");
-	auto s1 = graph.add_import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import({jive::flt::type(), "s0"});
+	auto s1 = graph.add_import({jive::flt::type(), "s1"});
 	auto mul = jive_fltproduct(s0, s1);
 
-	graph.add_export(mul, "dummy");
+	graph.add_export(mul, {mul->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();
@@ -73,11 +73,11 @@ static int types_float_arithmetic_test_fltquotient(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.add_import(jive::flt::type(), "s0");
-	auto s1 = graph.add_import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import({jive::flt::type(), "s0"});
+	auto s1 = graph.add_import({jive::flt::type(), "s1"});
 	auto div = jive_fltquotient(s0, s1);
 
-	graph.add_export(div, "dummy");
+	graph.add_export(div, {div->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();
@@ -93,11 +93,11 @@ static int types_float_arithmetic_test_fltsum(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.add_import(jive::flt::type(), "s0");
-	auto s1 = graph.add_import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import({jive::flt::type(), "s0"});
+	auto s1 = graph.add_import({jive::flt::type(), "s1"});
 	auto add = jive_fltsum(s0, s1);
 
-	graph.add_export(add, "dummy");
+	graph.add_export(add, {add->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();
@@ -113,11 +113,11 @@ static int types_float_comparison_test_fltequal(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.add_import(jive::flt::type(), "s0");
-	auto s1 = graph.add_import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import({jive::flt::type(), "s0"});
+	auto s1 = graph.add_import({jive::flt::type(), "s1"});
 	auto equal = jive_fltequal(s0, s1);
 
-	graph.add_export(equal, "dummy");
+	graph.add_export(equal, {equal->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();
@@ -133,11 +133,11 @@ static int types_float_comparison_test_fltgreater(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.add_import(jive::flt::type(), "s0");
-	auto s1 = graph.add_import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import({jive::flt::type(), "s0"});
+	auto s1 = graph.add_import({jive::flt::type(), "s1"});
 	auto greater = jive_fltgreater(s0, s1);
 
-	graph.add_export(greater, "dummy");
+	graph.add_export(greater, {greater->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();
@@ -153,11 +153,11 @@ static int types_float_comparison_test_fltgreatereq(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.add_import(jive::flt::type(), "s0");
-	auto s1 = graph.add_import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import({jive::flt::type(), "s0"});
+	auto s1 = graph.add_import({jive::flt::type(), "s1"});
 	auto geq = jive_fltgreatereq(s0, s1);
 
-	graph.add_export(geq, "dummy");
+	graph.add_export(geq, {geq->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();
@@ -173,11 +173,11 @@ static int types_float_comparison_test_fltless(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.add_import(jive::flt::type(), "s0");
-	auto s1 = graph.add_import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import({jive::flt::type(), "s0"});
+	auto s1 = graph.add_import({jive::flt::type(), "s1"});
 	auto less = jive_fltless(s0, s1);
 
-	graph.add_export(less, "dummy");
+	graph.add_export(less, {less->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();
@@ -193,11 +193,11 @@ static int types_float_comparison_test_fltlesseq(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.add_import(jive::flt::type(), "s0");
-	auto s1 = graph.add_import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import({jive::flt::type(), "s0"});
+	auto s1 = graph.add_import({jive::flt::type(), "s1"});
 	auto lesseq = jive_fltlesseq(s0, s1);
 
-	graph.add_export(lesseq, "dummy");
+	graph.add_export(lesseq, {lesseq->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();
@@ -214,11 +214,11 @@ types_float_comparison_test_fltnotequal(void)
 {
 	jive::graph graph;
 
-	auto s0 = graph.add_import(jive::flt::type(), "s0");
-	auto s1 = graph.add_import(jive::flt::type(), "s1");
+	auto s0 = graph.add_import({jive::flt::type(), "s0"});
+	auto s1 = graph.add_import({jive::flt::type(), "s1"});
 	auto neq = jive_fltnotequal(s0, s1);
 
-	graph.add_export(neq, "dummy");
+	graph.add_export(neq, {neq->type(), "dummy"});
 
 	graph.normalize();
 	graph.prune();

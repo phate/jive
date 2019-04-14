@@ -21,8 +21,8 @@ setup_bitbinary(
 	jive::graph & graph,
 	const jive::register_class & regcls)
 {
-	auto i0 = graph.add_import(regcls.type(), "");
-	auto i1 = graph.add_import(regcls.type(), "");
+	auto i0 = graph.add_import({regcls.type(), ""});
+	auto i1 = graph.add_import({regcls.type(), ""});
 
 	OPERATOR op(32);
 	auto node = jive::simple_node::create(graph.root(), op, {i0, i1});
@@ -30,7 +30,7 @@ setup_bitbinary(
 	node->input(1)->replace(&regcls);
 	node->output(0)->replace(&regcls);
 
-	graph.add_export(node->output(0), "");
+	graph.add_export(node->output(0), {node->output(0)->type(), ""});
 }
 
 template<class OPERATOR> static void
@@ -38,14 +38,14 @@ setup_bitunary(
 	jive::graph & graph,
 	const jive::register_class & regcls)
 {
-	auto i = graph.add_import(regcls.type(), "");
+	auto i = graph.add_import({regcls.type(), ""});
 
 	OPERATOR op(32);
 	auto node = jive::simple_node::create(graph.root(), op, {i});
 	node->input(0)->replace(&regcls);
 	node->output(0)->replace(&regcls);
 
-	graph.add_export(node->output(0), "");
+	graph.add_export(node->output(0), {node->output(0)->type(), ""});
 }
 
 template<class OPERATOR> static void
@@ -54,8 +54,8 @@ setup_bitcompare(
 	const jive::register_class & iregcls,
 	const jive::register_class & oregcls)
 {
-	auto i0 = graph.add_import(iregcls.type(), "");
-	auto i1 = graph.add_import(iregcls.type(), "");
+	auto i0 = graph.add_import({iregcls.type(), ""});
+	auto i1 = graph.add_import({iregcls.type(), ""});
 
 	OPERATOR op(32);
 	auto cmp = jive::simple_node::create(graph.root(), op, {i0, i1});
@@ -69,7 +69,7 @@ setup_bitcompare(
 	          to fix this.
 	*/
 
-	graph.add_export(result, "");
+	graph.add_export(result, {result->type(), ""});
 }
 
 static void
@@ -158,7 +158,7 @@ test_regvalue()
 
 	auto rv = regvalue_op::create(graph.root(), uint_constant_op(32, 4), &i386::gpr_regcls);
 
-	auto x0 = graph.add_export(rv, "");
+	auto x0 = graph.add_export(rv, {rv->type(), ""});
 
 	i386::match_instructions(&graph);
 
@@ -175,14 +175,14 @@ test_load()
 	using namespace jive;
 
 	jive::graph graph;
-	auto i0 = graph.add_import(bit32, "");
-	auto i1 = graph.add_import(memtype::instance(), "");
+	auto i0 = graph.add_import({bit32, ""});
+	auto i1 = graph.add_import({memtype::instance(), ""});
 
 	auto l = bitload_op::create(i0, 32, bit32, {i1});
 	l->node()->input(0)->replace(&i386::gpr_regcls);
 	l->node()->output(0)->replace(&i386::gpr_regcls);
 
-	auto x0 = graph.add_export(l, "");
+	auto x0 = graph.add_export(l, {l->type(), ""});
 
 	i386::match_instructions(&graph);
 
@@ -199,15 +199,15 @@ test_store()
 	using namespace jive;
 
 	jive::graph graph;
-	auto i0 = graph.add_import(bit32, "");
-	auto i1 = graph.add_import(bit32, "");
-	auto i2 = graph.add_import(memtype::instance(), "");
+	auto i0 = graph.add_import({bit32, ""});
+	auto i1 = graph.add_import({bit32, ""});
+	auto i2 = graph.add_import({memtype::instance(), ""});
 
 	auto s = bitstore_op::create(i0, i1, 32, bit32, {i2})[0];
 	s->node()->input(0)->replace(&i386::gpr_regcls);
 	s->node()->input(1)->replace(&i386::gpr_regcls);
 
-	auto x0 = graph.add_export(s, "");
+	auto x0 = graph.add_export(s, {s->type(), ""});
 
 	i386::match_instructions(&graph);
 

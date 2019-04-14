@@ -22,10 +22,10 @@ static int test_main()
 	using namespace jive;
 
 	jive::graph graph;
-	auto i0 = graph.add_import(addrtype(bit32), "");
-	auto i1 = graph.add_import(addrtype(bit32), "");
-	auto i2 = graph.add_import(memtype(), "");
-	auto i3 = graph.add_import(bit32, "");
+	auto i0 = graph.add_import({addrtype(bit32), ""});
+	auto i1 = graph.add_import({addrtype(bit32), ""});
+	auto i2 = graph.add_import({memtype(), ""});
+	auto i3 = graph.add_import({bit32, ""});
 
 	auto load0 = addrload_op::create(i0, {i2});
 
@@ -33,8 +33,8 @@ static int test_main()
 	auto load1 = addrload_op::create(i1, {states[0]});
 	assert(load1 == i3);
 
-	graph.add_export(load0, "");
-	auto ex1 = graph.add_export(load1, "");
+	graph.add_export(load0, {load0->type(), ""});
+	auto ex1 = graph.add_export(load1, {load1->type(), ""});
 
 	graph.normalize();
 	graph.prune();
