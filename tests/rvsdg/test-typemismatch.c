@@ -28,7 +28,7 @@ static int test_main(void)
 	bool error_handler_called = false;
 	try {
 		test::simple_node_create(graph.root(), {value_type}, {n1->output(0)}, {});
-	} catch (jive::type_error e) {
+	} catch (jive::type_error & e) {
 		error_handler_called = true;
 	}
 	

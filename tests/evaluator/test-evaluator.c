@@ -286,7 +286,7 @@ test_external_function()
 		uint32_t g = 42;
 		bitliteral arg(jive::bitvalue_repr(64, (uint64_t)&g));
 		eval(&graph, "test", {&arg});
-	} catch (jive::compiler_error e) {
+	} catch (jive::compiler_error & e) {
 		exception_caught = true;
 	}
 
