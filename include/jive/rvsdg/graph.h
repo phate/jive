@@ -60,7 +60,7 @@ public:
 	operator==(const port&) const noexcept override;
 
 	virtual std::unique_ptr<port>
-	copy() const;
+	copy() const override;
 
 private:
 	std::string name_;
@@ -106,7 +106,7 @@ public:
 	operator==(const port&) const noexcept override;
 
 	virtual std::unique_ptr<port>
-	copy() const;
+	copy() const override;
 
 private:
 	std::string name_;
