@@ -10,6 +10,7 @@
 #include <assert.h>
 
 #include <stdexcept>
+#include <string>
 
 #define JIVE_ASSERT(x) assert(x)
 
