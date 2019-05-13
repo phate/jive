@@ -1,0 +1,117 @@
+# RVSDG core
+LIBJIVE_SRC = \
+	src/common.c \
+	src/rvsdg/binary.c \
+	src/rvsdg/control.c \
+	src/rvsdg/equivalence.c \
+	src/rvsdg/gamma.c \
+	src/rvsdg/graph.c \
+	src/rvsdg/label.c \
+	src/rvsdg/negotiator.c \
+	src/rvsdg/node-normal-form.c \
+	src/rvsdg/node.c \
+	src/rvsdg/notifiers.c \
+	src/rvsdg/nullary.c \
+	src/rvsdg/operation.c \
+	src/rvsdg/phi.c \
+	src/rvsdg/region.c \
+	src/rvsdg/resource.c \
+	src/rvsdg/simple-normal-form.c \
+	src/rvsdg/simple-node.c \
+	src/rvsdg/statemux.c \
+	src/rvsdg/splitnode.c \
+	src/rvsdg/structural-normal-form.c \
+	src/rvsdg/structural-node.c \
+	src/rvsdg/theta.c \
+	src/rvsdg/tracker.c \
+	src/rvsdg/traverser.c \
+	src/rvsdg/type.c \
+	src/rvsdg/unary.c \
+
+#evaluation
+LIBJIVE_SRC += \
+	src/evaluator/eval.c \
+	src/evaluator/literal.c \
+
+# visualization
+LIBJIVE_SRC += \
+	src/util/callbacks.c \
+	src/view.c \
+
+# bitstrings
+LIBJIVE_SRC += \
+	src/types/bitstring/arithmetic.c \
+	src/types/bitstring/bitoperation-classes.c \
+	src/types/bitstring/comparison.c \
+	src/types/bitstring/concat.c \
+	src/types/bitstring/constant.c \
+	src/types/bitstring/slice.c \
+	src/types/bitstring/type.c \
+	src/types/bitstring/value-representation.c \
+
+# floats
+LIBJIVE_SRC += \
+	src/types/float/arithmetic.c \
+	src/types/float/comparison.c \
+	src/types/float/fltconstant.c \
+	src/types/float/fltoperation-classes.c \
+	src/types/float/flttype.c \
+
+# records
+LIBJIVE_SRC += \
+	src/types/record.c \
+
+# unions
+LIBJIVE_SRC += \
+	src/types/union.c \
+
+# functions
+LIBJIVE_SRC += \
+	src/types/function.c \
+
+# arch definitions
+LIBJIVE_SRC += \
+	src/arch/address-transform.c \
+	src/arch/address.c \
+	src/arch/addresstype.c \
+	src/arch/call.c \
+	src/arch/compilate.c \
+	src/arch/dataobject.c \
+	src/arch/immediate.c \
+	src/arch/instruction.c \
+	src/arch/instructionset.c \
+	src/arch/label-mapper.c \
+	src/arch/load.c \
+	src/arch/memlayout-simple.c \
+	src/arch/memlayout.c \
+	src/arch/registers.c \
+	src/arch/regselector.c \
+	src/arch/regvalue.c \
+	src/arch/sizeof.c \
+	src/arch/stackslot.c \
+	src/arch/store.c \
+	src/arch/subroutine.c \
+	src/arch/subroutine/nodes.c \
+
+include $(JIVE_ROOT)/src/backend/i386/Makefile.sub
+
+SOURCES += $(LIBJIVE_SRC)
+
+HEADERS = $(shell find 	$(JIVE_ROOT)/include -name "*.h")
+
+
+.PHONY: jive
+jive: $(JIVE_ROOT)/libjive.a
+
+$(JIVE_ROOT)/libjive.a: $(patsubst %.c, $(JIVE_ROOT)/%.la, $(LIBJIVE_SRC))
+
+$(JIVE_ROOT)/libjive.so: $(patsubst %.c, $(JIVE_ROOT)/%.lo, $(LIBJIVE_SRC))
+
+.PHONY: jive-clean
+jive-clean: jive-depclean
+	@find $(JIVE_ROOT)/ -name "*.o" -o -name "*.lo" -o -name "*.la" -o -name "*.so" -o -name "*.a" | xargs rm -rf
+	@rm -rf $(JIVE_ROOT)/a.out
+
+.PHONY: jive-depclean
+jive-depclean:
+	@rm -rf $(JIVE_ROOT)/.dep
