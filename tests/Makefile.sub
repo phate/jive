@@ -20,8 +20,14 @@ $(patsubst %, .dep/tests/%.lo.d, $(TESTS)): CPPFLAGS+=-Itests
 
 TESTLOG=true
 
+# Font colors for terminal
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+.PHONY: check
 check: tests/test-runner
-	rm -rf check.log passed.log failed.log
+	@rm -rf check.log passed.log failed.log
 	@for TEST in `tests/test-runner`; do \
 		$(TESTLOG) -n "$$TEST: " ; \
 		if tests/test-runner $$TEST >>check.log 2>&1 ; then \
@@ -32,16 +38,19 @@ check: tests/test-runner
 	done
 	@if [ -e failed.log ] ; then \
 		if [ -z ${EXPECT_FAIL_TESTS+x} ] ; then \
-			echo "Failed:" ; \
+			echo $(Red)Failed:$(NC) ; \
 			cat failed.log ; \
 		else \
 			grep -v $(EXPECT_FAIL_TESTS) < failed.log | sed -e "s/^/Failed: /" ; \
 		fi \
+        else \
+		echo $(GREEN)All tests passed$(NC) ; \
 	fi
 	@if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
 
+.PHONY: valgrind-check
 valgrind-check: tests/test-runner
-	rm -rf check.log passed.log failed.log
+	@rm -rf check.log passed.log failed.log
 	@for TEST in `tests/test-runner`; do \
 		$(TESTLOG) -n "$$TEST: " ; \
 		if valgrind --leak-check=full --error-exitcode=1 tests/test-runner $$TEST >>check.log 2>&1 ; then \
@@ -59,3 +68,7 @@ valgrind-check: tests/test-runner
 		fi \
 	fi
 	@if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
+
+.PHONY: jive-test-clean
+jive-test-clean:
+	@rm -rf $(TESTPROGS)
