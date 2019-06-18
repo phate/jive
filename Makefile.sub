@@ -111,8 +111,12 @@ HEADERS = $(shell find 	$(JIVE_ROOT)/include -name "*.h")
 .PHONY: jive
 jive: $(JIVE_ROOT)/libjive.a
 
+$(JIVE_ROOT)/libjive.a: CFLAGS+=-Wall -Wpedantic --std=c++14
+$(JIVE_ROOT)/libjive.a: CPPFLAGS+=-I$(JIVE_ROOT)/include
 $(JIVE_ROOT)/libjive.a: $(patsubst %.c, $(JIVE_ROOT)/%.la, $(LIBJIVE_SRC))
 
+$(JIVE_ROOT)/libjive.so: CFLAGS+=-Wall -Wpedantic --std=c++14
+$(JIVE_ROOT)/libjive.so: CPPFLAGS+=-I$(JIVE_ROOT)/include
 $(JIVE_ROOT)/libjive.so: $(patsubst %.c, $(JIVE_ROOT)/%.lo, $(LIBJIVE_SRC))
 
 .PHONY: jive-clean

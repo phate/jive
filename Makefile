@@ -17,9 +17,6 @@ help:
 
 JIVE_ROOT ?= .
 
-CFLAGS+=-Wall -Wpedantic --std=c++14
-CPPFLAGS+=-I$(JIVE_ROOT)/include
-
 .PHONY: all
 all: jive check
 
