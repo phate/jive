@@ -1,3 +1,11 @@
+define HELP_TEXT_JIVE
+echo ""
+echo "Jive Make Targets"
+echo "--------------------------------------------------------------------------------"
+echo "jive                   Compiles libjive.a"
+echo "jive-clean             Cleans all build files and libraries"
+endef
+
 # RVSDG core
 LIBJIVE_SRC = \
 	src/common.c \
@@ -110,6 +118,7 @@ $(JIVE_ROOT)/libjive.so: $(patsubst %.c, $(JIVE_ROOT)/%.lo, $(LIBJIVE_SRC))
 .PHONY: jive-clean
 jive-clean: jive-depclean
 	@find $(JIVE_ROOT)/ -name "*.o" -o -name "*.lo" -o -name "*.la" -o -name "*.so" -o -name "*.a" | xargs rm -rf
+	@rm -rf $(JIVE_ROOT)/*.log
 	@rm -rf $(JIVE_ROOT)/a.out
 
 .PHONY: jive-depclean
