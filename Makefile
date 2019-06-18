@@ -11,9 +11,7 @@ endef
 help:
 	@$(HELP_TEXT)
 	@$(HELP_TEXT_JIVE)
-	@echo "all                    Compiles jive and checks the result"
-	@echo "clean                  Calls clean for jive and tests"
-
+	@echo "all                    Compiles the Jive library and runs unit tests"
 
 JIVE_ROOT ?= .
 
@@ -28,7 +26,7 @@ doc:
 	doxygen doxygen.conf
 
 .PHONY: clean
-clean: jive-clean jive-test-clean
+clean: jive-clean
 
 %.lo: %.c
 	$(CXX) -c -DPIC -fPIC $(CFLAGS) $(CPPFLAGS) -o $@ $<
