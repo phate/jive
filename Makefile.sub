@@ -1,3 +1,11 @@
+define HELP_TEXT_JIVE
+echo ""
+echo "Jive Make Targets"
+echo "--------------------------------------------------------------------------------"
+echo "jive                   Compiles the Jive library"
+echo "jive-clean             Cleans all build files and libraries"
+endef
+
 # RVSDG core
 LIBJIVE_SRC = \
 	src/common.c \
@@ -103,14 +111,20 @@ HEADERS = $(shell find 	$(JIVE_ROOT)/include -name "*.h")
 .PHONY: jive
 jive: $(JIVE_ROOT)/libjive.a
 
+$(JIVE_ROOT)/libjive.a: CFLAGS+=-Wall -Wpedantic --std=c++14
+$(JIVE_ROOT)/libjive.a: CPPFLAGS+=-I$(JIVE_ROOT)/include
 $(JIVE_ROOT)/libjive.a: $(patsubst %.c, $(JIVE_ROOT)/%.la, $(LIBJIVE_SRC))
 
+$(JIVE_ROOT)/libjive.so: CFLAGS+=-Wall -Wpedantic --std=c++14
+$(JIVE_ROOT)/libjive.so: CPPFLAGS+=-I$(JIVE_ROOT)/include
 $(JIVE_ROOT)/libjive.so: $(patsubst %.c, $(JIVE_ROOT)/%.lo, $(LIBJIVE_SRC))
 
 .PHONY: jive-clean
 jive-clean: jive-depclean
 	@find $(JIVE_ROOT)/ -name "*.o" -o -name "*.lo" -o -name "*.la" -o -name "*.so" -o -name "*.a" | xargs rm -rf
+	@rm -rf $(JIVE_ROOT)/*.log
 	@rm -rf $(JIVE_ROOT)/a.out
+	@rm -rf $(JIVE_ROOT)/tests/test-runner
 
 .PHONY: jive-depclean
 jive-depclean:

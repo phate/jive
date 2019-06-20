@@ -2,13 +2,21 @@
 # Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
 # See COPYING for terms of redistribution.
 
+define HELP_TEXT
+clear
+echo "Makefile for the Jive RVSDG API"
+echo "Version 1.0 - 2019-06-18"
+endef
+.PHONY: help
+help:
+	@$(HELP_TEXT)
+	@$(HELP_TEXT_JIVE)
+	@echo "all                    Compiles the Jive library and runs unit tests"
+
 JIVE_ROOT ?= .
 
-CFLAGS+=-Wall -Wpedantic --std=c++14
-CPPFLAGS+=-I$(JIVE_ROOT)/include
-
 .PHONY: all
-all: check
+all: jive check
 
 include Makefile.sub
 include tests/Makefile.sub
@@ -18,7 +26,7 @@ doc:
 	doxygen doxygen.conf
 
 .PHONY: clean
-clean: jive-clean jive-test-clean
+clean: jive-clean
 
 %.lo: %.c
 	$(CXX) -c -DPIC -fPIC $(CFLAGS) $(CPPFLAGS) -o $@ $<

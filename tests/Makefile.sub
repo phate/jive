@@ -5,8 +5,6 @@ include tests/types/Makefile.sub
 include tests/util/Makefile.sub
 include tests/rvsdg/Makefile.sub
 
-TESTPROGS=test-runner
-
 TEST_SOURCES = tests/testtypes.c tests/testarch.c tests/testnodes.c tests/test-runner.c tests/test-registry.c $(patsubst %, tests/%.c, $(TESTS))
 SOURCES += $(TEST_SOURCES)
 
@@ -26,6 +24,8 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 .PHONY: check
+check: CFLAGS+=-Wall -Wpedantic --std=c++14
+check: CPPFLAGS+=-I$(JIVE_ROOT)/include
 check: tests/test-runner
 	@rm -rf check.log passed.log failed.log
 	@for TEST in `tests/test-runner`; do \
@@ -68,7 +68,3 @@ valgrind-check: tests/test-runner
 		fi \
 	fi
 	@if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
-
-.PHONY: jive-test-clean
-jive-test-clean:
-	@rm -rf $(TESTPROGS)
