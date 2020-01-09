@@ -194,7 +194,7 @@ public:
 	bool
 	is_commutative() const noexcept;
 
-	inline const size_t
+	inline size_t
 	nimmediates() const noexcept
 	{
 		return nimmediates_;
