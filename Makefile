@@ -11,7 +11,6 @@ endef
 help:
 	@$(HELP_TEXT)
 	@$(HELP_TEXT_JIVE)
-	@echo "all                    Compiles the Jive library and runs unit tests"
 
 JIVE_ROOT ?= .
 
