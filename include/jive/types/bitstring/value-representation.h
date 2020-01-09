@@ -55,6 +55,14 @@ public:
 		}
 	}
 
+	bitvalue_repr(const bitvalue_repr & other)
+	: data_(other.data_)
+	{}
+
+	bitvalue_repr(bitvalue_repr && other)
+	: data_(std::move(other.data_))
+	{}
+
 	inline static bitvalue_repr
 	repeat(size_t nbits, char bit)
 	{
@@ -195,14 +203,22 @@ private:
 
 public:
 	/*
-		FIXME
-		1. add move constructor and operator
-		2. add <, <=, >, >= operator for uint64_t and int64_t
+		FIXME: add <, <=, >, >= operator for uint64_t and int64_t
 	*/
 	inline bitvalue_repr &
 	operator=(const bitvalue_repr & other)
 	{
 		data_ = other.data_;
+		return *this;
+	}
+
+	bitvalue_repr &
+	operator=(bitvalue_repr && other)
+	{
+		if (this == &other)
+			return *this;
+
+		data_ = std::move(other.data_);
 		return *this;
 	}
 
