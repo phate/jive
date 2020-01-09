@@ -55,6 +55,22 @@ public:
 	, modifier_(modifier)
 	{}
 
+	constexpr
+	immediate(const immediate & other)
+	: offset_(other.offset_)
+	, add_label_(other.add_label_)
+	, sub_label_(other.sub_label_)
+	, modifier_(other.modifier_)
+	{}
+
+	constexpr
+	immediate(immediate && other)
+	: offset_(std::move(other.offset_))
+	, add_label_(std::move(other.add_label_))
+	, sub_label_(std::move(other.sub_label_))
+	, modifier_(std::move(other.modifier_))
+	{}
+
 	inline immediate &
 	operator=(const immediate & other) noexcept
 	{
@@ -62,6 +78,19 @@ public:
 		add_label_ = other.add_label_;
 		sub_label_ = other.sub_label_;
 		modifier_ = other.modifier_;
+		return *this;
+	}
+
+	immediate &
+	operator=(immediate && other) noexcept
+	{
+		if (this == &other)
+			return *this;
+
+		offset_ = std::move(offset_);
+		add_label_ = std::move(other.add_label_);
+		sub_label_ = std::move(other.sub_label_);
+		modifier_ = std::move(other.modifier_);
 		return *this;
 	}
 
