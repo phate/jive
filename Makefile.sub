@@ -117,11 +117,11 @@ jive-debug: $(JIVE_ROOT)/libjive.a
 jive-release: CFLAGS += -O3
 jive-release: $(JIVE_ROOT)/libjive.a
 
-$(JIVE_ROOT)/libjive.a: CFLAGS+=-Wall -Wpedantic --std=c++14
+$(JIVE_ROOT)/libjive.a: CFLAGS+=-Wall -Wpedantic -Wextra -Wno-unused-parameter --std=c++14
 $(JIVE_ROOT)/libjive.a: CPPFLAGS+=-I$(JIVE_ROOT)/include
 $(JIVE_ROOT)/libjive.a: $(patsubst %.c, $(JIVE_ROOT)/%.la, $(LIBJIVE_SRC))
 
-$(JIVE_ROOT)/libjive.so: CFLAGS+=-Wall -Wpedantic --std=c++14
+$(JIVE_ROOT)/libjive.so: CFLAGS+=-Wall -Wpedantic -Wextra -Wno-unused-parameter --std=c++14
 $(JIVE_ROOT)/libjive.so: CPPFLAGS+=-I$(JIVE_ROOT)/include
 $(JIVE_ROOT)/libjive.so: $(patsubst %.c, $(JIVE_ROOT)/%.lo, $(LIBJIVE_SRC))
 
