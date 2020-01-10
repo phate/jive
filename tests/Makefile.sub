@@ -24,7 +24,7 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 .PHONY: check
-check: CFLAGS+=-Wall -Wpedantic -Wextra -Wno-unused-parameter --std=c++14
+check: CFLAGS+=-g -DJIVE_DEBUG -Wall -Wpedantic -Wextra -Wno-unused-parameter --std=c++14
 check: CPPFLAGS+=-I$(JIVE_ROOT)/include
 check: tests/test-runner
 	@rm -rf check.log passed.log failed.log
