@@ -3,6 +3,7 @@ echo ""
 echo "Jive Make Targets"
 echo "--------------------------------------------------------------------------------"
 echo "jive-debug             Compiles jive library in debug mode"
+echo "jive-debug-check       Compiles jive library in debug mode and runs tests"
 echo "jive-release           Compiles jive library in release mode"
 echo "jive-clean             Cleans all build files and libraries"
 endef
@@ -112,6 +113,9 @@ HEADERS = $(shell find 	$(JIVE_ROOT)/include -name "*.h")
 .PHONY: jive-debug
 jive-debug: CFLAGS += -g -DJIVE_DEBUG
 jive-debug: $(JIVE_ROOT)/libjive.a
+
+.PHONY: jive-debug-check
+jive-debug-check: jive-debug check
 
 .PHONY: jive-release
 jive-release: CFLAGS += -O3
