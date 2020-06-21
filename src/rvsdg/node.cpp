@@ -27,11 +27,10 @@ input::~input() noexcept
 }
 
 input::input(
-	size_t index,
 	jive::output * origin,
 	jive::region * region,
 	const jive::port & port)
-: index_(index)
+: index_(0)
 , origin_(origin)
 , region_(region)
 , port_(port.copy())
@@ -168,6 +167,7 @@ node::add_input(std::unique_ptr<jive::input> input)
 		region()->top_nodes.erase(this);
 	}
 
+	input->index_ = ninputs();
 	inputs_.push_back(std::move(input));
 
 	auto producer = inputs_.back().get()->origin()->node();

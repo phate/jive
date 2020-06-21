@@ -56,12 +56,11 @@ result::~result() noexcept
 
 result::result(
 	jive::region * region,
-	size_t index,
 	jive::output * origin,
 	jive::structural_output * output,
 	const jive::port & port)
-	: input(index, origin, region, port)
-	, output_(output)
+: input(origin, region, port)
+, output_(output)
 {
 	if (output)
 		output->results.push_back(this);
@@ -133,7 +132,8 @@ region::remove_argument(size_t index)
 jive::result *
 region::add_result(jive::output * origin, structural_output * output, const jive::port & port)
 {
-	jive::result * result = new jive::result(this, nresults(), origin, output, port);
+	auto result = new jive::result(this, origin, output, port);
+	result->index_ = nresults();
 	results_.push_back(result);
 
 	if (origin->region() != this)

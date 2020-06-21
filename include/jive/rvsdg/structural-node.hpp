@@ -90,7 +90,6 @@ public:
 protected:
 	structural_input(
 		jive::structural_node * node,
-		size_t index,
 		jive::output * origin,
 		const jive::port & port);
 

@@ -84,7 +84,6 @@ public:
 
 	result(
 		jive::region * region,
-		size_t index,
 		jive::output * origin,
 		jive::structural_output * output,
 		const jive::port & port);

@@ -39,7 +39,6 @@ public:
 	~input() noexcept;
 
 	input(
-		size_t index,
 		jive::output * origin,
 		jive::region * region,
 		const jive::port & port);

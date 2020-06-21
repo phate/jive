@@ -301,10 +301,9 @@ private:
 	inline
 	gamma_input(
 		gamma_node * node,
-		size_t index,
 		jive::output * origin,
 		const jive::port & port)
-	: structural_input(node, index, origin, port)
+	: structural_input(node, origin, port)
 	{}
 
 public:
@@ -431,7 +430,7 @@ gamma_node::gamma_node(jive::output * predicate, size_t nalternatives)
 : structural_node(jive::gamma_op(nalternatives), predicate->region(), nalternatives)
 {
 	node::add_input(std::unique_ptr<jive::input>(
-		new gamma_input(this, 0, predicate, ctltype(nalternatives))));
+		new gamma_input(this, predicate, ctltype(nalternatives))));
 }
 inline jive::gamma_input *
 gamma_node::predicate() const noexcept
@@ -455,7 +454,7 @@ inline jive::gamma_input *
 gamma_node::add_entryvar(jive::output * origin)
 {
 	node::add_input(std::unique_ptr<jive::input>(
-		new gamma_input(this, ninputs(), origin, origin->type())));
+		new gamma_input(this, origin, origin->type())));
 
 	for (size_t n = 0; n < nsubregions(); n++)
 		subregion(n)->add_argument(input(ninputs()-1), origin->type());

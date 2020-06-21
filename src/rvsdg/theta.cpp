@@ -80,8 +80,7 @@ theta_node::loopvar_iterator::operator++() noexcept
 jive::theta_output *
 theta_node::add_loopvar(jive::output * origin)
 {
-	node::add_input(std::unique_ptr<jive::input>(
-		new theta_input(this, ninputs(), origin, origin->type())));
+	node::add_input(std::unique_ptr<jive::input>(new theta_input(this, origin, origin->type())));
 	node::add_output(std::unique_ptr<jive::output>(
 		new theta_output(this, noutputs(), origin->type())));
 

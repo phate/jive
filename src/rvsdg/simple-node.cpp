@@ -23,11 +23,10 @@ simple_input::~simple_input() noexcept
 
 simple_input::simple_input(
 	jive::simple_node * node,
-	size_t index,
 	jive::output * origin,
 	const jive::port & port)
-	: input(index, origin, node->region(), port)
-	, node_(node)
+: input(origin, node->region(), port)
+, node_(node)
 {}
 
 jive::simple_node *
@@ -76,7 +75,7 @@ simple_node::simple_node(
 
 	for (size_t n = 0; n < operation().narguments(); n++) {
 		node::add_input(std::unique_ptr<jive::input>(
-			new simple_input(this, n, operands[n], operation().argument(n))));
+			new simple_input(this, operands[n], operation().argument(n))));
 	}
 
 	for (size_t n = 0; n < operation().nresults(); n++)
