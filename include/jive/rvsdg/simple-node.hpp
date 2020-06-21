@@ -99,7 +99,6 @@ public:
 
 	simple_output(
 		jive::simple_node * node,
-		size_t index,
 		const jive::port & port);
 
 public:

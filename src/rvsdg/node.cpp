@@ -80,10 +80,9 @@ output::~output() noexcept
 }
 
 output::output(
-	size_t index,
 	jive::region * region,
 	const jive::port & port)
-: index_(index)
+: index_(0)
 , region_(region)
 , port_(port.copy())
 {}

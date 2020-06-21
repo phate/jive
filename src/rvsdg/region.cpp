@@ -28,11 +28,10 @@ argument::~argument() noexcept
 
 argument::argument(
 	jive::region * region,
-	size_t index,
 	jive::structural_input * input,
 	const jive::port & port)
-	: output(index, region, port)
-	, input_(input)
+: output(region, port)
+, input_(input)
 {
 	if (input)
 		input->arguments.push_back(this);
@@ -107,7 +106,8 @@ region::region(jive::structural_node * node)
 jive::argument *
 region::add_argument(jive::structural_input * input, const jive::port & port)
 {
-	jive::argument * argument = new jive::argument(this, narguments(), input, port);
+	auto argument = new jive::argument(this, input, port);
+	argument->index_ = narguments();
 	arguments_.push_back(argument);
 
 	on_output_create(argument);

@@ -121,7 +121,6 @@ public:
 	~output() noexcept;
 
 	output(
-		size_t index,
 		jive::region * region,
 		const jive::port & port);
 
@@ -302,6 +301,7 @@ protected:
 	inline void
 	add_output(std::unique_ptr<jive::output> output)
 	{
+		output->index_ = noutputs();
 		outputs_.push_back(std::move(output));
 	}
 

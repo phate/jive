@@ -39,9 +39,8 @@ simple_input::node() const noexcept
 
 simple_output::simple_output(
 	jive::simple_node * node,
-	size_t index,
 	const jive::port & port)
-: output(index, node->region(), port)
+: output(node->region(), port)
 , node_(node)
 {}
 
@@ -80,7 +79,7 @@ simple_node::simple_node(
 
 	for (size_t n = 0; n < operation().nresults(); n++)
 		node::add_output(std::unique_ptr<jive::output>(
-			new simple_output(this, n, operation().result(n))));
+			new simple_output(this, operation().result(n))));
 
 	on_node_create(this);
 }

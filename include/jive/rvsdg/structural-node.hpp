@@ -120,7 +120,6 @@ public:
 protected:
 	structural_output(
 		jive::structural_node * node,
-		size_t index,
 		const jive::port & port);
 
 public:

@@ -230,9 +230,8 @@ private:
 	inline
 	theta_output(
 		theta_node * node,
-		size_t index,
 		const jive::port & port)
-	: structural_output(node, index, port)
+	: structural_output(node, port)
 	, input_(nullptr)
 	{}
 

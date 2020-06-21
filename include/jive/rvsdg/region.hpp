@@ -41,7 +41,6 @@ public:
 
 	argument(
 		jive::region * region,
-		size_t index,
 		jive::structural_input * input,
 		const jive::port & port);
 

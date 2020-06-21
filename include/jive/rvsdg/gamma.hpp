@@ -368,9 +368,8 @@ private:
 	inline
 	gamma_output(
 		gamma_node * node,
-		size_t index,
 		const jive::port & port)
-	: structural_output(node, index, port)
+	: structural_output(node, port)
 	{}
 
 public:
@@ -469,8 +468,7 @@ gamma_node::add_exitvar(const std::vector<jive::output*> & values)
 		throw jive::compiler_error("Incorrect number of values.");
 
 	const auto & port = values[0]->port();
-	node::add_output(std::unique_ptr<jive::output>(
-		new gamma_output(this, noutputs(), port)));
+	node::add_output(std::unique_ptr<jive::output>(new gamma_output(this, port)));
 
 	auto output = exitvar(nexitvars()-1);
 	for (size_t n = 0; n < nsubregions(); n++)
