@@ -71,6 +71,18 @@ result::node() const noexcept
 	return nullptr;
 }
 
+jive::result *
+result::create(
+	jive::region * region,
+	jive::output * origin,
+	jive::structural_output * output,
+	const jive::port & port)
+{
+	auto result = new jive::result(region, origin, output, port);
+	region->append_result(result);
+	return result;
+}
+
 /* region */
 
 region::~region()
@@ -129,19 +141,24 @@ region::remove_argument(size_t index)
 	arguments_.pop_back();
 }
 
-jive::result *
-region::add_result(jive::output * origin, structural_output * output, const jive::port & port)
+void
+region::append_result(jive::result * result)
 {
-	auto result = new jive::result(this, origin, output, port);
+	if (result->region() != this)
+		throw jive::compiler_error("Appending result to wrong region.");
+
+	/*
+		Check if result was already appended to this region. This check
+		relies on the fact that an unappended result has an index of zero.
+	*/
+	auto index = result->index();
+	JIVE_DEBUG_ASSERT(index == 0);
+	if (index != 0 || (index == 0 && nresults() > 0 && this->result(0) == result))
+		return;
+
 	result->index_ = nresults();
 	results_.push_back(result);
-
-	if (origin->region() != this)
-		throw jive::compiler_error("Invalid region result");
-
 	on_input_create(result);
-
-	return result;
 }
 
 void
@@ -203,7 +220,7 @@ region::copy(
 			if (!origin) origin = result(n)->origin();
 
 			auto output = dynamic_cast<jive::structural_output*>(smap.lookup(result(n)->output()));
-			target->add_result(origin, output, result(n)->type());
+			result::create(target, origin, output, result(n)->type());
 		}
 	}
 }

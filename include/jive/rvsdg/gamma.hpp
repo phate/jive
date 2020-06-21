@@ -472,7 +472,7 @@ gamma_node::add_exitvar(const std::vector<jive::output*> & values)
 
 	auto output = exitvar(nexitvars()-1);
 	for (size_t n = 0; n < nsubregions(); n++)
-		subregion(n)->add_result(values[n], output, port);
+		result::create(subregion(n), values[n], output, port);
 
 	return output;
 }

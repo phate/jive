@@ -94,7 +94,7 @@ private:
 	: structural_node(jive::theta_op(), parent, 1)
 	{
 		auto predicate = jive_control_false(subregion());
-		subregion()->add_result(predicate, nullptr, ctltype(2));
+		result::create(subregion(), predicate, nullptr, ctltype(2));
 	}
 
 public:

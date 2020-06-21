@@ -106,7 +106,7 @@ public:
 
 		for (const auto & rv : recvars_) {
 			auto output = node_->add_output(rv->value()->type());
-			node_->subregion(0)->add_result(rv->value(), output, rv->value()->type());
+			result::create(node_->subregion(0), rv->value(), output, rv->value()->type());
 			rv->set_value(output);
 		}
 

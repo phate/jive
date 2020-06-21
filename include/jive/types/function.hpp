@@ -341,7 +341,7 @@ public:
 			throw jive::compiler_error("Incorrect number of results.");
 
 		for (size_t n = 0; n < results.size(); n++)
-			lambda_->subregion()->add_result(results[n], nullptr, ftype.result_type(n));
+			result::create(lambda_->subregion(), results[n], nullptr, ftype.result_type(n));
 		lambda_->add_output(ftype);
 
 		auto lambda = lambda_;

@@ -89,7 +89,7 @@ theta_node::add_loopvar(jive::output * origin)
 	output->input_ = input;
 
 	auto argument = subregion()->add_argument(input, origin->type());
-	subregion()->add_result(argument, output, origin->type());
+	result::create(subregion(), argument, output, origin->type());
 	return output;
 }
 

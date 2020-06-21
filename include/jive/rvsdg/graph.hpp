@@ -154,7 +154,7 @@ public:
 	inline jive::input *
 	add_export(jive::output * operand, const expport & port)
 	{
-		return root()->add_result(operand, nullptr, port);
+		return result::create(root(), operand, nullptr, port);
 	}
 
 	inline void

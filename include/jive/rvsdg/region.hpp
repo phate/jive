@@ -81,6 +81,7 @@ public:
 	virtual
 	~result() noexcept;
 
+private:
 	result(
 		jive::region * region,
 		jive::output * origin,
@@ -97,6 +98,7 @@ public:
 	result &
 	operator=(result &&) = delete;
 
+public:
 	virtual jive::node *
 	node() const noexcept override;
 
@@ -105,6 +107,13 @@ public:
 	{
 		return output_;
 	}
+
+	static jive::result *
+	create(
+		jive::region * region,
+		jive::output * origin,
+		jive::structural_output * output,
+		const jive::port & port);
 
 private:
 	jive::structural_output * output_;
@@ -188,8 +197,12 @@ public:
 		return arguments_[index];
 	}
 
-	jive::result *
-	add_result(jive::output * origin, structural_output * output, const jive::port & port);
+	/* \brief Appends \p result to the region
+	*
+	* Multiple invocations of append_result for the same result are undefined.
+	*/
+	void
+	append_result(jive::result * result);
 
 	void
 	remove_result(size_t index);

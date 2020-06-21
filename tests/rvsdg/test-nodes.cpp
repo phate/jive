@@ -36,8 +36,8 @@ test_node_copy(void)
 	auto n2 = test::simple_node_create(n1->subregion(0), {stype}, {a1}, {stype});
 	auto n3 = test::simple_node_create(n1->subregion(0), {vtype}, {a2}, {vtype});
 
-	n1->subregion(0)->add_result(n2->output(0), o1, stype);
-	n1->subregion(0)->add_result(n3->output(0), o2, vtype);
+	result::create(n1->subregion(0), n2->output(0), o1, stype);
+	result::create(n1->subregion(0), n3->output(0), o2, vtype);
 
 	jive::view(graph.root(), stdout);
 
