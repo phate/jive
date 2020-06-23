@@ -33,8 +33,12 @@ argument::argument(
 : output(region, port)
 , input_(input)
 {
-	if (input)
+	if (input) {
+		if (input->node() != region->node())
+			throw compiler_error("Argument cannot be added to input.");
+
 		input->arguments.push_back(this);
+	}
 }
 
 jive::node *
@@ -72,8 +76,12 @@ result::result(
 : input(origin, region, port)
 , output_(output)
 {
-	if (output)
+	if (output) {
+		if (output->node() != region->node())
+			throw compiler_error("Result cannot be added to output.");
+
 		output->results.push_back(this);
+	}
 }
 
 jive::node *

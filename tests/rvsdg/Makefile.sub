@@ -7,6 +7,7 @@ TESTS+=\
 	rvsdg/test-graph \
 	rvsdg/test-nodes \
 	rvsdg/test-phi \
+	rvsdg/test-regionmismatch \
 	rvsdg/test-statemux \
 	rvsdg/test-theta \
 	rvsdg/test-typemismatch \
