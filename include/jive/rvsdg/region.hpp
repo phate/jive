@@ -39,6 +39,7 @@ public:
 	virtual
 	~argument() noexcept;
 
+private:
 	argument(
 		jive::region * region,
 		jive::structural_input * input,
@@ -54,6 +55,7 @@ public:
 	argument &
 	operator=(argument &&) = delete;
 
+public:
 	virtual jive::node *
 	node() const noexcept override;
 
@@ -62,6 +64,12 @@ public:
 	{
 		return input_;
 	}
+
+	static jive::argument *
+	create(
+		jive::region * region,
+		structural_input * input,
+		const jive::port & port);
 
 private:
 	jive::structural_input * input_;
@@ -178,8 +186,12 @@ public:
 		return node_;
 	}
 
-	jive::argument *
-	add_argument(jive::structural_input * input, const jive::port & port);
+	/* \brief Append \p argument to the region
+	*
+	* Multiple invocations of append_argument for the same argument are undefined.
+	*/
+	void
+	append_argument(jive::argument * argument);
 
 	void
 	remove_argument(size_t index);

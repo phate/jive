@@ -456,7 +456,7 @@ gamma_node::add_entryvar(jive::output * origin)
 		new gamma_input(this, origin, origin->type())));
 
 	for (size_t n = 0; n < nsubregions(); n++)
-		subregion(n)->add_argument(input(ninputs()-1), origin->type());
+		argument::create(subregion(n), input(ninputs()-1), origin->type());
 
 	return static_cast<jive::gamma_input*>(input(ninputs()-1));
 }

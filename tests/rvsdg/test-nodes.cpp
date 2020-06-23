@@ -30,8 +30,8 @@ test_node_copy(void)
 	auto o1 = n1->add_output(stype);
 	auto o2 = n1->add_output(vtype);
 
-	auto a1 = n1->subregion(0)->add_argument(i1, stype);
-	auto a2 = n1->subregion(0)->add_argument(i2, vtype);
+	auto a1 = argument::create(n1->subregion(0), i1, stype);
+	auto a2 = argument::create(n1->subregion(0), i2, vtype);
 
 	auto n2 = test::simple_node_create(n1->subregion(0), {stype}, {a1}, {stype});
 	auto n3 = test::simple_node_create(n1->subregion(0), {vtype}, {a2}, {vtype});
@@ -62,8 +62,8 @@ test_node_copy(void)
 
 	/* copy second into third region only with arguments */
 	jive::substitution_map smap2;
-	auto a3 = n1->subregion(2)->add_argument(i1, stype);
-	auto a4 = n1->subregion(2)->add_argument(i2, vtype);
+	auto a3 = argument::create(n1->subregion(2), i1, stype);
+	auto a4 = argument::create(n1->subregion(2), i2, vtype);
 	smap2.insert(r2->argument(0), a3);
 	smap2.insert(r2->argument(1), a4);
 

@@ -43,6 +43,17 @@ argument::node() const noexcept
 	return nullptr;
 }
 
+jive::argument *
+argument::create(
+	jive::region * region,
+	structural_input * input,
+	const jive::port & port)
+{
+	auto argument = new jive::argument(region, input, port);
+	region->append_argument(argument);
+	return argument;
+}
+
 /* result */
 
 result::~result() noexcept
@@ -115,16 +126,21 @@ region::region(jive::structural_node * node)
 	on_region_create(this);
 }
 
-jive::argument *
-region::add_argument(jive::structural_input * input, const jive::port & port)
+void
+region::append_argument(jive::argument * argument)
 {
-	auto argument = new jive::argument(this, input, port);
+	if (argument->region() != this)
+		throw jive::compiler_error("Appending argument to wrong region.");
+
+	auto index = argument->index();
+	JIVE_DEBUG_ASSERT(index == 0);
+	if (index != 0
+	|| (index == 0 && narguments() > 0 && this->argument(0) == argument))
+		return;
+
 	argument->index_ = narguments();
 	arguments_.push_back(argument);
-
 	on_output_create(argument);
-
-	return argument;
 }
 
 void
@@ -200,7 +216,8 @@ region::copy(
 	/* copy arguments */
 	if (copy_arguments) {
 		for (size_t n = 0; n < narguments(); n++) {
-			auto narg = target->add_argument(smap.lookup(argument(n)->input()), argument(n)->type());
+			auto input = smap.lookup(argument(n)->input());
+			auto narg = argument::create(target, input, argument(n)->type());
 			smap.insert(argument(n), narg);
 		}
 	}

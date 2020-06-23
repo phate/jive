@@ -148,7 +148,7 @@ public:
 	inline jive::argument *
 	add_import(const impport & port)
 	{
-		return root()->add_argument(nullptr, port);
+		return argument::create(root(), nullptr, port);
 	}
 
 	inline jive::input *

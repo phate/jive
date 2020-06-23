@@ -84,7 +84,7 @@ public:
 			return nullptr;
 
 		auto input = node_->add_input(value->type(), value);
-		return node_->subregion(0)->add_argument(input, value->type());
+		return argument::create(region(), input, value->type());
 	}
 
 	inline std::shared_ptr<jive::recvar>
@@ -93,7 +93,7 @@ public:
 		if (!node_)
 			return nullptr;
 
-		auto argument = node_->subregion(0)->add_argument(nullptr, type);
+		auto argument = argument::create(region(), nullptr, type);
 		recvars_.push_back(std::shared_ptr<recvar>(new recvar(argument)));
 		return recvars_[recvars_.size()-1];
 	}

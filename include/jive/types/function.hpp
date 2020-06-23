@@ -268,7 +268,7 @@ public:
 	add_dependency(jive::output * origin)
 	{
 		auto input = add_input(origin->type(), origin);
-		return subregion()->add_argument(input, origin->type());
+		return argument::create(subregion(), input, origin->type());
 	}
 
 	inline const fcttype &
@@ -307,7 +307,7 @@ public:
 		lambda_ = jive::lambda_node::create(parent, op);
 		for (size_t n = 0; n < lambda_->function_type().narguments(); n++) {
 			auto & argument_type = lambda_->function_type().argument_type(n);
-			arguments.push_back(lambda_->subregion()->add_argument(nullptr, argument_type));
+			arguments.push_back(argument::create(lambda_->subregion(), nullptr, argument_type));
 		}
 		return arguments;
 	}

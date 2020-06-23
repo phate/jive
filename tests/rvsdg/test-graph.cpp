@@ -42,7 +42,7 @@ test_recursive_prune()
 
 	auto n3 = test::structural_node_create(graph.root(), 1);
 	n3->add_input(t, imp);
-	auto a1 = n3->subregion(0)->add_argument(nullptr, t);
+	auto a1 = argument::create(n3->subregion(0), nullptr, t);
 	auto n4 = test::simple_node_create(n3->subregion(0), {t}, {a1}, {t});
 	auto n5 = test::simple_node_create(n3->subregion(0), {t}, {a1}, {t});
 	result::create(n3->subregion(0), n4->output(0), nullptr, t);
