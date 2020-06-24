@@ -298,11 +298,12 @@ protected:
 	void
 	remove_input(size_t index);
 
-	inline void
+	jive::output *
 	add_output(std::unique_ptr<jive::output> output)
 	{
 		output->index_ = noutputs();
 		outputs_.push_back(std::move(output));
+		return this->output(noutputs()-1);
 	}
 
 	void

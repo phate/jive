@@ -27,8 +27,8 @@ test_node_copy(void)
 	auto n1 = test::structural_node_create(graph.root(), 3);
 	auto i1 = structural_input::create(n1, s, stype);
 	auto i2 = structural_input::create(n1, v, vtype);
-	auto o1 = n1->add_output(stype);
-	auto o2 = n1->add_output(vtype);
+	auto o1 = structural_output::create(n1, stype);
+	auto o2 = structural_output::create(n1, vtype);
 
 	auto a1 = argument::create(n1->subregion(0), i1, stype);
 	auto a2 = argument::create(n1->subregion(0), i2, vtype);

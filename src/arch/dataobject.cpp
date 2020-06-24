@@ -151,7 +151,7 @@ jive_dataobj_internal(
 		jive::structural_input::create(node, item, item->type());
 
 	/* FIXME: the type is not correct */
-	return node->add_output(jive::addrtype(jive::bit32));
+	return jive::structural_output::create(node, jive::addrtype(jive::bit32));
 }
 
 jive::output *

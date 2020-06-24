@@ -40,7 +40,7 @@ test_main()
 	/* Test type error check for adding result to wrong output */
 
 	auto argument = argument::create(n1->subregion(0), structi1, vt);
-	auto structo1 = n1->add_output(vt);
+	auto structo1 = structural_output::create(n1, vt);
 
 	bool output_error_handler_called = false;
 	try {

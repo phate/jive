@@ -342,7 +342,7 @@ public:
 
 		for (size_t n = 0; n < results.size(); n++)
 			result::create(lambda_->subregion(), results[n], nullptr, ftype.result_type(n));
-		lambda_->add_output(ftype);
+		structural_output::create(lambda_, ftype);
 
 		auto lambda = lambda_;
 		lambda_ = nullptr;

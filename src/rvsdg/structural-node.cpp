@@ -98,11 +98,20 @@ structural_node::append_input(std::unique_ptr<structural_input> input)
 	return static_cast<structural_input*>(node::add_input(std::move(sinput)));
 }
 
-jive::structural_output *
-structural_node::add_output(const jive::port & port)
+structural_output *
+structural_node::append_output(std::unique_ptr<structural_output> output)
 {
-	node::add_output(std::unique_ptr<structural_output>(new structural_output(this, port)));
-	return output(noutputs()-1);
+	if (output->node() != this)
+		throw compiler_error("Appending output to wrong node.");
+
+	auto index = output->index();
+	JIVE_DEBUG_ASSERT(index == 0);
+	if (index != 0
+	|| (index == 0 && noutputs() > 0 && this->output(0) == output.get()))
+		return this->output(index);
+
+	auto soutput = std::unique_ptr<jive::output>(output.release());
+	return static_cast<structural_output*>(node::add_output(std::move(soutput)));
 }
 
 jive::structural_node *
@@ -134,7 +143,7 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 
 	/* copy outputs */
 	for (size_t n = 0; n < noutputs(); n++) {
-		auto new_output = node->add_output(output(n)->port());
+		auto new_output = structural_output::create(node, output(n)->port());
 		smap.insert(output(n), new_output);
 	}
 

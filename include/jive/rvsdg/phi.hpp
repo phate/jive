@@ -105,7 +105,7 @@ public:
 			return nullptr;
 
 		for (const auto & rv : recvars_) {
-			auto output = node_->add_output(rv->value()->type());
+			auto output = structural_output::create(node_, rv->value()->type());
 			result::create(node_->subregion(0), rv->value(), output, rv->value()->type());
 			rv->set_value(output);
 		}
