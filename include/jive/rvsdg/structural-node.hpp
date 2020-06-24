@@ -46,8 +46,8 @@ public:
 	inline jive::structural_output *
 	output(size_t index) const noexcept;
 
-	jive::structural_input *
-	add_input(const jive::port & port, jive::output * origin);
+	structural_input *
+	append_input(std::unique_ptr<structural_input> input);
 
 	jive::structural_output *
 	add_output(const jive::port & port);
@@ -94,6 +94,16 @@ protected:
 		const jive::port & port);
 
 public:
+	static structural_input *
+	create(
+		structural_node * node,
+		jive::output * origin,
+		const jive::port & port)
+	{
+		auto input = std::unique_ptr<structural_input>(new structural_input(node, origin, port));
+		return node->append_input(std::move(input));
+	}
+
 	virtual jive::structural_node *
 	node() const noexcept override;
 

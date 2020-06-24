@@ -148,7 +148,7 @@ jive_dataobj_internal(
 
 	auto node = new jive::structural_node(jive::dataobj_op(std::move(types)), parent, 1);
 	for (const auto & item : data_items)
-		node->add_input(item->type(), item);
+		jive::structural_input::create(node, item, item->type());
 
 	/* FIXME: the type is not correct */
 	return node->add_output(jive::addrtype(jive::bit32));

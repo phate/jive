@@ -158,7 +158,7 @@ node::~node()
 	region()->nodes.erase(this);
 }
 
-void
+jive::input *
 node::add_input(std::unique_ptr<jive::input> input)
 {
 	if (ninputs() == 0) {
@@ -173,6 +173,8 @@ node::add_input(std::unique_ptr<jive::input> input)
 	auto new_depth = producer ? producer->depth()+1 : 0;
 	if (new_depth > depth())
 		recompute_depth();
+
+	return this->input(ninputs()-1);
 }
 
 void

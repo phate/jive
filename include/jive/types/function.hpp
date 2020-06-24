@@ -267,7 +267,7 @@ public:
 	inline jive::argument *
 	add_dependency(jive::output * origin)
 	{
-		auto input = add_input(origin->type(), origin);
+		auto input = structural_input::create(this, origin, origin->type());
 		return argument::create(subregion(), input, origin->type());
 	}
 

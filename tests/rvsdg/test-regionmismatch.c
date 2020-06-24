@@ -26,7 +26,7 @@ test_main()
 
 	/* Test type error check for adding argument to wrong input */
 
-	auto structi1 = n1->add_input(vt, import1);
+	auto structi1 = structural_input::create(n1, import1, vt);
 
 	bool input_error_handler_called = false;
 	try {

@@ -25,8 +25,8 @@ test_node_copy(void)
 	auto v = graph.add_import({vtype, ""});
 
 	auto n1 = test::structural_node_create(graph.root(), 3);
-	auto i1 = n1->add_input(stype, s);
-	auto i2 = n1->add_input(vtype, v);
+	auto i1 = structural_input::create(n1, s, stype);
+	auto i2 = structural_input::create(n1, v, vtype);
 	auto o1 = n1->add_output(stype);
 	auto o2 = n1->add_output(vtype);
 

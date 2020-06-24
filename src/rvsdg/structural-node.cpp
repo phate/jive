@@ -82,12 +82,20 @@ structural_node::structural_node(
 	on_node_create(this);
 }
 
-jive::structural_input *
-structural_node::add_input(const jive::port & port, jive::output * origin)
+structural_input *
+structural_node::append_input(std::unique_ptr<structural_input> input)
 {
-	node::add_input(std::unique_ptr<jive::input>(
-		new structural_input(this, origin, port)));
-	return input(ninputs()-1);
+	if (input->node() != this)
+		throw compiler_error("Appending input to wrong node.");
+
+	auto index = input->index();
+	JIVE_DEBUG_ASSERT(index == 0);
+	if (index != 0
+	|| (index == 0 && ninputs() > 0 && this->input(0) == input.get()))
+		return this->input(index);
+
+	auto sinput = std::unique_ptr<jive::input>(input.release());
+	return static_cast<structural_input*>(node::add_input(std::move(sinput)));
 }
 
 jive::structural_output *
@@ -120,7 +128,7 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 		auto origin = smap.lookup(input(n)->origin());
 		if (!origin) origin = input(n)->origin();
 
-		auto new_input = node->add_input(input(n)->port(), origin);
+		auto new_input = structural_input::create(node, origin, input(n)->port());
 		smap.insert(input(n), new_input);
 	}
 

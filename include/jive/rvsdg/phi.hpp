@@ -83,7 +83,7 @@ public:
 		if (!node_)
 			return nullptr;
 
-		auto input = node_->add_input(value->type(), value);
+		auto input = structural_input::create(node_, value, value->type());
 		return argument::create(region(), input, value->type());
 	}
 

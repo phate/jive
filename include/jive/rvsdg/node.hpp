@@ -292,7 +292,7 @@ public:
 	recompute_depth() noexcept;
 
 protected:
-	void
+	jive::input *
 	add_input(std::unique_ptr<jive::input> input);
 
 	void
