@@ -3,13 +3,13 @@
  * See COPYING for terms of redistribution.
  */
 
-#include "test-registry.h"
-#include "testnodes.h"
-#include "testtypes.h"
+#include "test-registry.hpp"
+#include "testnodes.hpp"
+#include "testtypes.hpp"
 
 #include <assert.h>
 
-#include <jive/rvsdg.h>
+#include <jive/rvsdg.hpp>
 
 static int
 test_main()

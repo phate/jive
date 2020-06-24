@@ -73,9 +73,11 @@ structural_node::structural_node(
 	const jive::structural_op & op,
 	jive::region * region,
 	size_t nsubregions)
-	: node(op.copy(), region)
+: node(op.copy(), region)
 {
-	/* FIXME: check that nsubregions is unequal zero */
+	if (nsubregions == 0)
+		throw compiler_error("Number of subregions must be greater than zero.");
+
 	for (size_t n = 0; n < nsubregions; n++)
 		subregions_.emplace_back(std::unique_ptr<jive::region>(new jive::region(this)));
 
@@ -130,7 +132,8 @@ jive::structural_node *
 structural_node::copy(jive::region * region, jive::substitution_map & smap) const
 {
 	graph()->mark_denormalized();
-	auto node = new structural_node(*static_cast<const structural_op*>(&operation()), region, 0);
+	auto node = new structural_node(*static_cast<const structural_op*>(&operation()), region,
+		nsubregions());
 
 	/* copy inputs */
 	for (size_t n = 0; n < ninputs(); n++) {
