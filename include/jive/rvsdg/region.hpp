@@ -25,7 +25,7 @@ class structural_op;
 class structural_output;
 class substitution_map;
 
-class argument final : public output {
+class argument : public output {
 	jive::detail::intrusive_list_anchor<
 		jive::argument
 	> structural_input_anchor_;
@@ -39,7 +39,7 @@ public:
 	virtual
 	~argument() noexcept;
 
-private:
+protected:
 	argument(
 		jive::region * region,
 		jive::structural_input * input,
@@ -75,7 +75,7 @@ private:
 	jive::structural_input * input_;
 };
 
-class result final : public input {
+class result : public input {
 	jive::detail::intrusive_list_anchor<
 		jive::result
 	> structural_output_anchor_;
@@ -89,7 +89,7 @@ public:
 	virtual
 	~result() noexcept;
 
-private:
+protected:
 	result(
 		jive::region * region,
 		jive::output * origin,
