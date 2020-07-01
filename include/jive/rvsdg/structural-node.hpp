@@ -22,11 +22,13 @@ public:
 	virtual
 	~structural_node();
 
+protected:
 	structural_node(
 		const jive::structural_op & op,
 		jive::region * region,
 		size_t nsubregions);
 
+public:
 	inline size_t
 	nsubregions() const noexcept
 	{
