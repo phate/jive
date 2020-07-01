@@ -214,11 +214,26 @@ public:
 	copy() const override;
 };
 
-static inline jive::structural_node *
-structural_node_create(jive::region * parent, size_t nsubregions)
-{
-	return new jive::structural_node(structural_op(), parent, nsubregions);
-}
+class structural_node final : public jive::structural_node {
+public:
+	~structural_node() override;
+
+private:
+	structural_node(
+		jive::region * parent,
+		size_t nsubregions)
+	: jive::structural_node(structural_op(), parent, nsubregions)
+	{}
+
+public:
+	static structural_node *
+	create(
+		jive::region * parent,
+		size_t nsubregions)
+	{
+		return new structural_node(parent, nsubregions);
+	}
+};
 
 }}
 

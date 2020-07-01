@@ -153,4 +153,9 @@ structural_op::copy() const
 	return std::unique_ptr<jive::operation>(new structural_op(*this));
 }
 
+/* structural_node class */
+
+structural_node::~structural_node()
+{}
+
 }}

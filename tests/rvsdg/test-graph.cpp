@@ -40,7 +40,7 @@ test_recursive_prune()
 	auto n1 = test::simple_node_create(graph.root(), {t}, {imp}, {t});
 	auto n2 = test::simple_node_create(graph.root(), {t}, {imp}, {t});
 
-	auto n3 = test::structural_node_create(graph.root(), 1);
+	auto n3 = test::structural_node::create(graph.root(), 1);
 	structural_input::create(n3, imp, t);
 	auto a1 = argument::create(n3->subregion(0), nullptr, t);
 	auto n4 = test::simple_node_create(n3->subregion(0), {t}, {a1}, {t});
@@ -48,7 +48,7 @@ test_recursive_prune()
 	result::create(n3->subregion(0), n4->output(0), nullptr, t);
 	auto o1 = structural_output::create(n3, t);
 
-	auto n6 = test::structural_node_create(n3->subregion(0), 1);
+	auto n6 = test::structural_node::create(n3->subregion(0), 1);
 
 	graph.add_export(n2->output(0), {n2->output(0)->type(), "n2"});
 	graph.add_export(o1, {o1->type(), "n3"});

@@ -21,8 +21,8 @@ test_main()
 	jive::graph graph;
 	auto import1 = graph.add_import({vt, "import1"});
 
-	auto n1 = test::structural_node_create(graph.root(), 1);
-	auto n2 = test::structural_node_create(graph.root(), 2);
+	auto n1 = test::structural_node::create(graph.root(), 1);
+	auto n2 = test::structural_node::create(graph.root(), 2);
 
 	/* Test type error check for adding argument to wrong input */
 
