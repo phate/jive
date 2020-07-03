@@ -9,6 +9,13 @@
 #include <jive/util/intrusive-hash.hpp>
 
 struct my_item {
+	my_item(int k, int v)
+	: key(k)
+	, value(v)
+	{
+		hash_chain.prev = hash_chain.next = nullptr;
+	}
+
 	int key;
 	int value;
 	struct {
@@ -31,6 +38,13 @@ typedef jive::detail::intrusive_hash<
 	my_accessor> my_hash;
 
 struct my_stritem {
+	my_stritem(
+		const std::string & k
+	, const std::string & v)
+	: key(k)
+	, value(v)
+	{}
+
 	std::string key;
 	std::string value;
 	jive::detail::intrusive_hash_anchor<my_stritem> hash_chain;
