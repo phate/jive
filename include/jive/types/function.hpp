@@ -186,7 +186,7 @@ private:
 	class dependency_iterator {
 	public:
 		inline constexpr
-		dependency_iterator(jive::input * input) noexcept
+		dependency_iterator(structural_input * input) noexcept
 		: input_(input)
 		{}
 
@@ -226,7 +226,7 @@ private:
 		}
 
 	private:
-		jive::input * input_;
+		structural_input * input_;
 	};
 
 	static jive::lambda_node *

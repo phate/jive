@@ -34,12 +34,6 @@ theta_input::~theta_input() noexcept
 		output_->input_ = nullptr;
 }
 
-jive::theta_node *
-theta_input::node() const noexcept
-{
-	return static_cast<theta_node*>(structural_input::node());
-}
-
 /* theta output */
 
 theta_output::~theta_output() noexcept

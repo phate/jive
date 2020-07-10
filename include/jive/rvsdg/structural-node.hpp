@@ -24,6 +24,7 @@ public:
 
 protected:
 	structural_node(
+		/* FIXME: use move semantics instead of copy semantics for op */
 		const jive::structural_op & op,
 		jive::region * region,
 		size_t nsubregions);
@@ -100,8 +101,11 @@ public:
 		return node->append_input(std::move(input));
 	}
 
-	virtual jive::structural_node *
-	node() const noexcept override;
+	structural_node *
+	node() const noexcept
+	{
+		return static_cast<structural_node*>(node_input::node());
+	}
 
 	argument_list arguments;
 };

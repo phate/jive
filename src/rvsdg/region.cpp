@@ -84,12 +84,6 @@ result::result(
 	}
 }
 
-jive::node *
-result::node() const noexcept
-{
-	return nullptr;
-}
-
 jive::result *
 result::create(
 	jive::region * region,

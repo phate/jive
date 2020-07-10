@@ -29,12 +29,6 @@ structural_input::structural_input(
 	on_input_create(this);
 }
 
-structural_node *
-structural_input::node() const noexcept
-{
-	return static_cast<structural_node*>(node_input::node());
-}
-
 /* structural output */
 
 structural_output::~structural_output() noexcept

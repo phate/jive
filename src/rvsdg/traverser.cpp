@@ -33,10 +33,14 @@ topdown_traverser::topdown_traverser(jive::region * region)
 	for (size_t n = 0; n < region->narguments(); n++) {
 		auto argument = region->argument(n);
 		for (const auto & user : *argument) {
-			if (!user->node() || !predecessors_visited(user->node()))
+			if (!is<node_input>(*user))
 				continue;
 
-			tracker_.set_nodestate(user->node(), traversal_nodestate::frontier);
+			auto node = static_cast<node_input*>(user)->node();
+			if (!predecessors_visited(node))
+				continue;
+
+			tracker_.set_nodestate(node, traversal_nodestate::frontier);
 		}
 	}
 
@@ -70,11 +74,12 @@ topdown_traverser::next()
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
 	for (size_t n = 0; n < node->noutputs(); n++) {
 		for (const auto & user : *node->output(n)) {
-			if (!user->node())
+			if (!is<node_input>(*user))
 				continue;
 
-			if (tracker_.get_nodestate(user->node()) == traversal_nodestate::ahead)
-				tracker_.set_nodestate(user->node(), traversal_nodestate::frontier);
+			auto node = static_cast<node_input*>(user)->node();
+			if (tracker_.get_nodestate(node) == traversal_nodestate::ahead)
+				tracker_.set_nodestate(node, traversal_nodestate::frontier);
 		}
 	}
 
@@ -96,10 +101,11 @@ topdown_traverser::node_create(jive::node * node)
 void
 topdown_traverser::input_change(input * in, output * old_origin, output * new_origin)
 {
-	if (in->region() != region() || !in->node())
+	if (in->region() != region() || !is<node_input>(*in))
 		return;
 
-	auto state = tracker_.get_nodestate(in->node());
+	auto node = static_cast<node_input*>(in)->node();
+	auto state = tracker_.get_nodestate(node);
 	
 	/* ignore nodes that have been traversed already, or that are already
 	marked for later traversal */
@@ -108,7 +114,7 @@ topdown_traverser::input_change(input * in, output * old_origin, output * new_or
 	
 	/* make sure node is visited eventually, might now be visited earlier
 	as depth of the node could be lowered */
-	tracker_.set_nodestate(in->node(), traversal_nodestate::frontier);
+	tracker_.set_nodestate(node, traversal_nodestate::frontier);
 }
 
 /* bottom up traverser */
@@ -177,7 +183,7 @@ bottomup_traverser::node_destroy(jive::node * node)
 void
 bottomup_traverser::input_change(input * in, output * old_origin, output * new_origin)
 {
-	if (in->region() != region() || !in->node())
+	if (in->region() != region() || !is<node_input>(*in))
 		return;
 
 	traversal_nodestate state = tracker_.get_nodestate(old_origin->node());

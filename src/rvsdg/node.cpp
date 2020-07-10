@@ -67,7 +67,9 @@ input::divert_to(jive::output * new_origin)
 	this->origin_ = new_origin;
 	new_origin->add_user(this);
 
-	if (node()) node()->recompute_depth();
+	if (is<node_input>(*this))
+		static_cast<node_input*>(this)->node()->recompute_depth();
+
 	region()->graph()->mark_denormalized();
 	on_input_change(this, old_origin, new_origin);
 }
@@ -144,12 +146,6 @@ node_input::node_input(
 : jive::input(origin, node->region(), port)
 , node_(node)
 {}
-
-jive::node *
-node_input::node() const noexcept
-{
-	return node_;
-}
 
 /* node_output class */
 
@@ -274,8 +270,11 @@ node::recompute_depth() noexcept
 
 	for (size_t n = 0; n < noutputs(); n++) {
 		for (auto user : *(output(n))) {
-			if (user->node())
-				user->node()->recompute_depth();
+			if (!is<node_input>(*user))
+				continue;
+
+			auto node = static_cast<node_input*>(user)->node();
+			node->recompute_depth();
 		}
 	}
 }

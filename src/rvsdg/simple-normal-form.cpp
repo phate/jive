@@ -22,8 +22,11 @@ node_cse(
 
 	if (!arguments.empty()) {
 		for (const auto & user : *arguments[0]) {
-			auto node = user->node();
-			if (node && cse_test(node))
+			if (!jive::is<jive::node_input>(*user))
+				continue;
+
+			auto node = static_cast<jive::node_input*>(user)->node();
+			if (cse_test(node))
 				return node;
 		}
 	} else {

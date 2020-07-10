@@ -86,9 +86,6 @@ public:
 		return *port_;
 	}
 
-	virtual jive::node *
-	node() const noexcept = 0;
-
 	virtual std::string
 	debug_string() const;
 
@@ -232,8 +229,11 @@ public:
 		jive::node * node,
 		const jive::port & port);
 
-	virtual jive::node *
-	node() const noexcept override;
+	jive::node *
+	node() const noexcept
+	{
+		return node_;
+	}
 
 private:
 	jive::node * node_;
@@ -296,7 +296,7 @@ public:
 	{
 		for (const auto & output : outputs_) {
 			for (const auto & user : *output) {
-				if (user->node())
+				if (is<node_input>(*user))
 					return true;
 			}
 		}

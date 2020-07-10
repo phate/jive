@@ -182,8 +182,11 @@ private:
 	{}
 
 public:
-	virtual jive::theta_node *
-	node() const noexcept override;
+	theta_node *
+	node() const noexcept
+	{
+		return static_cast<theta_node*>(structural_input::node());
+	}
 
 	inline jive::theta_output *
 	output() const noexcept

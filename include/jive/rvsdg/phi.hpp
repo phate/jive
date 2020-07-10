@@ -451,8 +451,11 @@ public:
 	cvargument *
 	argument() const noexcept;
 
-	virtual phi::node *
-	node() const noexcept override;
+	phi::node *
+	node() const noexcept
+	{
+		return static_cast<phi::node*>(structural_input::node());
+	}
 };
 
 /* phi recursion variable output class */

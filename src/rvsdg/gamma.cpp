@@ -263,12 +263,6 @@ gamma_op::operator==(const operation & other) const noexcept
 gamma_input::~gamma_input() noexcept
 {}
 
-jive::gamma_node *
-gamma_input::node() const noexcept
-{
-	return static_cast<gamma_node*>(structural_input::node());
-}
-
 /* gamma output */
 
 gamma_output::~gamma_output() noexcept

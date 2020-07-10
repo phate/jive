@@ -81,8 +81,11 @@ public:
 		const jive::port & port);
 
 public:
-	virtual jive::simple_node *
-	node() const noexcept override;
+	simple_node *
+	node() const noexcept
+	{
+		return static_cast<simple_node*>(node_input::node());
+	}
 };
 
 /* outputs */

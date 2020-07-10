@@ -28,12 +28,6 @@ simple_input::simple_input(
 : node_input(origin, node, port)
 {}
 
-simple_node *
-simple_input::node() const noexcept
-{
-	return static_cast<simple_node*>(node_input::node());
-}
-
 /* outputs */
 
 simple_output::simple_output(

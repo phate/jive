@@ -131,12 +131,6 @@ builder::end()
 cvinput::~cvinput()
 {}
 
-phi::node *
-cvinput::node() const noexcept
-{
-	return static_cast<phi::node*>(structural_input::node());
-}
-
 /* phi recursion variable output class */
 
 rvoutput::~rvoutput()

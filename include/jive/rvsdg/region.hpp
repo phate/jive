@@ -107,9 +107,6 @@ protected:
 	operator=(result &&) = delete;
 
 public:
-	virtual jive::node *
-	node() const noexcept override;
-
 	inline jive::structural_output *
 	output() const noexcept
 	{
