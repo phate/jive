@@ -151,6 +151,21 @@ node_input::node() const noexcept
 	return node_;
 }
 
+/* node_output class */
+
+node_output::node_output(
+	jive::node * node,
+	const jive::port & port)
+: jive::output(node->region(), port)
+, node_(node)
+{}
+
+jive::node *
+node_output::node() const noexcept
+{
+	return node_;
+}
+
 /* node class */
 
 node::node(std::unique_ptr<jive::operation> op, jive::region * region)

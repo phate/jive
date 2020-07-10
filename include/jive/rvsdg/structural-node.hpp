@@ -113,7 +113,7 @@ typedef jive::detail::intrusive_list<
 	jive::result::structural_output_accessor
 > result_list;
 
-class structural_output : public output {
+class structural_output : public node_output {
 	friend structural_node;
 
 public:
@@ -139,9 +139,6 @@ public:
 	node() const noexcept override;
 
 	result_list results;
-
-private:
-	jive::structural_node * node_;
 };
 
 /* structural node method definitions */

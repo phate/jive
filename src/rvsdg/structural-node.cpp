@@ -47,16 +47,15 @@ structural_output::~structural_output() noexcept
 structural_output::structural_output(
 	jive::structural_node * node,
 	const jive::port & port)
-: output(node->region(), port)
-, node_(node)
+: node_output(node, port)
 {
 	on_output_create(this);
 }
 
-jive::structural_node *
+structural_node *
 structural_output::node() const noexcept
 {
-	return node_;
+	return static_cast<structural_node*>(node_output::node());
 }
 
 /* structural node */
@@ -111,7 +110,7 @@ structural_node::append_output(std::unique_ptr<structural_output> output)
 	|| (index == 0 && noutputs() > 0 && this->output(0) == output.get()))
 		return this->output(index);
 
-	auto soutput = std::unique_ptr<jive::output>(output.release());
+	auto soutput = std::unique_ptr<node_output>(output.release());
 	return static_cast<structural_output*>(node::add_output(std::move(soutput)));
 }
 

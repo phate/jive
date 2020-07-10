@@ -87,7 +87,7 @@ public:
 
 /* outputs */
 
-class simple_output final : public output {
+class simple_output final : public node_output {
 	friend jive::simple_input;
 
 public:
@@ -101,9 +101,6 @@ public:
 public:
 	virtual jive::simple_node *
 	node() const noexcept override;
-
-private:
-	jive::simple_node * node_;
 };
 
 /* simple node method definitions */

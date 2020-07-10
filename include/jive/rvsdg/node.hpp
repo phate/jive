@@ -230,6 +230,21 @@ private:
 	jive::node * node_;
 };
 
+/* node_output class */
+
+class node_output : public jive::output {
+public:
+	node_output(
+		jive::node * node,
+		const jive::port & port);
+
+	jive::node *
+	node() const noexcept override;
+
+private:
+	jive::node * node_;
+};
+
 /* node class */
 
 class node {
@@ -299,7 +314,7 @@ public:
 		return outputs_.size();
 	}
 
-	inline jive::output *
+	node_output *
 	output(size_t index) const noexcept
 	{
 		JIVE_DEBUG_ASSERT(index < noutputs());
@@ -316,8 +331,8 @@ protected:
 	void
 	remove_input(size_t index);
 
-	jive::output *
-	add_output(std::unique_ptr<jive::output> output)
+	node_output *
+	add_output(std::unique_ptr<node_output> output)
 	{
 		output->index_ = noutputs();
 		outputs_.push_back(std::move(output));
@@ -404,7 +419,7 @@ private:
 	jive::region * region_;
 	std::unique_ptr<jive::operation> operation_;
 	std::vector<std::unique_ptr<node_input>> inputs_;
-	std::vector<std::unique_ptr<jive::output>> outputs_;
+	std::vector<std::unique_ptr<node_output>> outputs_;
 };
 
 static inline std::vector<jive::output*>

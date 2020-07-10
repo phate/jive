@@ -39,8 +39,7 @@ simple_input::node() const noexcept
 simple_output::simple_output(
 	jive::simple_node * node,
 	const jive::port & port)
-: output(node->region(), port)
-, node_(node)
+: node_output(node, port)
 {}
 
 simple_output::~simple_output() noexcept
@@ -48,10 +47,10 @@ simple_output::~simple_output() noexcept
 	on_output_destroy(this);
 }
 
-jive::simple_node *
+simple_node *
 simple_output::node() const noexcept
 {
-	return node_;
+	return static_cast<simple_node*>(node_output::node());
 }
 
 /* simple nodes */
@@ -77,7 +76,7 @@ simple_node::simple_node(
 	}
 
 	for (size_t n = 0; n < operation().nresults(); n++)
-		node::add_output(std::unique_ptr<jive::output>(
+		node::add_output(std::unique_ptr<node_output>(
 			new simple_output(this, operation().result(n))));
 
 	on_node_create(this);

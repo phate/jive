@@ -468,7 +468,7 @@ gamma_node::add_exitvar(const std::vector<jive::output*> & values)
 		throw jive::compiler_error("Incorrect number of values.");
 
 	const auto & port = values[0]->port();
-	node::add_output(std::unique_ptr<jive::output>(new gamma_output(this, port)));
+	node::add_output(std::unique_ptr<node_output>(new gamma_output(this, port)));
 
 	auto output = exitvar(nexitvars()-1);
 	for (size_t n = 0; n < nsubregions(); n++)
