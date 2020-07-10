@@ -19,6 +19,51 @@ class structural_input;
 
 class substitution_map final {
 public:
+	bool
+	contains(const output & original) const noexcept
+	{
+		return output_map_.find(&original) != output_map_.end();
+	}
+
+	bool
+	contains(const region & original) const noexcept
+	{
+		return region_map_.find(&original) != region_map_.end();
+	}
+
+	bool
+	contains(const structural_input & original) const noexcept
+	{
+		return structinput_map_.find(&original) != structinput_map_.end();
+	}
+
+	output &
+	lookup(const output & original) const
+	{
+		if (!contains(original))
+			throw compiler_error("Output not in substitution map.");
+
+		return *output_map_.find(&original)->second;
+	}
+
+	region &
+	lookup(const region & original) const
+	{
+		if (!contains(original))
+			throw compiler_error("Region not in substitution map.");
+
+		return *region_map_.find(&original)->second;
+	}
+
+	structural_input &
+	lookup(const structural_input & original) const
+	{
+		if (!contains(original))
+			throw compiler_error("Structural input not in substitution map.");
+
+		return *structinput_map_.find(&original)->second;
+	}
+
 	inline jive::output *
 	lookup(const jive::output * original) const noexcept
 	{
