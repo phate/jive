@@ -77,7 +77,7 @@ typedef jive::detail::intrusive_list<
 	jive::argument::structural_input_accessor
 > argument_list;
 
-class structural_input : public input {
+class structural_input : public node_input {
 	friend structural_node;
 public:
 	virtual
@@ -104,9 +104,6 @@ public:
 	node() const noexcept override;
 
 	argument_list arguments;
-
-private:
-	jive::structural_node * node_;
 };
 
 /* structural output class */

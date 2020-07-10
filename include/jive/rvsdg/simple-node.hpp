@@ -68,7 +68,7 @@ public:
 
 /* inputs */
 
-class simple_input final : public input {
+class simple_input final : public node_input {
 	friend jive::output;
 
 public:
@@ -76,16 +76,13 @@ public:
 	~simple_input() noexcept;
 
 	simple_input(
-		jive::simple_node * node,
+		simple_node * node,
 		jive::output * origin,
 		const jive::port & port);
 
 public:
 	virtual jive::simple_node *
 	node() const noexcept override;
-
-private:
-	jive::simple_node * node_;
 };
 
 /* outputs */

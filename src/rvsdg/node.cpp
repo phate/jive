@@ -135,6 +135,24 @@ register_node_normal_form(void)
 
 namespace jive {
 
+/* node_input  class */
+
+node_input::node_input(
+	jive::output * origin,
+	jive::node * node,
+	const jive::port & port)
+: jive::input(origin, node->region(), port)
+, node_(node)
+{}
+
+jive::node *
+node_input::node() const noexcept
+{
+	return node_;
+}
+
+/* node class */
+
 node::node(std::unique_ptr<jive::operation> op, jive::region * region)
 	: depth_(0)
 	, graph_(region->graph())
@@ -158,8 +176,8 @@ node::~node()
 	region()->nodes.erase(this);
 }
 
-jive::input *
-node::add_input(std::unique_ptr<jive::input> input)
+node_input *
+node::add_input(std::unique_ptr<node_input> input)
 {
 	if (ninputs() == 0) {
 		JIVE_DEBUG_ASSERT(depth() == 0);

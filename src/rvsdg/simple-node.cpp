@@ -25,14 +25,13 @@ simple_input::simple_input(
 	jive::simple_node * node,
 	jive::output * origin,
 	const jive::port & port)
-: input(origin, node->region(), port)
-, node_(node)
+: node_input(origin, node, port)
 {}
 
-jive::simple_node *
+simple_node *
 simple_input::node() const noexcept
 {
-	return node_;
+	return static_cast<simple_node*>(node_input::node());
 }
 
 /* outputs */
@@ -73,7 +72,7 @@ simple_node::simple_node(
 			operation().narguments(), ", received ", operands.size(), " arguments."));
 
 	for (size_t n = 0; n < operation().narguments(); n++) {
-		node::add_input(std::unique_ptr<jive::input>(
+		node::add_input(std::unique_ptr<node_input>(
 			new simple_input(this, operands[n], operation().argument(n))));
 	}
 

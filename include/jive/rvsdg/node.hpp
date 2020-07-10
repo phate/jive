@@ -214,6 +214,24 @@ private:
 	std::unordered_set<jive::input*> users_;
 };
 
+/* node_input class */
+
+class node_input : public jive::input {
+public:
+	node_input(
+		jive::output * origin,
+		jive::node * node,
+		const jive::port & port);
+
+	virtual jive::node *
+	node() const noexcept override;
+
+private:
+	jive::node * node_;
+};
+
+/* node class */
+
 class node {
 public:
 	virtual
@@ -268,7 +286,7 @@ public:
 		return inputs_.size();
 	}
 
-	inline jive::input *
+	node_input *
 	input(size_t index) const noexcept
 	{
 		JIVE_DEBUG_ASSERT(index < ninputs());
@@ -292,8 +310,8 @@ public:
 	recompute_depth() noexcept;
 
 protected:
-	jive::input *
-	add_input(std::unique_ptr<jive::input> input);
+	node_input *
+	add_input(std::unique_ptr<node_input> input);
 
 	void
 	remove_input(size_t index);
@@ -385,7 +403,7 @@ private:
 	jive::graph * graph_;
 	jive::region * region_;
 	std::unique_ptr<jive::operation> operation_;
-	std::vector<std::unique_ptr<jive::input>> inputs_;
+	std::vector<std::unique_ptr<node_input>> inputs_;
 	std::vector<std::unique_ptr<jive::output>> outputs_;
 };
 

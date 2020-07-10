@@ -24,16 +24,15 @@ structural_input::structural_input(
 	jive::structural_node * node,
 	jive::output * origin,
 	const jive::port & port)
-: input(origin, node->region(), port)
-, node_(node)
+: node_input(origin, node, port)
 {
 	on_input_create(this);
 }
 
-jive::structural_node *
+structural_node *
 structural_input::node() const noexcept
 {
-	return node_;
+	return static_cast<structural_node*>(node_input::node());
 }
 
 /* structural output */
@@ -96,7 +95,7 @@ structural_node::append_input(std::unique_ptr<structural_input> input)
 	|| (index == 0 && ninputs() > 0 && this->input(0) == input.get()))
 		return this->input(index);
 
-	auto sinput = std::unique_ptr<jive::input>(input.release());
+	auto sinput = std::unique_ptr<node_input>(input.release());
 	return static_cast<structural_input*>(node::add_input(std::move(sinput)));
 }
 
