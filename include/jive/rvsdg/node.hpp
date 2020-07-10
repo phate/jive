@@ -108,6 +108,15 @@ private:
 	std::unique_ptr<jive::port> port_;
 };
 
+template <class T> static inline bool
+is(const jive::input & input) noexcept
+{
+	static_assert(std::is_base_of<jive::input, T>::value,
+		"Template parameter T must be derived from jive::input.");
+
+	return dynamic_cast<const T*>(&input) != nullptr;
+}
+
 /* outputs */
 
 class output {
