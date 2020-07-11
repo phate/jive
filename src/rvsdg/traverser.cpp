@@ -54,7 +54,7 @@ bool
 topdown_traverser::predecessors_visited(const jive::node * node) noexcept
 {
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		auto predecessor = node->input(n)->origin()->node();
+		auto predecessor = node_output::node(node->input(n)->origin());
 		if (!predecessor)
 			continue;
 
@@ -130,7 +130,7 @@ bottomup_traverser::bottomup_traverser(jive::region * region, bool revisit)
 		tracker_.set_nodestate(&node, traversal_nodestate::frontier);
 
 	for (size_t n = 0; n < region->nresults(); n++) {
-		auto node = region->result(n)->origin()->node();
+		auto node = node_output::node(region->result(n)->origin());
 		if (node && !node->has_successors())
 			tracker_.set_nodestate(node, traversal_nodestate::frontier);
 	}
@@ -151,7 +151,7 @@ bottomup_traverser::next()
 
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		auto producer = node->input(n)->origin()->node();
+		auto producer = node_output::node(node->input(n)->origin());
 		if (producer && tracker_.get_nodestate(producer) == traversal_nodestate::ahead)
 			tracker_.set_nodestate(producer, traversal_nodestate::frontier);
 	}
@@ -174,7 +174,7 @@ bottomup_traverser::node_destroy(jive::node * node)
 		return;
 
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		auto producer = node->input(n)->origin()->node();
+		auto producer = node_output::node(node->input(n)->origin());
 		if (producer && tracker_.get_nodestate(producer) == traversal_nodestate::ahead)
 			tracker_.set_nodestate(producer, traversal_nodestate::frontier);
 	}
@@ -183,10 +183,13 @@ bottomup_traverser::node_destroy(jive::node * node)
 void
 bottomup_traverser::input_change(input * in, output * old_origin, output * new_origin)
 {
-	if (in->region() != region() || !is<node_input>(*in))
+	if (in->region() != region()
+	|| !is<node_input>(*in)
+	|| !is<node_output>(old_origin))
 		return;
 
-	traversal_nodestate state = tracker_.get_nodestate(old_origin->node());
+	auto node = node_output::node(old_origin);
+	traversal_nodestate state = tracker_.get_nodestate(node);
 	
 	/* ignore nodes that have been traversed already, or that are already
 	marked for later traversal */
@@ -195,7 +198,7 @@ bottomup_traverser::input_change(input * in, output * old_origin, output * new_o
 	
 	/* make sure node is visited eventually, might now be visited earlier
 	as there (potentially) is one less obstructing node below */
-	tracker_.set_nodestate(old_origin->node(), traversal_nodestate::frontier);
+	tracker_.set_nodestate(node, traversal_nodestate::frontier);
 }
 
 }

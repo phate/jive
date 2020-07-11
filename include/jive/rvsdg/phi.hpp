@@ -507,8 +507,11 @@ public:
 	void
 	set_rvorigin(jive::output * origin);
 
-	virtual phi::node *
-	node() const noexcept override;
+	phi::node *
+	node() const noexcept
+	{
+		return static_cast<phi::node*>(structural_output::node());
+	}
 
 private:
 	rvargument * argument_;

@@ -39,20 +39,20 @@ bitslice_op::debug_string() const
 jive_unop_reduction_path_t
 bitslice_op::can_reduce_operand(const jive::output * arg) const noexcept
 {
+	auto node = node_output::node(arg);
 	auto & arg_type = *dynamic_cast<const bittype*>(&arg->type());
 
-	if ((low() == 0) && (high() == arg_type.nbits())) {
+	if ((low() == 0) && (high() == arg_type.nbits()))
 		return jive_unop_reduction_idempotent;
-	}
-	if (arg->node() && dynamic_cast<const bitslice_op*>(&arg->node()->operation())) {
+
+	if (is<bitslice_op>(node))
 		return jive_unop_reduction_narrow;
-	}
-	if (arg->node() && dynamic_cast<const bitconstant_op*>(&arg->node()->operation())) {
+
+	if (is<bitconstant_op>(node))
 		return jive_unop_reduction_constant;
-	}
-	if (arg->node() && dynamic_cast<const bitconcat_op*>(&arg->node()->operation())) {
+
+	if (is<bitconcat_op>(node))
 		return jive_unop_reduction_distribute;
-	}
 	
 	return jive_unop_reduction_none;
 }
@@ -65,14 +65,16 @@ bitslice_op::reduce_operand(
 	if (path == jive_unop_reduction_idempotent) {
 		return arg;
 	}
+
+	auto node = static_cast<node_output*>(arg)->node();
 	
 	if (path == jive_unop_reduction_narrow) {
-		auto op = static_cast<const bitslice_op&>(arg->node()->operation());
-		return jive_bitslice(arg->node()->input(0)->origin(), low() + op.low(), high() + op.low());
+		auto op = static_cast<const bitslice_op&>(node->operation());
+		return jive_bitslice(node->input(0)->origin(), low() + op.low(), high() + op.low());
 	}
 	
 	if (path == jive_unop_reduction_constant) {
-		auto op = static_cast<const bitconstant_op&>(arg->node()->operation());
+		auto op = static_cast<const bitconstant_op&>(node->operation());
 		std::string s(&op.value()[0]+low(), high()-low());
 		return create_bitconstant(arg->region(), s.c_str());
 	}
@@ -80,8 +82,8 @@ bitslice_op::reduce_operand(
 	if (path == jive_unop_reduction_distribute) {
 		size_t pos = 0, n;
 		std::vector<jive::output*> arguments;
-		for (n = 0; n < arg->node()->ninputs(); n++) {
-			auto argument = arg->node()->input(n)->origin();
+		for (n = 0; n < node->ninputs(); n++) {
+			auto argument = node->input(n)->origin();
 			size_t base = pos;
 			size_t nbits = static_cast<const bittype&>(argument->type()).nbits();
 			pos = pos + nbits;

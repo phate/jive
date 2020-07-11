@@ -46,7 +46,7 @@ static int test_unnchoose(void)
 	jive::view(graph.root(), stderr);
 
 	assert(x1->origin() == i0);
-	assert(c0->node()->operation() == c2->node()->operation());
+	assert(node_output::node(c0)->operation() == node_output::node(c2)->operation());
 
 	return 0;
 }
@@ -78,7 +78,7 @@ static int test_unnunify(void)
 
 	jive::view(graph.root(), stderr);
 
-	assert(u0->node()->operation() != u1->node()->operation());
+	assert(node_output::node(u0)->operation() != node_output::node(u1)->operation());
 
 	return 0;
 }

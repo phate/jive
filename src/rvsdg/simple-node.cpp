@@ -41,12 +41,6 @@ simple_output::~simple_output() noexcept
 	on_output_destroy(this);
 }
 
-simple_node *
-simple_output::node() const noexcept
-{
-	return static_cast<simple_node*>(node_output::node());
-}
-
 /* simple nodes */
 
 simple_node::~simple_node()

@@ -47,7 +47,7 @@ test_mux_mux_reduction()
 
 //	jive::view(graph.root(), stdout);
 
-	auto node = ex->origin()->node();
+	auto node = node_output::node(ex->origin());
 	assert(node->ninputs() == 4);
 	assert(node->input(0)->origin() == x);
 	assert(node->input(1)->origin() == y);
@@ -81,7 +81,7 @@ test_multiple_origin_reduction()
 
 	view(graph.root(), stdout);
 
-	assert(ex->origin()->node()->ninputs() == 1);
+	assert(node_output::node(ex->origin())->ninputs() == 1);
 }
 
 static int

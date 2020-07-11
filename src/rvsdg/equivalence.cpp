@@ -95,13 +95,13 @@ jive_equiv_state_check_node(jive_equiv_state * self, const jive::node * n1, cons
 
 	size_t n = 0;
 	for (n = 0; n < n1->ninputs(); ++n) {
-		auto o1 = n1->input(n)->origin();
-		auto o2 = n2->input(n)->origin();
-		
-		jive_node_equiv_entry * entry = jive_equiv_state_lookup(self, o1->node());
-		if (entry->second && entry->second != o2->node())
+		auto o1 = jive::node_output::node(n1->input(n)->origin());
+		auto o2 = jive::node_output::node(n2->input(n)->origin());
+
+		auto entry = jive_equiv_state_lookup(self, o1);
+		if (entry->second && entry->second != o2)
 			return false;
-		entry->second = o2->node();
+		entry->second = o2;
 	}
 	
 	return true;

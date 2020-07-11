@@ -43,13 +43,13 @@ test_flattened_binary_reduction()
 
 		assert(graph.root()->nnodes() == 3);
 
-		auto node0 = ex->origin()->node();
+		auto node0 = node_output::node(ex->origin());
 		assert(is<test::binary_op>(node0));
 
-		auto node1 = node0->input(0)->origin()->node();
+		auto node1 = node_output::node(node0->input(0)->origin());
 		assert(is<test::binary_op>(node1));
 
-		auto node2 = node0->input(1)->origin()->node();
+		auto node2 = node_output::node(node0->input(1)->origin());
 		assert(is<test::binary_op>(node2));
 	}
 
@@ -76,13 +76,13 @@ test_flattened_binary_reduction()
 
 		assert(graph.root()->nnodes() == 3);
 
-		auto node0 = ex->origin()->node();
+		auto node0 = node_output::node(ex->origin());
 		assert(is<test::binary_op>(node0));
 
-		auto node1 = node0->input(0)->origin()->node();
+		auto node1 = node_output::node(node0->input(0)->origin());
 		assert(is<test::binary_op>(node1));
 
-		auto node2 = node1->input(0)->origin()->node();
+		auto node2 = node_output::node(node1->input(0)->origin());
 		assert(is<test::binary_op>(node2));
 	}
 }

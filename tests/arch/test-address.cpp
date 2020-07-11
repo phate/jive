@@ -40,18 +40,18 @@ test_memberof()
 	view(graph, stdout);
 
 	assert(ex0->origin() == i0);
-	assert(is<memberof_op>(ex1->origin()->node()));
-	assert(is<memberof_op>(ex2->origin()->node()));
+	assert(is<memberof_op>(node_output::node(ex1->origin())));
+	assert(is<memberof_op>(node_output::node(ex2->origin())));
 
 	memlayout_mapper_simple mapper(4);
-	transform_address(ex1->origin()->node(), mapper);
-	transform_address(ex2->origin()->node(), mapper);
+	transform_address(node_output::node(ex1->origin()), mapper);
+	transform_address(node_output::node(ex2->origin()), mapper);
 
 	graph.prune();
 	view(graph, stdout);
 
-	assert(is<bit2addr_op>(ex1->origin()->node()));
-	assert(is<bit2addr_op>(ex2->origin()->node()));
+	assert(is<bit2addr_op>(node_output::node(ex1->origin())));
+	assert(is<bit2addr_op>(node_output::node(ex2->origin())));
 
 	return 0;
 }
@@ -82,18 +82,18 @@ test_containerof()
 	view(graph, stdout);
 
 	assert(ex0->origin() == i0);
-	assert(is<containerof_op>(ex1->origin()->node()));
-	assert(is<containerof_op>(ex2->origin()->node()));
+	assert(is<containerof_op>(node_output::node(ex1->origin())));
+	assert(is<containerof_op>(node_output::node(ex2->origin())));
 
 	memlayout_mapper_simple mapper(4);
-	transform_address(ex1->origin()->node(), mapper);
-	transform_address(ex2->origin()->node(), mapper);
+	transform_address(node_output::node(ex1->origin()), mapper);
+	transform_address(node_output::node(ex2->origin()), mapper);
 
 	graph.prune();
 	view(graph, stdout);
 
-	assert(is<bit2addr_op>(ex1->origin()->node()));
-	assert(is<bit2addr_op>(ex2->origin()->node()));
+	assert(is<bit2addr_op>(node_output::node(ex1->origin())));
+	assert(is<bit2addr_op>(node_output::node(ex2->origin())));
 
 	return 0;
 }
@@ -116,15 +116,15 @@ test_arraysubscript()
 
 	view(graph, stdout);
 
-	assert(is<arraysubscript_op>(ex0->origin()->node()));
+	assert(is<arraysubscript_op>(node_output::node(ex0->origin())));
 
 	memlayout_mapper_simple mapper(4);
-	transform_address(ex0->origin()->node(), mapper);
+	transform_address(node_output::node(ex0->origin()), mapper);
 
 	graph.prune();
 	view(graph, stdout);
 
-	assert(is<bit2addr_op>(ex0->origin()->node()));
+	assert(is<bit2addr_op>(node_output::node(ex0->origin())));
 
 	return 0;
 }
@@ -147,15 +147,15 @@ test_arrayindex()
 
 	view(graph, stdout);
 
-	assert(is<arrayindex_op>(ex0->origin()->node()));
+	assert(is<arrayindex_op>(node_output::node(ex0->origin())));
 
 	memlayout_mapper_simple mapper(4);
-	transform_address(ex0->origin()->node(), mapper);
+	transform_address(node_output::node(ex0->origin()), mapper);
 
 	graph.prune();
 	view(graph, stdout);
 
-	assert(is<bitsdiv_op>(ex0->origin()->node()));
+	assert(is<bitsdiv_op>(node_output::node(ex0->origin())));
 
 	return 0;
 }

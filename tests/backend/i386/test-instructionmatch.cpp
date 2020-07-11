@@ -106,7 +106,7 @@ test_bitoperations()
 		pair.second.first(graph, i386::gpr_regcls);
 		i386::match_instructions(&graph);
 
-		auto node = graph.root()->result(0)->origin()->node();
+		auto node = node_output::node(graph.root()->result(0)->origin());
 		assert(is_instruction_node(node));
 
 		auto i = static_cast<const instruction_op*>(&node->operation())->icls();
@@ -141,7 +141,7 @@ test_bitoperations()
 		pair.second.first(graph, i386::gpr_regcls, i386::cc_regcls);
 		i386::match_instructions(&graph);
 
-		auto node = graph.root()->result(0)->origin()->node();
+		auto node = node_output::node(graph.root()->result(0)->origin());
 		assert(is_instruction_node(node));
 
 		auto i = static_cast<const instruction_op*>(&node->operation())->icls();
@@ -162,7 +162,7 @@ test_regvalue()
 
 	i386::match_instructions(&graph);
 
-	auto node = x0->origin()->node();
+	auto node = node_output::node(x0->origin());
 	assert(is_instruction_node(node));
 
 	auto i = static_cast<const instruction_op*>(&node->operation())->icls();
@@ -179,14 +179,14 @@ test_load()
 	auto i1 = graph.add_import({memtype::instance(), ""});
 
 	auto l = bitload_op::create(i0, 32, bit32, {i1});
-	l->node()->input(0)->replace(&i386::gpr_regcls);
-	l->node()->output(0)->replace(&i386::gpr_regcls);
+	node_output::node(l)->input(0)->replace(&i386::gpr_regcls);
+	node_output::node(l)->output(0)->replace(&i386::gpr_regcls);
 
 	auto x0 = graph.add_export(l, {l->type(), ""});
 
 	i386::match_instructions(&graph);
 
-	auto node = x0->origin()->node();
+	auto node = node_output::node(x0->origin());
 	assert(is_instruction_node(node));
 
 	auto i = static_cast<const instruction_op*>(&node->operation())->icls();
@@ -204,14 +204,14 @@ test_store()
 	auto i2 = graph.add_import({memtype::instance(), ""});
 
 	auto s = bitstore_op::create(i0, i1, 32, bit32, {i2})[0];
-	s->node()->input(0)->replace(&i386::gpr_regcls);
-	s->node()->input(1)->replace(&i386::gpr_regcls);
+	node_output::node(s)->input(0)->replace(&i386::gpr_regcls);
+	node_output::node(s)->input(1)->replace(&i386::gpr_regcls);
 
 	auto x0 = graph.add_export(s, {s->type(), ""});
 
 	i386::match_instructions(&graph);
 
-	auto node = x0->origin()->node();
+	auto node = node_output::node(x0->origin());
 	assert(is_instruction_node(node));
 
 	auto i = static_cast<const instruction_op*>(&node->operation())->icls();

@@ -104,7 +104,7 @@ jive_unop_reduction_path_t
 choose_op::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
-	if (arg->node() && dynamic_cast<const unify_op*>(&arg->node()->operation()))
+	if (is<unify_op>(node_output::node(arg)))
 		return jive_unop_reduction_inverse;
 
 	return jive_unop_reduction_none;
@@ -115,8 +115,10 @@ choose_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
+	auto node = static_cast<node_output*>(arg)->node();
+
 	if (path == jive_unop_reduction_inverse)
-		return arg->node()->input(0)->origin();
+		return node->input(0)->origin();
 
 	return nullptr;
 }

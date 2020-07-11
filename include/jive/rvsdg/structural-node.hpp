@@ -139,8 +139,11 @@ public:
 		return node->append_output(std::move(output));
 	}
 
-	virtual jive::structural_node *
-	node() const noexcept override;
+	structural_node *
+	node() const noexcept
+	{
+		return static_cast<structural_node*>(node_output::node());
+	}
 
 	result_list results;
 };

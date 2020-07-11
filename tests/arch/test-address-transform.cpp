@@ -52,14 +52,14 @@ test_address_transform_nodes(void)
 	auto a2 = addr2bit_op::create(i0, 32, i0->type());
 	auto a3 = addr2bit_op::create(i0, 32, i0->type());
 
-	assert(a2->node()->operation() == a3->node()->operation());
-	assert(b2->node()->operation() == b3->node()->operation());
+	assert(node_output::node(a2)->operation() == node_output::node(a3)->operation());
+	assert(node_output::node(b2)->operation() == node_output::node(b3)->operation());
 
 	auto b4 = bit2addr_op::create(i2, 64, at);
 	auto a4 = addr2bit_op::create(i0, 64, at);
 
-	assert(a2->node()->operation() != a4->node()->operation());
-	assert(b2->node()->operation() != b4->node()->operation());
+	assert(node_output::node(a2)->operation() != node_output::node(a4)->operation());
+	assert(node_output::node(b2)->operation() != node_output::node(b4)->operation());
 
 	jive::view(graph.root(), stderr);
 
@@ -88,11 +88,11 @@ test_apply_transform(void)
 	jive::view(graph.root(), stdout);
 
 	memlayout_mapper_simple mapper(4);
-	transform_address(results[0]->node(), mapper);
+	transform_address(node_output::node(results[0]), mapper);
 
 	jive::view(graph.root(), stdout);
 
-	assert(is<bit2addr_op>(x0->origin()->node()));
+	assert(is<bit2addr_op>(node_output::node(x0->origin())));
 
 	return 0;
 }
@@ -150,24 +150,24 @@ test_containerof_transform(void)
 		}
 	}
 
-	auto sum = ex0->origin()->node();
+	auto sum = node_output::node(ex0->origin());
 	assert(sum->operation() == bitsub_op(32));
-	auto constant = sum->input(1)->origin()->node();
+	auto constant = node_output::node(sum->input(1)->origin());
 	assert(constant->operation() == int_constant_op(32, 0));
 
-	sum = ex1->origin()->node();
+	sum = node_output::node(ex1->origin());
 	assert(sum->operation() == bitsub_op(32));
-	constant = sum->input(1)->origin()->node();
+	constant = node_output::node(sum->input(1)->origin());
 	assert(constant->operation() == int_constant_op(32, 2));
 
-	sum = ex2->origin()->node();
+	sum = node_output::node(ex2->origin());
 	assert(sum->operation() == bitsub_op(32));
-	constant = sum->input(1)->origin()->node();
+	constant = node_output::node(sum->input(1)->origin());
 	assert(constant->operation() == int_constant_op(32, 4));
 
-	sum = ex3->origin()->node();
+	sum = node_output::node(ex3->origin());
 	assert(sum->operation() == bitsub_op(32));
-	constant = sum->input(1)->origin()->node();
+	constant = node_output::node(sum->input(1)->origin());
 	assert(constant->operation() == int_constant_op(32, 8));
 
 	return 0;
@@ -221,24 +221,24 @@ test_memberof_transform(void)
 		}
 	}
 
-	auto sum = ex0->origin()->node();
+	auto sum = node_output::node(ex0->origin());
 	assert(sum->operation() == bitadd_op(32));
-	auto constant = sum->input(1)->origin()->node();
+	auto constant = node_output::node(sum->input(1)->origin());
 	assert(constant->operation() == int_constant_op(32, 0));
 
-	sum = ex1->origin()->node();
+	sum = node_output::node(ex1->origin());
 	assert(sum->operation() == bitadd_op(32));
-	constant = sum->input(1)->origin()->node();
+	constant = node_output::node(sum->input(1)->origin());
 	assert(constant->operation() == int_constant_op(32, 2));
 
-	sum = ex2->origin()->node();
+	sum = node_output::node(ex2->origin());
 	assert(sum->operation() == bitadd_op(32));
-	constant = sum->input(1)->origin()->node();
+	constant = node_output::node(sum->input(1)->origin());
 	assert(constant->operation() == int_constant_op(32, 4));
 
-	sum = ex3->origin()->node();
+	sum = node_output::node(ex3->origin());
 	assert(sum->operation() == bitadd_op(32));
-	constant = sum->input(1)->origin()->node();
+	constant = node_output::node(sum->input(1)->origin());
 	assert(constant->operation() == int_constant_op(32, 8));
 
 	return 0;

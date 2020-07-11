@@ -56,9 +56,6 @@ protected:
 	operator=(argument &&) = delete;
 
 public:
-	virtual jive::node *
-	node() const noexcept override;
-
 	inline jive::structural_input *
 	input() const noexcept
 	{

@@ -33,28 +33,28 @@ static int test_main(void)
 	auto o0 = lbl2addr_op::create(graph.root(), &foobar);
 	auto o1 = lbl2addr_op::create(graph.root(), &bla);
 
-	auto attrs0 = dynamic_cast<const lbl2addr_op*>(&o0->node()->operation());
-	auto attrs1 = dynamic_cast<const lbl2addr_op*>(&o1->node()->operation());
+	auto attrs0 = dynamic_cast<const lbl2addr_op*>(&node_output::node(o0)->operation());
+	auto attrs1 = dynamic_cast<const lbl2addr_op*>(&node_output::node(o1)->operation());
 
 	assert(attrs0->label() == &foobar);
 	assert(attrs1->label() == &bla);
 	
-	assert(o0->node()->operation() != *attrs1);
+	assert(node_output::node(o0)->operation() != *attrs1);
 	
 	auto o2 = lbl2bit_op::create(graph.root(), 32, &foobar);
 	auto o3 = lbl2bit_op::create(graph.root(), 32, &bla);
 	auto o4 = lbl2bit_op::create(graph.root(), 16, &foobar);
 
-	auto attrs2 = dynamic_cast<const lbl2bit_op*>(&o2->node()->operation());
-	auto attrs3 = dynamic_cast<const lbl2bit_op*>(&o3->node()->operation());
-	auto attrs4 = dynamic_cast<const lbl2bit_op*>(&o4->node()->operation());
+	auto attrs2 = dynamic_cast<const lbl2bit_op*>(&node_output::node(o2)->operation());
+	auto attrs3 = dynamic_cast<const lbl2bit_op*>(&node_output::node(o3)->operation());
+	auto attrs4 = dynamic_cast<const lbl2bit_op*>(&node_output::node(o4)->operation());
 
 	assert(attrs2->label() == &foobar);
 	assert(attrs3->label() == &bla);
 	assert(attrs4->label() == &foobar);
 	
-	assert(o2->node()->operation() != *attrs4);
-	assert(o2->node()->operation() != *attrs3);
+	assert(node_output::node(o2)->operation() != *attrs4);
+	assert(node_output::node(o2)->operation() != *attrs3);
 	
 	graph.add_export(o0, {o0->type(), ""});
 	graph.add_export(o1, {o1->type(), ""});
@@ -65,8 +65,8 @@ static int test_main(void)
 	jive::view(graph.root(), stderr);
 
 	memlayout_mapper_simple mapper(4);
-	transform_address(o0->node(), mapper);
-	transform_address(o1->node(), mapper);
+	transform_address(node_output::node(o0), mapper);
+	transform_address(node_output::node(o1), mapper);
 
 	graph.prune();
 	jive::view(graph.root(), stderr);

@@ -40,8 +40,8 @@ static int types_bitstring_arithmetic_test_bitand(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(and0->node()->operation() == bitand_op(32));
-	assert(and1->node()->operation() == int_constant_op(32, +1));
+	assert(node_output::node(and0)->operation() == bitand_op(32));
+	assert(node_output::node(and1)->operation() == int_constant_op(32, +1));
 
 	return 0;
 }
@@ -78,11 +78,11 @@ static int types_bitstring_arithmetic_test_bitashr(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(ashr0->node()->operation() == bitashr_op(32));
-	assert(ashr1->node()->operation() == int_constant_op(32, 4));
-	assert(ashr2->node()->operation() == int_constant_op(32, 0));
-	assert(ashr3->node()->operation() == int_constant_op(32, -4));
-	assert(ashr4->node()->operation() == int_constant_op(32, -1));
+	assert(node_output::node(ashr0)->operation() == bitashr_op(32));
+	assert(node_output::node(ashr1)->operation() == int_constant_op(32, 4));
+	assert(node_output::node(ashr2)->operation() == int_constant_op(32, 0));
+	assert(node_output::node(ashr3)->operation() == int_constant_op(32, -4));
+	assert(node_output::node(ashr4)->operation() == int_constant_op(32, -1));
 
 	return 0;
 }
@@ -107,7 +107,7 @@ static int types_bitstring_arithmetic_test_bitdifference(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(diff->node()->operation() == bitsub_op(32));
+	assert(node_output::node(diff)->operation() == bitsub_op(32));
 
 	return 0;
 }
@@ -135,9 +135,9 @@ static int types_bitstring_arithmetic_test_bitnegate(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(neg0->node()->operation() == bitneg_op(32));
-	assert(neg1->node()->operation() == int_constant_op(32, -3));
-	assert(neg2->node()->operation() == int_constant_op(32, 3));
+	assert(node_output::node(neg0)->operation() == bitneg_op(32));
+	assert(node_output::node(neg1)->operation() == int_constant_op(32, -3));
+	assert(node_output::node(neg2)->operation() == int_constant_op(32, 3));
 
 	return 0;
 }
@@ -165,9 +165,9 @@ static int types_bitstring_arithmetic_test_bitnot(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(not0->node()->operation() == bitnot_op(32));
-	assert(not1->node()->operation() == int_constant_op(32, -4));
-	assert(not2->node()->operation() == int_constant_op(32, 3));
+	assert(node_output::node(not0)->operation() == bitnot_op(32));
+	assert(node_output::node(not1)->operation() == int_constant_op(32, -4));
+	assert(node_output::node(not2)->operation() == int_constant_op(32, 3));
 
 	return 0;
 }
@@ -196,8 +196,8 @@ static int types_bitstring_arithmetic_test_bitor(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(or0->node()->operation() == bitor_op(32));
-	assert(or1->node()->operation() == uint_constant_op(32, 7));
+	assert(node_output::node(or0)->operation() == bitor_op(32));
+	assert(node_output::node(or1)->operation() == uint_constant_op(32, 7));
 
 	return 0;
 }
@@ -227,8 +227,8 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(product0->node()->operation() == bitmul_op(32));
-	assert(product1->node()->operation() == uint_constant_op(32, 15));
+	assert(node_output::node(product0)->operation() == bitmul_op(32));
+	assert(node_output::node(product1)->operation() == uint_constant_op(32, 15));
 
 	return 0;
 }
@@ -253,7 +253,7 @@ static int types_bitstring_arithmetic_test_bitshiproduct(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(shiproduct->node()->operation() == bitsmulh_op(32));
+	assert(node_output::node(shiproduct)->operation() == bitsmulh_op(32));
 
 	return 0;
 }
@@ -285,9 +285,9 @@ static int types_bitstring_arithmetic_test_bitshl(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(shl0->node()->operation() == bitshl_op(32));
-	assert(shl1->node()->operation() == uint_constant_op(32, 64));
-	assert(shl2->node()->operation() == uint_constant_op(32, 0));
+	assert(node_output::node(shl0)->operation() == bitshl_op(32));
+	assert(node_output::node(shl1)->operation() == uint_constant_op(32, 64));
+	assert(node_output::node(shl2)->operation() == uint_constant_op(32, 0));
 
 	return 0;
 }
@@ -319,9 +319,9 @@ static int types_bitstring_arithmetic_test_bitshr(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 	
-	assert(shr0->node()->operation() == bitshr_op(32));
-	assert(shr1->node()->operation() == uint_constant_op(32, 4));
-	assert(shr2->node()->operation() == uint_constant_op(32, 0));
+	assert(node_output::node(shr0)->operation() == bitshr_op(32));
+	assert(node_output::node(shr1)->operation() == uint_constant_op(32, 4));
+	assert(node_output::node(shr2)->operation() == uint_constant_op(32, 0));
 
 	return 0;
 }
@@ -351,8 +351,8 @@ static int types_bitstring_arithmetic_test_bitsmod(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(smod0->node()->operation() == bitsmod_op(32));
-	assert(smod1->node()->operation() == int_constant_op(32, -1));
+	assert(node_output::node(smod0)->operation() == bitsmod_op(32));
+	assert(node_output::node(smod1)->operation() == int_constant_op(32, -1));
 
 	return 0;
 }
@@ -382,8 +382,8 @@ static int types_bitstring_arithmetic_test_bitsquotient(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(squot0->node()->operation() == bitsdiv_op(32));
-	assert(squot1->node()->operation() == int_constant_op(32, -2));
+	assert(node_output::node(squot0)->operation() == bitsdiv_op(32));
+	assert(node_output::node(squot1)->operation() == int_constant_op(32, -2));
 
 	return 0;
 }
@@ -413,8 +413,8 @@ static int types_bitstring_arithmetic_test_bitsum(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(sum0->node()->operation() == bitadd_op(32));
-	assert(sum1->node()->operation() == int_constant_op(32, 8));
+	assert(node_output::node(sum0)->operation() == bitadd_op(32));
+	assert(node_output::node(sum1)->operation() == int_constant_op(32, 8));
 
 	return 0;
 }
@@ -439,7 +439,7 @@ static int types_bitstring_arithmetic_test_bituhiproduct(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(uhiproduct->node()->operation() == bitumulh_op(32));
+	assert(node_output::node(uhiproduct)->operation() == bitumulh_op(32));
 
 	return 0;
 }
@@ -469,8 +469,8 @@ static int types_bitstring_arithmetic_test_bitumod(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(umod0->node()->operation() == bitumod_op(32));
-	assert(umod1->node()->operation() == int_constant_op(32, 1));
+	assert(node_output::node(umod0)->operation() == bitumod_op(32));
+	assert(node_output::node(umod1)->operation() == int_constant_op(32, 1));
 
 	return 0;
 }
@@ -500,8 +500,8 @@ static int types_bitstring_arithmetic_test_bituquotient(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(uquot0->node()->operation() == bitudiv_op(32));
-	assert(uquot1->node()->operation() == int_constant_op(32, 2));
+	assert(node_output::node(uquot0)->operation() == bitudiv_op(32));
+	assert(node_output::node(uquot1)->operation() == int_constant_op(32, 2));
 
 	return 0;
 }
@@ -530,8 +530,8 @@ static int types_bitstring_arithmetic_test_bitxor(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(xor0->node()->operation() == bitxor_op(32));
-	assert(xor1->node()->operation() == int_constant_op(32, 6));
+	assert(node_output::node(xor0)->operation() == bitxor_op(32));
+	assert(node_output::node(xor1)->operation() == int_constant_op(32, 6));
 
 	return 0;
 }
@@ -542,14 +542,16 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitxor",
 static inline void
 expect_static_true(jive::output * port)
 {
-	auto op = dynamic_cast<const jive::bitconstant_op*>(&port->node()->operation());
+	auto node = jive::node_output::node(port);
+	auto op = dynamic_cast<const jive::bitconstant_op*>(&node->operation());
 	assert(op && op->value().nbits() == 1 && op->value().str() == "1");
 }
 
 static inline void
 expect_static_false(jive::output * port)
 {
-	auto op = dynamic_cast<const jive::bitconstant_op*>(&port->node()->operation());
+	auto node = jive::node_output::node(port);
+	auto op = dynamic_cast<const jive::bitconstant_op*>(&node->operation());
 	assert(op && op->value().nbits() == 1 && op->value().str() == "0");
 }
 
@@ -578,10 +580,10 @@ static int types_bitstring_comparison_test_bitequal(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(equal0->node()->operation() == biteq_op(32));
+	assert(node_output::node(equal0)->operation() == biteq_op(32));
 	expect_static_true(equal1);
 	expect_static_false(equal2);
-	assert(equal3->node()->operation() == biteq_op(32));
+	assert(node_output::node(equal3)->operation() == biteq_op(32));
 
 	return 0;
 }
@@ -614,10 +616,10 @@ static int types_bitstring_comparison_test_bitnotequal(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(nequal0->node()->operation() == bitne_op(32));
+	assert(node_output::node(nequal0)->operation() == bitne_op(32));
 	expect_static_false(nequal1);
 	expect_static_true(nequal2);
-	assert(nequal3->node()->operation() == bitne_op(32));
+	assert(node_output::node(nequal3)->operation() == bitne_op(32));
 
 	return 0;
 }
@@ -653,7 +655,7 @@ static int types_bitstring_comparison_test_bitsgreater(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(sgreater0->node()->operation() == bitsgt_op(32));
+	assert(node_output::node(sgreater0)->operation() == bitsgt_op(32));
 	expect_static_false(sgreater1);
 	expect_static_true(sgreater2);
 	expect_static_false(sgreater3);
@@ -695,7 +697,7 @@ static int types_bitstring_comparison_test_bitsgreatereq(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(sgreatereq0->node()->operation() == bitsge_op(32));
+	assert(node_output::node(sgreatereq0)->operation() == bitsge_op(32));
 	expect_static_false(sgreatereq1);
 	expect_static_true(sgreatereq2);
 	expect_static_true(sgreatereq3);
@@ -736,7 +738,7 @@ static int types_bitstring_comparison_test_bitsless(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(sless0->node()->operation() == bitslt_op(32));
+	assert(node_output::node(sless0)->operation() == bitslt_op(32));
 	expect_static_true(sless1);
 	expect_static_false(sless2);
 	expect_static_false(sless3);
@@ -778,7 +780,7 @@ static int types_bitstring_comparison_test_bitslesseq(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(slesseq0->node()->operation() == bitsle_op(32));
+	assert(node_output::node(slesseq0)->operation() == bitsle_op(32));
 	expect_static_true(slesseq1);
 	expect_static_true(slesseq2);
 	expect_static_false(slesseq3);
@@ -819,7 +821,7 @@ static int types_bitstring_comparison_test_bitugreater(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(ugreater0->node()->operation() == bitugt_op(32));
+	assert(node_output::node(ugreater0)->operation() == bitugt_op(32));
 	expect_static_false(ugreater1);
 	expect_static_true(ugreater2);
 	expect_static_false(ugreater3);
@@ -861,7 +863,7 @@ static int types_bitstring_comparison_test_bitugreatereq(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(ugreatereq0->node()->operation() == bituge_op(32));
+	assert(node_output::node(ugreatereq0)->operation() == bituge_op(32));
 	expect_static_false(ugreatereq1);
 	expect_static_true(ugreatereq2);
 	expect_static_true(ugreatereq3);
@@ -902,7 +904,7 @@ static int types_bitstring_comparison_test_bituless(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(uless0->node()->operation() == bitult_op(32));
+	assert(node_output::node(uless0)->operation() == bitult_op(32));
 	expect_static_true(uless1);
 	expect_static_false(uless2);
 	expect_static_false(uless3);
@@ -944,7 +946,7 @@ static int types_bitstring_comparison_test_bitulesseq(void)
 	graph.prune();
 	jive::view(graph.root(), stdout);
 
-	assert(ulesseq0->node()->operation() == bitule_op(32));
+	assert(node_output::node(ulesseq0)->operation() == bitule_op(32));
 	expect_static_true(ulesseq1);
 	expect_static_true(ulesseq2);
 	expect_static_false(ulesseq3);
@@ -973,29 +975,29 @@ static int types_bitstring_test_constant(void)
 
 	jive::graph graph;
 
-	auto b1 = create_bitconstant(graph.root(), "00110011");
-	auto b2 = create_bitconstant(graph.root(), 8, 204);
-	auto b3 = create_bitconstant(graph.root(), 8, 204);
-	auto b4 = create_bitconstant(graph.root(), "001100110");
+	auto b1 = node_output::node(create_bitconstant(graph.root(), "00110011"));
+	auto b2 = node_output::node(create_bitconstant(graph.root(), 8, 204));
+	auto b3 = node_output::node(create_bitconstant(graph.root(), 8, 204));
+	auto b4 = node_output::node(create_bitconstant(graph.root(), "001100110"));
 	
-	assert(b1->node()->operation() == uint_constant_op(8, 204));
-	assert(b1->node()->operation() == int_constant_op(8, -52));
+	assert(b1->operation() == uint_constant_op(8, 204));
+	assert(b1->operation() == int_constant_op(8, -52));
 
-	assert(b1->node() == b2->node());
-	assert(b1->node() == b3->node());
+	assert(b1 == b2);
+	assert(b1 == b3);
 	
-	assert(b1->node()->operation() == uint_constant_op(8, 204));
-	assert(b1->node()->operation() == int_constant_op(8, -52));
+	assert(b1->operation() == uint_constant_op(8, 204));
+	assert(b1->operation() == int_constant_op(8, -52));
 
-	assert(b4->node()->operation() == uint_constant_op(9, 204));
-	assert(b4->node()->operation() == int_constant_op(9, 204));
+	assert(b4->operation() == uint_constant_op(9, 204));
+	assert(b4->operation() == int_constant_op(9, 204));
 
-	auto plus_one_128 = create_bitconstant(graph.root(), ONE_64 ZERO_64);
-	assert(plus_one_128->node()->operation() == uint_constant_op(128, 1));
-	assert(plus_one_128->node()->operation() == int_constant_op(128, 1));
+	auto plus_one_128 = node_output::node(create_bitconstant(graph.root(), ONE_64 ZERO_64));
+	assert(plus_one_128->operation() == uint_constant_op(128, 1));
+	assert(plus_one_128->operation() == int_constant_op(128, 1));
 
-	auto minus_one_128 = create_bitconstant(graph.root(), MONE_64 MONE_64);
-	assert(minus_one_128->node()->operation() == int_constant_op(128, -1));
+	auto minus_one_128 = node_output::node(create_bitconstant(graph.root(), MONE_64 MONE_64));
+	assert(minus_one_128->operation() == int_constant_op(128, -1));
 
 	jive::view(graph.root(), stdout);
 
@@ -1020,29 +1022,30 @@ static int types_bitstring_test_normalize(void)
 	assert(sum_nf);
 	sum_nf->set_mutable(false);
 
-	auto sum0 = bitadd_op::create(32, imp, c0);
-	assert(sum0->node()->operation() == bitadd_op(32));
-	assert(sum0->node()->ninputs() == 2);
+	auto sum0 = node_output::node(bitadd_op::create(32, imp, c0));
+	assert(sum0->operation() == bitadd_op(32));
+	assert(sum0->ninputs() == 2);
 
-	auto sum1 = bitadd_op::create(32, sum0, c1);
-	assert(sum1->node()->operation() == bitadd_op(32));
-	assert(sum1->node()->ninputs() == 2);
+	auto sum1 = node_output::node(bitadd_op::create(32, sum0->output(0), c1));
+	assert(sum1->operation() == bitadd_op(32));
+	assert(sum1->ninputs() == 2);
 
-	auto exp = graph.add_export(sum1, {sum1->type(), "dummy"});
+	auto exp = graph.add_export(sum1->output(0), {sum1->output(0)->type(), "dummy"});
 
 	sum_nf->set_mutable(true);
 	graph.normalize();
 	graph.prune();
 
-	assert(exp->origin()->node()->operation() == bitadd_op(32));
-	assert(exp->origin()->node()->ninputs() == 2);
-	auto op1 = exp->origin()->node()->input(0)->origin();
-	auto op2 = exp->origin()->node()->input(1)->origin();
-	if (!op1->node()) {
+	auto origin = dynamic_cast<node_output*>(exp->origin());
+	assert(origin->node()->operation() == bitadd_op(32));
+	assert(origin->node()->ninputs() == 2);
+	auto op1 = origin->node()->input(0)->origin();
+	auto op2 = origin->node()->input(1)->origin();
+	if (!is<node_output>(op1)) {
 		auto tmp = op1; op1 = op2; op2 = tmp;
 	}
 	/* FIXME: the graph traversers are currently broken, that is why it won't normalize */
-	assert(op1->node()->operation() == int_constant_op(32, 3 + 4));
+	assert(node_output::node(op1)->operation() == int_constant_op(32, 3 + 4));
 	assert(op2 == imp);
 
 	jive::view(graph.root(), stdout);
@@ -1055,7 +1058,8 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/test-normalize", types_bitstring_test_n
 static void
 assert_constant(jive::output * bitstr, size_t nbits, const char bits[])
 {
-	auto op = dynamic_cast<const jive::bitconstant_op &>(bitstr->node()->operation());
+	auto node = jive::node_output::node(bitstr);
+	auto op = dynamic_cast<const jive::bitconstant_op &>(node->operation());
 	assert(op.value() == jive::bitvalue_repr(std::string(bits, nbits).c_str()));
 }
 
@@ -1084,21 +1088,22 @@ static int types_bitstring_test_reduction(void)
 	
 	{
 		auto concat = jive_bitconcat({x, y});
-		auto slice = jive_bitslice(concat, 8, 24);
-		auto node = slice->node();
+		auto node = node_output::node(jive_bitslice(concat, 8, 24));
+		auto o0 = dynamic_cast<node_output*>(node->input(0)->origin());
+		auto o1 = dynamic_cast<node_output*>(node->input(1)->origin());
 		assert(dynamic_cast<const bitconcat_op*>(&node->operation()));
 		assert(node->ninputs() == 2);
-		assert(dynamic_cast<const bitslice_op*>(&node->input(0)->origin()->node()->operation()));
-		assert(dynamic_cast<const bitslice_op*>(&node->input(1)->origin()->node()->operation()));
+		assert(dynamic_cast<const bitslice_op*>(&o0->node()->operation()));
+		assert(dynamic_cast<const bitslice_op*>(&o1->node()->operation()));
 		
 		const bitslice_op * attrs;
-		attrs = dynamic_cast<const bitslice_op*>(&node->input(0)->origin()->node()->operation());
+		attrs = dynamic_cast<const bitslice_op*>(&o0->node()->operation());
 		assert( (attrs->low() == 8) && (attrs->high() == 16) );
-		attrs = dynamic_cast<const bitslice_op*>(&node->input(1)->origin()->node()->operation());
+		attrs = dynamic_cast<const bitslice_op*>(&o1->node()->operation());
 		assert( (attrs->low() == 0) && (attrs->high() == 8) );
 		
-		assert(node->input(0)->origin()->node()->input(0)->origin() == x);
-		assert(node->input(1)->origin()->node()->input(0)->origin() == y);
+		assert(o0->node()->input(0)->origin() == x);
+		assert(o1->node()->input(0)->origin() == y);
 	}
 	
 	{
@@ -1128,20 +1133,20 @@ static int types_bitstring_test_slice_concat(void)
 	
 	{
 		/* slice of constant */
-		auto a = jive_bitslice(base_const1, 2, 6);
+		auto a = node_output::node(jive_bitslice(base_const1, 2, 6));
 		
-		auto & op = dynamic_cast<const bitconstant_op&>(a->node()->operation());
+		auto & op = dynamic_cast<const bitconstant_op&>(a->operation());
 		assert(op.value() == bitvalue_repr("1101"));
 	}
 	
 	{
 		/* slice of slice */
 		auto a = jive_bitslice(base_x, 2, 6);
-		auto b = jive_bitslice(a, 1, 3);
+		auto b = node_output::node(jive_bitslice(a, 1, 3));
 
-		assert(dynamic_cast<const bitslice_op*>(&b->node()->operation()));
+		assert(dynamic_cast<const bitslice_op*>(&b->operation()));
 		const bitslice_op * attrs;
-		attrs = dynamic_cast<const bitslice_op*>(&b->node()->operation());
+		attrs = dynamic_cast<const bitslice_op*>(&b->operation());
 		assert(attrs->low() == 3 && attrs->high() == 5);
 	}
 	
@@ -1165,13 +1170,13 @@ static int types_bitstring_test_slice_concat(void)
 	{
 		/* concat flattening */
 		auto a = jive_bitconcat({base_x, base_y});
-		auto b = jive_bitconcat({a, base_z});
+		auto b = node_output::node(jive_bitconcat({a, base_z}));
 		
-		assert(dynamic_cast<const bitconcat_op*>(&b->node()->operation()));
-		assert(b->node()->ninputs() == 3);
-		assert(b->node()->input(0)->origin() == base_x);
-		assert(b->node()->input(1)->origin() == base_y);
-		assert(b->node()->input(2)->origin() == base_z);
+		assert(dynamic_cast<const bitconcat_op*>(&b->operation()));
+		assert(b->ninputs() == 3);
+		assert(b->input(0)->origin() == base_x);
+		assert(b->input(1)->origin() == base_y);
+		assert(b->input(2)->origin() == base_z);
 	}
 	
 	{
@@ -1192,9 +1197,9 @@ static int types_bitstring_test_slice_concat(void)
 	
 	{
 		/* concat of constants */
-		auto a = jive_bitconcat({base_const1, base_const2});
+		auto a = node_output::node(jive_bitconcat({base_const1, base_const2}));
 		
-		auto & op = dynamic_cast<const bitconstant_op&>(a->node()->operation());
+		auto & op = dynamic_cast<const bitconstant_op&>(a->operation());
 		assert(op.value() == bitvalue_repr("0011011111001000"));
 	}
 	

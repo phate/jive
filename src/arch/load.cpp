@@ -64,27 +64,30 @@ is_matching_store_op(const jive::load_op & l_op, const jive::operation & op)
 
 static bool is_matching_store_node(
 	const jive::load_op & l_op, const jive::output * address,
-	const jive::node * node) {
-	return node &&
-		is_matching_store_op(l_op, node->operation()) &&
-		node->input(0)->origin() == address;
+	const jive::node * node)
+{
+	return node
+	    && is_matching_store_op(l_op, node->operation())
+	    && node->input(0)->origin() == address;
 }
 
 bool
 load_normal_form::normalize_node(jive::node * node) const
 {
 	if (get_mutable() && get_reducible()) {
-		const jive::load_op & l_op = static_cast<const jive::load_op &>(node->operation());
+		auto & l_op = static_cast<const jive::load_op &>(node->operation());
 		auto address = node->input(0)->origin();
-		jive::node * store_node =
-			(node->ninputs() >= 2 &&
-				is_matching_store_node(l_op, address,
-				node->input(1)->origin()->node())) ?
-			node->input(1)->origin()->node() : nullptr;
+
+		jive::node * store_node = nullptr;
+		if (node->ninputs() >= 2) {
+			auto n = node_output::node(node->input(1)->origin());
+			if (n && is_matching_store_node(l_op, address, n))
+				store_node = n;
+		}
+
 		for (size_t n = 2; n < node->ninputs(); ++n) {
-			if (node->input(n)->origin()->node() != store_node) {
+			if (node_output::node(node->input(n)->origin()) != store_node)
 				store_node = nullptr;
-			}
 		}
 		if (store_node) {
 			node->output(0)->divert_users(store_node->input(1)->origin());
@@ -103,14 +106,16 @@ load_normal_form::normalized_create(
 	const std::vector<jive::output*> & args) const
 {
 	if (get_mutable() && get_reducible()) {
-		const jive::load_op & l_op = static_cast<const jive::load_op &>(op);
+		auto & l_op = static_cast<const jive::load_op &>(op);
 		auto addr = args[0];
+
 		jive::node * store_node = nullptr;
-		if (args.size() >= 2 && args[1]->node() && is_matching_store_node(l_op, addr, args[1]->node()))
-			store_node = args[1]->node();
+		auto node = node_output::node(args[1]);
+		if (args.size() >= 2 && node && is_matching_store_node(l_op, addr, node))
+			store_node = node;
 
 		for (size_t n = 2; n < args.size(); ++n) {
-			if (args[n]->node() != store_node) {
+			if (node_output::node(args[n]) != store_node) {
 				store_node = nullptr;
 				break;
 			}

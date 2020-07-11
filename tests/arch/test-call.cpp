@@ -39,7 +39,7 @@ static int test_main(void)
 	jive::view(graph.root(), stdout);
 
 	memlayout_mapper_simple mapper(4);
-	transform_address(call[0]->node(), mapper);
+	transform_address(node_output::node(call[0]), mapper);
 	graph.prune();
 
 	jive::view(graph.root(), stdout);

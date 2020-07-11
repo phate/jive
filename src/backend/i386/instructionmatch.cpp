@@ -56,18 +56,21 @@ convert_bitbinary(
 	auto arg1 = node->input(0)->origin();
 	auto arg2 = node->input(1)->origin();
 
+	auto no1 = dynamic_cast<node_output*>(arg1);
+	auto no2 = dynamic_cast<node_output*>(arg2);
+
 	bool second_is_immediate = false;
-	if (regreg->is_commutative() && is_regvalue_node(arg1->node())) {
+	if (regreg->is_commutative() && no1 && is_regvalue_node(no1->node())) {
 		swap(&arg1, &arg2);
 		second_is_immediate = true;
-	} else if (is_regvalue_node(arg2->node())) {
+	} else if (no2 && is_regvalue_node(no2->node())) {
 		second_is_immediate = true;
 	}
 
 	jive::node * instr;
 
 	if (second_is_immediate) {
-		auto imm = regvalue_to_immediate(arg2->node());
+		auto imm = regvalue_to_immediate(no2->node());
 		auto tmp = jive::immediate_op::create(node->region(), imm);
 		instr = jive::create_instruction(node->region(), regimm, {arg1, tmp});
 	} else {
@@ -128,14 +131,14 @@ convert_bitcmp(
 {
 	JIVE_DEBUG_ASSERT(is<match_op>(node_));
 
-	auto node = node_->input(0)->origin()->node();
+	auto node = node_output::node(node_->input(0)->origin());
 
 	auto arg1 = node->input(0)->origin();
 	auto arg2 = node->input(1)->origin();
 
-	bool second_is_immediate = is_regvalue_node(arg2->node());
+	bool second_is_immediate = is_regvalue_node(node_output::node(arg2));
 	if (!second_is_immediate) {
-		bool first_is_immediate = is_regvalue_node(arg1->node());
+		bool first_is_immediate = is_regvalue_node(node_output::node(arg1));
 		if (first_is_immediate) {
 			auto tmp = arg1;
 			arg1 = arg2;
@@ -148,7 +151,7 @@ convert_bitcmp(
 	jive::node * cmp_instr;
 
 	if (second_is_immediate) {
-		auto imm = regvalue_to_immediate(arg2->node());
+		auto imm = regvalue_to_immediate(node_output::node(arg2));
 		auto tmp = jive::immediate_op::create(node->region(), imm);
 		cmp_instr = jive::create_instruction(node->region(),
 			&jive::i386::instr_int_cmp_immediate::instance(), {arg1, tmp});
@@ -370,8 +373,8 @@ static void
 match_bitcompare(jive::simple_node * node)
 {
 	JIVE_DEBUG_ASSERT(is<match_op>(node));
-	auto compare = node->input(0)->origin()->node();
-	JIVE_DEBUG_ASSERT(is<bitcompare_op>(node->input(0)->origin()->node()));
+	auto compare = dynamic_cast<node_output*>(node->input(0)->origin())->node();
+	JIVE_DEBUG_ASSERT(is<bitcompare_op>(compare));
 	auto & op = compare->operation();
 
 	using namespace jive::i386;
@@ -480,7 +483,8 @@ match_node(jive::simple_node * node)
 	if (is<bitbinary_op>(node))
 		return match_bitbinary(node);
 
-	if (is<match_op>(node) && is<bitcompare_op>(node->input(0)->origin()->node()))
+	if (is<match_op>(node)
+	&& is<bitcompare_op>(dynamic_cast<node_output*>(node->input(0)->origin())->node()))
 		return match_bitcompare(node);
 
 	if (is_regvalue_node(node))

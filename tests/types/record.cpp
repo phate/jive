@@ -44,7 +44,7 @@ static int _test_rcdgroup(void)
 
 	jive::view(graph.root(), stderr);
 
-	assert(g0->node()->operation() != g1->node()->operation());
+	assert(node_output::node(g0)->operation() != node_output::node(g1)->operation());
 
 	return 0;
 }
@@ -84,10 +84,11 @@ static int _test_rcdselect()
 
 	jive::view(graph.root(), stderr);
 
-	assert(is<select_op>(s0->node()));
+	assert(is<select_op>(node_output::node(s0)));
 	assert(s1 == a2);
-	assert(is<select_op>(s2->node()));
-	assert(!dynamic_cast<const load_op*>(&s3->node()->input(0)->origin()->node()->operation()));
+	assert(is<select_op>(node_output::node(s2)));
+	auto origin = node_output::node(s3)->input(0)->origin();
+	assert(!is<load_op>(node_output::node(origin)));
 
 	return 0;
 }

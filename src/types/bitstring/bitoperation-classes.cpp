@@ -34,8 +34,9 @@ bitunary_op::reduce_operand(
 	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_constant) {
-		auto & c = static_cast<const bitconstant_op&>(producer(arg)->operation());
-		return create_bitconstant(arg->node()->region(), reduce_constant(c.value()));
+		auto p = producer(arg);
+		auto & c = static_cast<const bitconstant_op&>(p->operation());
+		return create_bitconstant(p->region(), reduce_constant(c.value()));
 	}
 
 	return nullptr;

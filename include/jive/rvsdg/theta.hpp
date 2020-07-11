@@ -121,7 +121,8 @@ public:
 	inline void
 	set_predicate(jive::output * p)
 	{
-		auto node = predicate()->origin()->node();
+		auto node = node_output::node(predicate()->origin());
+
 		predicate()->divert_to(p);
 		if (node && !node->has_users())
 			remove(node);
@@ -239,8 +240,11 @@ private:
 	{}
 
 public:
-	virtual jive::theta_node *
-	node() const noexcept override;
+	theta_node *
+	node() const noexcept
+	{
+		return static_cast<theta_node*>(structural_output::node());
+	}
 
 	inline jive::theta_input *
 	input() const noexcept

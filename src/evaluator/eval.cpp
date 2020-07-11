@@ -486,7 +486,7 @@ eval_output(const jive::output * output, context & ctx)
 	if (auto arg = dynamic_cast<const jive::argument*>(output))
 		return eval_argument(arg, ctx);
 
-	return eval_node(output->node(), output->index(), ctx)->copy();
+	return eval_node(node_output::node(output), output->index(), ctx)->copy();
 }
 
 static std::unique_ptr<const literal>

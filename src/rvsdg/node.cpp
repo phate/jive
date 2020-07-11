@@ -101,8 +101,11 @@ output::remove_user(jive::input * user)
 	JIVE_DEBUG_ASSERT(users_.find(user) != users_.end());
 
 	users_.erase(user);
-	if (node() && !node()->has_users())
-		region()->bottom_nodes.push_back(node());
+
+	if (auto node = node_output::node(this)) {
+		if (!node->has_users())
+			region()->bottom_nodes.push_back(node);
+	}
 }
 
 void
@@ -110,8 +113,10 @@ output::add_user(jive::input * user)
 {
 	JIVE_DEBUG_ASSERT(users_.find(user) == users_.end());
 
-	if (node() && !node()->has_users())
-		region()->bottom_nodes.erase(node());
+	if (auto node = node_output::node(this)) {
+		if (!node->has_users())
+			region()->bottom_nodes.erase(node);
+	}
 	users_.insert(user);
 }
 
@@ -156,12 +161,6 @@ node_output::node_output(
 , node_(node)
 {}
 
-jive::node *
-node_output::node() const noexcept
-{
-	return node_;
-}
-
 /* node class */
 
 node::node(std::unique_ptr<jive::operation> op, jive::region * region)
@@ -190,6 +189,8 @@ node::~node()
 node_input *
 node::add_input(std::unique_ptr<node_input> input)
 {
+	auto producer = node_output::node(input->origin());
+
 	if (ninputs() == 0) {
 		JIVE_DEBUG_ASSERT(depth() == 0);
 		region()->top_nodes.erase(this);
@@ -198,7 +199,6 @@ node::add_input(std::unique_ptr<node_input> input)
 	input->index_ = ninputs();
 	inputs_.push_back(std::move(input));
 
-	auto producer = inputs_.back().get()->origin()->node();
 	auto new_depth = producer ? producer->depth()+1 : 0;
 	if (new_depth > depth())
 		recompute_depth();
@@ -210,7 +210,7 @@ void
 node::remove_input(size_t index)
 {
 	JIVE_DEBUG_ASSERT(index < ninputs());
-	auto producer = input(index)->origin()->node();
+	auto producer = node_output::node(input(index)->origin());
 
 	/* remove input */
 	for (size_t n = index; n < ninputs()-1; n++) {
@@ -258,7 +258,7 @@ node::recompute_depth() noexcept
 	*/
 	size_t new_depth = 0;
 	for (size_t n = 0; n < ninputs(); n++) {
-		auto producer = input(n)->origin()->node();
+		auto producer = node_output::node(input(n)->origin());
 		new_depth = std::max(new_depth, producer ? producer->depth()+1 : 0);
 	}
 	if (new_depth == depth())
@@ -294,7 +294,7 @@ node::copy(jive::region * region, const std::vector<jive::output*> & operands) c
 jive::node *
 producer(const jive::output * output) noexcept
 {
-	if (auto node = output->node())
+	if (auto node = node_output::node(output))
 		return node;
 
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::argument*>(output));

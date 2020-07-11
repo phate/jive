@@ -33,7 +33,7 @@ substitute_call(jive::node * node)
 	std::vector<jive::output*> operands;
 
 	const jive::instruction * icls;
-	auto & addrop = node->input(0)->origin()->node()->operation();
+	auto & addrop = node_output::node(node->input(0)->origin())->operation();
 	if (auto op = dynamic_cast<const jive::lbl2addr_op*>(&addrop)) {
 		icls = &instr_call::instance();
 		operands.push_back(jive::immediate_op::create(region, immediate(0, op->label())));

@@ -46,12 +46,6 @@ structural_output::structural_output(
 	on_output_create(this);
 }
 
-structural_node *
-structural_output::node() const noexcept
-{
-	return static_cast<structural_node*>(node_output::node());
-}
-
 /* structural node */
 
 structural_node::~structural_node()

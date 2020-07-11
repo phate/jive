@@ -44,8 +44,8 @@ static int test_main(void)
 	auto s6 = jive_sizeof_create(graph.root(), &record_t);
 	auto s7 = jive_sizeof_create(graph.root(), &union_t);
 
-	assert(s1->node()->operation() == s2->node()->operation());
-	assert(s0->node()->operation() != s3->node()->operation());
+	assert(node_output::node(s1)->operation() == node_output::node(s2)->operation());
+	assert(node_output::node(s0)->operation() != node_output::node(s3)->operation());
 
 	auto x0 = graph.add_export(s0, {s0->type(), ""});
 	auto x1 = graph.add_export(s1, {s1->type(), ""});
@@ -65,14 +65,14 @@ static int test_main(void)
 	}
 	graph.prune();
 
-	assert(x0->origin()->node()->operation() == uint_constant_op(32, 1));
-	assert(x1->origin()->node()->operation() == uint_constant_op(32, 1));
-	assert(x2->origin()->node()->operation() == uint_constant_op(32, 1));
-	assert(x3->origin()->node()->operation() == uint_constant_op(32, 4));
-	assert(x4->origin()->node()->operation() == uint_constant_op(32, 4));
-	assert(x5->origin()->node()->operation() == uint_constant_op(32, 4));
-	assert(x6->origin()->node()->operation() == uint_constant_op(32, 8));
-	assert(x7->origin()->node()->operation() == uint_constant_op(32, 4));
+	assert(node_output::node(x0->origin())->operation() == uint_constant_op(32, 1));
+	assert(node_output::node(x1->origin())->operation() == uint_constant_op(32, 1));
+	assert(node_output::node(x2->origin())->operation() == uint_constant_op(32, 1));
+	assert(node_output::node(x3->origin())->operation() == uint_constant_op(32, 4));
+	assert(node_output::node(x4->origin())->operation() == uint_constant_op(32, 4));
+	assert(node_output::node(x5->origin())->operation() == uint_constant_op(32, 4));
+	assert(node_output::node(x6->origin())->operation() == uint_constant_op(32, 8));
+	assert(node_output::node(x7->origin())->operation() == uint_constant_op(32, 4));
 	
 	jive::view(graph.root(), stdout);
 

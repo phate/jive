@@ -46,11 +46,11 @@ is_mux_mux_reducible(const std::vector<jive::output*> & ops)
 	std::unordered_set<jive::output*> operands(ops.begin(), ops.end());
 
 	for (const auto & operand : operands) {
-		if (!operand->node() || !is_mux_op(operand->node()->operation()))
+		auto node = node_output::node(operand);
+		if (!node || !is_mux_op(node->operation()))
 			continue;
 
 		size_t n;
-		auto node = operand->node();
 		for (n = 0; n < node->noutputs(); n++) {
 			auto output = node->output(n);
 			if (operands.find(output) == operands.end() || output->nusers() != 1)
@@ -90,14 +90,14 @@ perform_mux_mux_reduction(
 	bool reduced = false;
 	std::vector<jive::output*> new_operands;
 	for (const auto & operand : old_operands) {
-		if (operand->node() == muxnode && !reduced) {
+		if (static_cast<node_output*>(operand)->node() == muxnode && !reduced) {
 			reduced = true;
 			auto tmp = operands(muxnode);
 			new_operands.insert(new_operands.end(), tmp.begin(), tmp.end());
 			continue;
 		}
 
-		if (operand->node() != muxnode)
+		if (static_cast<node_output*>(operand)->node() != muxnode)
 			new_operands.push_back(operand);
 	}
 

@@ -376,8 +376,11 @@ private:
 	{}
 
 public:
-	virtual jive::gamma_node *
-	node() const noexcept override;
+	gamma_node *
+	node() const noexcept
+	{
+		return static_cast<gamma_node*>(structural_output::node());
+	}
 
 	inline result_list::iterator
 	begin()

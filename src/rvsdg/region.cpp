@@ -41,12 +41,6 @@ argument::argument(
 	}
 }
 
-jive::node *
-argument::node() const noexcept
-{
-	return nullptr;
-}
-
 jive::argument *
 argument::create(
 	jive::region * region,

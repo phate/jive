@@ -353,10 +353,10 @@ addr2bit_op::can_reduce_operand(const jive::output * arg) const noexcept
 	if (!type_contains_address(&arg->type()))
 		return jive_unop_reduction_idempotent;
 
-	if (!arg->node())
+	if (!node_output::node(arg))
 		return jive_unop_reduction_none;
 
-	if (auto op = dynamic_cast<const bit2addr_op*>(&arg->node()->operation())) {
+	if (auto op = dynamic_cast<const bit2addr_op*>(&node_output::node(arg)->operation())) {
 		if (op->nbits() != nbits())
 			return jive_unop_reduction_none;
 
@@ -374,8 +374,10 @@ addr2bit_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
+	auto no = static_cast<node_output*>(arg);
+
 	if (path == jive_unop_reduction_inverse)
-		return arg->node()->input(0)->origin();
+		return no->node()->input(0)->origin();
 
 	if (path == jive_unop_reduction_idempotent)
 		return arg;
@@ -422,10 +424,10 @@ bit2addr_op::can_reduce_operand(const jive::output * arg) const noexcept
 	if (!type_contains_address(&original_type()))
 		return jive_unop_reduction_idempotent;
 
-	if (!arg->node())
+	if (!node_output::node(arg))
 		return jive_unop_reduction_none;
 
-	if (auto op = dynamic_cast<const addr2bit_op*>(&arg->node()->operation())) {
+	if (auto op = dynamic_cast<const addr2bit_op*>(&node_output::node(arg)->operation())) {
 		if (op->nbits() != nbits())
 			return jive_unop_reduction_none;
 
@@ -444,8 +446,10 @@ bit2addr_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
+	auto no = static_cast<node_output*>(arg);
+
 	if (path == jive_unop_reduction_inverse)
-		return arg->node()->input(0)->origin();
+		return no->node()->input(0)->origin();
 
 	if (path == jive_unop_reduction_idempotent)
 		return arg;

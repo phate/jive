@@ -28,8 +28,8 @@ do_stackptr_sub(const jive_value_split_factory * self_, jive::output * value)
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
 	jive::immediate imm(self->offset);
 
-	auto tmp = jive::immediate_op::create(value->node()->region(), imm);
-	return jive::create_instruction(value->node()->region(),
+	auto tmp = jive::immediate_op::create(value->region(), imm);
+	return jive::create_instruction(value->region(),
 		&jive::i386::instr_int_sub_immediate::instance(), {value, tmp})->output(0);
 }
 
@@ -39,8 +39,8 @@ do_stackptr_add(const jive_value_split_factory * self_, jive::output * value)
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
 	jive::immediate imm(self->offset);
 
-	auto tmp = jive::immediate_op::create(value->node()->region(), imm);
-	return jive::create_instruction(value->node()->region(),
+	auto tmp = jive::immediate_op::create(value->region(), imm);
+	return jive::create_instruction(value->region(),
 		&jive::i386::instr_int_add_immediate::instance(), {value, tmp})->output(0);
 }
 

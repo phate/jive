@@ -21,7 +21,7 @@ jive_unop_reduction_path_t
 unary_op::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
-	if (arg->node() && dynamic_cast<const constant_op*>(&arg->node()->operation()))
+	if (is<constant_op>(node_output::node(arg)))
 		return jive_unop_reduction_constant;
 
 	return jive_unop_reduction_none;
@@ -33,7 +33,8 @@ unary_op::reduce_operand(
 	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_constant) {
-		auto & c = static_cast<const constant_op&>(arg->node()->operation());
+		auto node = static_cast<node_output*>(arg)->node();
+		auto & c = static_cast<const constant_op&>(node->operation());
 		value_repr result = reduce_constant(c.value());
 		return jive_fltconstant(arg->region(), result);
 	}
@@ -71,8 +72,10 @@ binary_op::reduce_operand_pair(
 	jive::output * arg2) const
 {
 	if (path == jive_binop_reduction_constants) {
-		auto & c1 = static_cast<const constant_op&>(arg1->node()->operation());
-		auto & c2 = static_cast<const constant_op&>(arg2->node()->operation());
+		auto node1 = static_cast<node_output*>(arg1)->node();
+		auto node2 = static_cast<node_output*>(arg2)->node();
+		auto & c1 = static_cast<const constant_op&>(node1->operation());
+		auto & c2 = static_cast<const constant_op&>(node2->operation());
 		value_repr result = reduce_constants(c1.value(), c2.value());
 		return jive_fltconstant(arg1->region(), result);
 	}
@@ -109,8 +112,10 @@ compare_op::reduce_operand_pair(
 	jive::output * arg2) const
 {
 	if (path == jive_binop_reduction_constants) {
-		auto & c1 = static_cast<const constant_op&>(arg1->node()->operation());
-		auto & c2 = static_cast<const constant_op&>(arg2->node()->operation());
+		auto node1 = static_cast<node_output*>(arg1)->node();
+		auto node2 = static_cast<node_output*>(arg2)->node();
+		auto & c1 = static_cast<const constant_op&>(node1->operation());
+		auto & c2 = static_cast<const constant_op&>(node2->operation());
 		bool result = reduce_constants(c1.value(), c2.value());
 		if (result) {
 			return create_bitconstant(arg1->region(), "1");

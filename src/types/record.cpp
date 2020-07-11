@@ -103,10 +103,12 @@ select_op::debug_string() const
 jive_unop_reduction_path_t
 select_op::can_reduce_operand(const jive::output * arg) const noexcept
 {
-	if (arg->node() && dynamic_cast<const group_op *>(&arg->node()->operation()))
+	auto node = node_output::node(arg);
+
+	if (is<group_op>(node))
 		return jive_unop_reduction_inverse;
 
-	if (arg->node() && dynamic_cast<const load_op *>(&arg->node()->operation()))
+	if (is<load_op>(node))
 		return jive_select_reduction_load;
 
 	return jive_unop_reduction_none;
@@ -117,11 +119,13 @@ select_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
+	auto node = static_cast<node_output*>(arg)->node();
+
 	if (path == jive_unop_reduction_inverse)
-		return arg->node()->input(index())->origin();
+		return node->input(index())->origin();
 
 	if (path == jive_select_reduction_load) {
-		auto address = arg->node()->input(0)->origin();
+		auto address = node->input(0)->origin();
 
 		size_t nbits = 0;
 		if (auto bt = dynamic_cast<const bittype*>(&address->type())) {
@@ -129,12 +133,12 @@ select_op::reduce_operand(
 			address = bit2addr_op::create(address, bt->nbits(), address->type());
 		}
 
-		auto decl = static_cast<const rcdtype*>(&arg->node()->output(0)->type())->declaration();
+		auto decl = static_cast<const rcdtype*>(&node->output(0)->type())->declaration();
 
-		size_t nstates = arg->node()->ninputs()-1;
+		size_t nstates = node->ninputs()-1;
 		std::vector<jive::output*> states;
 		for (size_t n = 0; n < nstates; n++)
-			states.push_back(arg->node()->input(n+1)->origin());
+			states.push_back(node->input(n+1)->origin());
 
 		auto element_address = memberof_op::create(address, decl, index());
 		if (dynamic_cast<const jive::addrtype*>(&address->type())) {

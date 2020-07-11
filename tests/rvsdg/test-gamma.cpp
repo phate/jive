@@ -142,12 +142,12 @@ test_control_constant_reduction()
 	graph.normalize();
 	jive::view(graph.root(), stdout);
 
-	auto match = ex1->origin()->node();
+	auto match = node_output::node(ex1->origin());
 	assert(match && is<match_op>(match->operation()));
 	auto & match_op = to_match_op(match->operation());
 	assert(match_op.default_alternative() == 0);
 
-	assert(ex2->origin()->node() == gamma);
+	assert(node_output::node(ex2->origin()) == gamma);
 }
 
 static int

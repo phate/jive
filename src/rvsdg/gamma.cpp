@@ -24,14 +24,15 @@ namespace jive {
 static bool
 is_predicate_reducible(const jive::gamma_node * gamma)
 {
-	auto constant = gamma->predicate()->origin()->node();
+	auto constant = node_output::node(gamma->predicate()->origin());
 	return constant && is_ctlconstant_op(constant->operation());
 }
 
 static void
 perform_predicate_reduction(jive::gamma_node * gamma)
 {
-	auto constant = gamma->predicate()->origin()->node();
+	auto origin = gamma->predicate()->origin();
+	auto constant = static_cast<node_output*>(origin)->node();
 	auto cop = static_cast<const ctlconstant_op*>(&constant->operation());
 	auto alternative = cop->value().alternative();
 
@@ -76,7 +77,7 @@ static std::unordered_set<jive::structural_output*>
 is_control_constant_reducible(jive::gamma_node * gamma)
 {
 	/* check gamma predicate */
-	auto match = gamma->predicate()->origin()->node();
+	auto match = node_output::node(gamma->predicate()->origin());
 	if (!is<match_op>(match))
 		return {};
 
@@ -97,7 +98,7 @@ is_control_constant_reducible(jive::gamma_node * gamma)
 
 		size_t n;
 		for (n = 0; n < it->nresults(); n++) {
-			auto node = it->result(n)->origin()->node();
+			auto node = node_output::node(it->result(n)->origin());
 			if (!is<ctlconstant_op>(node))
 				break;
 
@@ -116,7 +117,8 @@ static void
 perform_control_constant_reduction(std::unordered_set<jive::structural_output*> & outputs)
 {
 	auto gamma = static_cast<jive::gamma_node*>((*outputs.begin())->node());
-	auto match = gamma->predicate()->origin()->node();
+	auto origin = static_cast<node_output*>(gamma->predicate()->origin());
+	auto match = origin->node();
 	auto & match_op = to_match_op(match->operation());
 
 	std::unordered_map<uint64_t, uint64_t> map;
@@ -130,7 +132,8 @@ perform_control_constant_reduction(std::unordered_set<jive::structural_output*> 
 		size_t defalt;
 		std::unordered_map<uint64_t, uint64_t> new_mapping;
 		for (size_t n = 0; n < xv->nresults(); n++) {
-			auto & value = to_ctlconstant_op(xv->result(n)->origin()->node()->operation()).value();
+			auto origin = static_cast<node_output*>(xv->result(n)->origin());
+			auto & value = to_ctlconstant_op(origin->node()->operation()).value();
 			if (map.find(n) != map.end())
 				new_mapping[map[n]] = value.alternative();
 			else
@@ -267,12 +270,6 @@ gamma_input::~gamma_input() noexcept
 
 gamma_output::~gamma_output() noexcept
 {}
-
-jive::gamma_node *
-gamma_output::node() const noexcept
-{
-	return static_cast<gamma_node*>(structural_output::node());
-}
 
 /* gamma node */
 

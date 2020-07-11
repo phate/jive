@@ -97,11 +97,12 @@ binary_normal_form::normalize_node(jive::node * node, const binary_op & op) cons
 		new_args = base::detail::associative_flatten(
 			args,
 			[&op](jive::output * arg) {
-				if (!arg->node())
+				if (!is<node_output>(arg))
 					return false;
 
-				auto fb_op = dynamic_cast<const flattened_binary_op*>(&arg->node()->operation());
-				return arg->node()->operation() == op || (fb_op && fb_op->bin_operation() == op);
+				auto node = static_cast<node_output*>(arg)->node();
+				auto fb_op = dynamic_cast<const flattened_binary_op*>(&node->operation());
+				return node->operation() == op || (fb_op && fb_op->bin_operation() == op);
 			});
 	} else {
 		new_args = args;
@@ -154,11 +155,12 @@ binary_normal_form::normalized_create(
 		new_args = base::detail::associative_flatten(
 			args,
 			[&op](jive::output* arg) {
-				if (!arg->node())
+				if (!is<node_output>(arg))
 					return false;
-				auto fb_op = dynamic_cast<const flattened_binary_op*>(&arg->node()->operation());
-				return arg->node()->operation() == op ||
-					(fb_op && fb_op->bin_operation() == op);
+
+				auto node = static_cast<node_output*>(arg)->node();
+				auto fb_op = dynamic_cast<const flattened_binary_op*>(&node->operation());
+				return node->operation() == op || (fb_op && fb_op->bin_operation() == op);
 			});
 	}
 

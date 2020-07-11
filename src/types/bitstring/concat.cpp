@@ -37,11 +37,13 @@ namespace {
 jive::output *
 concat_reduce_arg_pair(jive::output * arg1, jive::output * arg2)
 {
-	if (!arg1->node() || !arg2->node())
+	auto node1 = node_output::node(arg1);
+	auto node2 = node_output::node(arg2);
+	if (!node1 || !node2)
 		return nullptr;
 
-	auto arg1_constant = dynamic_cast<const bitconstant_op*>(&arg1->node()->operation());
-	auto arg2_constant = dynamic_cast<const bitconstant_op*>(&arg2->node()->operation());
+	auto arg1_constant = dynamic_cast<const bitconstant_op*>(&node1->operation());
+	auto arg2_constant = dynamic_cast<const bitconstant_op*>(&node2->operation());
 	if (arg1_constant && arg2_constant) {
 		size_t nbits = arg1_constant->value().nbits() + arg2_constant->value().nbits();
 		std::vector<char> bits(nbits);
@@ -52,15 +54,15 @@ concat_reduce_arg_pair(jive::output * arg1, jive::output * arg2)
 			arg2_constant->value().nbits());
 
 		std::string s(&bits[0], nbits);
-		return create_bitconstant(arg1->node()->region(), s.c_str());
+		return create_bitconstant(node1->region(), s.c_str());
 	}
 
-	auto arg1_slice = dynamic_cast<const bitslice_op*>(&arg1->node()->operation());
-	auto arg2_slice = dynamic_cast<const bitslice_op*>(&arg2->node()->operation());
+	auto arg1_slice = dynamic_cast<const bitslice_op*>(&node1->operation());
+	auto arg2_slice = dynamic_cast<const bitslice_op*>(&node2->operation());
 	if (arg1_slice && arg2_slice && arg1_slice->high() == arg2_slice->low() &&
-		arg1->node()->input(0)->origin() == arg2->node()->input(0)->origin()) {
+		node1->input(0)->origin() == node2->input(0)->origin()) {
 		/* FIXME: support sign bit */
-		return jive_bitslice(arg1->node()->input(0)->origin(), arg1_slice->low(), arg2_slice->high());
+		return jive_bitslice(node1->input(0)->origin(), arg1_slice->low(), arg2_slice->high());
 	}
 
 	return nullptr;
@@ -109,7 +111,7 @@ public:
 				[](jive::output * arg) {
 					// FIXME: switch to comparing operator, not just typeid, after
 					// converting "concat" to not be a binary operator anymore
-					return is<bitconcat_op>(arg->node());
+					return is<bitconcat_op>(node_output::node(arg));
 				});
 		} else {
 			new_args = args;
@@ -152,7 +154,7 @@ public:
 				[](jive::output * arg) {
 					// FIXME: switch to comparing operator, not just typeid, after
 					// converting "concat" to not be a binary operator anymore
-					return is<bitconcat_op>(arg->node());
+					return is<bitconcat_op>(node_output::node(arg));
 				});
 		} else {
 			new_args = arguments;
@@ -269,22 +271,25 @@ bitconcat_op::can_reduce_operand_pair(
 	const jive::output * arg1,
 	const jive::output * arg2) const noexcept
 {
-	if (!arg1->node() || !arg2->node())
+	auto node1 = node_output::node(arg1);
+	auto node2 = node_output::node(arg2);
+
+	if (!node1 || !node2)
 		return jive_binop_reduction_none;
 
-	auto arg1_constant = dynamic_cast<const bitconstant_op*>(&arg1->node()->operation());
-	auto arg2_constant = dynamic_cast<const bitconstant_op*>(&arg2->node()->operation());
+	auto arg1_constant = is<bitconstant_op>(node1);
+	auto arg2_constant = is<bitconstant_op>(node2);
 
 	if (arg1_constant && arg2_constant) {
 		return jive_binop_reduction_constants;
 	}
 
-	auto arg1_slice = dynamic_cast<const bitslice_op*>(&arg1->node()->operation());
-	auto arg2_slice = dynamic_cast<const bitslice_op*>(&arg2->node()->operation());
+	auto arg1_slice = dynamic_cast<const bitslice_op*>(&node1->operation());
+	auto arg2_slice = dynamic_cast<const bitslice_op*>(&node2->operation());
 
 	if (arg1_slice && arg2_slice){
-		auto origin1 = arg1->node()->input(0)->origin();
-		auto origin2 = arg2->node()->input(0)->origin();
+		auto origin1 = node1->input(0)->origin();
+		auto origin2 = node2->input(0)->origin();
 
 		if (origin1 == origin2 && arg1_slice->high() == arg2_slice->low()) {
 			return jive_binop_reduction_merge;
@@ -302,9 +307,12 @@ bitconcat_op::reduce_operand_pair(
 	jive::output * arg1,
 	jive::output * arg2) const
 {
+	auto node1 = static_cast<node_output*>(arg1)->node();
+	auto node2 = static_cast<node_output*>(arg2)->node();
+
 	if (path == jive_binop_reduction_constants) {
-		auto & arg1_constant = static_cast<const bitconstant_op&>(arg1->node()->operation());
-		auto & arg2_constant = static_cast<const bitconstant_op&>(arg2->node()->operation());
+		auto & arg1_constant = static_cast<const bitconstant_op&>(node1->operation());
+		auto & arg2_constant = static_cast<const bitconstant_op&>(node2->operation());
 
 		size_t nbits = arg1_constant.value().nbits() + arg2_constant.value().nbits();
 		std::vector<char> bits(nbits);
@@ -318,9 +326,9 @@ bitconcat_op::reduce_operand_pair(
 	}
 
 	if (path == jive_binop_reduction_merge) {
-		auto arg1_slice = static_cast<const bitslice_op*>(&arg1->node()->operation());
-		auto arg2_slice = static_cast<const bitslice_op*>(&arg2->node()->operation());
-		return jive_bitslice(arg1->node()->input(0)->origin(), arg1_slice->low(), arg2_slice->high());
+		auto arg1_slice = static_cast<const bitslice_op*>(&node1->operation());
+		auto arg2_slice = static_cast<const bitslice_op*>(&node2->operation());
+		return jive_bitslice(node1->input(0)->origin(), arg1_slice->low(), arg2_slice->high());
 
 		/* FIXME: support sign bit */
 	}

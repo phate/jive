@@ -67,7 +67,7 @@ static int test_main(void)
 
 	jive::view(graph.root(), stderr);
 
-	assert(states3[0]->node()->input(2)->origin() == i1);
+	assert(node_output::node(states3[0])->input(2)->origin() == i1);
 
 	return 0;
 }
