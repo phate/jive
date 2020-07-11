@@ -220,6 +220,15 @@ private:
 	std::unordered_set<jive::input*> users_;
 };
 
+template <class T> static inline bool
+is(const jive::output * output) noexcept
+{
+	static_assert(std::is_base_of<jive::output, T>::value,
+		"Template parameter T must be derived from jive::output.");
+
+	return dynamic_cast<const T*>(output) != nullptr;
+}
+
 /* node_input class */
 
 class node_input : public jive::input {
