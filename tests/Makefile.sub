@@ -38,7 +38,7 @@ check: tests/test-runner
 	done
 	@if [ -e failed.log ] ; then \
 		if [ -z ${EXPECT_FAIL_TESTS+x} ] ; then \
-			echo $(Red)Failed:$(NC) ; \
+			echo $(RED)Failed:$(NC) ; \
 			cat failed.log ; \
 		else \
 			grep -v $(EXPECT_FAIL_TESTS) < failed.log | sed -e "s/^/Failed: /" ; \
