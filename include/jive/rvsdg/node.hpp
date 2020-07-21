@@ -99,6 +99,78 @@ public:
 	}
 
 	template <class T>
+	class iterator : public std::iterator<std::forward_iterator_tag, T*, ptrdiff_t> {
+		static_assert(std::is_base_of<jive::input, T>::value,
+			"Template parameter T must be derived from jive::input.");
+
+	protected:
+		constexpr
+		iterator(T * value)
+		: value_(value)
+		{}
+
+		virtual T *
+		next() const
+		{
+			/*
+				I cannot make this method abstract due to the return value of operator++(int).
+				This is the best I could come up with as a workaround.
+			*/
+			throw compiler_error("This method must be overloaded.");
+		}
+
+	public:
+		T *
+		value() const noexcept
+		{
+			return value_;
+		}
+
+		T &
+		operator*()
+		{
+			JIVE_DEBUG_ASSERT(value_ != nullptr);
+			return *value_;
+		}
+
+		T *
+		operator->() const
+		{
+			return value_;
+		}
+
+		iterator<T> &
+		operator++()
+		{
+			value_ = next();
+			return *this;
+		}
+
+		iterator<T>
+		operator++(int)
+		{
+			iterator<T> tmp = *this;
+			++*this;
+			return tmp;
+		}
+
+		virtual bool
+		operator==(const iterator<T> & other) const
+		{
+			return value_ == other.value_;
+		}
+
+		bool
+		operator!=(const iterator<T> & other) const
+		{
+			return !operator==(other);
+		}
+
+	private:
+		T * value_;
+	};
+
+	template <class T>
 	class constiterator : public std::iterator<std::forward_iterator_tag, const T*, ptrdiff_t> {
 		static_assert(std::is_base_of<jive::input, T>::value,
 			"Template parameter T must be derived from jive::input.");
