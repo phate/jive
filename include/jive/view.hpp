@@ -21,7 +21,7 @@ view(const jive::region * region, FILE * out);
 static inline void
 view(const jive::graph & graph, FILE * out)
 {
-	return view(graph.root(), stdout);
+	return view(graph.root(), out);
 }
 
 std::string
