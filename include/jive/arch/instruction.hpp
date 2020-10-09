@@ -1,0 +1,113 @@
+/*
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * See COPYING for terms of redistribution.
+ */
+
+#ifndef JIVE_ARCH_INSTRUCTION_HPP
+#define JIVE_ARCH_INSTRUCTION_HPP
+
+#include <algorithm>
+#include <string.h>
+
+#include <jive/arch/immediate.hpp>
+#include <jive/arch/instruction-class.hpp>
+#include <jive/arch/linker-symbol.hpp>
+#include <jive/arch/registers.hpp>
+#include <jive/rvsdg/label.hpp>
+#include <jive/rvsdg/nullary.hpp>
+#include <jive/rvsdg/simple-node.hpp>
+#include <jive/types/bitstring/type.hpp>
+#include <jive/util/ptr-collection.hpp>
+
+namespace jive {
+
+class instruction_op final : public simple_op {
+public:
+	virtual
+	~instruction_op() noexcept;
+
+	inline
+	instruction_op(
+		const jive::instruction * i,
+		const std::vector<jive::port> & iports,
+		const std::vector<jive::port> & oports)
+	: simple_op(create_operands(i, iports), create_results(i, oports))
+	, icls_(i)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual std::string
+	debug_string() const override;
+
+	inline const jive::instruction *
+	icls() const noexcept
+	{
+		return icls_;
+	}
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
+	static inline std::vector<jive::output*>
+	create(
+		jive::region * region,
+		const instruction * i,
+		const std::vector<jive::output*> & operands)
+	{
+		instruction_op op(i, {}, {});
+		return simple_node::create_normalized(region, op , operands);
+	}
+
+private:
+	static std::vector<jive::port>
+	create_operands(
+		const jive::instruction * icls,
+		const std::vector<jive::port> & iports);
+
+	static std::vector<jive::port>
+	create_results(
+		const jive::instruction * icls,
+		const std::vector<jive::port> & oprts);
+
+	const jive::instruction * icls_;
+};
+
+static inline bool
+is_instruction_op(const jive::operation & op) noexcept
+{
+	return dynamic_cast<const instruction_op*>(&op);
+}
+
+static inline bool
+is_instruction_node(const jive::node * node) noexcept
+{
+	return is<instruction_op>(node);
+}
+
+static inline jive::node *
+create_instruction(
+	jive::region * region,
+	const jive::instruction * icls,
+	const std::vector<jive::output*> & operands,
+	const std::vector<jive::port> & iports,
+	const std::vector<jive::port> & oports)
+{
+	jive::instruction_op op(icls, iports, oports);
+	return simple_node::create(region, op, operands);
+}
+
+static inline jive::node *
+create_instruction(
+	jive::region * region,
+	const jive::instruction * icls,
+	const std::vector<jive::output*> & operands)
+{
+	return create_instruction(region, icls, operands, {}, {});
+}
+
+}
+
+#endif

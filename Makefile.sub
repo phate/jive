@@ -10,98 +10,98 @@ endef
 
 # RVSDG core
 LIBJIVE_SRC = \
-	src/common.c \
-	src/rvsdg/binary.c \
-	src/rvsdg/control.c \
-	src/rvsdg/equivalence.c \
-	src/rvsdg/gamma.c \
-	src/rvsdg/graph.c \
-	src/rvsdg/label.c \
-	src/rvsdg/negotiator.c \
-	src/rvsdg/node-normal-form.c \
-	src/rvsdg/node.c \
-	src/rvsdg/notifiers.c \
-	src/rvsdg/nullary.c \
-	src/rvsdg/operation.c \
-	src/rvsdg/phi.c \
-	src/rvsdg/region.c \
-	src/rvsdg/resource.c \
-	src/rvsdg/simple-normal-form.c \
-	src/rvsdg/simple-node.c \
-	src/rvsdg/statemux.c \
-	src/rvsdg/splitnode.c \
-	src/rvsdg/structural-normal-form.c \
-	src/rvsdg/structural-node.c \
-	src/rvsdg/theta.c \
-	src/rvsdg/tracker.c \
-	src/rvsdg/traverser.c \
-	src/rvsdg/type.c \
-	src/rvsdg/unary.c \
+	src/common.cpp \
+	src/rvsdg/binary.cpp \
+	src/rvsdg/control.cpp \
+	src/rvsdg/equivalence.cpp \
+	src/rvsdg/gamma.cpp \
+	src/rvsdg/graph.cpp \
+	src/rvsdg/label.cpp \
+	src/rvsdg/negotiator.cpp \
+	src/rvsdg/node-normal-form.cpp \
+	src/rvsdg/node.cpp \
+	src/rvsdg/notifiers.cpp \
+	src/rvsdg/nullary.cpp \
+	src/rvsdg/operation.cpp \
+	src/rvsdg/phi.cpp \
+	src/rvsdg/region.cpp \
+	src/rvsdg/resource.cpp \
+	src/rvsdg/simple-normal-form.cpp \
+	src/rvsdg/simple-node.cpp \
+	src/rvsdg/statemux.cpp \
+	src/rvsdg/splitnode.cpp \
+	src/rvsdg/structural-normal-form.cpp \
+	src/rvsdg/structural-node.cpp \
+	src/rvsdg/theta.cpp \
+	src/rvsdg/tracker.cpp \
+	src/rvsdg/traverser.cpp \
+	src/rvsdg/type.cpp \
+	src/rvsdg/unary.cpp \
 
 #evaluation
 LIBJIVE_SRC += \
-	src/evaluator/eval.c \
-	src/evaluator/literal.c \
+	src/evaluator/eval.cpp \
+	src/evaluator/literal.cpp \
 
 # visualization
 LIBJIVE_SRC += \
-	src/util/callbacks.c \
-	src/view.c \
+	src/util/callbacks.cpp \
+	src/view.cpp \
 
 # bitstrings
 LIBJIVE_SRC += \
-	src/types/bitstring/arithmetic.c \
-	src/types/bitstring/bitoperation-classes.c \
-	src/types/bitstring/comparison.c \
-	src/types/bitstring/concat.c \
-	src/types/bitstring/constant.c \
-	src/types/bitstring/slice.c \
-	src/types/bitstring/type.c \
-	src/types/bitstring/value-representation.c \
+	src/types/bitstring/arithmetic.cpp \
+	src/types/bitstring/bitoperation-classes.cpp \
+	src/types/bitstring/comparison.cpp \
+	src/types/bitstring/concat.cpp \
+	src/types/bitstring/constant.cpp \
+	src/types/bitstring/slice.cpp \
+	src/types/bitstring/type.cpp \
+	src/types/bitstring/value-representation.cpp \
 
 # floats
 LIBJIVE_SRC += \
-	src/types/float/arithmetic.c \
-	src/types/float/comparison.c \
-	src/types/float/fltconstant.c \
-	src/types/float/fltoperation-classes.c \
-	src/types/float/flttype.c \
+	src/types/float/arithmetic.cpp \
+	src/types/float/comparison.cpp \
+	src/types/float/fltconstant.cpp \
+	src/types/float/fltoperation-classes.cpp \
+	src/types/float/flttype.cpp \
 
 # records
 LIBJIVE_SRC += \
-	src/types/record.c \
+	src/types/record.cpp \
 
 # unions
 LIBJIVE_SRC += \
-	src/types/union.c \
+	src/types/union.cpp \
 
 # functions
 LIBJIVE_SRC += \
-	src/types/function.c \
+	src/types/function.cpp \
 
 # arch definitions
 LIBJIVE_SRC += \
-	src/arch/address-transform.c \
-	src/arch/address.c \
-	src/arch/addresstype.c \
-	src/arch/call.c \
-	src/arch/compilate.c \
-	src/arch/dataobject.c \
-	src/arch/immediate.c \
-	src/arch/instruction.c \
-	src/arch/instructionset.c \
-	src/arch/label-mapper.c \
-	src/arch/load.c \
-	src/arch/memlayout-simple.c \
-	src/arch/memlayout.c \
-	src/arch/registers.c \
-	src/arch/regselector.c \
-	src/arch/regvalue.c \
-	src/arch/sizeof.c \
-	src/arch/stackslot.c \
-	src/arch/store.c \
-	src/arch/subroutine.c \
-	src/arch/subroutine/nodes.c \
+	src/arch/address-transform.cpp \
+	src/arch/address.cpp \
+	src/arch/addresstype.cpp \
+	src/arch/call.cpp \
+	src/arch/compilate.cpp \
+	src/arch/dataobject.cpp \
+	src/arch/immediate.cpp \
+	src/arch/instruction.cpp \
+	src/arch/instructionset.cpp \
+	src/arch/label-mapper.cpp \
+	src/arch/load.cpp \
+	src/arch/memlayout-simple.cpp \
+	src/arch/memlayout.cpp \
+	src/arch/registers.cpp \
+	src/arch/regselector.cpp \
+	src/arch/regvalue.cpp \
+	src/arch/sizeof.cpp \
+	src/arch/stackslot.cpp \
+	src/arch/store.cpp \
+	src/arch/subroutine.cpp \
+	src/arch/subroutine/nodes.cpp \
 
 include $(JIVE_ROOT)/src/backend/i386/Makefile.sub
 
@@ -123,11 +123,11 @@ jive-release: $(JIVE_ROOT)/libjive.a
 
 $(JIVE_ROOT)/libjive.a: CFLAGS+=-Wall -Wpedantic -Wextra -Wno-unused-parameter --std=c++14
 $(JIVE_ROOT)/libjive.a: CPPFLAGS+=-I$(JIVE_ROOT)/include
-$(JIVE_ROOT)/libjive.a: $(patsubst %.c, $(JIVE_ROOT)/%.la, $(LIBJIVE_SRC))
+$(JIVE_ROOT)/libjive.a: $(patsubst %.cpp, $(JIVE_ROOT)/%.la, $(LIBJIVE_SRC))
 
 $(JIVE_ROOT)/libjive.so: CFLAGS+=-Wall -Wpedantic -Wextra -Wno-unused-parameter --std=c++14
 $(JIVE_ROOT)/libjive.so: CPPFLAGS+=-I$(JIVE_ROOT)/include
-$(JIVE_ROOT)/libjive.so: $(patsubst %.c, $(JIVE_ROOT)/%.lo, $(LIBJIVE_SRC))
+$(JIVE_ROOT)/libjive.so: $(patsubst %.cpp, $(JIVE_ROOT)/%.lo, $(LIBJIVE_SRC))
 
 .PHONY: jive-clean
 jive-clean: jive-depclean

@@ -27,10 +27,10 @@ doc:
 .PHONY: clean
 clean: jive-clean
 
-%.lo: %.c
+%.lo: %.cpp
 	$(CXX) -c -DPIC -fPIC $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-%.la: %.c
+%.la: %.cpp
 	$(CXX) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 %.a:

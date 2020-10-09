@@ -1,11 +1,11 @@
 LIBJIVE_I386_SRC = \
-	call.c \
-	classifier.c \
-	instructionmatch.c \
-	instructionset.c \
-	registerset.c \
-	relocation.c \
-	subroutine.c \
+	call.cpp \
+	classifier.cpp \
+	instructionmatch.cpp \
+	instructionset.cpp \
+	registerset.cpp \
+	relocation.cpp \
+	subroutine.cpp \
 
 LIBJIVE_SRC += \
 	$(patsubst %, src/backend/i386/%, $(LIBJIVE_I386_SRC))

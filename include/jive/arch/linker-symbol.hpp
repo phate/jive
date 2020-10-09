@@ -1,0 +1,88 @@
+/*
+ * Copyright 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * See COPYING for terms of redistribution.
+ */
+
+#ifndef JIVE_ARCH_LINKER_SYMBOL_HPP
+#define JIVE_ARCH_LINKER_SYMBOL_HPP
+
+#include <stdbool.h>
+
+#include <jive/common.hpp>
+#include <jive/rvsdg/section.hpp>
+
+typedef struct jive_linker_symbol jive_linker_symbol;
+typedef struct jive_linker_symbol_resolver jive_linker_symbol_resolver;
+typedef struct jive_linker_symbol_resolver_class jive_linker_symbol_resolver_class;
+typedef struct jive_symref jive_symref;
+
+struct jive_linker_symbol {
+	int tag;
+};
+
+struct jive_linker_symbol_resolver_class {
+	bool (*resolve)(
+		const jive_linker_symbol_resolver * self,
+		const jive_linker_symbol * symbol,
+		const void ** addr);
+};
+
+struct jive_linker_symbol_resolver {
+	const jive_linker_symbol_resolver_class * class_;
+};
+
+static inline bool
+jive_linker_symbol_resolver_resolve(
+	const jive_linker_symbol_resolver * self,
+	const jive_linker_symbol * symbol,
+	const void ** addr)
+{
+	return self->class_->resolve(self, symbol, addr);
+}
+
+
+enum jive_symref_type {
+	/* no symbol referenced */
+	jive_symref_type_none = 0,
+	/* reference to standard section type */
+	jive_symref_type_section = 1,
+	/* reference to linker_symbol */
+	jive_symref_type_linker_symbol = 2
+};
+
+struct jive_symref {
+	jive_symref_type type;
+	union {
+		jive_stdsectionid section;
+		const jive_linker_symbol * linker_symbol;
+	} ref;
+};
+
+static inline jive_symref
+jive_symref_none(void)
+{
+	jive_symref symref;
+	symref.type = jive_symref_type_none;
+	return symref;
+}
+
+static inline jive_symref
+jive_symref_section(jive_stdsectionid section)
+{
+	jive_symref symref;
+	symref.type = jive_symref_type_section;
+	symref.ref.section = section;
+	return symref;
+}
+
+static inline jive_symref
+jive_symref_linker_symbol(const jive_linker_symbol * linker_symbol)
+{
+	jive_symref symref;
+	symref.type = jive_symref_type_linker_symbol;
+	symref.ref.linker_symbol = linker_symbol;
+	return symref;
+}
+
+#endif
