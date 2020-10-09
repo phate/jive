@@ -1,0 +1,28 @@
+/*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * See COPYING for terms of redistribution.
+ */
+
+#ifndef JIVE_TYPES_FLOAT_COMPARISON_FLTLESSEQ_HPP
+#define JIVE_TYPES_FLOAT_COMPARISON_FLTLESSEQ_HPP
+
+#include <jive/types/float/fltoperation-classes.hpp>
+
+namespace jive {
+namespace flt {
+
+extern const char fltlesseq_name[];
+
+typedef detail::make_cmpop<
+	std::less_equal<value_repr>,
+	fltlesseq_name,
+	jive::binary_op::flags::none> le_op;
+
+}
+}
+
+jive::output *
+jive_fltlesseq(jive::output * operand1, jive::output * operand2);
+
+#endif
