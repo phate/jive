@@ -109,15 +109,19 @@ region::~region()
 }
 
 region::region(jive::region * parent, jive::graph * graph)
-	: graph_(graph)
+	: index_(0)
+	, graph_(graph)
 	, node_(nullptr)
 {
 	on_region_create(this);
 }
 
-region::region(jive::structural_node * node)
-	: graph_(node->graph())
-	, node_(node)
+region::region(
+	jive::structural_node * node,
+	size_t index)
+: index_(index)
+, graph_(node->graph())
+, node_(node)
 {
 	on_region_create(this);
 }

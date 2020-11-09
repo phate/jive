@@ -142,7 +142,9 @@ public:
 
 	region(jive::region * parent, jive::graph * graph);
 
-	region(jive::structural_node * node);
+	region(
+		jive::structural_node * node,
+		size_t index);
 
 	inline region_nodes_list::iterator
 	begin()
@@ -178,6 +180,12 @@ public:
 	node() const noexcept
 	{
 		return node_;
+	}
+
+	size_t
+	index() const noexcept
+	{
+		return index_;
 	}
 
 	/* \brief Append \p argument to the region
@@ -267,6 +275,7 @@ public:
 	region_bottom_node_list bottom_nodes;
 
 private:
+	size_t index_;
 	jive::graph * graph_;
 	jive::structural_node * node_;
 	std::vector<jive::result*> results_;
