@@ -9,8 +9,8 @@
 
 #include <jive/common.hpp>
 
-#include <jive/rvsdg/node.hpp>
 #include <jive/rvsdg/region.hpp>
+#include <jive/rvsdg/structural-node.hpp>
 #include <jive/util/ptr-collection.hpp>
 
 namespace jive {
@@ -46,6 +46,27 @@ public:
 
 private:
 	std::vector<std::unique_ptr<const jive::type>> types_;
+};
+
+class dataobj_node final : public structural_node {
+public:
+	~dataobj_node() override;
+
+private:
+	dataobj_node(
+		jive::region * parent,
+		const std::vector<std::unique_ptr<const jive::type>> & types)
+	: structural_node(dataobj_op(types), parent, 1)
+	{}
+
+public:
+	static dataobj_node *
+	create(
+		jive::region * parent,
+		const std::vector<std::unique_ptr<const jive::type>> & types)
+	{
+		return new dataobj_node(parent, types);
+	}
 };
 
 class memlayout_mapper;

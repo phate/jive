@@ -18,6 +18,8 @@
 
 namespace jive {
 
+/* dataobj_op class */
+
 dataobj_op::~dataobj_op() noexcept
 {
 }
@@ -33,6 +35,11 @@ dataobj_op::copy() const
 {
 	return std::unique_ptr<jive::operation>(new dataobj_op(*this));
 }
+
+/* dataobj_node class */
+
+dataobj_node::~dataobj_node()
+{}
 
 }
 
@@ -146,7 +153,7 @@ jive_dataobj_internal(
 	for (const auto & item : data_items)
 		types.emplace_back(item->type().copy());
 
-	auto node = new jive::structural_node(jive::dataobj_op(std::move(types)), parent, 1);
+	auto node = jive::dataobj_node::create(parent, types);
 	for (const auto & item : data_items)
 		jive::structural_input::create(node, item, item->type());
 
