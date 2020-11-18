@@ -145,13 +145,13 @@ unsigned int fib(unsigned int n){
 
 	fcttype ft({&bit32}, {&bit32});
 
-	phi_builder pb;
-	pb.begin_phi(graph->root());
+	phi::builder pb;
+	pb.begin(graph->root());
 	auto rv = pb.add_recvar(ft);
 
 	lambda_builder lb;
-	auto arguments = lb.begin_lambda(pb.region(), {{&bit32}, {&bit32}});
-	auto dep = lb.add_dependency(rv->value());
+	auto arguments = lb.begin_lambda(pb.subregion(), {{&bit32}, {&bit32}});
+	auto dep = lb.add_dependency(rv->argument());
 
 	auto n = arguments[0];
 	auto one = create_bitconstant(lb.subregion(), 32, 1);
@@ -174,10 +174,10 @@ unsigned int fib(unsigned int n){
 	gamma->add_exitvar({ev1->argument(0), ev2->argument(1)});
 
 	auto fib = lb.end_lambda({gamma->output(0)})->output(0);
-	rv->set_value(fib);
-	pb.end_phi();
+	rv->set_rvorigin(fib);
+	pb.end();
 
-	return rv->value();
+	return rv;
 }
 
 static void

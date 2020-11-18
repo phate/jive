@@ -398,10 +398,10 @@ eval_theta_node(const jive::node * node, size_t index, context & ctx)
 static const std::unique_ptr<const literal>
 eval_phi_node(const jive::node * node, size_t index, context & ctx)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_op*>(&node->operation()));
+	JIVE_DEBUG_ASSERT(is<phi::operation>(node));
 
-	auto phi = static_cast<const jive::structural_node*>(node);
-	auto phi_region = phi->subregion(0);
+	auto phi = static_cast<const phi::node*>(node);
+	auto phi_region = phi->subregion();
 
 	ctx.push_frame(phi_region);
 	auto result = eval_input(phi_region->result(index), ctx);
@@ -416,7 +416,7 @@ static eval_map evlmap
 	{typeid(jive::lambda_op), eval_lambda_node},
 	{std::type_index(typeid(jive::gamma_op)), eval_gamma_node},
 	{std::type_index(typeid(jive::theta_op)), eval_theta_node},
-	{std::type_index(typeid(jive::phi_op)), eval_phi_node}
+	{std::type_index(typeid(phi::operation)), eval_phi_node}
 });
 
 static const std::unique_ptr<const literal>
@@ -454,7 +454,7 @@ eval_argument(const jive::argument * argument, context & ctx)
 		throw compiler_error("Cannot evaluate external entity.");
 
 	std::unique_ptr<const literal> result;
-	if (is<phi_op>(argument->region()->node())) {
+	if (is<phi::operation>(argument->region()->node())) {
 		ctx.push_frame(argument->region());
 		result = eval_input(argument->region()->result(argument->index()), ctx);
 		ctx.pop_frame(argument->region());

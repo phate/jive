@@ -299,7 +299,7 @@ type(const jive::node * n)
 	if (is<lambda_op>(n))
 		return "lambda";
 
-	if (dynamic_cast<const jive::phi_op*>(&n->operation()))
+	if (is<phi::operation>(n))
 		return "phi";
 
 	return "";

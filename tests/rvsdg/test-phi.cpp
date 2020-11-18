@@ -26,29 +26,29 @@ static int test_main()
 	fcttype f0type({&vtype}, {});
 	fcttype f1type({&vtype}, {&vtype});
 
-	phi_builder pb;
-	pb.begin_phi(graph.root());
+	phi::builder pb;
+	pb.begin(graph.root());
 	auto rv1 = pb.add_recvar(f0type);
 	auto rv2 = pb.add_recvar(f0type);
 	auto rv3 = pb.add_recvar(f1type);
 
 	jive::lambda_builder lb;
-	lb.begin_lambda(pb.region(), f0type);
+	lb.begin_lambda(pb.subregion(), f0type);
 	auto lambda0 = lb.end_lambda({})->output(0);
 
-	lb.begin_lambda(pb.region(), f0type);
+	lb.begin_lambda(pb.subregion(), f0type);
 	auto lambda1 = lb.end_lambda({})->output(0);
 
-	auto arguments = lb.begin_lambda(pb.region(), f1type);
-	auto dep = lb.add_dependency(rv3->value());
+	auto arguments = lb.begin_lambda(pb.subregion(), f1type);
+	auto dep = lb.add_dependency(rv3->argument());
 	auto ret = create_apply(dep, {arguments[0]})[0];
 	auto lambda2 = lb.end_lambda({ret})->output(0);
 
-	rv1->set_value(lambda0);
-	rv2->set_value(lambda1);
-	rv3->set_value(lambda2);
+	rv1->set_rvorigin(lambda0);
+	rv2->set_rvorigin(lambda1);
+	rv3->set_rvorigin(lambda2);
 
-	auto phi = pb.end_phi();
+	auto phi = pb.end();
 	graph.add_export(phi->output(0), {phi->output(0)->type(), "dummy"});
 
 	graph.normalize();
