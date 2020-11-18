@@ -116,47 +116,4 @@ structural_node::append_output(std::unique_ptr<structural_output> output)
 	return static_cast<structural_output*>(node::add_output(std::move(soutput)));
 }
 
-jive::structural_node *
-structural_node::copy(jive::region * region, const std::vector<jive::output*> & operands) const
-{
-	jive::substitution_map smap;
-
-	size_t noperands = std::min(operands.size(), ninputs());
-	for (size_t n = 0; n < noperands; n++)
-		smap.insert(input(n)->origin(), operands[n]);
-
-	return copy(region, smap);
-}
-
-jive::structural_node *
-structural_node::copy(jive::region * region, jive::substitution_map & smap) const
-{
-	graph()->mark_denormalized();
-	auto node = new structural_node(*static_cast<const structural_op*>(&operation()), region,
-		nsubregions());
-
-	/* copy inputs */
-	for (size_t n = 0; n < ninputs(); n++) {
-		auto origin = smap.lookup(input(n)->origin());
-		if (!origin) origin = input(n)->origin();
-
-		auto new_input = structural_input::create(node, origin, input(n)->port());
-		smap.insert(input(n), new_input);
-	}
-
-	/* copy outputs */
-	for (size_t n = 0; n < noutputs(); n++) {
-		auto new_output = structural_output::create(node, output(n)->port());
-		smap.insert(output(n), new_output);
-	}
-
-	/* copy regions */
-	for (size_t n = 0; n < nsubregions(); n++) {
-		node->subregions_.emplace_back(std::make_unique<jive::region>(node));
-		subregion(n)->copy(node->subregions_.back().get(), smap, true, true);
-	}
-
-	return node;
-}
-
 }

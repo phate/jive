@@ -66,12 +66,6 @@ public:
 		node::remove_output(index);
 	}
 
-	virtual jive::structural_node *
-	copy(jive::region * region, const std::vector<jive::output*> & operands) const override;
-
-	virtual jive::structural_node *
-	copy(jive::region * region, jive::substitution_map & smap) const override;
-
 private:
 	std::vector<std::unique_ptr<jive::region>> subregions_;
 };

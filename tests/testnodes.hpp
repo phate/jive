@@ -233,6 +233,9 @@ public:
 	{
 		return new structural_node(parent, nsubregions);
 	}
+
+	virtual structural_node *
+	copy(jive::region * region, substitution_map & smap) const override;
 };
 
 }}

@@ -66,7 +66,10 @@ node::copy(
 	/* add context variables */
 	substitution_map subregionmap;
 	for (auto it = begin_cv(); it != end_cv(); it++) {
-		auto newcv = pb.add_ctxvar(smap.lookup(it->origin()));
+		auto origin = smap.lookup(it->origin());
+		if (!origin) throw compiler_error("Operand not provided by susbtitution map.");
+
+		auto newcv = pb.add_ctxvar(origin);
 		subregionmap.insert(it->argument(), newcv);
 	}
 

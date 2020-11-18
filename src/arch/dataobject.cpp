@@ -10,6 +10,7 @@
 #include <jive/arch/memlayout.hpp>
 #include <jive/rvsdg/graph.hpp>
 #include <jive/rvsdg/structural-node.hpp>
+#include <jive/rvsdg/substitution.hpp>
 #include <jive/types/bitstring/constant.hpp>
 #include <jive/types/bitstring/type.hpp>
 #include <jive/types/float/flttype.hpp>
@@ -40,6 +41,31 @@ dataobj_op::copy() const
 
 dataobj_node::~dataobj_node()
 {}
+
+dataobj_node *
+dataobj_node::copy(jive::region * region, substitution_map & smap) const
+{
+	graph()->mark_denormalized();
+	auto node = dataobj_node::create(region, operation().types());
+
+	/* copy inputs */
+	for (size_t n = 0; n < ninputs(); n++) {
+		auto origin = smap.lookup(input(n)->origin());
+		auto neworigin = origin ? origin : input(n)->origin();
+		auto new_input = structural_input::create(node, neworigin, input(n)->port());
+		smap.insert(input(n), new_input);
+	}
+
+	/* copy outputs */
+	for (size_t n = 0; n < noutputs(); n++) {
+		auto new_output = structural_output::create(node, output(n)->port());
+		smap.insert(output(n), new_output);
+	}
+
+	subregion(0)->copy(node->subregion(0), smap, true, true);
+
+	return node;
+}
 
 }
 

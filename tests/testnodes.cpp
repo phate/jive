@@ -6,6 +6,7 @@
 
 #include "testnodes.hpp"
 
+#include <jive/rvsdg/substitution.hpp>
 #include <jive/util/ptr-collection.hpp>
 
 namespace jive {
@@ -157,5 +158,33 @@ structural_op::copy() const
 
 structural_node::~structural_node()
 {}
+
+structural_node *
+structural_node::copy(jive::region * parent, substitution_map & smap) const
+{
+	graph()->mark_denormalized();
+	auto node = structural_node::create(parent, nsubregions());
+
+	/* copy inputs */
+	for (size_t n = 0; n < ninputs(); n++) {
+		auto origin = smap.lookup(input(n)->origin());
+		auto neworigin = origin ? origin : input(n)->origin();
+		auto new_input = structural_input::create(node, neworigin, input(n)->port());
+		smap.insert(input(n), new_input);
+	}
+
+	/* copy outputs */
+	for (size_t n = 0; n < noutputs(); n++) {
+		auto new_output = structural_output::create(node, output(n)->port());
+		smap.insert(output(n), new_output);
+	}
+
+	/* copy regions */
+	for (size_t n = 0; n < nsubregions(); n++)
+		subregion(n)->copy(node->subregion(n), smap, true, true);
+
+	return node;
+
+}
 
 }}

@@ -35,6 +35,12 @@ public:
 	: types_(detail::unique_ptr_vector_copy(other.types_))
 	{}
 
+	const std::vector<std::unique_ptr<const jive::type>> &
+	types() const noexcept
+	{
+		return types_;
+	}
+
 	inline
 	dataobj_op(dataobj_op && other) noexcept = default;
 
@@ -67,6 +73,15 @@ public:
 	{
 		return new dataobj_node(parent, types);
 	}
+
+	const dataobj_op &
+	operation() const noexcept
+	{
+		return *static_cast<const dataobj_op*>(&structural_node::operation());
+	}
+
+	virtual dataobj_node *
+	copy(jive::region * region, substitution_map & smap) const override;
 };
 
 class memlayout_mapper;

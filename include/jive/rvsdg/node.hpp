@@ -323,7 +323,7 @@ public:
 	}
 
 	virtual jive::node *
-	copy(jive::region * region, const std::vector<jive::output*> & operands) const = 0;
+	copy(jive::region * region, const std::vector<jive::output*> & operands) const;
 
 	/**
 		\brief Copy a node with substitutions

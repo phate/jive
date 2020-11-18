@@ -248,6 +248,18 @@ node::recompute_depth() noexcept
 }
 
 jive::node *
+node::copy(jive::region * region, const std::vector<jive::output*> & operands) const
+{
+	substitution_map smap;
+
+	size_t noperands = std::min(operands.size(), ninputs());
+	for (size_t n = 0; n < noperands; n++)
+		smap.insert(input(n)->origin(), operands[n]);
+
+	return copy(region, smap);
+}
+
+jive::node *
 producer(const jive::output * output) noexcept
 {
 	if (auto node = output->node())
