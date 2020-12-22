@@ -324,8 +324,9 @@ transform_address(jive::node * node, memlayout_mapper & mapper)
 	, {typeid(apply_op), transform_apply}
 	});
 
-	if (map.find(typeid(node->operation())) != map.end())
-		map[typeid(node->operation())](node, mapper);
+	const auto & op = node->operation();
+	if (map.find(typeid(op)) != map.end())
+		map[typeid(op)](node, mapper);
 }
 
 void

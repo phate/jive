@@ -16,7 +16,7 @@ namespace phi {
 
 /* phi operation class */
 
-operation::~operation() noexcept
+operation::~operation()
 {}
 
 std::string

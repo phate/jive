@@ -425,9 +425,10 @@ eval_node(const jive::node * node, size_t index, context & ctx)
 	JIVE_DEBUG_ASSERT(index < node->noutputs());
 
 	/* check for special nodes and evaluate them */
-	if (evlmap.find(typeid(node->operation())) != evlmap.end()) {
+	const auto & op = node->operation();
+	if (evlmap.find(typeid(op)) != evlmap.end()) {
 		std::unique_ptr<const literal> result;
-		result = evlmap[typeid(node->operation())](node, index, ctx)->copy();
+		result = evlmap[typeid(op)](node, index, ctx)->copy();
 		return result;
 	}
 
@@ -437,7 +438,7 @@ eval_node(const jive::node * node, size_t index, context & ctx)
 		operands.emplace_back(eval_input(node->input(n), ctx));
 
 	std::vector<std::unique_ptr<const literal>> results;
-	results = compute_operation(node->operation(), operands);
+	results = compute_operation(op, operands);
 
 	JIVE_DEBUG_ASSERT(results.size() == node->noutputs());
 	for (size_t n = 0; n < node->noutputs(); n++)

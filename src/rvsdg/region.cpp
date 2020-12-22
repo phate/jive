@@ -268,7 +268,8 @@ region::normalize(bool recursive)
 				structnode->subregion(n)->normalize(recursive);
 		}
 
-		graph()->node_normal_form(typeid(node->operation()))->normalize_node(node);
+		const auto & op = node->operation();
+		graph()->node_normal_form(typeid(op))->normalize_node(node);
 	}
 }
 

@@ -313,7 +313,8 @@ producer(const jive::output * output) noexcept
 bool
 normalize(jive::node * node)
 {
-	auto nf = node->graph()->node_normal_form(typeid(node->operation()));
+	const auto & op = node->operation();
+	auto nf = node->graph()->node_normal_form(typeid(op));
 	return nf->normalize_node(node);
 }
 

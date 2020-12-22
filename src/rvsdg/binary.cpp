@@ -271,9 +271,10 @@ bool
 flattened_binary_normal_form::normalize_node(jive::node * node) const
 {
 	const auto & op = static_cast<const flattened_binary_op&>(node->operation());
-	auto nf = graph()->node_normal_form(typeid(op.bin_operation()));
+	const auto & bin_op = op.bin_operation();
+	auto nf = graph()->node_normal_form(typeid(bin_op));
 
-	return static_cast<const binary_normal_form *>(nf)->normalize_node(node, op.bin_operation());
+	return static_cast<const binary_normal_form *>(nf)->normalize_node(node, bin_op);
 }
 
 std::vector<jive::output*>
@@ -283,10 +284,11 @@ flattened_binary_normal_form::normalized_create(
 	const std::vector<jive::output*> & arguments) const
 {
 	const auto & op = static_cast<const flattened_binary_op&>(base_op);
+	const auto & bin_op = op.bin_operation();
 
 	auto nf = static_cast<const binary_normal_form*>(
-		graph()->node_normal_form(typeid(op.bin_operation())));
-	return nf->normalized_create(region, op.bin_operation(), arguments);
+		graph()->node_normal_form(typeid(bin_op)));
+	return nf->normalized_create(region, bin_op, arguments);
 }
 
 /* binary operator */
