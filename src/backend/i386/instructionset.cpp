@@ -59,7 +59,7 @@ jive_i386_check_long_form(
 	jive_instruction_encoding_flags * flags,
 	jive_immediate_int offset)
 {
-	bool need_long_form;
+	bool need_long_form = false;
 	
 	switch (imm->info) {
 		case jive_codegen_imm_info_dynamic_known:
