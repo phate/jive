@@ -130,19 +130,20 @@ perform_control_constant_reduction(std::unordered_set<jive::structural_output*> 
 			continue;
 
 		size_t defalt = 0;
+		size_t nalternatives;
 		std::unordered_map<uint64_t, uint64_t> new_mapping;
 		for (size_t n = 0; n < xv->nresults(); n++) {
 			auto origin = static_cast<node_output*>(xv->result(n)->origin());
 			auto & value = to_ctlconstant_op(origin->node()->operation()).value();
+			nalternatives = value.nalternatives();
 			if (map.find(n) != map.end())
 				new_mapping[map[n]] = value.alternative();
 			else
 				defalt = value.alternative();
 		}
 
-		auto nalt = new_mapping.size()+1;
 		auto origin = match->input(0)->origin();
-		auto m = jive::match(match_op.nbits(), new_mapping, defalt, nalt, origin);
+		auto m = jive::match(match_op.nbits(), new_mapping, defalt, nalternatives, origin);
 		xv->divert_users(m);
 	}
 }

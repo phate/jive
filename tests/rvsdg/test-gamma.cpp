@@ -150,6 +150,37 @@ test_control_constant_reduction()
 	assert(node_output::node(ex2->origin()) == gamma);
 }
 
+static void
+test_control_constant_reduction2()
+{
+	using namespace jive;
+
+	jive::graph graph;
+	gamma_op::normal_form(&graph)->set_control_constant_reduction(true);
+
+	auto import = graph.add_import({bittype(2), "import"});
+
+	auto c = match(2, {{3,2}, {2,1}, {1,0}}, 3, 4, import);
+
+	auto gamma = gamma_node::create(c, 4);
+
+	auto t1 = jive_control_true(gamma->subregion(0));
+	auto t2 = jive_control_true(gamma->subregion(1));
+	auto t3 = jive_control_true(gamma->subregion(2));
+	auto f = jive_control_false(gamma->subregion(3));
+
+	auto xv = gamma->add_exitvar({t1, t2, t3, f});
+
+	auto ex = graph.add_export(xv, {xv->type(), ""});
+
+	jive::view(graph.root(), stdout);
+	graph.normalize();
+	jive::view(graph.root(), stdout);
+
+	auto match = node_output::node(ex->origin());
+	assert(is<match_op>(match));
+}
+
 static int
 test_main(void)
 {
@@ -157,6 +188,7 @@ test_main(void)
 	test_predicate_reduction();
 	test_invariant_reduction();
 	test_control_constant_reduction();
+	test_control_constant_reduction2();
 
 	return 0;
 }
