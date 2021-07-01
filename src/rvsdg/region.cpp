@@ -225,7 +225,7 @@ region::copy(
 	/* copy nodes */
 	for (size_t n = 0; n < context.size(); n++) {
 		for (const auto node : context[n]) {
-            JIVE_ASSERT(target == smap.lookup(node->region()));
+			JIVE_ASSERT(target == smap.lookup(node->region()));
 			node->copy(target, smap);
 		}
 	}
