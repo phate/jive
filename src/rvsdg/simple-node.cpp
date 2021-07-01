@@ -83,8 +83,16 @@ simple_node::copy(jive::region * region, jive::substitution_map & smap) const
 {
 	std::vector<jive::output*> operands;
 	for (size_t n = 0; n < ninputs(); n++) {
-		auto operand = smap.lookup(input(n)->origin());
-		operands.push_back(operand ? operand : input(n)->origin());
+	    auto origin = input(n)->origin();
+		auto operand = smap.lookup(origin);
+		if(!operand){
+		    if(region == this->region()){
+		        operand = origin;
+		    } else{
+                throw compiler_error("Node operand not in substitution map.");
+		    }
+		}
+		operands.push_back(operand);
 	}
 
 	auto node = copy(region, operands);
