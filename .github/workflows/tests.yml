@@ -1,0 +1,21 @@
+name: Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies (LLVM)
+      run: sudo apt-get install llvm-10-dev clang-10
+    - name: Set LLVMCONFIG
+      run: echo "LLVMCONFIG=llvm-config-10" >> $GITHUB_ENV
+    - name: Compile jive
+      run: make jive-release -j 2
+    - name: Run unit and C tests
+      run: make check -j 2
