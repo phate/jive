@@ -217,7 +217,7 @@ region::copy(
 	if (copy_arguments) {
 		for (size_t n = 0; n < narguments(); n++) {
 			auto input = smap.lookup(argument(n)->input());
-			auto narg = argument::create(target, input, argument(n)->type());
+			auto narg = argument::create(target, input, argument(n)->port());
 			smap.insert(argument(n), narg);
 		}
 	}
@@ -237,7 +237,7 @@ region::copy(
 			if (!origin) origin = result(n)->origin();
 
 			auto output = dynamic_cast<jive::structural_output*>(smap.lookup(result(n)->output()));
-			result::create(target, origin, output, result(n)->type());
+			result::create(target, origin, output, result(n)->port());
 		}
 	}
 }
