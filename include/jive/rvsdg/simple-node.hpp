@@ -24,7 +24,7 @@ public:
 	virtual
 	~simple_node();
 
-private:
+protected:
 	simple_node(
 		jive::region * region,
 		const jive::simple_op & op,
