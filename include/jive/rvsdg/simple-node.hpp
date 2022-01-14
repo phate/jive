@@ -19,7 +19,7 @@ class simple_output;
 
 /* simple nodes */
 
-class simple_node final : public node {
+class simple_node : public node {
 public:
 	virtual
 	~simple_node();
